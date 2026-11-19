@@ -3,7 +3,16 @@
 Versions and release notes for `menhir` come from the files in this folder,
 written with [Changesets](https://changesets.dev).
 
-A pull request that changes `packages/menhir/src` or
+Changesets start with the first release. Until then `menhir` stays at the
+0.0.0 placeholder and changes need none; the "Changeset" check passes without
+running. To release, add one changeset and merge the Version Packages pull
+request it opens (see "Releasing"):
+
+```sh
+pnpm changeset --minor menhir -m "Initial release"
+```
+
+After the first release, a pull request that changes `packages/menhir/src` or
 `packages/menhir/package.json` adds a changeset (`changedFilePatterns` in
 `config.json`). CI's "Changeset" check fails without one.
 

@@ -102,8 +102,10 @@ Also:
 
 ## Changesets
 
-A change to `packages/menhir/src` or `packages/menhir/package.json` ships
-with a changeset; CI's "Changeset" check fails a pull request without one.
+Changesets start with the first release. While `packages/menhir/package.json`
+has `"version": "0.0.0"`, changes need none. After that, a change to
+`packages/menhir/src` or `packages/menhir/package.json` ships with a
+changeset; CI's "Changeset" check fails a pull request without one.
 
 - `pnpm changeset --patch menhir -m "<summary>"`. The summary is a line of
   release notes for users of `menhir`: what changed for them.
