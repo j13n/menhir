@@ -24,6 +24,7 @@ const dom = () => ({
 });
 
 const hydrateTests = "{src,test}/**/*.hydrate.test.tsx";
+const workspaceTests = "test/workspace/**/*.test.ts";
 
 export default defineConfig({
   test: {
@@ -38,7 +39,7 @@ export default defineConfig({
           name: "client",
           include: ["{src,test}/**/*.test.{ts,tsx}"],
           // test/package checks dist; vitest.package.config.ts runs it.
-          exclude: [hydrateTests, "test/package/**"],
+          exclude: [hydrateTests, workspaceTests, "test/package/**"],
         },
       },
       {
@@ -54,6 +55,15 @@ export default defineConfig({
           // Sharing it would hand this project the `client` project's
           // non-hydratable output for the same source file, and the reverse.
           fsModuleCachePath: "node_modules/.vitest-cache-hydrate",
+        },
+      },
+      {
+        // Checks on the workspace itself, such as the lockfile. They read
+        // files from disk, so they run in Node, also under VITEST_ENV=chromium.
+        test: {
+          name: "workspace",
+          environment: "node",
+          include: [workspaceTests],
         },
       },
     ],
