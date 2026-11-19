@@ -1,7 +1,7 @@
 {
   "name": "menhir",
   "version": "0.0.0",
-  "description": "Unstyled, accessible UI primitives for SolidJS 2.0, ported from Base UI",
+  "description": "Unstyled, accessible UI primitives for SolidJS 2.0, inspired by Base UI",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
