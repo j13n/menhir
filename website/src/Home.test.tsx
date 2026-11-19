@@ -1,16 +1,31 @@
-import { render, within } from "@solidjs/testing-library";
-import { describe, expect, test } from "vitest";
+import { cleanup, render, within } from "@solidjs/testing-library";
+import { afterEach, describe, expect, test } from "vitest";
 
 // Kept outside src/routes so the file-system router never sees it as a page.
 import Home from "./routes/index";
 
 describe("home page", () => {
+  // The animation runs a timer; unmount so it does not outlive each test.
+  afterEach(cleanup);
+
   test("says what Menhir is", () => {
     const { getByRole } = render(() => <Home />);
     expect(getByRole("heading", { level: 1 })).toHaveTextContent("Menhir");
     expect(getByRole("main")).toHaveTextContent(
       "Unstyled, accessible UI primitives for SolidJS 2.0",
     );
+  });
+
+  test("shows the menhir animation under the introduction", () => {
+    const { getByRole } = render(() => <Home />);
+    const scene = getByRole("img", { name: /ASCII drawing of a menhir/ });
+    const intro = getByRole("main").querySelector("p");
+    expect(intro?.compareDocumentPosition(scene)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(
+      getByRole("button", { name: /(Pause|Play) animation/ }),
+    ).toBeInTheDocument();
   });
 
   test("states that nothing is published yet", () => {

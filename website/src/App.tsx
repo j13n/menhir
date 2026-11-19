@@ -1,15 +1,19 @@
 import { Title } from "@solidjs/meta";
-import { Loading } from "solid-js";
+import { Loading, onSettled } from "solid-js";
 import { paths, Router } from "./router";
+import { watchClockTheme } from "./timeOfDay";
 import "./App.css";
 
 export default function App() {
+  // Keeps the light or dark theme in step with the clock while the page is open.
+  onSettled(() => watchClockTheme());
+
   return (
     <Router>
       {(props) => (
         <>
           <Title>Menhir</Title>
-          <header class="border-b border-stone-200 px-6 py-4">
+          <header class="border-b border-stone-200 px-6 py-4 dark:border-stone-800">
             <a class="font-semibold no-underline" href={paths()}>
               Menhir
             </a>
