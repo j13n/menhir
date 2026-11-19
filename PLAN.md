@@ -2,7 +2,7 @@
 
 Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles.
 
-Status: planning. Nothing in this document is built yet. Versions and name availability were checked on 2026-11-18.
+Status: planning. Nothing in this document is built yet. Versions were checked on 2026-11-18 and name availability on 2026-11-19.
 
 ## 1. Why this exists
 
@@ -29,8 +29,10 @@ Status: planning. Nothing in this document is built yet. Versions and name avail
 ## 3. Name
 
 - **Menhir**: a single standing stone. Fits "primitive", short, easy to say.
-- npm: `menhir` and `menhir-ui` were both unclaimed on 2026-11-18. Publish a placeholder soon.
-- Not yet checked: the `@menhir` npm scope, GitHub org, domain.
+- npm: `menhir` and `menhir-ui` were both unclaimed on 2026-11-18 and still were on 2026-11-19. `menhir` 0.0.0 was published as a placeholder on 2026-11-19 (README, LICENSE and `package.json` only). `menhir-ui` is not held: the library is one package, and an empty second one would only squat the name. Publish from `packages/menhir`, since the workspace root is private; the npm account needs two-factor authentication for writes.
+- npm scope `@menhir`: already exists, with no public packages (2026-11-19). Not needed, since the package is unscoped (section 6, "Package shape").
+- GitHub: the `menhir` account is taken by a user created in 2012, whose public repositories were last pushed in 2016. `menhir-ui`, `menhirjs` and `menhir-solid` were free on 2026-11-19. Decided on 2026-11-19 (#2): no org for now; the repository stays at `j13n/menhir`.
+- Domains (RDAP and registry whois, 2026-11-19): `menhir.com`, `menhir.dev`, `menhir.io` and `menhir.org` are registered. `menhir.sh`, `menhirui.dev`, `menhir-ui.dev`, `menhirui.com`, `menhir-ui.com`, `menhirjs.dev` and `menhirjs.com` were free. `menhir.js.org` is unclaimed; js.org subdomains are free for JavaScript projects. Plan: once the docs site has more than placeholder content (js.org rejects placeholder pages), host it on Cloudflare and request `menhir.js.org`, which on Cloudflare has to be added as a custom domain through the API, not the dashboard. If the name is gone by then, buy a domain instead.
 - Known collision: Menhir is a parser generator for OCaml. Different ecosystem; "menhir solid" and "menhir ui" should stay searchable.
 - Common typos: "mehir", "menir".
 
@@ -216,7 +218,7 @@ Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 i
 - Repo, build, test runner, size budgets, import-boundary lint.
 - `core` layer. Decide the polymorphism pattern.
 - Docs site in `website` (Solid 2.0, `pnpm create solid@latest`): component page template, generated size table, deployment.
-- Claim the npm name and GitHub org.
+- ~~Claim the npm name and GitHub org.~~ Done (#2): `menhir` 0.0.0 holds the npm name; no org or domain yet (section 3).
 
 **Phase 1: simple components** (days each; settles API conventions)
 
