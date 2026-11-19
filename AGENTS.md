@@ -100,6 +100,20 @@ Also:
 
 <!-- END solid-2.0-primer -->
 
+## Changesets
+
+A change to `packages/menhir/src` or `packages/menhir/package.json` ships
+with a changeset; CI's "Changeset" check fails a pull request without one.
+
+- `pnpm changeset --patch menhir -m "<summary>"`. The summary is a line of
+  release notes for users of `menhir`: what changed for them.
+- While `menhir` is 0.x, a breaking change is `--minor` and everything else
+  `--patch`; `--major` releases 1.0.0.
+- A change users cannot notice (a refactor, a devDependency bump) gets
+  `pnpm changeset --empty`.
+
+Release flow: `.changeset/README.md`.
+
 ## Agent skills
 
 ### Issue tracker

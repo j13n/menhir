@@ -3,16 +3,21 @@
 Versions and release notes for `menhir` come from the files in this folder,
 written with [Changesets](https://changesets.dev).
 
-A change that users of `menhir` will notice gets a changeset in the same pull
-request:
+A pull request that changes `packages/menhir/src` or
+`packages/menhir/package.json` adds a changeset (`changedFilePatterns` in
+`config.json`). CI's "Changeset" check fails without one.
 
 ```sh
 pnpm changeset
 ```
 
-Pick `menhir`, the bump (`patch`, `minor` or `major`) and write the summary as
-a line of the release notes. Changes to tests, tooling or the docs site need
-none. The private workspace packages (`website`, `test/*`) are never versioned.
+Pick `menhir`, the bump and write the summary as a line of the release notes.
+While `menhir` is 0.x, a breaking change is `minor` and anything else `patch`:
+`major` would release 1.0.0. A change users cannot notice, such as a refactor
+or a devDependency bump, gets `pnpm changeset --empty`, which releases nothing.
+
+Changes to tests, tooling or the docs site need none. The private workspace
+packages (`website`, `test/*`) are never versioned.
 
 ## Releasing
 

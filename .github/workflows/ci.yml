@@ -34,6 +34,26 @@ jobs:
       - run: pnpm --filter menhir build
       - run: pnpm typecheck
 
+  changeset:
+    name: Changeset
+    # Pull requests only: the "Version Packages" pull request, run by hand,
+    # deletes the changesets on purpose.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          # status compares against the merge base with main.
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+      # Fails when the pull request changes menhir's src or package.json
+      # (changedFilePatterns in .changeset/config.json) without adding a
+      # changeset. `pnpm changeset --empty` adds one that releases nothing.
+      - run: pnpm changeset status --since "origin/$BASE_REF"
+        env:
+          BASE_REF: ${{ github.base_ref }}
+
   test-jsdom:
     name: Tests (jsdom)
     runs-on: ubuntu-latest
