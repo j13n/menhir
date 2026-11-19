@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
-  // vitest.config.ts is left out: it reads process.env, and Node's types are
-  // not wanted in the library's type program.
-  "include": ["src", "test"]
+  "include": ["src", "test"],
+  // These run in Node and are typechecked by tsconfig.node.json.
+  "exclude": ["test/ssr/renderServer.ts", "test/package"]
 }

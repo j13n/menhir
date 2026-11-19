@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { createRenderer, screen } from "#test-utils";
 
-import { Switch } from "./ThrowawaySwitch";
+import { Switch } from "../../src/switch/index.ts";
 
 describe("<Switch.Root />", () => {
   const { render } = createRenderer();

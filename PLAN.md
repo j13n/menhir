@@ -89,11 +89,12 @@ These are structural and must hold from the first commit.
 3. **No `Object.assign` compound components.** Use namespace re-exports so unused parts are dropped. Rollup and Rolldown drop them; esbuild keeps the whole namespace (measured on quoin-ui, see [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md)), so measure part-level budgets with Rolldown:
    ```ts
    // dialog/index.ts
-   export * as Dialog from "./parts";
-   // dialog/parts.ts
-   export { DialogRoot as Root } from "./root";
-   export { DialogTrigger as Trigger } from "./trigger";
+   export * as Dialog from "./index.parts.ts";
+   // dialog/index.parts.ts
+   export { DialogRoot as Root } from "./root/DialogRoot.tsx";
+   export { DialogTrigger as Trigger } from "./trigger/DialogTrigger.tsx";
    ```
+   The build has to keep that re-export as written; see "Build" in section 7.
 4. **Strict layers.** Enforced by an import-boundary lint rule.
    | Layer             | Contains                                                                     | May import                 |
    | ----------------- | ---------------------------------------------------------------------------- | -------------------------- |
@@ -104,7 +105,7 @@ These are structural and must hold from the first commit.
 5. **Near-zero dependencies.** `@floating-ui/dom` only. Use built-in `Intl` for number and date formatting.
 6. **Expensive behaviour is a part, not a flag.** Portal, scroll lock and focus trap are composed in, so apps that don't render them don't ship them.
 
-Sketch of the package manifest:
+The package manifest, in the shape built in the build spike (#6). Only `./switch` exists so far; `./dialog` shows how each further component is added:
 
 ```json
 {
@@ -114,12 +115,12 @@ Sketch of the package manifest:
   "exports": {
     "./dialog": {
       "types": "./dist/source/dialog/index.d.ts",
-      "solid": "./dist/source/dialog/index.jsx",
+      "solid": "./dist/source/dialog/index.js",
       "import": "./dist/dialog/index.js"
     },
     "./switch": {
       "types": "./dist/source/switch/index.d.ts",
-      "solid": "./dist/source/switch/index.jsx",
+      "solid": "./dist/source/switch/index.js",
       "import": "./dist/switch/index.js"
     }
   },
@@ -128,7 +129,14 @@ Sketch of the package manifest:
 }
 ```
 
-The `solid` condition points at uncompiled JSX and must come before `import`: compiled DOM output cannot hydrate, so SSR apps need the source. This follows the official library guide (solid-vite-plugin PR #450, merged 2026-10-30), which is written for 1.x; the 2.0 version of the guide is a separate PR that has not been read. quoin-ui 0.6.0 and `base-ui-solid` 0.3.1 ship a `solid` condition on 2.0; the latter adds a separate server build. Confirm in the build spike (section 7).
+The `solid` condition points at uncompiled JSX and must come before `import`: compiled DOM output cannot hydrate and cannot render on the server, so SSR apps need the source. Confirmed in the build spike (#6), in two ways:
+
+- **The Solid 2.0 library guide says so.** It is the "Building a library" section of the `@solidjs/vite-plugin` 3.0.1 README. It prescribes JSX source under `solid`, listed before `import`, with `solid-js` and `@solidjs/web` as peers. The plugin adds `solid` to Vite's `resolve.conditions`, and bundles every dependency that has a `solid` export into the SSR build instead of leaving it external.
+- **Removing it breaks SSR.** With the `solid` key deleted from `menhir`, the fixture app in `test/ssr-app` fails to render with "Client-only API called on the server side", because the server then gets the DOM build.
+
+The entry of a component is a `.ts` file with no JSX, so its `solid` target ends in `.js`. The `.jsx` files are the modules it imports.
+
+No separate server build under `node`/`worker`/`deno`, which `base-ui-solid` 0.3.1 and `unstyled-solid/base-ui` ship. It would serve only an app that renders on the server without compiling its dependencies, which is not a setup the guide describes: an app on the Solid plugin always compiles the `solid` source. Add one if a user turns up with such a setup.
 
 ### Enforcement
 
@@ -168,22 +176,22 @@ Costs accepted:
 
 Principle: use the tooling of the official Solid 2.0 template (`pnpm create solid@latest`, as scaffolded in `website`), since that is where the Solid 2.0 ecosystem is heading, and keep Base UI's test structure on top of it so its tests port almost mechanically. Versions are the ones the template resolved on 2026-11-19, or npm `latest` on 2026-11-18 for tools the template does not include.
 
-| Area                  | Choice                                                                                                                                                     | Notes                                                                                                                                                                                                              |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Package manager, repo | pnpm 12 workspace: `packages/menhir`, `website`, `test/bundle-size`                                                                                        | Base UI's layout, with its `docs` folder named `website` here.                                                                                                                                                     |
-| Compiler              | `@solidjs/vite-plugin` 3.0.1                                                                                                                               | The Solid 2.0 plugin (peers `solid-js ^2`, Vite 8 or 9). `vite-plugin-solid` 2.x is 1.x only.                                                                                                                      |
-| Build                 | Vite 8 library mode with preserved modules for compiled JS; `tsc` with `jsx: preserve` for `.jsx` source and `.d.ts`                                       | The shape the official library guide documents. The template is an app, so it has no library build to copy. Fallback: tsdown 0.23.                                                                                 |
-| Tests                 | Vitest 5.1; jsdom by default, Chromium through `@vitest/browser-playwright`                                                                                | Base UI's runner and split: a `VITEST_ENV` variable selects the browser, `it.skipIf(isJSDOM)` marks browser-only cases.                                                                                            |
-| Test utilities        | `@solidjs/testing-library` 1.0.0-rc.2, `@testing-library/user-event`, `@testing-library/jest-dom`, plus our own `createRenderer` and `describeConformance` | The template's test library, built for Solid 2.0. Base UI's tests call the two helpers from its `#test-utils`; `createRenderer` is a thin wrapper over the testing library, so test bodies stay close to upstream. |
-| SSR tests             | A Vitest node project that renders to a string, then hydrates                                                                                              | Covers the SSR line in the definition of done.                                                                                                                                                                     |
-| Lint                  | oxlint 1.92 running `eslint-plugin-solid` 0.20 (`configs/v2`) as a JS plugin, one config for the workspace                                                 | The template's setup. The layer table in section 6 is enforced in oxlint too: `eslint-plugin-boundaries` as a JS plugin if it loads, otherwise per-folder `no-restricted-imports` overrides.                       |
-| Formatting            | Prettier                                                                                                                                                   |                                                                                                                                                                                                                    |
-| Size                  | `size-limit` 14, one budget per entry point; a script that bundles `menhir/switch` and fails if a `floating` module is included                            | Implements the enforcement list in section 6. Docs size table is generated from the same output.                                                                                                                   |
-| Package checks        | `publint`, `@arethetypeswrong/cli`                                                                                                                         | Run in CI against the packed tarball.                                                                                                                                                                              |
-| Types                 | TypeScript 7, `tsc --noEmit`                                                                                                                               | The template's version. Confirm in the build spike that it emits the `.jsx` source and `.d.ts` files.                                                                                                              |
-| Diagnostics           | `@solidjs/diagnostics` 2.0 through the Vite plugin's `diagnostics` option                                                                                  | Dev only.                                                                                                                                                                                                          |
-| Releases, CI          | Changesets, GitHub Actions                                                                                                                                 |                                                                                                                                                                                                                    |
-| Docs site             | Solid 2.0 app in the `website` workspace folder, scaffolded with `pnpm create solid@latest`, set up in Phase 0                                             | Each component gets its page as it lands (section 10). The size table is generated from the `size-limit` output.                                                                                                   |
+| Area                  | Choice                                                                                                                                                     | Notes                                                                                                                                                                                                                                      |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Package manager, repo | pnpm 12 workspace: `packages/menhir`, `website`, `test/bundle-size`, `test/ssr-app`                                                                        | Base UI's layout, with its `docs` folder named `website` here.                                                                                                                                                                             |
+| Compiler              | `@solidjs/vite-plugin` 3.0.1                                                                                                                               | The Solid 2.0 plugin (peers `solid-js ^2`, Vite 8 or 9). `vite-plugin-solid` 2.x is 1.x only.                                                                                                                                              |
+| Build                 | Vite 8 library mode with preserved modules for compiled JS; `tsc -p tsconfig.build.json` with `jsx: preserve` for `.jsx` source and `.d.ts`                | The shape the official library guide documents, confirmed in the build spike (#6). `pnpm build` in `packages/menhir`. Details under "Build" below.                                                                                         |
+| Tests                 | Vitest 5.1; jsdom by default, Chromium through `@vitest/browser-playwright`                                                                                | Base UI's runner and split: a `VITEST_ENV` variable selects the browser, `it.skipIf(isJSDOM)` marks browser-only cases.                                                                                                                    |
+| Test utilities        | `@solidjs/testing-library` 1.0.0-rc.2, `@testing-library/user-event`, `@testing-library/jest-dom`, plus our own `createRenderer` and `describeConformance` | The template's test library, built for Solid 2.0. Base UI's tests call the two helpers from its `#test-utils`; `createRenderer` is a thin wrapper over the testing library, so test bodies stay close to upstream.                         |
+| SSR tests             | `*.hydrate.test.tsx` files, run by a `hydrate` Vitest project                                                                                              | `renderOnServer` from `#test-utils` renders a fixture on a Vite SSR server, and `render(ui, { hydrate })` hydrates the result. Details under "Build" below. Covers the SSR line in the definition of done.                                 |
+| Lint                  | oxlint 1.92 running `eslint-plugin-solid` 0.20 (`configs/v2`) as a JS plugin, one config for the workspace                                                 | The template's setup. The layer table in section 6 is enforced in oxlint too: `eslint-plugin-boundaries` as a JS plugin if it loads, otherwise per-folder `no-restricted-imports` overrides.                                               |
+| Formatting            | Prettier                                                                                                                                                   |                                                                                                                                                                                                                                            |
+| Size                  | `size-limit` 14, one budget per entry point; a script that bundles `menhir/switch` and fails if a `floating` module is included                            | Implements the enforcement list in section 6. Docs size table is generated from the same output.                                                                                                                                           |
+| Package checks        | `publint --strict`, `@arethetypeswrong/cli` with `--profile esm-only`                                                                                      | `pnpm check:package`, which builds first and checks the packed tarball. The profile leaves out `node10` and CommonJS `require`, which are not supported (section 6). Run in CI.                                                            |
+| Types                 | TypeScript 7, `tsc --noEmit`                                                                                                                               | The template's version. It emits the `.jsx` source and the `.d.ts` files (#6). Files that run in Node (configs, global setups, package tests) have their own `tsconfig.node.json`, so Node's types stay out of the library's type program. |
+| Diagnostics           | `@solidjs/diagnostics` 2.0 through the Vite plugin's `diagnostics` option                                                                                  | Dev only.                                                                                                                                                                                                                                  |
+| Releases, CI          | Changesets, GitHub Actions                                                                                                                                 |                                                                                                                                                                                                                                            |
+| Docs site             | Solid 2.0 app in the `website` workspace folder, scaffolded with `pnpm create solid@latest`, set up in Phase 0                                             | Each component gets its page as it lands (section 10). The size table is generated from the `size-limit` output.                                                                                                                           |
 
 ### Spikes (Phase 0, before any component work)
 
@@ -192,7 +200,25 @@ Principle: use the tooling of the official Solid 2.0 template (`pnpm create soli
    - No `setProps`. Solid cannot clone elements, so a test that changes props passes a signal and sets it, as Kobalte's tests do. At Base UI v1.9.0, 71 of its 346 test files call `setProps`; those are rewritten this way when ported.
    - Testing Library's `eventWrapper` calls `flush()` after every event, so an assertion can follow `fireEvent` or a user-event action directly, as after React's `act()`. After setting a signal, the test calls `flush()` itself.
    - `createRenderer` registers the cleanup after each test, because the testing library does so only when Vitest globals are on.
-2. **Build.** Build a one-component package (Switch) with the Vite plus `tsc` setup. Done when the output is one file per module, `publint` and `attw` pass, the `solid` condition resolves in an SSR app, and a hydrate test passes. If preserved modules do not work with the 2.0 plugin, try tsdown.
+2. ~~**Build.**~~ Done on 2026-11-19 (#6). The Vite plus `tsc` setup works with `@solidjs/vite-plugin` 3.0.1, so the tsdown fallback is not needed. Result under "Build" below.
+
+### Build
+
+Decided in the build spike (#6), on a throwaway two-part Switch. `pnpm build` in `packages/menhir` runs both steps:
+
+- `vite build` (`vite.config.ts`) writes the compiled `import` entries to `dist`, one file per source module (`preserveModules`), with `solid-js` and `@solidjs/web` external.
+- `tsc -p tsconfig.build.json` writes the JSX source and the types to `dist/source`. It covers only `src`.
+
+A component is added by adding its subpath to `exports` in `package.json`, the only list of components: `vite.config.ts` reads its entries from there. `pnpm test:package` builds, then checks `dist` (`test/package`): one compiled file, one source file and one `.d.ts` per module, an `exports` entry for every folder in `src` with an `index.ts`, and that a bundler drops an unused part. It is kept out of the default `vitest` run so that watch mode does not rebuild.
+
+What the spike found:
+
+- **Rolldown breaks rule 3 unless told otherwise.** Rolldown 1.2 compiles `export * as Switch from "./index.parts.ts"` into an object of getters, and no bundler can drop an unused part from an object: an app using only `Switch.Root` also got `Switch.Thumb`. A small plugin in `vite.config.ts` builds each `index.parts.ts` as an entry of its own and leaves the import of it external, so `index.js` keeps the namespace re-export. tsdown was not tried; it bundles with Rolldown too, so it probably needs the same fix.
+- **Relative imports name the source file**, such as `./root/SwitchRoot.tsx`. `rewriteRelativeImportExtensions` turns that into `.jsx` or `.js` in the emitted source. Extensionless imports fail `attw` under `node16` resolution.
+- **`attw` runs with `--profile esm-only`.** `node10` cannot resolve subpath exports and the package has no CommonJS build (section 6, "Costs accepted").
+- **Hydrate tests need two compiles of the same JSX**, one for the server and one hydratable one for the DOM, each against its own build of Solid. A test file gets only one. So `*.hydrate.test.tsx` files run in a `hydrate` Vitest project whose plugin compiles hydratable DOM code, and its global setup (`test/ssr/renderServer.ts`) starts a Vite SSR server that renders fixtures over HTTP. A test calls `renderOnServer("/path/to/Fixture.tsx")`, which returns an element holding the server HTML, then `render(() => <Fixture />, { hydrate: element })`. It works in jsdom and in Chromium.
+- **Vitest projects that compile differently must not share a transform cache.** Vitest 5's `fsModuleCache` is keyed by file, not by plugin options, so the `hydrate` project has its own `fsModuleCachePath`. Sharing it gave the hydrate test the `client` project's non-hydratable output.
+- **`test/ssr-app`** is a minimal SSR app that depends on `menhir` like an installed app. Its test builds it for server and client, renders the server bundle in Node and hydrates the result with the client bundle. `test/package` in `packages/menhir` checks the built package: one file per module, the order of the export conditions, and that an unused part is dropped.
 
 ## 8. Porting approach
 
@@ -220,7 +246,7 @@ Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 i
 **Phase 0: foundations**
 
 - ~~Evaluate quoin-ui, the msviderok port, and the four ports found later (section 4).~~ Done: [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md).
-- The two tooling spikes (section 7): ~~test renderer~~ done (#5), build.
+- ~~The two tooling spikes (section 7).~~ Done: test renderer (#5), build (#6).
 - Repo, build, test runner, size budgets, import-boundary lint.
 - `core` layer. Decide the polymorphism pattern.
 - Docs site in `website` (Solid 2.0, `pnpm create solid@latest`): component page template, generated size table, deployment.
@@ -270,7 +296,7 @@ Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 i
 2. Polymorphism: an `as` prop, a render function prop, or both?
 3. ~~Package shape~~ Decided: one `menhir` package with a subpath export per component, as in section 6 ("Package shape").
 4. How close should the public API stay to Base UI's names and parts? Closer makes styled layers and docs easier to port.
-5. Is the `solid` export condition still needed in 2.0? Working answer: yes (section 6). Confirm in the build spike and against the 2.0 library guide.
+5. ~~Is the `solid` export condition still needed in 2.0?~~ Decided on 2026-11-19 (#6): yes. The 2.0 library guide prescribes it, and an SSR app fails without it. No separate server build. Details in section 6.
 6. ~~Test stack~~ Decided: Vitest 5.1, jsdom plus Chromium, `@solidjs/testing-library`, as in section 7.
 7. ~~Tooling~~ Decided: follow the `pnpm create solid@latest` template (oxlint, TypeScript 7, `@solidjs/testing-library`).
 
@@ -287,7 +313,7 @@ Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 i
 - @msviderok/base-ui-solid: https://www.npmjs.com/package/@msviderok/base-ui-solid
 - danielfrg/solid-ui: https://github.com/danielfrg/solid-ui
 - Kobalte: https://kobalte.dev
-- Solid library guide (1.x): https://github.com/solidjs/solid-vite-plugin/pull/450
+- Solid library guide: "Building a library" in the `@solidjs/vite-plugin` README, https://github.com/solidjs/solid-vite-plugin#building-a-library
 - Base UI repo (test and build setup): https://github.com/mui/base-ui
 - Vitest browser mode: https://vitest.dev/guide/browser/
 - tsdown Solid recipe: https://tsdown.dev/recipes/solid-support

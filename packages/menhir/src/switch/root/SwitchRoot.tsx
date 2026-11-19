@@ -1,8 +1,8 @@
-// Throwaway Switch for the test-renderer spike (#5): just enough for the
-// ported key test. The real one is #15.
+// Throwaway Switch from the spikes (#5, #6): just enough for the ported key
+// test and for the build to have a component with JSX. The real one is #15.
 import { createSignal } from "solid-js";
 
-function Root() {
+export function SwitchRoot() {
   const [checked, setChecked] = createSignal(false);
   const toggle = () => setChecked((value) => !value);
 
@@ -23,5 +23,3 @@ function Root() {
     />
   );
 }
-
-export const Switch = { Root };

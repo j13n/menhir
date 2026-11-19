@@ -15,6 +15,11 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
+    // Relative imports name the source file (`./x.tsx`). A package that emits
+    // gets them rewritten to the output name (`./x.jsx`) in its JavaScript; .d.ts
+    // files keep the source name, which resolves to the .d.ts next to it.
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
 
     // Type Checking & Safety
     "strict": true,
