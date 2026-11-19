@@ -1,0 +1,21 @@
+name: Set up the workspace
+description: Install pnpm (from packageManager), Node.js (from .nvmrc) and the workspace's dependencies.
+
+inputs:
+  cache:
+    description: Restore and save the pnpm store. Jobs that publish or deploy turn it off, so a poisoned cache cannot reach them.
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v6
+
+    - uses: actions/setup-node@v7
+      with:
+        node-version-file: .nvmrc
+        cache: ${{ inputs.cache == 'true' && 'pnpm' || '' }}
+        package-manager-cache: false
+
+    - run: pnpm install --frozen-lockfile
+      shell: bash

@@ -1,0 +1,12 @@
+// The docs site on Cloudflare Workers static assets (PLAN.md section 3).
+// `vite build` prerenders a static site into dist/client, and the
+// "Deploy docs site" job in .github/workflows/ci.yml deploys it from main.
+{
+  "name": "menhir-docs",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist/client",
+    // Client-side routing: a path without a file gets index.html.
+    "not_found_handling": "single-page-application",
+  },
+}

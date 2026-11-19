@@ -10,6 +10,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
+    "@changesets/cli": "~3.0.3",
     "eslint-plugin-boundaries": "~7.4.4",
     "eslint-plugin-solid": "~0.20.0",
     "oxlint": "~1.92.0",

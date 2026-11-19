@@ -1,0 +1,153 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  # For the "Version Packages" pull request, which release.yml opens with the
+  # workflow's token and so gets no pull_request run. Run this workflow on its
+  # branch from the Actions tab; the checks show on the pull request.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # A new push to a pull request replaces its running checks; runs on main
+  # queue, so every commit there is checked and the docs deploy in order.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint:
+    name: Lint and typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: pnpm format:check
+      - run: pnpm lint
+      # test/ssr-app and test/bundle-size import menhir through its exports,
+      # whose types are in dist.
+      - run: pnpm --filter menhir build
+      - run: pnpm typecheck
+
+  test-jsdom:
+    name: Tests (jsdom)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      # The client, hydrate and workspace projects of vitest.config.ts.
+      - run: pnpm --filter menhir test --run
+      - run: pnpm --filter website test --run
+
+  test-chromium:
+    name: Tests (Chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: pnpm --filter menhir exec playwright install --with-deps chromium
+      - run: pnpm --filter menhir test:chromium --run
+
+  test-ssr:
+    name: Tests (SSR app)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      # Builds menhir, then server-renders an app that installs it and hydrates
+      # the HTML. The hydrate project in "Tests (jsdom)" covers the source.
+      - run: pnpm --filter @menhir/ssr-app test --run
+
+  package:
+    name: Package checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      # The layout of dist (test/package).
+      - run: pnpm --filter menhir test:package
+      # publint and @arethetypeswrong/cli, both against the packed tarball.
+      - run: pnpm --filter menhir check:package
+
+  size:
+    name: Size budgets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      # Fails when an entry point is over its budget or has none, or when a
+      # simple component pulls in the floating layer (test/bundle-size).
+      - run: pnpm --filter @menhir/bundle-size test --run
+      # The same budgets as size-limit's table, for the job log. The test
+      # step has already built menhir.
+      - run: pnpm --filter @menhir/bundle-size exec size-limit
+
+  website:
+    name: Docs site build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      # The site imports menhir through its exports, which point into dist.
+      - run: pnpm --filter menhir build
+      - run: pnpm --filter website build
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: website
+          path: website/dist/client
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy-docs:
+    name: Deploy docs site
+    needs: [lint, test-jsdom, test-chromium, test-ssr, package, size, website]
+    # Skipped until Cloudflare is set up: the repository variable
+    # CLOUDFLARE_ACCOUNT_ID and the secret CLOUDFLARE_API_TOKEN.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.CLOUDFLARE_ACCOUNT_ID != ''
+    runs-on: ubuntu-latest
+    environment:
+      name: docs
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    concurrency:
+      group: deploy-docs
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      # wrangler-action runs `pnpm add wrangler` in website, which needs the
+      # workspace installed.
+      - uses: ./.github/actions/setup
+        with:
+          cache: "false"
+      # The site the "Docs site build" job built from this commit.
+      - uses: actions/download-artifact@v8
+        with:
+          name: website
+          path: website/dist/client
+      - id: deploy
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.165.0"
+          packageManager: pnpm
+          workingDirectory: website
