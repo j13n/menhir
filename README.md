@@ -38,6 +38,14 @@ pnpm typecheck
 pnpm format
 ```
 
+The library's tests run in jsdom, or in Chromium through Playwright:
+
+```sh
+pnpm --filter menhir test
+pnpm --filter menhir exec playwright install chromium   # once
+pnpm --filter menhir test:chromium
+```
+
 ## Licence
 
 [MIT](LICENSE)
