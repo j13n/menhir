@@ -1,5 +1,6 @@
 import { For } from "solid-js";
 
+import MenhirScene from "../components/MenhirScene";
 import Section from "../components/Section";
 
 const inspirations = [
@@ -16,10 +17,10 @@ export default function Home() {
     <main>
       <h1>Menhir</h1>
       <p>
-        Unstyled, accessible UI primitives for SolidJS 2.0, inspired by{" "}
-        <a href="https://base-ui.com">Base UI</a>, with small and measurable
-        bundles.
+        Unstyled, accessible UI primitives for SolidJS 2.0, with small and
+        measurable bundles.
       </p>
+      <MenhirScene />
       <Section id="status" title="Status">
         <p>
           Planning. Nothing is built yet, and the <code>menhir</code> package is
