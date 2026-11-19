@@ -2,5 +2,5 @@
   "extends": "../../tsconfig.base.json",
   "include": ["src", "test"],
   // These run in Node and are typechecked by tsconfig.node.json.
-  "exclude": ["test/ssr/renderServer.ts", "test/package"]
+  "exclude": ["test/ssr/renderServer.ts", "test/package", "test/workspace"]
 }
