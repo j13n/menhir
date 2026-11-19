@@ -1,0 +1,23 @@
+{
+  // Shared compiler options for every workspace package. Each package extends
+  // this and adds what it needs, such as `include` or `types`. The base only
+  // typechecks; a package that emits overrides `noEmit`.
+  "compilerOptions": {
+    // General
+    "jsx": "preserve",
+    "jsxImportSource": "@solidjs/web",
+    "target": "ESNext",
+
+    // Modules
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+
+    // Type Checking & Safety
+    "strict": true,
+    "skipLibCheck": true
+  }
+}

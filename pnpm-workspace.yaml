@@ -1,8 +1,9 @@
 packages:
-  - '.'
+  - packages/*
+  - website
+  - test/bundle-size
 
-# pnpm settings for this project (honored even for a single-package project —
-# this file marks the workspace root). The Solid packages release in lockstep
+# pnpm settings for the whole workspace. The Solid packages release in lockstep
 # and templates track them closely; exclude the whole family from any
 # minimumReleaseAge policy so fresh Solid releases install immediately.
 #
@@ -13,5 +14,5 @@ packages:
 # release and the policy can protect these packages like any other.
 minimumReleaseAgeExclude:
   - solid-js
-  - '@solidjs/*'
+  - "@solidjs/*"
   - filesystem-routing

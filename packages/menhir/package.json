@@ -1,0 +1,26 @@
+{
+  "name": "menhir",
+  "version": "0.0.0",
+  "description": "Unstyled, accessible UI primitives for SolidJS 2.0, ported from Base UI",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@solidjs/web": "^2.0.0",
+    "solid-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "@solidjs/web": "^2.0.1",
+    "solid-js": "^2.0.1",
+    "typescript": "^7.0.2"
+  }
+}

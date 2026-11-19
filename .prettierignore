@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+dist
+coverage
+*.gen.*
+website/file-routes.d.ts
+.claude
