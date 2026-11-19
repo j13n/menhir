@@ -46,11 +46,24 @@ jobs:
           persist-credentials: false
           # status compares against the merge base with main.
           fetch-depth: 0
-      - uses: ./.github/actions/setup
+      # Changesets start with the first release: while menhir is still the
+      # 0.0.0 placeholder, the check passes without running.
+      - id: released
+        run: |
+          version=$(jq -r .version packages/menhir/package.json)
+          if [ "$version" = "0.0.0" ]; then
+            echo "menhir is 0.0.0, not released yet: no changeset needed."
+            echo "value=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.released.outputs.value == 'true'
+        uses: ./.github/actions/setup
       # Fails when the pull request changes menhir's src or package.json
       # (changedFilePatterns in .changeset/config.json) without adding a
       # changeset. `pnpm changeset --empty` adds one that releases nothing.
-      - run: pnpm changeset status --since "origin/$BASE_REF"
+      - if: steps.released.outputs.value == 'true'
+        run: pnpm changeset status --since "origin/$BASE_REF"
         env:
           BASE_REF: ${{ github.base_ref }}
 
