@@ -14,17 +14,17 @@ Status: planning. Nothing in this document is built yet. Versions were checked o
 
 **Goals**
 
-- Behaviour and accessibility on par with the best React primitives. Base UI is the starting point and the source of tests: a component's ported Base UI tests must pass.
+- Written the Solid 2.0 way. APIs and internals follow Solid 2.0's idioms, and Solid libraries (Kobalte, solid-primitives, corvu) show how a problem is solved in Solid. Not React APIs with different imports, and not Solid 1.x code with its imports updated.
+- Behaviour and accessibility on par with the best React primitives, pinned down by tests (section 8).
 - Each component costs only what it uses. Sizes are published per component.
-- Idiomatic Solid 2.0 APIs, not React APIs with different imports.
 - Near-zero runtime dependencies.
 
 **Non-goals**
 
 - Styling, themes, or a shadcn-style registry. Those can be built on top later.
 - Support for Solid 1.x.
-- Being a Base UI port. Its behaviour and tests are where each component starts; its source structure, its API and its release schedule are not a contract (how close the API stays is open question 4).
-- Covering all of Base UI before the first release.
+- Being a port of any library. Base UI, Kobalte and corvu are references for behaviour, test cases and API ideas. None of them sets Menhir's source structure, API or release schedule (API conventions are open question 4).
+- Covering every Base UI or Kobalte component before the first release.
 
 ## 3. Name
 
@@ -40,12 +40,15 @@ Status: planning. Nothing in this document is built yet. Versions were checked o
 
 ### Established Solid libraries
 
-| Library                                 | Notes                                                                                                      |
-| --------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Kobalte                                 | The most complete option. Still maintained. Source of the bundle-size complaints when combined with corvu. |
-| corvu                                   | High quality, small set of components.                                                                     |
-| Ark UI                                  | Multi-framework, built on Zag state machines, has a Solid target.                                          |
-| solid-ui, Zaidan, solidcn, shadcn-solid | Styled, copy-paste layers on top of Kobalte and corvu. Potential consumers of Menhir, not competitors.     |
+| Library                                 | Notes                                                                                                                                                                                          |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kobalte                                 | The most complete option. Still maintained. Source of the bundle-size complaints when combined with corvu. An unreleased `solid2` branch runs on Solid 2.0 and has 49 test files (2026-11-19). |
+| corvu                                   | High quality, small set of components, each expensive behaviour split into its own primitive. No tests. Its Solid 2.0 branch was abandoned in 2025-02.                                         |
+| solid-primitives                        | Community primitives, released for Solid 2.0. Includes a controlled signal, focus trap, scroll lock, outside interaction and presence, all tested. Kobalte's `solid2` is built on them.        |
+| Ark UI                                  | Multi-framework, built on Zag state machines, has a Solid target.                                                                                                                              |
+| solid-ui, Zaidan, solidcn, shadcn-solid | Styled, copy-paste layers on top of Kobalte and corvu. Potential consumers of Menhir, not competitors.                                                                                         |
+
+What each Solid library offers Menhir, and where Kobalte's tests stop, is in [docs/research/solid-references.md](docs/research/solid-references.md).
 
 ### Existing Base UI ports for Solid
 
@@ -64,12 +67,13 @@ The first six were evaluated by reading their code on 2026-11-19 (#1), and the f
 
 ## 5. Target versions
 
-| Dependency       | Version on 2026-11-18 | Notes                                                                |
-| ---------------- | --------------------- | -------------------------------------------------------------------- |
-| solid-js         | 2.0.1                 | Peer dependency. 1.x not supported.                                  |
-| @solidjs/web     | 2.0.1                 | Peer dependency. Rendering and JSX types moved here in 2.0.          |
-| @base-ui/react   | 1.9.0                 | Reference only, not a dependency. Pin the version being ported from. |
-| @floating-ui/dom | 1.8.0                 | Only runtime dependency, used by popup components only.              |
+| Dependency       | Version                    | Notes                                                                                  |
+| ---------------- | -------------------------- | -------------------------------------------------------------------------------------- |
+| solid-js         | 2.0.1                      | Peer dependency. 1.x not supported.                                                    |
+| @solidjs/web     | 2.0.1                      | Peer dependency. Rendering and JSX types moved here in 2.0.                            |
+| @base-ui/react   | 1.9.0                      | Behaviour reference only, not a dependency (section 8).                                |
+| Kobalte          | `solid2` branch, `ba6b1df` | Test and implementation reference only, not a dependency (section 8). Read 2026-11-19. |
+| @floating-ui/dom | 1.8.0                      | Only runtime dependency, used by popup components only.                                |
 
 Solid 2.0 changes that affect a component library (confirm against the official migration guide, `MIGRATION.md` in the solid repo, and v2.solidjs.com):
 
@@ -174,30 +178,30 @@ Costs accepted:
 
 ## 7. Tooling
 
-Principle: use the tooling of the official Solid 2.0 template (`pnpm create solid@latest`, as scaffolded in `website`), since that is where the Solid 2.0 ecosystem is heading, and keep Base UI's test structure on top of it so its tests port almost mechanically. Versions are the ones the template resolved on 2026-11-19, or npm `latest` on 2026-11-18 for tools the template does not include.
+Principle: use the tooling of the official Solid 2.0 template (`pnpm create solid@latest`, as scaffolded in `website`), since that is where the Solid 2.0 ecosystem is heading. A test looks like one in Kobalte's Solid 2.0 suite, the model section 8 sets: `render(() => <X />)` from `@solidjs/testing-library`, role queries, and a signal to change a prop after rendering. Versions are the ones the template resolved on 2026-11-19, or npm `latest` on 2026-11-18 for tools the template does not include.
 
-| Area                  | Choice                                                                                                                                                     | Notes                                                                                                                                                                                                                                      |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Package manager, repo | pnpm 12 workspace: `packages/menhir`, `website`, `test/bundle-size`, `test/ssr-app`                                                                        | Base UI's layout, with its `docs` folder named `website` here.                                                                                                                                                                             |
-| Compiler              | `@solidjs/vite-plugin` 3.0.1                                                                                                                               | The Solid 2.0 plugin (peers `solid-js ^2`, Vite 8 or 9). `vite-plugin-solid` 2.x is 1.x only.                                                                                                                                              |
-| Build                 | Vite 8 library mode with preserved modules for compiled JS; `tsc -p tsconfig.build.json` with `jsx: preserve` for `.jsx` source and `.d.ts`                | The shape the official library guide documents, confirmed in the build spike (#6). `pnpm build` in `packages/menhir`. Details under "Build" below.                                                                                         |
-| Tests                 | Vitest 5.1; jsdom by default, Chromium through `@vitest/browser-playwright`                                                                                | Base UI's runner and split: a `VITEST_ENV` variable selects the browser, `it.skipIf(isJSDOM)` marks browser-only cases.                                                                                                                    |
-| Test utilities        | `@solidjs/testing-library` 1.0.0-rc.2, `@testing-library/user-event`, `@testing-library/jest-dom`, plus our own `createRenderer` and `describeConformance` | The template's test library, built for Solid 2.0. Base UI's tests call the two helpers from its `#test-utils`; `createRenderer` is a thin wrapper over the testing library, so test bodies stay close to upstream.                         |
-| SSR tests             | `*.hydrate.test.tsx` files, run by a `hydrate` Vitest project                                                                                              | `renderOnServer` from `#test-utils` renders a fixture on a Vite SSR server, and `render(ui, { hydrate })` hydrates the result. Details under "Build" below. Covers the SSR line in the definition of done.                                 |
-| Lint                  | oxlint 1.92 running `eslint-plugin-solid` 0.20 (`configs/v2`) as a JS plugin, one config for the workspace                                                 | The template's setup. The layer table in section 6 is enforced in oxlint too: `eslint-plugin-boundaries` as a JS plugin if it loads, otherwise per-folder `no-restricted-imports` overrides.                                               |
-| Formatting            | Prettier                                                                                                                                                   |                                                                                                                                                                                                                                            |
-| Size                  | `size-limit` 14, one budget per entry point; a script that bundles `menhir/switch` and fails if a `floating` module is included                            | Implements the enforcement list in section 6. Docs size table is generated from the same output.                                                                                                                                           |
-| Package checks        | `publint --strict`, `@arethetypeswrong/cli` with `--profile esm-only`                                                                                      | `pnpm check:package`, which builds first and checks the packed tarball. The profile leaves out `node10` and CommonJS `require`, which are not supported (section 6). Run in CI.                                                            |
-| Types                 | TypeScript 7, `tsc --noEmit`                                                                                                                               | The template's version. It emits the `.jsx` source and the `.d.ts` files (#6). Files that run in Node (configs, global setups, package tests) have their own `tsconfig.node.json`, so Node's types stay out of the library's type program. |
-| Diagnostics           | `@solidjs/diagnostics` 2.0 through the Vite plugin's `diagnostics` option                                                                                  | Dev only.                                                                                                                                                                                                                                  |
-| Releases, CI          | Changesets, GitHub Actions                                                                                                                                 |                                                                                                                                                                                                                                            |
-| Docs site             | Solid 2.0 app in the `website` workspace folder, scaffolded with `pnpm create solid@latest`, set up in Phase 0                                             | Each component gets its page as it lands (section 10). The size table is generated from the `size-limit` output.                                                                                                                           |
+| Area                  | Choice                                                                                                                                                     | Notes                                                                                                                                                                                                                                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Package manager, repo | pnpm 12 workspace: `packages/menhir`, `website`, `test/bundle-size`, `test/ssr-app`                                                                        | Library, docs site and test apps side by side.                                                                                                                                                                                                                                                           |
+| Compiler              | `@solidjs/vite-plugin` 3.0.1                                                                                                                               | The Solid 2.0 plugin (peers `solid-js ^2`, Vite 8 or 9). `vite-plugin-solid` 2.x is 1.x only.                                                                                                                                                                                                            |
+| Build                 | Vite 8 library mode with preserved modules for compiled JS; `tsc -p tsconfig.build.json` with `jsx: preserve` for `.jsx` source and `.d.ts`                | The shape the official library guide documents, confirmed in the build spike (#6). `pnpm build` in `packages/menhir`. Details under "Build" below.                                                                                                                                                       |
+| Tests                 | Vitest 5.1; jsdom by default, Chromium through `@vitest/browser-playwright`                                                                                | jsdom for most cases, as in Kobalte; Chromium for what jsdom cannot model (focus, layout, pointer). A `VITEST_ENV` variable selects the browser, `it.skipIf(isJSDOM)` marks browser-only cases. A `workspace` project runs checks on the workspace in Node, such as a single copy of `@solidjs/signals`. |
+| Test utilities        | `@solidjs/testing-library` 1.0.0-rc.2, `@testing-library/user-event`, `@testing-library/jest-dom`, plus our own `createRenderer` and `describeConformance` | The template's test library, built for Solid 2.0. `createRenderer` from `#test-utils` is a thin wrapper over it that adds `user` and registers cleanup. `describeConformance` checks Menhir's own part conventions (open question 4), not Base UI's.                                                     |
+| SSR tests             | `*.hydrate.test.tsx` files, run by a `hydrate` Vitest project                                                                                              | `renderOnServer` from `#test-utils` renders a fixture on a Vite SSR server, and `render(ui, { hydrate })` hydrates the result. Details under "Build" below. Covers the SSR line in the definition of done.                                                                                               |
+| Lint                  | oxlint 1.92 running `eslint-plugin-solid` 0.20 (`configs/v2`) as a JS plugin, one config for the workspace                                                 | The template's setup. The layer table in section 6 is enforced in oxlint too: `eslint-plugin-boundaries` as a JS plugin if it loads, otherwise per-folder `no-restricted-imports` overrides.                                                                                                             |
+| Formatting            | Prettier                                                                                                                                                   |                                                                                                                                                                                                                                                                                                          |
+| Size                  | `size-limit` 14, one budget per entry point; a script that bundles `menhir/switch` and fails if a `floating` module is included                            | Implements the enforcement list in section 6. Docs size table is generated from the same output.                                                                                                                                                                                                         |
+| Package checks        | `publint --strict`, `@arethetypeswrong/cli` with `--profile esm-only`                                                                                      | `pnpm check:package`, which builds first and checks the packed tarball. The profile leaves out `node10` and CommonJS `require`, which are not supported (section 6). Run in CI.                                                                                                                          |
+| Types                 | TypeScript 7, `tsc --noEmit`                                                                                                                               | The template's version. It emits the `.jsx` source and the `.d.ts` files (#6). Files that run in Node (configs, global setups, package tests, workspace checks) have their own `tsconfig.node.json`, so Node's types stay out of the library's type program.                                             |
+| Diagnostics           | `@solidjs/diagnostics` 2.0 through the Vite plugin's `diagnostics` option                                                                                  | Dev only.                                                                                                                                                                                                                                                                                                |
+| Releases, CI          | Changesets, GitHub Actions                                                                                                                                 |                                                                                                                                                                                                                                                                                                          |
+| Docs site             | Solid 2.0 app in the `website` workspace folder, scaffolded with `pnpm create solid@latest`, set up in Phase 0                                             | Each component gets its page as it lands (section 10). The size table is generated from the `size-limit` output.                                                                                                                                                                                         |
 
 ### Spikes (Phase 0, before any component work)
 
 1. ~~**Test renderer.**~~ Done on 2026-11-19 (#5). `createRenderer` lives in `packages/menhir/test` and is imported as `#test-utils`. It wraps `@solidjs/testing-library` 1.0.0-rc.2, which runs in jsdom and in Chromium (Vitest browser mode, `VITEST_ENV=chromium`), so the fallback is not needed. Base UI's "can be activated with $key key" Switch test passes in both, against a throwaway Switch.
    - `await render(() => <X />)` returns the testing library's queries plus a user-event `user`.
-   - No `setProps`. Solid cannot clone elements, so a test that changes props passes a signal and sets it, as Kobalte's tests do. At Base UI v1.9.0, 71 of its 346 test files call `setProps`; those are rewritten this way when ported.
+   - No `setProps`. Solid cannot clone elements, so a test that changes props passes a signal and sets it. At Base UI v1.9.0, 71 of its 346 test files call `setProps`; a case taken from one of them is rewritten this way.
    - Testing Library's `eventWrapper` calls `flush()` after every event, so an assertion can follow `fireEvent` or a user-event action directly, as after React's `act()`. After setting a signal, the test calls `flush()` itself.
    - `createRenderer` registers the cleanup after each test, because the testing library does so only when Vitest globals are on.
 2. ~~**Build.**~~ Done on 2026-11-19 (#6). The Vite plus `tsc` setup works with `@solidjs/vite-plugin` 3.0.1, so the tsdown fallback is not needed. Result under "Build" below.
@@ -220,33 +224,44 @@ What the spike found:
 - **Vitest projects that compile differently must not share a transform cache.** Vitest 5's `fsModuleCache` is keyed by file, not by plugin options, so the `hydrate` project has its own `fsModuleCachePath`. Sharing it gave the hydrate test the `client` project's non-hydratable output.
 - **`test/ssr-app`** is a minimal SSR app that depends on `menhir` like an installed app. Its test builds it for server and client, renders the server bundle in Node and hydrates the result with the client bundle. `test/package` in `packages/menhir` checks the built package: one file per module, the order of the export conditions, and that an unused part is dropped.
 
-## 8. Porting approach
+## 8. Sources and approach
 
-- **Port behaviour and tests, not code.** React re-runs the component on every change; Solid runs it once. Translating hooks line by line produces lost reactivity and mistimed effects.
-- **Port the test suite first for each component.** Base UI's tests encode the accessibility and browser fixes. A component is done when its ported tests pass.
-- **Pin an upstream version** per component and record it. Review upstream changelogs periodically and pull in behaviour fixes deliberately.
-- **Licence.** Base UI is MIT. Keep its copyright notice for ported code and tests, and credit it in the README.
+Menhir is written the Solid 2.0 way. Other libraries are consulted in this order, and an earlier source wins when two disagree:
+
+1. **Solid 2.0 idioms** decide the API and the internals: [AGENTS.md](AGENTS.md), `node_modules/solid-js/CHEATSHEET.md`, the migration guide and v2.solidjs.com.
+2. **Solid libraries** show how a problem is solved in Solid: Kobalte's `solid2` branch, solid-primitives (on 2.0) and corvu (1.x; read for API design and decomposition, not as code to adapt).
+3. **Tests.** Kobalte's suite is the model for how a test is written. Where the cases come from is under "Assemble the test list" below.
+4. **Base UI** is a reference for behaviour and accessibility, especially the browser and assistive-technology fixes its tests encode. It is not a model for source structure, API, or test harness.
+
+How this applies to each component:
+
+- **Write behaviour; never translate source.** React re-runs a component on every change while Solid runs it once, so translating hooks loses reactivity and mistimes effects. Kobalte's releases and corvu are Solid 1.x, whose effects, ownership and props helpers changed in 2.0. Prefer Kobalte's `solid2` branch to its releases.
+- **Assemble the test list first.** Start from Kobalte's tests for the component. Add the cases the WAI-ARIA Authoring Practices pattern requires, then go through Base UI's suite for behaviour Kobalte does not cover. Rewrite every case in Kobalte's style against Menhir's API; do not port test files mechanically. Kobalte's coverage is thin for several components, Tabs and Dialog among them (counts in [docs/research/solid-references.md](docs/research/solid-references.md)); for those, most cases will come from Base UI, rewritten. Popover, Tooltip and the `floating` layer have no Kobalte tests. For the focus trap, scroll lock and outside interaction, solid-primitives has Solid 2.0 suites that Kobalte's `solid2` builds on.
+- **Record the sources.** For each component, record the Kobalte commit and the Base UI version consulted. Review their changelogs from time to time and pull in behaviour fixes deliberately.
+- **Licences.** Kobalte and Base UI are MIT. Several of Kobalte's test files are partly based on react-spectrum and carry Adobe's Apache-2.0 notice. Copied code or test bodies keep the notices of the files they came from, and the README credits each source. Reading a library for ideas needs no notice.
 
 ### What does not translate directly
 
-| React / Base UI                        | Problem in Solid                              | Direction                                                  |
-| -------------------------------------- | --------------------------------------------- | ---------------------------------------------------------- |
-| `render` prop with element cloning     | Solid has no element cloning                  | Pick one polymorphism pattern (see open questions)         |
-| Destructured props                     | Breaks reactivity                             | Keep props as accessors; split with Solid's prop utilities |
-| `useEffect` / `useLayoutEffect` timing | Different scheduling, new effect model in 2.0 | Re-derive from the intended behaviour                      |
-| Internal Floating UI React hooks       | React-only                                    | Rebuild on `@floating-ui/dom` in the `floating` layer      |
-| `aria-checked={false}`                 | Solid 2.0 removes an attribute set to `false` | Pass the strings `"true"` and `"false"`                    |
-| `setProps` in tests                    | Solid has no element cloning                  | Change props through a signal, then `flush()`              |
-| Controlled/uncontrolled via hooks      | Different idiom                               | One `core` helper used everywhere                          |
+| From React / Base UI, or Solid 1.x       | Problem in Solid 2.0                                                                                     | Direction                                                              |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `render` prop with element cloning       | Solid has no element cloning                                                                             | Pick one polymorphism pattern (see open questions)                     |
+| Destructured props                       | Breaks reactivity                                                                                        | Read `props.x` where it is used; split with `omit` and `merge`         |
+| `useEffect` / `useLayoutEffect` timing   | Different scheduling, new effect model in 2.0                                                            | Re-derive from the intended behaviour                                  |
+| Internal Floating UI React hooks         | React-only                                                                                               | Rebuild on `@floating-ui/dom` in the `floating` layer                  |
+| `aria-checked={false}`                   | Solid 2.0 removes an attribute set to `false`                                                            | Pass the strings `"true"` and `"false"`                                |
+| `setProps` in tests                      | Solid has no element cloning                                                                             | Change props through a signal, then `flush()`                          |
+| Controlled/uncontrolled via hooks        | Different idiom                                                                                          | One `core` helper used everywhere                                      |
+| Solid 1.x code (Kobalte releases, corvu) | `createEffect(fn)`, `on`, `onMount`, `splitProps`, `mergeProps`, `classList`, `use:` are gone or changed | Use the 2.0 equivalents in AGENTS.md; prefer Kobalte's `solid2` branch |
 
 ## 9. Roadmap
 
-Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 in November 2026.
+The component list follows Base UI's, the most complete modern set (38 components at 1.9.0, November 2026). That decides which components exist, not how they are built.
 
 **Phase 0: foundations**
 
 - ~~Evaluate quoin-ui, the msviderok port, and the four ports found later (section 4).~~ Done: [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md).
 - ~~The two tooling spikes (section 7).~~ Done: test renderer (#5), build (#6).
+- ~~Survey what Kobalte, solid-primitives and corvu offer on Solid 2.0.~~ Done: [docs/research/solid-references.md](docs/research/solid-references.md).
 - Repo, build, test runner, size budgets, import-boundary lint.
 - `core` layer. Decide the polymorphism pattern.
 - Docs site in `website` (Solid 2.0, `pnpm create solid@latest`): component page template, generated size table, deployment.
@@ -273,19 +288,22 @@ Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 i
 
 ## 10. Definition of done, per component
 
-- Ported upstream tests pass.
+- Its test suite, assembled as section 8 describes, passes in jsdom and Chromium. Cases left out are listed with a reason.
 - Keyboard and screen-reader behaviour matches the WAI-ARIA pattern.
+- No Solid dev diagnostics are reported while its tests run.
 - Works with SSR and hydration.
 - Size budget set and met; only allowed layers imported.
 - Docs page with an unstyled example and the measured size.
-- Upstream version it was ported from is recorded.
+- Its sources are recorded (section 8).
 
 ## 11. Risks
 
 | Risk                                           | Mitigation                                                                                                                                                                                                                                                          |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Solo maintainer burnout                        | Narrow scope; release after Phase 2; no promise of full parity.                                                                                                                                                                                                     |
-| Upstream moves monthly                         | Pin versions; port behaviour, not every release.                                                                                                                                                                                                                    |
+| References move                                | Record each component's sources and review their changes as section 8 describes, not every release.                                                                                                                                                                 |
+| Kobalte's `solid2` branch is unreleased        | Use it as a reference only. Tests are rewritten into Menhir, never imported, so nothing breaks if the branch changes or stalls.                                                                                                                                     |
+| React patterns leak in through Base UI         | Section 8 puts Solid 2.0 idioms and Solid libraries first; Base UI cases are rewritten, not ported. The diagnostics line in section 10 catches React-shaped effects.                                                                                                |
 | Solid 2.0 ecosystem and tooling still settling | Keep dependencies minimal; isolate 2.0-specific code in `core`.                                                                                                                                                                                                     |
 | Duplicating ZerNico/base-ui-solid              | It already offers full Base UI parity on Solid 2.0. Differentiate on size and Solid-native design; measure Switch against the existing ports and revisit before Phase 2 if Menhir is not clearly smaller ("Check the bet early" in docs/research/base-ui-ports.md). |
 | Size creep                                     | CI budgets and published numbers.                                                                                                                                                                                                                                   |
@@ -293,9 +311,9 @@ Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 i
 ## 12. Open questions
 
 1. ~~Build Menhir, or contribute to an existing port?~~ Decided on 2026-11-19 (#1): continue with Menhir, as a size-first library with its own design. Reasons, how it differs from ZerNico/base-ui-solid, and the size check that would reverse this are in [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md).
-2. Polymorphism: an `as` prop, a render function prop, or both?
+2. Polymorphism: an `as` prop (Kobalte, corvu), a render function prop (most Base UI ports), or both?
 3. ~~Package shape~~ Decided: one `menhir` package with a subpath export per component, as in section 6 ("Package shape").
-4. How close should the public API stay to Base UI's names and parts? Closer makes styled layers and docs easier to port.
+4. Public API conventions: part names, controlled-state props and `data-*` attributes. Follow Base UI, Kobalte, or Menhir's own? Matching a library makes its styled layers and docs easier to port, and its tests easier to reuse; Solid 2.0 idiom wins where they conflict (section 8).
 5. ~~Is the `solid` export condition still needed in 2.0?~~ Decided on 2026-11-19 (#6): yes. The 2.0 library guide prescribes it, and an SSR app fails without it. No separate server build. Details in section 6.
 6. ~~Test stack~~ Decided: Vitest 5.1, jsdom plus Chromium, `@solidjs/testing-library`, as in section 7.
 7. ~~Tooling~~ Decided: follow the `pnpm create solid@latest` template (oxlint, TypeScript 7, `@solidjs/testing-library`).
@@ -312,7 +330,10 @@ Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 i
 - quoin-ui: https://www.npmjs.com/package/quoin-ui
 - @msviderok/base-ui-solid: https://www.npmjs.com/package/@msviderok/base-ui-solid
 - danielfrg/solid-ui: https://github.com/danielfrg/solid-ui
-- Kobalte: https://kobalte.dev
+- Kobalte: https://kobalte.dev; Solid 2.0 branch: https://github.com/kobaltedev/kobalte/tree/solid2
+- solid-primitives: https://github.com/solidjs-community/solid-primitives
+- corvu: https://corvu.dev, https://github.com/corvudev/corvu
+- WAI-ARIA Authoring Practices patterns: https://www.w3.org/WAI/ARIA/apg/patterns/
 - Solid library guide: "Building a library" in the `@solidjs/vite-plugin` README, https://github.com/solidjs/solid-vite-plugin#building-a-library
 - Base UI repo (test and build setup): https://github.com/mui/base-ui
 - Vitest browser mode: https://vitest.dev/guide/browser/

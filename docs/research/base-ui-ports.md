@@ -2,6 +2,8 @@
 
 Evaluation for [#1](https://github.com/j13n/menhir/issues/1), carried out on 2026-11-19. It answers open question 1 in [PLAN.md](../../PLAN.md): build Menhir, or contribute to an existing port?
 
+> **Later on 2026-11-19:** PLAN.md section 8 now puts Solid 2.0 idioms and Solid libraries first. Kobalte's Solid 2.0 suite is the model for tests, and Base UI is a behaviour reference only. Where this record says Menhir "ports" Base UI's behaviour and tests, read it as "consults". The decision to continue with Menhir stands. The Solid-side survey is in [solid-references.md](solid-references.md).
+
 ## Decision
 
 **Continue with Menhir, as a size-first library with its own design. Do not contribute it to an existing port.** Decided on 2026-11-19.
@@ -14,13 +16,13 @@ Three findings carry it:
 
 How Menhir differs from ZerNico's port, the closest alternative:
 
-|             | ZerNico/base-ui-solid                                                                                 | Menhir                                                          |
-| ----------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Goal        | Mirror upstream file by file, track every release                                                     | Port behaviour and tests; pin an upstream version per component |
-| Size        | Not a goal; Switch 22.4 kB minified                                                                   | Enforced budget per entry point                                 |
-| Shared code | Upstream's: render helper, prop merger, store, Field in every form control                            | `core` and `floating` layers with an import-boundary rule       |
-| Reactivity  | React-shaped: 286 calls to a `useIsoLayoutEffect(effect, () => [deps])` shim, 8 direct `createEffect` | Written for Solid 2.0's split effects                           |
-| Coverage    | All 38 components today                                                                               | A few components at first release                               |
+|             | ZerNico/base-ui-solid                                                                                 | Menhir                                                                |
+| ----------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Goal        | Mirror upstream file by file, track every release                                                     | Solid 2.0 idioms first; Base UI consulted for behaviour, not mirrored |
+| Size        | Not a goal; Switch 22.4 kB minified                                                                   | Enforced budget per entry point                                       |
+| Shared code | Upstream's: render helper, prop merger, store, Field in every form control                            | `core` and `floating` layers with an import-boundary rule             |
+| Reactivity  | React-shaped: 286 calls to a `useIsoLayoutEffect(effect, () => [deps])` shim, 8 direct `createEffect` | Written for Solid 2.0's split effects                                 |
+| Coverage    | All 38 components today                                                                               | A few components at first release                                     |
 
 ### Check the bet early
 
