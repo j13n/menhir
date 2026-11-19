@@ -1,6 +1,6 @@
 # Menhir
 
-Unstyled, accessible UI primitives for SolidJS 2.0, inspired by Base UI, with small and measurable bundles.
+Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles.
 
 Status: planning. Nothing in this document is built yet. Versions and name availability were checked on 2026-11-18.
 
