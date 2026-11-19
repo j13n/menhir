@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  // Emits the JSX source for the `solid` export condition, and the types.
+  // Only `src`: test files and Vitest's types stay out of dist.
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "rootDir": "src",
+    "outDir": "dist/source"
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+}

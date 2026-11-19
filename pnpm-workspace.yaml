@@ -2,6 +2,7 @@ packages:
   - packages/*
   - website
   - test/bundle-size
+  - test/ssr-app
 
 # pnpm settings for the whole workspace. The Solid packages release in lockstep
 # and templates track them closely; exclude the whole family from any

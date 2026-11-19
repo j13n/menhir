@@ -24,6 +24,11 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
+    "./switch": {
+      "types": "./dist/source/switch/index.d.ts",
+      "solid": "./dist/source/switch/index.js",
+      "import": "./dist/switch/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -33,24 +38,30 @@
     "#test-utils": "./test/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "check:package": "pnpm build && publint --strict && attw --pack . --profile esm-only",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
     "test": "vitest",
-    "test:chromium": "VITEST_ENV=chromium vitest"
+    "test:chromium": "VITEST_ENV=chromium vitest",
+    "test:package": "pnpm build && vitest run --config vitest.package.config.ts"
   },
   "peerDependencies": {
     "@solidjs/web": "^2.0.0",
     "solid-js": "^2.0.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@solidjs/testing-library": "1.0.0-rc.2",
-    "@solidjs/vite-plugin": "^3.0.0",
+    "@solidjs/vite-plugin": "^3.0.1",
     "@solidjs/web": "^2.0.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/user-event": "^14.6.12",
+    "@types/node": "^26.6.6",
     "@vitest/browser-playwright": "5.1.0",
     "jsdom": "^31.0.0",
     "playwright": "^1.65.1",
+    "publint": "^0.3.25",
     "solid-js": "^2.0.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.8",

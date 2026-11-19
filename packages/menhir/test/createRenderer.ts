@@ -22,6 +22,14 @@ configure({
   },
 });
 
+interface RenderOptions {
+  /**
+   * The element `renderOnServer` returned. The UI hydrates its HTML instead
+   * of rendering from scratch, so `ui` must be the fixture that produced it.
+   */
+  hydrate?: HTMLElement;
+}
+
 /**
  * Call once per `describe`, as in Base UI's tests. Every UI rendered in that
  * block is unmounted and removed after each test.
@@ -31,9 +39,13 @@ export function createRenderer() {
   // on; they are off here.
   afterEach(cleanup);
 
-  async function render(ui: () => JSX.Element) {
+  async function render(ui: () => JSX.Element, options: RenderOptions = {}) {
     const user = userEvent.setup();
-    return { ...solidRender(ui), user };
+    if (!options.hydrate) return { ...solidRender(ui), user };
+    return {
+      ...solidRender(ui, { container: options.hydrate, hydrate: true }),
+      user,
+    };
   }
 
   return { render };
