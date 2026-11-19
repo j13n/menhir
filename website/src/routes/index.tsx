@@ -1,13 +1,24 @@
+import { For } from "solid-js";
+
 import Section from "../components/Section";
+
+const inspirations = [
+  { name: "Base UI", href: "https://base-ui.com" },
+  { name: "Kobalte", href: "https://kobalte.dev" },
+  { name: "corvu", href: "https://corvu.dev" },
+  { name: "Radix", href: "https://www.radix-ui.com" },
+  { name: "Ark UI", href: "https://ark-ui.com" },
+  { name: "Floating UI", href: "https://floating-ui.com" },
+];
 
 export default function Home() {
   return (
     <main>
       <h1>Menhir</h1>
       <p>
-        Unstyled, accessible UI primitives for SolidJS 2.0, ported from{" "}
-        <a href="https://base-ui.com">Base UI</a> one component at a time, with
-        small and measurable bundles.
+        Unstyled, accessible UI primitives for SolidJS 2.0, inspired by{" "}
+        <a href="https://base-ui.com">Base UI</a>, with small and measurable
+        bundles.
       </p>
       <Section id="status" title="Status">
         <p>
@@ -25,11 +36,24 @@ export default function Home() {
           <code>menhir/switch</code>, so an app only ships what it imports.
         </p>
       </Section>
-      <Section id="credits" title="Credits">
+      <Section id="credits" title="Inspiration and credits">
         <p>
-          Menhir ports the behaviour, accessibility work and tests of Base UI by
-          the MUI team. Base UI is MIT licensed, and its copyright notice is
-          kept in Menhir's licence.
+          Menhir is inspired by other open source projects, and we thank their
+          authors for their work. In no particular order:
+        </p>
+        <ul>
+          <For each={inspirations}>
+            {(project) => (
+              <li>
+                <a href={project.href}>{project.name}</a>
+              </li>
+            )}
+          </For>
+        </ul>
+        <p>
+          Base UI, by the MUI team, is the starting point for Menhir's
+          behaviour, accessibility work and tests. It is MIT licensed, and its
+          copyright notice is kept in Menhir's licence.
         </p>
       </Section>
     </main>

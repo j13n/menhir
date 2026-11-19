@@ -1,12 +1,12 @@
 # Menhir
 
-Unstyled, accessible UI primitives for SolidJS 2.0, ported from Base UI one component at a time, with small and measurable bundles.
+Unstyled, accessible UI primitives for SolidJS 2.0, inspired by Base UI, with small and measurable bundles.
 
 Status: planning. Nothing in this document is built yet. Versions and name availability were checked on 2026-11-18.
 
 ## 1. Why this exists
 
-- React has Base UI, Radix and React Aria. Solid's equivalents are fewer, less active, and were built for Solid 1.x.
+- React has Base UI, Radix and React Aria. Solid's established equivalents (Kobalte, corvu, Ark UI) are fewer, less active, and were built for Solid 1.x. Base UI ports for Solid 2.0 appeared in late 2026 (section 4); they mirror Base UI's structure and its bundle sizes.
 - Solid 2.0 is now stable (`solid-js@2.0.1`). Every existing library has to migrate, so a library written natively for 2.0 has an opening.
 - A recurring complaint about the current Solid options is bundle size: importing one simple component pulls in a large shared layer that does not tree-shake. Menhir treats bundle size as a feature with enforced budgets.
 
@@ -14,7 +14,7 @@ Status: planning. Nothing in this document is built yet. Versions and name avail
 
 **Goals**
 
-- Behaviour and accessibility on par with Base UI, verified by porting its tests.
+- Behaviour and accessibility on par with the best React primitives. Base UI is the starting point and the source of tests: a component's ported Base UI tests must pass.
 - Each component costs only what it uses. Sizes are published per component.
 - Idiomatic Solid 2.0 APIs, not React APIs with different imports.
 - Near-zero runtime dependencies.
@@ -23,7 +23,7 @@ Status: planning. Nothing in this document is built yet. Versions and name avail
 
 - Styling, themes, or a shadcn-style registry. Those can be built on top later.
 - Support for Solid 1.x.
-- Line-by-line parity with Base UI's source, or tracking every upstream release.
+- Being a Base UI port. Its behaviour and tests are where each component starts; its source structure, its API and its release schedule are not a contract (how close the API stays is open question 4).
 - Covering all of Base UI before the first release.
 
 ## 3. Name
@@ -47,15 +47,18 @@ Status: planning. Nothing in this document is built yet. Versions and name avail
 
 ### Existing Base UI ports for Solid
 
-| Project                                                                                           | Notes                                                                                                                                                                                                                                                                                     |
-| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| quoin-ui                                                                                          | Describes itself as a faithful Base UI port for Solid 2.0. Experimental. The closest thing to this project: read its code before starting. At 0.6.0 on 2026-11-18: 42 subpath entries, peers pinned to exactly `2.0.0-rc.18` (not stable), repo on gitcafe.dev, built with Bun and Biome. |
-| nayupls1/base-ui-solid, unstyled-solid/base-ui, ZerNico/base-ui-solid, Script-Augur/base-ui-solid | Further Base UI ports for Solid found by search on 2026-11-18. Not reviewed at all; include in the Phase 0 evaluation.                                                                                                                                                                    |
-| @msviderok/base-ui-solid                                                                          | Aims at full API compatibility; pinned to Base UI 1.0.0-beta.1, so well behind upstream. Includes a port of the Floating UI React layer, which is worth studying.                                                                                                                         |
-| danielfrg/solid-ui                                                                                | Mostly a Kobalte fork with parts adapted from Base UI. The author wrote up a failed AI-driven straight port.                                                                                                                                                                              |
-| rigid-ui, organic-ui                                                                              | Small, early.                                                                                                                                                                                                                                                                             |
+| Project                                                  | Notes                                                                                                                                                                                                                                                                                                                           |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ZerNico/base-ui-solid (`base-ui-solid` 0.3.1)            | The incumbent. All 38 components, peers `^2.0.0-rc.15`, upstream's tests ported and passing in CI, `main` tracking Base UI 1.9.0 (121 commits ahead of 0.3.1), MIT with Base UI's notice. Its stated goal is a file-by-file mirror of upstream. One maintainer, started 2026-10-05. Switch is 22.4 kB minified, Dialog 90.4 kB. |
+| quoin-ui 0.6.0                                           | 40 components, peers pinned to exactly `2.0.0-rc.18`, no CI, its own tests instead of upstream's, Base UI's licence notice not kept. Repo on gitcafe.dev, built with Bun and Biome. Switch is 17.9 kB minified, Dialog 72.0 kB.                                                                                                 |
+| unstyled-solid/base-ui (`@unstyled-solid/base-ui` 0.0.3) | All components at Base UI 1.8.0, peers pinned to exactly `2.0.0-rc.20`, upstream's tests ported in jsdom, SSR and browser lanes. One author, 21 commits. Switch is 21.5 kB minified.                                                                                                                                            |
+| nayupls1/base-ui-solid (`base-ui-solidjs` 0.1.0)         | A two-day scripted port of Base UI 1.9.0 with 27 test files of its own and failing CI. Switch is 18.3 kB minified.                                                                                                                                                                                                              |
+| @msviderok/base-ui-solid 1.0.0-beta.12                   | Solid 1.x only (`^1.8`), pinned to Base UI 1.0.0-beta.1, three commits since January 2026. Its tests and its port of the Floating UI React layer are useful as a reference, not as code to adapt. Switch is 14.7 kB minified, Dialog 54.0 kB.                                                                                   |
+| Script-Augur/base-ui-solid                               | Solid 1.x, 24 of 38 components, stalled since 2026-09-17. Ignore.                                                                                                                                                                                                                                                               |
+| danielfrg/solid-ui                                       | Mostly a Kobalte fork with parts adapted from Base UI. The author wrote up a failed AI-driven straight port. Not evaluated.                                                                                                                                                                                                     |
+| rigid-ui, organic-ui                                     | Small, early. Not evaluated.                                                                                                                                                                                                                                                                                                    |
 
-Only READMEs were reviewed, not code. First task: evaluate quoin-ui and decide whether to contribute there or continue with Menhir (see section 12).
+The first six were evaluated by reading their code on 2026-11-19 (#1), and the five that publish to npm had their bundles measured. Findings, sizes and what to borrow are in [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md). None of them competes on bundle size, and the only viable one to contribute to has a goal that conflicts with section 8, so the decision is to continue with Menhir (section 12, question 1).
 
 ## 5. Target versions
 
@@ -81,7 +84,7 @@ These are structural and must hold from the first commit.
 
 1. **One entry point per component.** `menhir/dialog`, `menhir/switch`, and so on, declared in `exports`. No root barrel as the main way in.
 2. **Unbundled ESM, `"sideEffects": false`.** One output file per source module. No code that runs at import time.
-3. **No `Object.assign` compound components.** Use namespace re-exports so unused parts are dropped:
+3. **No `Object.assign` compound components.** Use namespace re-exports so unused parts are dropped. Rollup and Rolldown drop them; esbuild keeps the whole namespace (measured on quoin-ui, see [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md)), so measure part-level budgets with Rolldown:
    ```ts
    // dialog/index.ts
    export * as Dialog from "./parts";
@@ -123,7 +126,7 @@ Sketch of the package manifest:
 }
 ```
 
-The `solid` condition points at uncompiled JSX and must come before `import`: compiled DOM output cannot hydrate, so SSR apps need the source. This follows the official library guide (solid-vite-plugin PR #450, merged 2026-10-30), which is written for 1.x; the 2.0 version of the guide is a separate PR that has not been read. quoin-ui 0.6.0 ships both conditions on 2.0. Confirm in the build spike (section 7).
+The `solid` condition points at uncompiled JSX and must come before `import`: compiled DOM output cannot hydrate, so SSR apps need the source. This follows the official library guide (solid-vite-plugin PR #450, merged 2026-10-30), which is written for 1.x; the 2.0 version of the guide is a separate PR that has not been read. quoin-ui 0.6.0 and `base-ui-solid` 0.3.1 ship a `solid` condition on 2.0; the latter adds a separate server build. Confirm in the build spike (section 7).
 
 ### Enforcement
 
@@ -140,7 +143,7 @@ How comparable libraries ship (npm and their docs, 2026-11-19):
 | Library                           | Shape                                                                                                                                                                                                                              |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Base UI (`@base-ui/react` 1.9.0)  | One package, one subpath export per component                                                                                                                                                                                      |
-| quoin-ui 0.6.0                    | One package with subpath exports; see section 4                                                                                                                                                                                    |
+| quoin-ui 0.6.0                    | One package: 40 component subpath exports plus a root barrel                                                                                                                                                                       |
 | Kobalte (`@kobalte/core` 0.13.14) | One package, `./*` wildcard export                                                                                                                                                                                                 |
 | Ark UI (`@ark-ui/solid` 5.40.0)   | One package, built internally on per-machine `@zag-js/*` packages                                                                                                                                                                  |
 | Radix                             | Per-component `@radix-ui/react-*` packages. Since 2025-01-22 also a single `radix-ui` package, so apps stay current "without worrying about conflicting or duplicate dependencies"; its Getting Started now installs only that one |
@@ -204,11 +207,11 @@ Principle: use the tooling of the official Solid 2.0 template (`pnpm create soli
 
 ## 9. Roadmap
 
-Check the Base UI docs for the current component list; it stood at 37 in late 2026.
+Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 in November 2026.
 
 **Phase 0: foundations**
 
-- Evaluate quoin-ui, the msviderok port, and the four ports found later (section 4).
+- ~~Evaluate quoin-ui, the msviderok port, and the four ports found later (section 4).~~ Done: [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md).
 - The two tooling spikes: test renderer and build (section 7).
 - Repo, build, test runner, size budgets, import-boundary lint.
 - `core` layer. Decide the polymorphism pattern.
@@ -245,17 +248,17 @@ Check the Base UI docs for the current component list; it stood at 37 in late 20
 
 ## 11. Risks
 
-| Risk                                           | Mitigation                                                                   |
-| ---------------------------------------------- | ---------------------------------------------------------------------------- |
-| Solo maintainer burnout                        | Narrow scope; release after Phase 2; no promise of full parity.              |
-| Upstream moves monthly                         | Pin versions; port behaviour, not every release.                             |
-| Solid 2.0 ecosystem and tooling still settling | Keep dependencies minimal; isolate 2.0-specific code in `core`.              |
-| Duplicating quoin-ui                           | Evaluate it first; differentiate on size and quality, or contribute instead. |
-| Size creep                                     | CI budgets and published numbers.                                            |
+| Risk                                           | Mitigation                                                                                                                                                                                                                                                          |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Solo maintainer burnout                        | Narrow scope; release after Phase 2; no promise of full parity.                                                                                                                                                                                                     |
+| Upstream moves monthly                         | Pin versions; port behaviour, not every release.                                                                                                                                                                                                                    |
+| Solid 2.0 ecosystem and tooling still settling | Keep dependencies minimal; isolate 2.0-specific code in `core`.                                                                                                                                                                                                     |
+| Duplicating ZerNico/base-ui-solid              | It already offers full Base UI parity on Solid 2.0. Differentiate on size and Solid-native design; measure Switch against the existing ports and revisit before Phase 2 if Menhir is not clearly smaller ("Check the bet early" in docs/research/base-ui-ports.md). |
+| Size creep                                     | CI budgets and published numbers.                                                                                                                                                                                                                                   |
 
 ## 12. Open questions
 
-1. Build Menhir, or contribute to quoin-ui? Decide after reading its code.
+1. ~~Build Menhir, or contribute to an existing port?~~ Decided on 2026-11-19 (#1): continue with Menhir, as a size-first library with its own design. Reasons, how it differs from ZerNico/base-ui-solid, and the size check that would reverse this are in [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md).
 2. Polymorphism: an `as` prop, a render function prop, or both?
 3. ~~Package shape~~ Decided: one `menhir` package with a subpath export per component, as in section 6 ("Package shape").
 4. How close should the public API stay to Base UI's names and parts? Closer makes styled layers and docs easier to port.
@@ -268,6 +271,10 @@ Check the Base UI docs for the current component list; it stood at 37 in late 20
 - Base UI: https://base-ui.com
 - Solid 2.0 docs: https://v2.solidjs.com
 - Solid repo (migration guide, 2.0 RFCs): https://github.com/solidjs/solid
+- ZerNico/base-ui-solid: https://github.com/ZerNico/base-ui-solid
+- unstyled-solid/base-ui: https://github.com/unstyled-solid/base-ui
+- nayupls1/base-ui-solid: https://github.com/nayupls1/base-ui-solid
+- Script-Augur/base-ui-solid: https://github.com/Script-Augur/base-ui-solid
 - quoin-ui: https://www.npmjs.com/package/quoin-ui
 - @msviderok/base-ui-solid: https://www.npmjs.com/package/@msviderok/base-ui-solid
 - danielfrg/solid-ui: https://github.com/danielfrg/solid-ui

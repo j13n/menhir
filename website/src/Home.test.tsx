@@ -1,4 +1,4 @@
-import { render } from "@solidjs/testing-library";
+import { render, within } from "@solidjs/testing-library";
 import { describe, expect, test } from "vitest";
 
 // Kept outside src/routes so the file-system router never sees it as a page.
@@ -27,11 +27,28 @@ describe("home page", () => {
     );
   });
 
-  test("credits Base UI", () => {
+  test("credits the projects that inspired Menhir", () => {
     const { getByRole } = render(() => <Home />);
-    expect(getByRole("link", { name: "Base UI" })).toHaveAttribute(
-      "href",
-      "https://base-ui.com",
+    const credits = within(
+      getByRole("region", { name: "Inspiration and credits" }),
     );
+    const projects = {
+      "Base UI": "https://base-ui.com",
+      Kobalte: "https://kobalte.dev",
+      corvu: "https://corvu.dev",
+      Radix: "https://www.radix-ui.com",
+      "Ark UI": "https://ark-ui.com",
+      "Floating UI": "https://floating-ui.com",
+    };
+    for (const [name, href] of Object.entries(projects)) {
+      expect(credits.getByRole("link", { name })).toHaveAttribute("href", href);
+    }
+  });
+
+  test("says Base UI's licence notice is kept", () => {
+    const { getByRole } = render(() => <Home />);
+    expect(
+      getByRole("region", { name: "Inspiration and credits" }),
+    ).toHaveTextContent("copyright notice is kept in Menhir's licence");
   });
 });
