@@ -132,27 +132,28 @@ The `solid` condition points at uncompiled JSX and must come before `import`: co
 
 ## 7. Tooling
 
-Principle: mirror Base UI's own stack where possible, so its tests port almost mechanically. Versions are npm `latest` on 2026-11-18.
+Principle: use the tooling of the official Solid 2.0 template (`pnpm create solid@latest`, as scaffolded in `website`), since that is where the Solid 2.0 ecosystem is heading, and keep Base UI's test structure on top of it so its tests port almost mechanically. Versions are the ones the template resolved on 2026-11-19, or npm `latest` on 2026-11-18 for tools the template does not include.
 
 | Area | Choice | Notes |
 |---|---|---|
 | Package manager, repo | pnpm 12 workspace: `packages/menhir`, `website`, `test/bundle-size` | Base UI's layout, with its `docs` folder named `website` here. |
 | Compiler | `@solidjs/vite-plugin` 3.0.1 | The Solid 2.0 plugin (peers `solid-js ^2`, Vite 8 or 9). `vite-plugin-solid` 2.x is 1.x only. |
-| Build | Vite 8 library mode with preserved modules for compiled JS; `tsc` with `jsx: preserve` for `.jsx` source and `.d.ts` | The shape the official library guide documents. Fallback: tsdown 0.23. |
+| Build | Vite 8 library mode with preserved modules for compiled JS; `tsc` with `jsx: preserve` for `.jsx` source and `.d.ts` | The shape the official library guide documents. The template is an app, so it has no library build to copy. Fallback: tsdown 0.23. |
 | Tests | Vitest 5.1; jsdom by default, Chromium through `@vitest/browser-playwright` | Base UI's runner and split: a `VITEST_ENV` variable selects the browser, `it.skipIf(isJSDOM)` marks browser-only cases. |
-| Test utilities | `@testing-library/dom`, `@testing-library/user-event`, `@testing-library/jest-dom`, plus our own `createRenderer` and `describeConformance` | Base UI's tests call these two helpers from its `#test-utils`. Porting them once keeps test bodies close to upstream. |
+| Test utilities | `@solidjs/testing-library` 1.0.0-rc.2, `@testing-library/user-event`, `@testing-library/jest-dom`, plus our own `createRenderer` and `describeConformance` | The template's test library, built for Solid 2.0. Base UI's tests call the two helpers from its `#test-utils`; `createRenderer` is a thin wrapper over the testing library, so test bodies stay close to upstream. |
 | SSR tests | A Vitest node project that renders to a string, then hydrates | Covers the SSR line in the definition of done. |
-| Lint | ESLint 10, `eslint-plugin-solid` 0.20 (`configs/v2-strict`), `eslint-plugin-boundaries` | The boundaries plugin enforces the layer table in section 6. |
+| Lint | oxlint 1.92 running `eslint-plugin-solid` 0.20 (`configs/v2`) as a JS plugin, one config for the workspace | The template's setup. The layer table in section 6 is enforced in oxlint too: `eslint-plugin-boundaries` as a JS plugin if it loads, otherwise per-folder `no-restricted-imports` overrides. |
 | Formatting | Prettier | |
 | Size | `size-limit` 14, one budget per entry point; a script that bundles `menhir/switch` and fails if a `floating` module is included | Implements the enforcement list in section 6. Docs size table is generated from the same output. |
 | Package checks | `publint`, `@arethetypeswrong/cli` | Run in CI against the packed tarball. |
-| Types | TypeScript 6, `tsc --noEmit` | `tsgo` later if typechecking gets slow. |
+| Types | TypeScript 7, `tsc --noEmit` | The template's version. Confirm in the build spike that it emits the `.jsx` source and `.d.ts` files. |
+| Diagnostics | `@solidjs/diagnostics` 2.0 through the Vite plugin's `diagnostics` option | Dev only. |
 | Releases, CI | Changesets, GitHub Actions | |
 | Docs site | Solid 2.0 app in the `website` workspace folder, scaffolded with `pnpm create solid@latest`, set up in Phase 0 | Each component gets its page as it lands (section 10). The size table is generated from the `size-limit` output. |
 
 ### Spikes (Phase 0, before any component work)
 
-1. **Test renderer.** `@solidjs/testing-library` 0.8.10 peers `solid-js >=1.0.0`, is developed against 1.9, and does not mention 2.0. Build `createRenderer` directly on `@testing-library/dom` and `render` from `@solidjs/web` (async `render` returning `{ user, setProps }`, with `flush()` before assertions), and skip that dependency. Done when one ported Switch test passes in jsdom and Chromium.
+1. **Test renderer.** Build `createRenderer` on `@solidjs/testing-library` 1.0.0-rc.2, the Solid 2.0 version the template uses (async `render` returning `{ user, setProps }`, with `flush()` before assertions). Done when one ported Switch test passes in jsdom and Chromium. Fallback if the release candidate does not run in browser mode: build directly on `@testing-library/dom` and `render` from `@solidjs/web`.
 2. **Build.** Build a one-component package (Switch) with the Vite plus `tsc` setup. Done when the output is one file per module, `publint` and `attw` pass, the `solid` condition resolves in an SSR app, and a hydrate test passes. If preserved modules do not work with the 2.0 plugin, try tsdown.
 
 ## 8. Porting approach
@@ -225,7 +226,8 @@ Check the Base UI docs for the current component list; it stood at 37 in late 20
 3. Package shape: single `menhir` package with subpath exports, or `@menhir/*` packages?
 4. How close should the public API stay to Base UI's names and parts? Closer makes styled layers and docs easier to port.
 5. Is the `solid` export condition still needed in 2.0? Working answer: yes (section 6). Confirm in the build spike and against the 2.0 library guide.
-6. ~~Test stack~~ Decided: Vitest 5.1, jsdom plus Chromium, as in section 7.
+6. ~~Test stack~~ Decided: Vitest 5.1, jsdom plus Chromium, `@solidjs/testing-library`, as in section 7.
+7. ~~Tooling~~ Decided: follow the `pnpm create solid@latest` template (oxlint, TypeScript 7, `@solidjs/testing-library`).
 
 ## References
 
