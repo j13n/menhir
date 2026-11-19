@@ -41,6 +41,7 @@
     "build": "vite build && tsc -p tsconfig.build.json",
     "check:package": "pnpm build && publint --strict && attw --pack . --profile esm-only",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
+    "lint": "oxlint",
     "test": "vitest",
     "test:chromium": "VITEST_ENV=chromium vitest",
     "test:package": "pnpm build && vitest run --config vitest.package.config.ts"

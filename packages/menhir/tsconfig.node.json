@@ -15,5 +15,7 @@
     "test/ssr/renderServer.ts",
     "test/package",
     "test/workspace"
-  ]
+  ],
+  // Input for the lint test, which imports packages that are not installed.
+  "exclude": ["test/workspace/lint-fixtures"]
 }

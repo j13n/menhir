@@ -64,6 +64,8 @@ export default defineConfig({
           name: "workspace",
           environment: "node",
           include: [workspaceTests],
+          // Files that lint.test.ts lints. One of them is named like a test.
+          exclude: ["test/workspace/lint-fixtures/**"],
         },
       },
     ],
