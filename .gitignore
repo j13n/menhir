@@ -1,4 +1,12 @@
+# Dependencies
+node_modules
+
+# Build output
 dist
+*.tsbuildinfo
+coverage
+
+# Docs site (website) and deploy tooling
 .wrangler
 .output
 .vercel
@@ -10,8 +18,8 @@ app.config.timestamp_*.js
 .env
 .env*.local
 
-# dependencies
-/node_modules
+# Logs
+*.log
 
 # IDEs and editors
 /.idea
@@ -20,9 +28,6 @@ app.config.timestamp_*.js
 *.launch
 .settings/
 
-# Temp
-gitignore
-
-# System Files
+# System files
 .DS_Store
 Thumbs.db
