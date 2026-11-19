@@ -118,6 +118,7 @@ Sketch of the package manifest:
       "import": "./dist/switch/index.js"
     }
   },
+  "dependencies": { "@floating-ui/dom": "^1.8.0" },
   "peerDependencies": { "solid-js": "^2.0.0", "@solidjs/web": "^2.0.0" }
 }
 ```
@@ -129,6 +130,34 @@ The `solid` condition points at uncompiled JSX and must come before `import`: co
 - A size budget per entry point in CI (size-limit or similar). A pull request that exceeds a budget fails.
 - Per-component sizes published in the docs.
 - A CI test that bundles a single simple component and asserts nothing from `floating` is included.
+
+### Package shape
+
+Decided on 2026-11-19 (#3): one `menhir` package with one subpath export per component. No `@menhir/*` packages.
+
+How comparable libraries ship (npm and their docs, 2026-11-19):
+
+| Library                           | Shape                                                                                                                                                                                                                              |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Base UI (`@base-ui/react` 1.9.0)  | One package, one subpath export per component                                                                                                                                                                                      |
+| quoin-ui 0.6.0                    | One package with subpath exports; see section 4                                                                                                                                                                                    |
+| Kobalte (`@kobalte/core` 0.13.14) | One package, `./*` wildcard export                                                                                                                                                                                                 |
+| Ark UI (`@ark-ui/solid` 5.40.0)   | One package, built internally on per-machine `@zag-js/*` packages                                                                                                                                                                  |
+| Radix                             | Per-component `@radix-ui/react-*` packages. Since 2025-01-22 also a single `radix-ui` package, so apps stay current "without worrying about conflicting or duplicate dependencies"; its Getting Started now installs only that one |
+| corvu 0.7.2                       | Per-component `@corvu/*` packages, recommended so each primitive has its own semver and can be updated separately, plus a `corvu` package that re-exports them                                                                     |
+
+Reasoning, by consideration in #3:
+
+- **Release overhead.** One version, one changelog, one publish. With separate packages, every `core` change means releasing every package that depends on it. corvu's benefit, independent semver per primitive, is worth little before 1.0, when components change together.
+- **Duplicate shared code.** Separate packages share `core` as a dependency. An app that resolves two versions of it ships two copies, and parts built against different copies do not share context. This is the problem Radix's single package was added to avoid. With one package, all components in an app come from the same `menhir` version, so they share one `core`.
+- **Tree-shaking.** Bundlers drop unused modules, not unused packages. With unbundled ESM, `"sideEffects": false` and one entry per component (rules 1 and 2), importing `menhir/switch` includes only the modules reachable from that entry, the same result as a separate `@menhir/switch` package. The checks under Enforcement test this.
+- **Keeping `floating` out.** `@floating-ui/dom` is a regular `dependency` of `menhir`, as it is for Kobalte and quoin-ui. Every install downloads it (174 kB unpacked in 1.8.0), but only `floating` modules import it, and only popup entries import `floating` (rule 4). An app that uses only simple components never bundles it. An optional peer dependency would save the download but make every popup user install it by hand.
+- **Consumers.** A styled layer installs one package and imports from subpaths, the pattern Base UI, Kobalte and Ark UI already use, and keeps one version current instead of a set in step. It should list `menhir` as a peer dependency, so that an app using two styled layers still resolves one copy of `menhir`.
+
+Costs accepted:
+
+- An app cannot upgrade one component without the rest. Revisit if users ask for it after 1.0.
+- Subpath types need `moduleResolution` set to `bundler`, `node16` or `nodenext`. Consumers on `node10` (`node`), which TypeScript 7 has removed, are not supported; no `typesVersions` fallback is shipped.
 
 ## 7. Tooling
 
@@ -228,7 +257,7 @@ Check the Base UI docs for the current component list; it stood at 37 in late 20
 
 1. Build Menhir, or contribute to quoin-ui? Decide after reading its code.
 2. Polymorphism: an `as` prop, a render function prop, or both?
-3. Package shape: single `menhir` package with subpath exports, or `@menhir/*` packages?
+3. ~~Package shape~~ Decided: one `menhir` package with a subpath export per component, as in section 6 ("Package shape").
 4. How close should the public API stay to Base UI's names and parts? Closer makes styled layers and docs easier to port.
 5. Is the `solid` export condition still needed in 2.0? Working answer: yes (section 6). Confirm in the build spike and against the 2.0 library guide.
 6. ~~Test stack~~ Decided: Vitest 5.1, jsdom plus Chromium, `@solidjs/testing-library`, as in section 7.
