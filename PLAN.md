@@ -187,7 +187,11 @@ Principle: use the tooling of the official Solid 2.0 template (`pnpm create soli
 
 ### Spikes (Phase 0, before any component work)
 
-1. **Test renderer.** Build `createRenderer` on `@solidjs/testing-library` 1.0.0-rc.2, the Solid 2.0 version the template uses (async `render` returning `{ user, setProps }`, with `flush()` before assertions). Done when one ported Switch test passes in jsdom and Chromium. Fallback if the release candidate does not run in browser mode: build directly on `@testing-library/dom` and `render` from `@solidjs/web`.
+1. ~~**Test renderer.**~~ Done on 2026-11-19 (#5). `createRenderer` lives in `packages/menhir/test` and is imported as `#test-utils`. It wraps `@solidjs/testing-library` 1.0.0-rc.2, which runs in jsdom and in Chromium (Vitest browser mode, `VITEST_ENV=chromium`), so the fallback is not needed. Base UI's "can be activated with $key key" Switch test passes in both, against a throwaway Switch.
+   - `await render(() => <X />)` returns the testing library's queries plus a user-event `user`.
+   - No `setProps`. Solid cannot clone elements, so a test that changes props passes a signal and sets it, as Kobalte's tests do. At Base UI v1.9.0, 71 of its 346 test files call `setProps`; those are rewritten this way when ported.
+   - Testing Library's `eventWrapper` calls `flush()` after every event, so an assertion can follow `fireEvent` or a user-event action directly, as after React's `act()`. After setting a signal, the test calls `flush()` itself.
+   - `createRenderer` registers the cleanup after each test, because the testing library does so only when Vitest globals are on.
 2. **Build.** Build a one-component package (Switch) with the Vite plus `tsc` setup. Done when the output is one file per module, `publint` and `attw` pass, the `solid` condition resolves in an SSR app, and a hydrate test passes. If preserved modules do not work with the 2.0 plugin, try tsdown.
 
 ## 8. Porting approach
@@ -205,6 +209,8 @@ Principle: use the tooling of the official Solid 2.0 template (`pnpm create soli
 | Destructured props                     | Breaks reactivity                             | Keep props as accessors; split with Solid's prop utilities |
 | `useEffect` / `useLayoutEffect` timing | Different scheduling, new effect model in 2.0 | Re-derive from the intended behaviour                      |
 | Internal Floating UI React hooks       | React-only                                    | Rebuild on `@floating-ui/dom` in the `floating` layer      |
+| `aria-checked={false}`                 | Solid 2.0 removes an attribute set to `false` | Pass the strings `"true"` and `"false"`                    |
+| `setProps` in tests                    | Solid has no element cloning                  | Change props through a signal, then `flush()`              |
 | Controlled/uncontrolled via hooks      | Different idiom                               | One `core` helper used everywhere                          |
 
 ## 9. Roadmap
@@ -214,7 +220,7 @@ Check the Base UI docs for the current component list; it stood at 38 at 1.9.0 i
 **Phase 0: foundations**
 
 - ~~Evaluate quoin-ui, the msviderok port, and the four ports found later (section 4).~~ Done: [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md).
-- The two tooling spikes: test renderer and build (section 7).
+- The two tooling spikes (section 7): ~~test renderer~~ done (#5), build.
 - Repo, build, test runner, size budgets, import-boundary lint.
 - `core` layer. Decide the polymorphism pattern.
 - Docs site in `website` (Solid 2.0, `pnpm create solid@latest`): component page template, generated size table, deployment.
