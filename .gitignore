@@ -3,6 +3,8 @@ node_modules
 
 # Build output
 dist
+# A stand-in for a built package, for the floating-leak check
+!test/bundle-size/fixtures/leaky/dist
 *.tsbuildinfo
 coverage
 
