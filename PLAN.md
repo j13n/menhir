@@ -136,7 +136,7 @@ Principle: mirror Base UI's own stack where possible, so its tests port almost m
 
 | Area | Choice | Notes |
 |---|---|---|
-| Package manager, repo | pnpm 12 workspace: `packages/menhir`, `docs`, `test/bundle-size` | Same layout as Base UI. |
+| Package manager, repo | pnpm 12 workspace: `packages/menhir`, `website`, `test/bundle-size` | Base UI's layout, with its `docs` folder named `website` here. |
 | Compiler | `@solidjs/vite-plugin` 3.0.1 | The Solid 2.0 plugin (peers `solid-js ^2`, Vite 8 or 9). `vite-plugin-solid` 2.x is 1.x only. |
 | Build | Vite 8 library mode with preserved modules for compiled JS; `tsc` with `jsx: preserve` for `.jsx` source and `.d.ts` | The shape the official library guide documents. Fallback: tsdown 0.23. |
 | Tests | Vitest 5.1; jsdom by default, Chromium through `@vitest/browser-playwright` | Base UI's runner and split: a `VITEST_ENV` variable selects the browser, `it.skipIf(isJSDOM)` marks browser-only cases. |
@@ -148,7 +148,7 @@ Principle: mirror Base UI's own stack where possible, so its tests port almost m
 | Package checks | `publint`, `@arethetypeswrong/cli` | Run in CI against the packed tarball. |
 | Types | TypeScript 6, `tsc --noEmit` | `tsgo` later if typechecking gets slow. |
 | Releases, CI | Changesets, GitHub Actions | |
-| Docs site | Deferred | Does not affect the library's shape. |
+| Docs site | Solid 2.0 app in the `website` workspace folder, scaffolded with `pnpm create solid@latest`, set up in Phase 0 | Each component gets its page as it lands (section 10). The size table is generated from the `size-limit` output. |
 
 ### Spikes (Phase 0, before any component work)
 
@@ -181,6 +181,7 @@ Check the Base UI docs for the current component list; it stood at 37 in late 20
 - The two tooling spikes: test renderer and build (section 7).
 - Repo, build, test runner, size budgets, import-boundary lint.
 - `core` layer. Decide the polymorphism pattern.
+- Docs site in `website` (Solid 2.0, `pnpm create solid@latest`): component page template, generated size table, deployment.
 - Claim the npm name and GitHub org.
 
 **Phase 1: simple components** (days each; settles API conventions)
