@@ -1,29 +1,37 @@
-import { Title } from "@solidjs/meta";
-import Counter from "../components/Counter";
-import logo from "../logo.svg";
+import Section from "../components/Section";
 
 export default function Home() {
   return (
-    <main class="px-4 py-12">
-      <Title>Home - Solid App</Title>
-      <img
-        src={logo}
-        class="pointer-events-none mx-auto h-[24vmin] animate-[spin_20s_linear_infinite]"
-        alt="Solid logo"
-      />
-      <h1 class="my-4 text-4xl font-bold">Hello Solid!</h1>
-      <Counter />
-      <p class="my-4">
-        Edit <code>src/routes/index.tsx</code> and save to reload.
+    <main>
+      <h1>Menhir</h1>
+      <p>
+        Unstyled, accessible UI primitives for SolidJS 2.0, ported from{" "}
+        <a href="https://base-ui.com">Base UI</a> one component at a time, with
+        small and measurable bundles.
       </p>
-      <a
-        class="font-semibold text-sky-700 underline decoration-sky-400 decoration-2 underline-offset-4 transition-colors hover:text-sky-900 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-600"
-        href="https://v2.solidjs.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn Solid
-      </a>
+      <Section id="status" title="Status">
+        <p>
+          Planning. Nothing is built yet, and the <code>menhir</code> package is
+          not published to npm yet.
+        </p>
+      </Section>
+      <Section id="install" title="Install">
+        <p>Once the first version is published:</p>
+        <pre>
+          <code>pnpm add menhir</code>
+        </pre>
+        <p>
+          Each component has its own entry point, such as{" "}
+          <code>menhir/switch</code>, so an app only ships what it imports.
+        </p>
+      </Section>
+      <Section id="credits" title="Credits">
+        <p>
+          Menhir ports the behaviour, accessibility work and tests of Base UI by
+          the MUI team. Base UI is MIT licensed, and its copyright notice is
+          kept in Menhir's licence.
+        </p>
+      </Section>
     </main>
   );
 }
