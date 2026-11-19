@@ -1,8 +1,26 @@
 {
   "name": "menhir",
   "version": "0.0.0",
-  "description": "Unstyled, accessible UI primitives for SolidJS 2.0, inspired by Base UI",
+  "description": "Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles",
+  "keywords": [
+    "solid",
+    "solidjs",
+    "solid-js",
+    "ui",
+    "headless",
+    "unstyled",
+    "accessible",
+    "primitives",
+    "components"
+  ],
   "license": "MIT",
+  "homepage": "https://github.com/j13n/menhir#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j13n/menhir.git",
+    "directory": "packages/menhir"
+  },
+  "bugs": "https://github.com/j13n/menhir/issues",
   "type": "module",
   "sideEffects": false,
   "exports": {

@@ -4,7 +4,7 @@ Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bu
 
 ## Status
 
-Planning. Nothing is built yet and nothing is published to npm. [PLAN.md](PLAN.md) describes the goals, the bundle-size rules and the roadmap.
+Planning. Nothing is built yet; `menhir` on npm is a 0.0.0 placeholder that holds the name. [PLAN.md](PLAN.md) describes the goals, the bundle-size rules and the roadmap.
 
 ## Inspiration and credits
 
