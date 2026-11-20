@@ -89,7 +89,7 @@ Solid 2.0 changes that affect a component library (confirm against the official 
 These are structural and must hold from the first commit.
 
 1. **One entry point per component.** `menhir/dialog`, `menhir/switch`, and so on, declared in `exports`. No root barrel as the main way in.
-2. **Unbundled ESM, `"sideEffects": false`.** One output file per source module. No code that runs at import time.
+2. **Unbundled ESM, `"sideEffects": false`.** One output file per source module. No code that runs at import time. Development-only code, such as warnings, sits behind `isDev` from `@solidjs/web`: Solid's production builds define it as a constant `false`, and Rolldown drops the branch and whatever only it imports (measured on 2026-11-19 on `createControllableSignal`: 302 B minified in production, 573 B in development).
 3. **No `Object.assign` compound components.** Use namespace re-exports so unused parts are dropped. Rollup and Rolldown drop them; esbuild keeps the whole namespace (measured on quoin-ui, see [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md)), so measure part-level budgets with Rolldown:
    ```ts
    // dialog/index.ts
@@ -100,12 +100,12 @@ These are structural and must hold from the first commit.
    ```
    The build has to keep that re-export as written; see "Build" in section 7.
 4. **Strict layers.** Enforced by an import-boundary lint rule.
-   | Layer             | Contains                                                                     | May import                 |
-   | ----------------- | ---------------------------------------------------------------------------- | -------------------------- |
-   | `core`            | Prop merging, controlled/uncontrolled signal, ids, polymorphism helper       | Nothing internal           |
-   | `floating`        | Positioning, dismissal, focus trap, hover intent, list navigation, typeahead | `core`, `@floating-ui/dom` |
-   | Simple components | Switch, Toggle, Checkbox, Tabs, etc.                                         | `core` only                |
-   | Popup components  | Dialog, Popover, Menu, Select, etc.                                          | `core`, `floating`         |
+   | Layer             | Contains                                                                                                  | May import                 |
+   | ----------------- | --------------------------------------------------------------------------------------------------------- | -------------------------- |
+   | `core`            | Prop merging, controlled/uncontrolled signal, polymorphism helper. Ids are Solid's `createUniqueId` (#13) | Nothing internal           |
+   | `floating`        | Positioning, dismissal, focus trap, hover intent, list navigation, typeahead                              | `core`, `@floating-ui/dom` |
+   | Simple components | Switch, Toggle, Checkbox, Tabs, etc.                                                                      | `core` only                |
+   | Popup components  | Dialog, Popover, Menu, Select, etc.                                                                       | `core`, `floating`         |
 5. **Near-zero dependencies.** `@floating-ui/dom` only. Use built-in `Intl` for number and date formatting.
 6. **Expensive behaviour is a part, not a flag.** Portal, scroll lock and focus trap are composed in, so apps that don't render them don't ship them.
 
@@ -248,16 +248,16 @@ How this applies to each component:
 
 ### What does not translate directly
 
-| From React / Base UI, or Solid 1.x       | Problem in Solid 2.0                                                                                     | Direction                                                              |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `render` prop with element cloning       | Solid has no element cloning                                                                             | A `render` function prop ("Polymorphism" below)                        |
-| Destructured props                       | Breaks reactivity                                                                                        | Read `props.x` where it is used; split with `omit` and `merge`         |
-| `useEffect` / `useLayoutEffect` timing   | Different scheduling, new effect model in 2.0                                                            | Re-derive from the intended behaviour                                  |
-| Internal Floating UI React hooks         | React-only                                                                                               | Rebuild on `@floating-ui/dom` in the `floating` layer                  |
-| `aria-checked={false}`                   | Solid 2.0 removes an attribute set to `false`                                                            | Pass the strings `"true"` and `"false"`                                |
-| `setProps` in tests                      | Solid has no element cloning                                                                             | Change props through a signal, then `flush()`                          |
-| Controlled/uncontrolled via hooks        | Different idiom                                                                                          | One `core` helper used everywhere                                      |
-| Solid 1.x code (Kobalte releases, corvu) | `createEffect(fn)`, `on`, `onMount`, `splitProps`, `mergeProps`, `classList`, `use:` are gone or changed | Use the 2.0 equivalents in AGENTS.md; prefer Kobalte's `solid2` branch |
+| From React / Base UI, or Solid 1.x       | Problem in Solid 2.0                                                                                     | Direction                                                                                                                                          |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `render` prop with element cloning       | Solid has no element cloning                                                                             | A `render` function prop ("Polymorphism" below)                                                                                                    |
+| Destructured props                       | Breaks reactivity                                                                                        | Read `props.x` where it is used; split with `omit` and `merge`                                                                                     |
+| `useEffect` / `useLayoutEffect` timing   | Different scheduling, new effect model in 2.0                                                            | Re-derive from the intended behaviour                                                                                                              |
+| Internal Floating UI React hooks         | React-only                                                                                               | Rebuild on `@floating-ui/dom` in the `floating` layer                                                                                              |
+| `aria-checked={false}`                   | Solid 2.0 removes an attribute set to `false`                                                            | Pass the strings `"true"` and `"false"`                                                                                                            |
+| `setProps` in tests                      | Solid has no element cloning                                                                             | Change props through a signal, then `flush()`                                                                                                      |
+| Controlled/uncontrolled via hooks        | Different idiom                                                                                          | One `core` helper used everywhere: `createControllableSignal`, which warns in development when a part switches mode, and falls back to its default |
+| Solid 1.x code (Kobalte releases, corvu) | `createEffect(fn)`, `on`, `onMount`, `splitProps`, `mergeProps`, `classList`, `use:` are gone or changed | Use the 2.0 equivalents in AGENTS.md; prefer Kobalte's `solid2` branch                                                                             |
 
 ### Polymorphism
 
@@ -279,7 +279,7 @@ In Solid a function from props to JSX is a component, so `render` is "the compon
 
 Why not `as`, which the first two sources in the order above both point to. Passing a component as a prop is as much a Solid idiom as `as` is, so the order does not settle it, and size does (section 2, "Each component costs only what it uses"). Solid 2.0 documents the `as` pattern, `dynamic(() => props.as, { static: isStatic(props, "as") })`, and it worked in the prototype. But a tag name can only be rendered by `dynamic`, and the `@solidjs/web` types say what that costs: "one `dynamic` on a page retains the element runtime (create/claim, `spread`, the namespace tables) for everyone". A bundler cannot tell whether a tag name ever arrives, so every app that imports a Menhir part would pay it, whether or not it uses `as`. That is a flag, not a part (section 6, rule 6), and it is three times the size of the Switch budget (the budgets leave Solid out, so no budget would catch it). `@solidjs/router` 2.0.0 uses only `dynamicComponent`, the variant without the tag path, so an app with the router does not already have it. The same cost rules out offering both props, and a `render` that also takes a tag name, as three of the Base UI ports have.
 
-Solid's creator, Ryan Carniato, makes the runtime case against `as` as a library pattern (spoken remarks in https://www.youtube.com/watch?v=SpJbyFzF6Ao, quoted from a transcript on 2026-11-19). It is "generally more expensive for everyone and it's especially more expensive for solid", because it introduces dynamic components and dynamic spreads, which revert fine-grained updates "to basically shallow diffing". `render` removes the dynamic component. It does not remove the spread: a part still spreads one merged props object onto its element, as any part that forwards arbitrary props does. How much of a part's props has to go through that spread is a question for #13, below.
+Solid's creator, Ryan Carniato, makes the runtime case against `as` as a library pattern (spoken remarks in https://www.youtube.com/watch?v=SpJbyFzF6Ao, quoted from a transcript on 2026-11-19). It is "generally more expensive for everyone and it's especially more expensive for solid", because it introduces dynamic components and dynamic spreads, which revert fine-grained updates "to basically shallow diffing". `render` removes the dynamic component. It does not remove the spread: a part still spreads one merged props object onto its element, as any part that forwards arbitrary props does. Measured in #13 (below): in Solid 2.0.1 one element's dynamic attributes share one update with or without a spread, so the spread costs no more than the same attributes written in JSX. What does cost is building the spread object inside the JSX, and `dynamic`.
 
 Measured on a throwaway Switch root, built with Vite 8 and minified (`solid-js` and `@solidjs/web` 2.0.1). "Solid's runtime" is the growth of a whole app, with Solid bundled in, over the same part with a fixed element:
 
@@ -303,13 +303,16 @@ What the choice costs:
 
 Rules for parts and for the docs:
 
-- **Props go on the part.** `class`, `style`, `ref`, event handlers and `data-*` attributes are passed to the part, which merges them with its own (handlers chained, `class` and `style` combined, refs composed: the prop merging of #13) and hands the render function one props object. The render function spreads it and adds only what the part cannot know, such as `href`.
-- **The spread is not a merge.** Next to `{...props}`, the later attribute wins: a handler written after the spread replaces the part's handler, one written before it is never called, and `class` behaves the same way. A ref written before the spread did run, together with the part's. Measured in the prototype.
+- **Props go on the part.** `class`, `style`, `ref`, event handlers and `data-*` attributes are passed to the part, which merges them with its own (`core/mergeElementProps.ts`: both handlers run, the consumer's first as in Kobalte; `class` and `style` combined; refs composed) and hands the render function one props object. The render function spreads it and adds only what the part cannot know, such as `href`.
+- **Nothing cancels the part's handler.** Both always run, as in Kobalte, and `preventDefault()` only stops the browser's default action. A consumer who needs to stop a part's behaviour controls its state: a controlled part only asks for a change (`createControllableSignal`), and a popup passes a reason to its open-change callback (#26). Decided on 2026-11-19. If a case appears that neither covers, add an explicit opt-out like Base UI's `event.preventBaseUIHandler()`, not a `defaultPrevented` check, which would cancel the part for consumers who only meant the browser.
+- **The spread is not a merge.** Next to `{...props}`, the later attribute wins: a handler written after the spread replaces the part's handler, one written before it is never called, and `class` behaves the same way. Refs are the exception: one written before or after the spread runs, and so does the part's (`src/core/renderElement.test.tsx`).
+- **`undefined` is a value.** In `merge`, a consumer's `undefined` replaces the part's own value, as for any prop. A wrapper that forwards `id={props.id}` without an id therefore removes a generated `id`; a part that needs its own value whatever the consumer passes keeps it out of the merge, for example `id={props.id ?? generated}` in its own props, with `id` omitted from the consumer's.
+- **Merge in the part's body**, never inline in a spread (`{...mergeElementProps(own, props)}`). The compiler tracks a spread's expression, so an inline call runs the whole merge again on every change of any prop it reads.
 - **`render` is read once**, untracked, when the part is created, as an event handler is (AGENTS.md: "`onClick={cond() ? a : b}` binds once").
 - **The props object is reactive.** It is a `merge` view with getters, so the render function spreads it or reads from it in JSX, and never destructures it (AGENTS.md rule 1).
 - **No state argument yet.** Base UI passes `(props, state)`. A part's state reaches the render function as the `data-*` and `aria-*` attributes in `props`. A second argument can be added later without breaking anything, once #12 has settled what state a part exposes.
 
-The helper, for #13. One module, `core/renderElement.tsx`:
+The helper, built in #13: `core/renderElement.tsx`.
 
 ```tsx
 import type { JSX } from "@solidjs/web";
@@ -337,7 +340,6 @@ A part calls it last:
 ```tsx
 export function SwitchRoot(props: SwitchRootProps) {
   // own: role, aria-checked, data-*, handlers, ref.
-  // mergeElementProps stands for the prop merging of #13.
   const elementProps = mergeElementProps(own, omit(props, "render", "checked"));
   return renderElement(props, elementProps, (p) => <span {...p} />);
 }
@@ -348,8 +350,8 @@ export function SwitchRoot(props: SwitchRootProps) {
 - Parts whose default element is not an HTML element (an SVG part) need a second `ElementProps`; decide when the first one appears.
 - No budget of its own: the helper is about 80 B minified, and its cost is counted in the budget of every entry point that uses it.
 - Inlining the two lines in each part measured the same as calling the helper. The helper is preferred because it is the one place to add a state argument or a dev warning.
-- To measure in #13, since only bytes were measured here: what an update costs through the spread compared with attributes written on the element, and whether the compiler keeps a part's own attributes (`role`, `aria-checked`, `data-*`) fine-grained when a spread sits on the same element. If it does, a part writes its own attributes in JSX and spreads only the consumer's props.
-- Tests for #13: the default element, another tag, a component; `render` passed as an expression is read once without a diagnostic; server render then hydration adopts the element in all three cases, and when the render function calls `dynamic` itself (not tried in the prototype); a handler, a `class` and a ref written before and after the spread, to pin down the rule above; a type test that `ElementProps` spreads onto `a`, `button` and `input`.
+- Spread cost, measured in #13 (jsdom, counting attribute writes and getter reads; 2026-11-19). A part with two own attributes and a consumer `title`, built three ways: all props through the merged spread; own attributes written in JSX with the consumer's props spread; no spread at all. In all three, changing one value re-read every dynamic attribute of the element once and wrote only the changed ones. Writing own attributes in JSX next to a spread kept nothing separate, so parts keep them in the merge. Calling the merge inline in the spread gave the same writes but ran the merge again on every change. Timing was not measured, nor a spread over a store, whose keys can change.
+- Tests (`src/core/renderElement.test.tsx`, `test/core/renderElement.hydrate.test.tsx`): the default element, another tag, a component; `render` passed as an expression is read once without a diagnostic; server render then hydration adopts the element in all three cases, and when the render function calls `dynamic` itself, with nothing logged; a handler, a `class` and a ref written before and after the spread, to pin down the rule above; a type test that `ElementProps` spreads onto `a`, `button` and `input`.
 
 ## 9. Roadmap
 
