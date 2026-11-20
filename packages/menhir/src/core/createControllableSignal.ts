@@ -1,5 +1,5 @@
 import { isDev } from "@solidjs/web";
-import { createSignal, untrack } from "solid-js";
+import { createSignal, onFlush, untrack } from "solid-js";
 import type { Accessor } from "solid-js";
 
 /**
@@ -16,10 +16,12 @@ import type { Accessor } from "solid-js";
  *
  * Controlled while `value` is not `undefined`: the value follows it, and a
  * set only calls `onChange`, for the consumer to decide. Otherwise the value
- * starts at `defaultValue`, read once, and a set changes it, then calls
- * `onChange`. Setting the value it already has, counting earlier sets in
- * the same turn, does nothing. Set from event handlers, not from a
- * component body or a memo.
+ * starts at `defaultValue`, read once, and a set calls `onChange` and
+ * changes the value right after the pending flush, in an update of its own
+ * (`onFlush`), so async work that `onChange` starts does not hold it back.
+ * Setting the value it already has, counting earlier sets in the same turn,
+ * does nothing. Set from event handlers, not from a component body or a
+ * memo.
  */
 export function createControllableSignal<T>(options: {
   readonly value?: T;
@@ -56,17 +58,24 @@ export function createControllableSignal<T>(options: {
     return controlled;
   };
   const value = () => (isControlled() ? (options.value as T) : internal());
-  // Reads lag writes until the next flush, so a set is compared with the
-  // last value set in this turn, if any, not with what `value` still reads.
-  // The microtask is queued after the writes, so it runs after Solid's flush
-  // and `value` is current again by then.
+  // Reads lag writes, so a set is compared with the last value set in this
+  // turn, if any, not with what `value` still reads.
   let pending: [T] | undefined;
   const setValue = (next: T) => {
     if (Object.is(next, pending ? pending[0] : untrack(value))) return;
-    if (!untrack(isControlled)) setInternal(() => next);
+    // The part's own write is an update of its own, after the pending
+    // flush: written inline, it would be held with any async work that
+    // `onChange` starts, such as a fetch, and the part would not change
+    // until that work settled.
+    if (!untrack(isControlled)) onFlush(() => setInternal(() => next));
     options.onChange?.(next);
-    if (!pending) queueMicrotask(() => (pending = undefined));
-    pending = [next];
+    const set: [T] = [next];
+    pending = set;
+    // `onFlush` callbacks run in call order, each flushed before the next,
+    // so `value` is current by the time this one runs.
+    onFlush(() => {
+      if (pending === set) pending = undefined;
+    });
   };
   return [value, setValue];
 }

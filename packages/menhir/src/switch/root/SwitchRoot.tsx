@@ -1,6 +1,6 @@
 import { isDev } from "@solidjs/web";
 import type { JSX } from "@solidjs/web";
-import { flush, merge, omit, onSettled, untrack } from "solid-js";
+import { merge, omit, onFlush, onSettled, untrack } from "solid-js";
 
 import { createControllableSignal } from "../../core/createControllableSignal.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
@@ -100,16 +100,20 @@ export function SwitchRoot(props: SwitchRootProps) {
   };
   let button: HTMLElement | undefined;
   let input: HTMLInputElement | undefined;
+  // Puts the input back to the switch's value, once that has settled. The
+  // `checked` binding writes the DOM only when the value changes, so it
+  // does not undo a change of the input that the switch did not take.
+  const syncInput = () => {
+    if (input) input.checked = untrack(checked);
+  };
   const onInputChange = () => {
     if (!input) return;
     setChecked(input.checked);
-    // Reads lag writes, so apply the change now: the form's own listeners
-    // run after this one and must see the new value. Then put the input
-    // back to the switch's value, which differs only when a controlled
-    // switch's consumer declined the change: the `checked` binding writes
-    // the DOM only when the value changes.
-    flush();
-    input.checked = checked();
+    // The browser has already changed the input, so the form's own
+    // listeners, which run after this one, see the new value. The two
+    // differ afterwards only when a controlled switch's consumer declined
+    // the change.
+    onFlush(syncInput);
   };
   const onInputClick = (event: MouseEvent) => {
     // The click the button sends the input is an implementation detail:
@@ -127,11 +131,9 @@ export function SwitchRoot(props: SwitchRootProps) {
     const onReset = () => {
       setChecked(props.defaultChecked ?? false);
       // The browser resets the input after this event, to its `checked`
-      // attribute, which the binding does not set. Put it back to the
-      // switch's value once that and Solid's flush have happened.
-      queueMicrotask(() => {
-        if (input) input.checked = untrack(checked);
-      });
+      // attribute, which the binding does not set. `onFlush` runs after
+      // that, as the event has finished by then.
+      onFlush(syncInput);
     };
     form.addEventListener("reset", onReset);
     return () => form.removeEventListener("reset", onReset);
