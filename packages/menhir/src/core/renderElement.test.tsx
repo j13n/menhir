@@ -2,9 +2,17 @@ import type { JSX } from "@solidjs/web";
 import { createSignal, flush } from "solid-js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createRenderer, screen } from "#test-utils";
+import { createRenderer, describeConformance, screen } from "#test-utils";
 
 import { Button, Part } from "../../test/core/Part.tsx";
+
+describeConformance(
+  "A part built on the core helpers",
+  (props) => <Part {...props} />,
+  {
+    tagName: "SPAN",
+  },
+);
 
 describe("renderElement", () => {
   const { render } = createRenderer();

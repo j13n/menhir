@@ -19,7 +19,9 @@ or Kobalte's hidden checkbox: PLAN.md section 8, "API conventions".
 
 ## Test list
 
-Written in Kobalte's style against Menhir's API. "K" is a case from
+Written in Kobalte's style against Menhir's API. Every test fails if
+Solid reports a dev diagnostic while it runs (`createRenderer`), and
+`describeConformance` checks both parts against the part conventions. "K" is a case from
 Kobalte's `switch.test.tsx`, "B" from Base UI's `SwitchRoot.test.tsx` or
 `SwitchThumb.test.tsx`, "A" from the WAI-ARIA pattern, "M" from Menhir's
 own conventions.
@@ -47,7 +49,7 @@ own conventions.
 - One user click reaches ancestors once; a consumer's `stopPropagation()` stops it but the switch still toggles (B)
 - Calls the consumer's `onClick` (B)
 - Tolerates a ref callback that clicks before the hidden input exists (B, without its `focus()` call: user-event's patched `focus` throws for an element not yet in a document)
-- `disabled`: native `disabled` on the button and the input, no toggle, not focusable; absent when not set (K, B, inverted from B's `aria-disabled`)
+- `disabled`: native `disabled` on the button and the input, no toggle, not focusable; absent when not set; follows changes while rendered (K, B, inverted from B's `aria-disabled`)
 - `readOnly`: `aria-readonly`; a click or a label click does not toggle or call `onCheckedChange`; absent when not set (K, B)
 - `required`: `aria-required` on the button, `required` on the input; absent when not set (B)
 - `data-checked`/`data-unchecked`, `data-disabled`, `data-readonly`, `data-required` on Root and Thumb, and they follow changes (K, B)
@@ -62,7 +64,6 @@ own conventions.
 - `render` with a button component keeps the switch's behaviour (M, PLAN.md "Polymorphism")
 - Warns in development when `render` does not render a `<button>` (M)
 - The consumer's `class` and `ref` reach the button (M)
-- No Solid dev diagnostics across a scenario: controlled through a signal, clicks, disabled toggled, with a Thumb (issue #15)
 
 `thumb/SwitchThumb.test.tsx`
 

@@ -1,7 +1,9 @@
 import { createSignal, onSettled } from "solid-js";
 import { describe, expect, it, onTestFinished } from "vitest";
 
-import { createRenderer, fireEvent } from "#test-utils";
+import { expectDiagnostic } from "@solidjs/diagnostics";
+
+import { captureDiagnostics, createRenderer, fireEvent } from "#test-utils";
 
 function Counter() {
   const [count, setCount] = createSignal(0);
@@ -60,5 +62,43 @@ describe("createRenderer", () => {
 
     await render(() => <p>Left over</p>);
     expect(document.body.children).toHaveLength(1);
+  });
+});
+
+// A reactive read at the top of a component body, on purpose: Solid
+// reports it as STRICT_READ_UNTRACKED.
+function ReadsAtTheTop(props: { label: string }) {
+  const label = props.label;
+  return <p>{label}</p>;
+}
+
+// Every createRenderer test fails on a Solid dev diagnostic. That check
+// passes silently if the capture records nothing, as it did with two
+// copies of @solidjs/signals in the workspace (#7, #38), or if the check is
+// no longer wired in. Prove both here.
+describe("captureDiagnostics", () => {
+  const { render } = createRenderer({ diagnostics: false });
+
+  it("records a Solid dev diagnostic", async () => {
+    const [label] = createSignal("Read once");
+
+    const capture = captureDiagnostics();
+    try {
+      await render(() => <ReadsAtTheTop label={label()} />);
+    } finally {
+      const artifact = await capture.stop();
+      expectDiagnostic(artifact, "STRICT_READ_UNTRACKED");
+    }
+  });
+});
+
+describe("createRenderer's diagnostics check", () => {
+  const { render } = createRenderer();
+
+  // Passes only if the test fails, which the check's afterEach makes it do.
+  it.fails("fails a test in which Solid reports a diagnostic", async () => {
+    const [label] = createSignal("Read once");
+
+    await render(() => <ReadsAtTheTop label={label()} />);
   });
 });

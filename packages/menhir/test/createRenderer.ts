@@ -6,7 +6,10 @@ import {
 import { userEvent } from "@testing-library/user-event";
 import type { JSX } from "@solidjs/web";
 import { flush } from "solid-js";
-import { afterEach } from "vitest";
+import { expectNoDiagnostics } from "@solidjs/diagnostics";
+import { afterEach, beforeEach } from "vitest";
+
+import { captureDiagnostics } from "./diagnostics.ts";
 
 // Solid 2.0 applies updates in a microtask, so the DOM lags behind an event
 // until then. Flushing after every event Testing Library dispatches (through
@@ -30,11 +33,34 @@ interface RenderOptions {
   hydrate?: HTMLElement;
 }
 
+interface RendererOptions {
+  /**
+   * Fail each test that reports a Solid dev diagnostic (default `true`).
+   * Turn it off only for a test that trips one on purpose.
+   */
+  diagnostics?: boolean;
+}
+
 /**
  * Call once per `describe`, as in Base UI's tests. Every UI rendered in that
- * block is unmounted and removed after each test.
+ * block is unmounted and removed after each test, and a test fails if Solid
+ * reported a dev diagnostic while it ran (PLAN.md section 10).
  */
-export function createRenderer() {
+export function createRenderer(options: RendererOptions = {}) {
+  // Registered before the cleanup, so that it ends after it: Vitest runs
+  // afterEach hooks in reverse order. Diagnostics reported while the UI is
+  // disposed count too.
+  if (options.diagnostics !== false) {
+    let capture: ReturnType<typeof captureDiagnostics> | undefined;
+    beforeEach(() => {
+      capture = captureDiagnostics();
+    });
+    afterEach(async () => {
+      const artifact = await capture?.stop();
+      capture = undefined;
+      if (artifact) expectNoDiagnostics(artifact);
+    });
+  }
   // The testing library registers its cleanup only when Vitest globals are
   // on; they are off here.
   afterEach(cleanup);

@@ -5,12 +5,21 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { JSX } from "@solidjs/web";
-import { captureArtifact, expectNoDiagnostics } from "@solidjs/diagnostics";
 import { createSignal, flush } from "solid-js";
 
-import { createRenderer, fireEvent, isJSDOM, screen } from "#test-utils";
+import {
+  createRenderer,
+  describeConformance,
+  fireEvent,
+  isJSDOM,
+  screen,
+} from "#test-utils";
 
 import { Switch } from "../index.ts";
+
+describeConformance("<Switch.Root />", (props) => <Switch.Root {...props} />, {
+  tagName: "BUTTON",
+});
 
 describe("<Switch.Root />", () => {
   const { render } = createRenderer();
@@ -178,6 +187,25 @@ describe("<Switch.Root />", () => {
       expect(
         screen.getByRole("checkbox", { hidden: true }),
       ).not.toHaveAttribute("disabled");
+    });
+
+    it("follows disabled changing while rendered", async () => {
+      const [disabled, setDisabled] = createSignal(false);
+      await render(() => <Switch.Root disabled={disabled()} />);
+
+      const switchEl = screen.getByRole("switch");
+      const input = screen.getByRole("checkbox", { hidden: true });
+      setDisabled(true);
+      flush();
+      expect(switchEl).toBeDisabled();
+      expect(input).toBeDisabled();
+      fireEvent.click(switchEl);
+      expect(switchEl).toHaveAttribute("aria-checked", "false");
+
+      setDisabled(false);
+      flush();
+      fireEvent.click(switchEl);
+      expect(switchEl).toHaveAttribute("aria-checked", "true");
     });
 
     it("cannot be focused or toggled", async () => {
@@ -500,17 +528,6 @@ describe("<Switch.Root />", () => {
       }
     });
 
-    it("passes the consumer's class and ref to the button", async () => {
-      let element: HTMLElement | undefined;
-      await render(() => (
-        <Switch.Root class="switch" ref={(el) => (element = el)} />
-      ));
-
-      const switchEl = screen.getByRole("switch");
-      expect(switchEl).toHaveClass("switch");
-      expect(element).toBe(switchEl);
-    });
-
     it("tolerates a ref that clicks before the hidden input exists", async () => {
       await render(() => (
         <Switch.Root
@@ -662,48 +679,5 @@ describe("<Switch.Root />", () => {
         expect(screen.getByRole("switch")).toHaveFocus();
       },
     );
-  });
-
-  it("reports no Solid dev diagnostics", async () => {
-    // captureArtifact records Solid's dev diagnostics during the scenario;
-    // each code maps to its repair in
-    // node_modules/solid-js/skills/reactivity-diagnostics/SKILL.md.
-    const { artifact } = await captureArtifact(
-      async () => {
-        const [checked, setChecked] = createSignal(false);
-        const [disabled, setDisabled] = createSignal(false);
-        const { user } = await render(() => (
-          <form>
-            <Switch.Root
-              name="wifi"
-              checked={checked()}
-              onCheckedChange={setChecked}
-              disabled={disabled()}
-            >
-              <Switch.Thumb />
-            </Switch.Root>
-            <Switch.Root name="bluetooth" defaultChecked>
-              <Switch.Thumb />
-            </Switch.Root>
-          </form>
-        ));
-
-        const [wifi, bluetooth] = screen.getAllByRole("switch");
-        await user.click(wifi);
-        await user.click(bluetooth);
-        expect(wifi).toHaveAttribute("aria-checked", "true");
-        expect(bluetooth).toHaveAttribute("aria-checked", "false");
-
-        setDisabled(true);
-        flush();
-        expect(wifi).toBeDisabled();
-
-        wifi.closest("form")!.reset();
-        flush();
-        expect(bluetooth).toHaveAttribute("aria-checked", "true");
-      },
-      { scenario: "switch" },
-    );
-    expectNoDiagnostics(artifact);
   });
 });
