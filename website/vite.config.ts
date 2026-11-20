@@ -3,6 +3,9 @@ import { fileRoutes } from "filesystem-routing/vite";
 import { defineConfig } from "vitest/config";
 import solid from "@solidjs/vite-plugin";
 
+import componentMarkdown from "./vite-plugin-component-markdown.ts";
+import menhirSizes from "./vite-plugin-sizes.ts";
+
 export default defineConfig({
   // Turnkey client mode: no index.html and no mount file — the plugin generates
   // the entries around src/App.tsx (wrapped in src/Document.tsx) and `vite build`
@@ -13,6 +16,10 @@ export default defineConfig({
     solid({ start: true, extensions: [".jsx", ".tsx"], diagnostics: true }), // add `ssr: true` for streaming SSR
     fileRoutes({ types: true }),
     tailwindcss(),
+    // `virtual:menhir-sizes`, from test/bundle-size/dist/sizes.json.
+    menhirSizes(),
+    // /docs/components/<slug>.md, each component page as Markdown for agents.
+    componentMarkdown(),
   ],
   server: {
     port: 3000,

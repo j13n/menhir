@@ -1,10 +1,7 @@
 /**
  * The site follows the reader's clock: light from dawn until dusk, dark
- * through the night. The menhir animation starts at the same time of day,
- * so the page and the scene turn dark together.
+ * through the night.
  */
-
-import { CYCLE_STEPS, DAY_STEPS, NIGHT_STEPS } from "./components/menhirFrames";
 
 /** Local hours when the page turns light, then dark. */
 export const DAWN_HOUR = 6;
@@ -18,41 +15,6 @@ export const THEME_CHECK_MS = 60_000;
 export function themeAt(date: Date): Theme {
   const hour = date.getHours();
   return hour >= DAWN_HOUR && hour < DUSK_HOUR ? "light" : "dark";
-}
-
-/**
- * The scene step that matches a moment. Sunrise in the scene is DAWN_HOUR
- * and sunset is DUSK_HOUR. Each local day, counted from dawn to dawn, is one
- * cycle, so the stone changes with the date and stays the same all night.
- */
-export function sceneStepAt(date: Date): number {
-  const minutesPerDay = 24 * 60;
-  const daylight = (DUSK_HOUR - DAWN_HOUR) * 60;
-  const sinceDawn =
-    (date.getHours() - DAWN_HOUR) * 60 +
-    date.getMinutes() +
-    date.getSeconds() / 60;
-  const minutes = ((sinceDawn % minutesPerDay) + minutesPerDay) % minutesPerDay;
-  const withinCycle =
-    minutes < daylight
-      ? Math.floor((minutes / daylight) * DAY_STEPS)
-      : DAY_STEPS +
-        Math.floor(
-          ((minutes - daylight) / (minutesPerDay - daylight)) * NIGHT_STEPS,
-        );
-  return localDayNumber(date) * CYCLE_STEPS + withinCycle;
-}
-
-/** Days since 1970-01-01 in local time, with each day starting at dawn. */
-function localDayNumber(date: Date) {
-  const dawnDay = new Date(date);
-  dawnDay.setHours(dawnDay.getHours() - DAWN_HOUR);
-  const utcMidnight = Date.UTC(
-    dawnDay.getFullYear(),
-    dawnDay.getMonth(),
-    dawnDay.getDate(),
-  );
-  return Math.floor(utcMidnight / 86_400_000);
 }
 
 /**

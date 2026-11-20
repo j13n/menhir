@@ -130,7 +130,7 @@ No separate server build under `node`/`worker`/`deno`, which some Solid librarie
 Built in #9, in `test/bundle-size` (its README has the details):
 
 - `.size-limit.js` holds one budget per entry point. `size-limit` 14 measures each with `@size-limit/rolldown`: an app that imports the entry point and uses every part of it, minified and gzipped, Solid left out. Rolldown because esbuild keeps a whole namespace. `size.test.ts` fails if an entry point in `exports` has no budget or is over it.
-- `pnpm size:json` writes the same results to `dist/sizes.json`, for the docs size table to be generated from (#38).
+- `pnpm size:json` writes the same results to `dist/sizes.json`, from which the docs site generates its size table and each component page's size (#38, `website/vite-plugin-sizes.ts`).
 - `floating.test.ts` bundles `menhir/switch` alone with Rolldown and fails if the bundle has a module from `floating` or an import of `@floating-ui/*`.
 
 ### Package shape

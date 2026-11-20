@@ -14,7 +14,11 @@ export default function Document(props: ParentProps) {
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        {/* sizes="32x32" keeps browsers that read SVG from picking the
+            .ico; the .ico is for those that do not. */}
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <title>Menhir</title>
         {/* Picks the light or dark theme from the clock before first paint.
             The script is a constant from timeOfDay.ts with no outside input.
@@ -23,7 +27,7 @@ export default function Document(props: ParentProps) {
         <script innerHTML={themeBootScript} />
         <HydrationScript />
       </head>
-      <body class="bg-white font-sans text-stone-900 transition-colors duration-1000 dark:bg-stone-950 dark:text-stone-100">
+      <body class="bg-stone-50 font-sans text-stone-900 transition-colors duration-1000 dark:bg-stone-950 dark:text-stone-100">
         {props.children}
       </body>
     </html>

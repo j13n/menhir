@@ -1,4 +1,4 @@
-// Runs `size-limit --json`, the report the docs size table is to be built
+// Runs `size-limit --json`, the report the docs site's sizes are generated
 // from (#38), and checks it.
 // `pnpm test` builds menhir first, so the sizes are of the current source.
 import { spawnSync } from "node:child_process";
