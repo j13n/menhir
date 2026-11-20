@@ -14,7 +14,9 @@ import { captureDiagnostics } from "./diagnostics.ts";
 // Solid 2.0 applies updates in a microtask, so the DOM lags behind an event
 // until then. Flushing after every event Testing Library dispatches (through
 // fireEvent and user-event alike) lets an assertion follow an event directly,
-// as Base UI's tests do after React's act().
+// as Base UI's tests do after React's act(). A part's own state lands a
+// microtask later (`onFlush`), so a test of it awaits `afterFlush()` first;
+// user-event's actions already wait that long.
 configure({
   eventWrapper(dispatch) {
     try {

@@ -1,4 +1,4 @@
-import { createSignal, flush } from "solid-js";
+import { Loading, createMemo, createSignal, flush } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createRenderer, screen } from "#test-utils";
@@ -21,6 +21,38 @@ describe("createControllableSignal", () => {
 
       expect(button).toHaveAttribute("aria-pressed", "false");
       expect(onPressedChange.mock.calls).toEqual([[false]]);
+    });
+
+    // Written inline, the part's own write would be held with the fetch, as
+    // writes in one frame are, and the part would not change until it
+    // settled.
+    it("changes before async work that onChange starts settles", async () => {
+      const [pressed, setPressed] = createSignal(false);
+      let resolveStatus!: (status: string) => void;
+      const { user } = await render(() => {
+        const status = createMemo(() =>
+          pressed()
+            ? new Promise<string>((resolve) => (resolveStatus = resolve))
+            : "released",
+        );
+        return (
+          <Loading fallback="loading">
+            <Toggle onPressedChange={(value) => setPressed(value)} />
+            <output>{status()}</output>
+          </Loading>
+        );
+      });
+      const button = screen.getByRole("button", { name: "Toggle" });
+
+      await user.click(button);
+
+      expect(screen.getByRole("status")).toHaveTextContent("released");
+      expect(button).toHaveAttribute("aria-pressed", "true");
+
+      resolveStatus("pressed");
+      await new Promise((resolve) => setTimeout(resolve));
+      flush();
+      expect(screen.getByRole("status")).toHaveTextContent("pressed");
     });
 
     it("reads the default once", async () => {

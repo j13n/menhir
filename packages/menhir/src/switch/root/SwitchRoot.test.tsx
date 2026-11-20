@@ -5,9 +5,10 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { JSX } from "@solidjs/web";
-import { createSignal, flush } from "solid-js";
+import { Loading, createMemo, createSignal, flush } from "solid-js";
 
 import {
+  afterFlush,
   createRenderer,
   describeConformance,
   fireEvent,
@@ -52,10 +53,12 @@ describe("<Switch.Root />", () => {
     expect(onCheckedChange).not.toHaveBeenCalled();
 
     fireEvent.click(switchEl);
+    await afterFlush();
     expect(switchEl).toHaveAttribute("aria-checked", "true");
     expect(onCheckedChange).toHaveBeenLastCalledWith(true);
 
     fireEvent.click(switchEl);
+    await afterFlush();
     expect(switchEl).toHaveAttribute("aria-checked", "false");
     expect(onCheckedChange).toHaveBeenLastCalledWith(false);
   });
@@ -68,6 +71,7 @@ describe("<Switch.Root />", () => {
 
     const switchEl = screen.getByRole("switch");
     fireEvent.click(switchEl);
+    await afterFlush();
 
     expect(switchEl).toHaveAttribute("aria-checked", "false");
     expect(onCheckedChange).toHaveBeenCalledWith(false);
@@ -86,6 +90,7 @@ describe("<Switch.Root />", () => {
         hidden: true,
       });
       fireEvent.click(switchEl);
+      await afterFlush();
 
       expect(onCheckedChange).toHaveBeenCalledWith(!checked);
       expect(switchEl).toHaveAttribute("aria-checked", String(checked));
@@ -105,6 +110,40 @@ describe("<Switch.Root />", () => {
     setChecked(false);
     flush();
     expect(switchEl).toHaveAttribute("aria-checked", "false");
+  });
+
+  it("turns on before async work that onCheckedChange starts settles", async () => {
+    const [on, setOn] = createSignal(false);
+    let resolveStatus!: (status: string) => void;
+    await render(() => {
+      const status = createMemo(() =>
+        on()
+          ? new Promise<string>((resolve) => (resolveStatus = resolve))
+          : "off",
+      );
+      return (
+        <Loading fallback="loading">
+          <Switch.Root onCheckedChange={(checked) => setOn(checked)} />
+          <output>{status()}</output>
+        </Loading>
+      );
+    });
+
+    const switchEl = screen.getByRole("switch");
+    const input = screen.getByRole<HTMLInputElement>("checkbox", {
+      hidden: true,
+    });
+    fireEvent.click(switchEl);
+    await afterFlush();
+
+    expect(screen.getByRole("status")).toHaveTextContent("off");
+    expect(switchEl).toHaveAttribute("aria-checked", "true");
+    expect(input.checked).toBe(true);
+
+    resolveStatus("on");
+    await new Promise((resolve) => setTimeout(resolve));
+    flush();
+    expect(screen.getByRole("status")).toHaveTextContent("on");
   });
 
   it.each([{ key: "Enter" }, { key: "Space" }])(
@@ -200,11 +239,13 @@ describe("<Switch.Root />", () => {
       expect(switchEl).toBeDisabled();
       expect(input).toBeDisabled();
       fireEvent.click(switchEl);
+      await afterFlush();
       expect(switchEl).toHaveAttribute("aria-checked", "false");
 
       setDisabled(false);
       flush();
       fireEvent.click(switchEl);
+      await afterFlush();
       expect(switchEl).toHaveAttribute("aria-checked", "true");
     });
 
@@ -220,6 +261,7 @@ describe("<Switch.Root />", () => {
 
       await user.click(switchEl);
       fireEvent.click(switchEl);
+      await afterFlush();
 
       expect(switchEl).toHaveAttribute("aria-checked", "false");
       expect(onCheckedChange).not.toHaveBeenCalled();
@@ -262,7 +304,7 @@ describe("<Switch.Root />", () => {
       await user.click(switchEl);
       await user.click(screen.getByTestId("label"));
       screen.getByRole("checkbox", { hidden: true }).click();
-      flush();
+      await afterFlush();
 
       expect(switchEl).toHaveAttribute("aria-checked", "true");
       expect(
@@ -318,6 +360,7 @@ describe("<Switch.Root />", () => {
     setLocked(false);
     flush();
     fireEvent.click(switchEl);
+    await afterFlush();
 
     for (const element of [switchEl, thumb]) {
       expect(element).toHaveAttribute("data-unchecked", "");
@@ -348,6 +391,7 @@ describe("<Switch.Root />", () => {
       expect(input.checked).toBe(false);
 
       fireEvent.click(switchEl);
+      await afterFlush();
       expect(input.checked).toBe(true);
     });
 
@@ -377,7 +421,7 @@ describe("<Switch.Root />", () => {
       await render(() => <Switch.Root onCheckedChange={onCheckedChange} />);
 
       screen.getByRole("checkbox", { hidden: true }).click();
-      flush();
+      await afterFlush();
 
       expect(screen.getByRole("switch")).toHaveAttribute(
         "aria-checked",
@@ -396,6 +440,7 @@ describe("<Switch.Root />", () => {
       });
       event.preventDefault();
       fireEvent(screen.getByRole("checkbox", { hidden: true }), event);
+      await afterFlush();
 
       expect(onCheckedChange).not.toHaveBeenCalled();
       expect(screen.getByRole("switch")).toHaveAttribute(
@@ -462,6 +507,7 @@ describe("<Switch.Root />", () => {
       ));
 
       fireEvent.click(screen.getByRole("switch"));
+      await afterFlush();
 
       expect(onParentClick).toHaveBeenCalledTimes(1);
       expect(screen.getByRole("switch")).toHaveAttribute(
@@ -479,6 +525,7 @@ describe("<Switch.Root />", () => {
       ));
 
       fireEvent.click(screen.getByRole("switch"));
+      await afterFlush();
 
       expect(onParentClick).not.toHaveBeenCalled();
       expect(screen.getByRole("switch")).toHaveAttribute(
@@ -613,7 +660,7 @@ describe("<Switch.Root />", () => {
       expect(switchEl).toHaveAttribute("aria-checked", "false");
 
       screen.getByTestId<HTMLFormElement>("form").reset();
-      flush();
+      await afterFlush();
 
       expect(switchEl).toHaveAttribute("aria-checked", "true");
       expect(onCheckedChange).toHaveBeenLastCalledWith(true);
@@ -632,9 +679,8 @@ describe("<Switch.Root />", () => {
       ));
 
       screen.getByTestId<HTMLFormElement>("form").reset();
-      flush();
       // The switch puts the input back after the browser's own reset.
-      await Promise.resolve();
+      await afterFlush();
 
       expect(onCheckedChange).toHaveBeenCalledWith(false);
       expect(screen.getByRole("switch")).toHaveAttribute(

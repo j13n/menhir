@@ -79,6 +79,10 @@ Solid 2.0 changes that affect a component library (confirm against the official 
 
 - `createEffect` is split into a compute phase and an apply phase.
 - `onMount` is replaced by `onSettled`.
+- Updates are batched per microtask: a read returns the old value until the flush, and `flush()` applies pending updates now. `batch` is gone.
+- Writing a signal inside a component body, memo or effect compute throws in development; `untrack` does not exempt it. Writes belong in event handlers, `onSettled` or actions.
+- A reactive read at the top of a component body, or of a `<Show>`/`<For>` callback, is reported in development unless wrapped in `untrack` as a deliberate one-time read.
+- Writes in one frame are applied together, so async work one of them starts holds the others. `onFlush` keeps a write out of that hold (API conventions, section 8).
 - The `use:` directive is removed in favour of ref factories.
 - `<Index>` is replaced by `<For keyed={false}>`.
 - Async is part of the reactive graph; Suspense is reworked.
@@ -320,6 +324,7 @@ Decided on 2026-11-20 (#12), worked out on Switch (#15), the first component. Ge
 - **`render` on such a part must render a `<button>`.** Development builds warn otherwise. No `nativeButton` flag: emulating a button would ship in every app (section 6, rule 6).
 - **Parts.** Only what a native element cannot do. Switch is `Root` and `Thumb`; labels are native `<label>` elements. Description and error message parts belong to Field (Phase 4), shared by every control.
 - **Controlled state.** `<state>`, `default<State>` and `on<State>Change`: `checked`/`defaultChecked`/`onCheckedChange`, `pressed`/`onPressedChange`, `open`/`onOpenChange`, `value`/`onValueChange`. Never `onChange`, which is a DOM event in the JSX types and which `mergeElementProps` treats as a handler. An empty controlled value is `null`, since `undefined` means uncontrolled (`createControllableSignal`).
+- **A part's own state is not held by its consumer's async work.** An uncontrolled part writes its state in `onFlush`, after the event's flush, so it changes even when the change callback starts a fetch or a transition; written inline, it would wait for that work to settle (Solid's RFC on reactivity, batching and effects, "Keeping a write out of another update's hold"). `createControllableSignal` does this. A controlled part's value is the consumer's, and so is its timing. Tests await `afterFlush()` from `#test-utils` before asserting such a change; `flush()` does not run `onFlush` callbacks. Decided on 2026-11-20.
 - **Change callbacks receive the new value only.** A second argument, when a component needs one, is a details object `{ reason, event }`, with no `cancel()` ("Nothing cancels the part's handler" above).
 - **`data-*` attributes use Base UI's names**, `""` when they apply and absent otherwise: `data-checked`/`data-unchecked`, `data-disabled`, `data-readonly`, `data-required`, on every part of the component. A superset of Kobalte's, so styles written for either work. Validity and interaction attributes (`data-valid`, `data-invalid`, `data-touched`, `data-dirty`, `data-filled`, `data-focused`) come with Field. No `data-focus-visible`: `:focus-visible` matches the button.
 - **Boolean props are camelCase**, `readOnly` as in both references, because they are component props, not attributes.

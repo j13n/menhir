@@ -43,6 +43,7 @@ own conventions.
 - `defaultChecked` starts on and toggles off (K)
 - Controlled on and controlled off: stays put, asks with the requested value, the hidden input stays in step (K)
 - Follows a controlled value changed from outside (B)
+- Turns on before async work that `onCheckedChange` starts settles, and the hidden input with it (M, PLAN.md "API conventions")
 - Toggles when the hidden input is clicked (B)
 - Ignores a hidden-input click canceled before it is handled (B)
 - Fires native `input` and `change` events that reach the form (M)
