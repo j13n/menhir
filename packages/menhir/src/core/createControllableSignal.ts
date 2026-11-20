@@ -1,5 +1,5 @@
 import { isDev } from "@solidjs/web";
-import { createEffect, createSignal, untrack } from "solid-js";
+import { createSignal, untrack } from "solid-js";
 import type { Accessor } from "solid-js";
 
 /**
@@ -34,21 +34,28 @@ export function createControllableSignal<T>(options: {
   );
   // Controlled while the consumer passes a value. `undefined` means
   // uncontrolled, as with an absent prop.
-  const isControlled = () => options.value !== undefined;
-  const value = () => (isControlled() ? (options.value as T) : internal());
+  //
   // A switch is usually a bug, such as state that starts `undefined`, so
-  // development builds warn. Production builds drop this branch: Solid's
-  // production `isDev` is a constant `false`.
-  if (isDev) {
-    createEffect(isControlled, (controlled, previous) => {
-      if (previous !== undefined && controlled !== previous) {
+  // development builds warn, on the first read in the new mode. The check
+  // is not an effect: an effect takes a place in the owner tree, which
+  // hydration keys come from, so a server and a client that disagree on
+  // `isDev` would no longer match. Production builds drop this branch:
+  // Solid's production `isDev` is a constant `false`.
+  let wasControlled: boolean | undefined;
+  const isControlled = () => {
+    const controlled = options.value !== undefined;
+    if (isDev) {
+      if (wasControlled !== undefined && controlled !== wasControlled) {
         console.warn(
-          `[menhir] A part switched from ${previous ? "controlled" : "uncontrolled"} to ${controlled ? "controlled" : "uncontrolled"}. ` +
+          `[menhir] A part switched from ${wasControlled ? "controlled" : "uncontrolled"} to ${controlled ? "controlled" : "uncontrolled"}. ` +
             "Keep it one or the other for its lifetime; for an empty controlled value, pass null, not undefined.",
         );
       }
-    });
-  }
+      wasControlled = controlled;
+    }
+    return controlled;
+  };
+  const value = () => (isControlled() ? (options.value as T) : internal());
   // Reads lag writes until the next flush, so a set is compared with the
   // last value set in this turn, if any, not with what `value` still reads.
   // The microtask is queued after the writes, so it runs after Solid's flush
