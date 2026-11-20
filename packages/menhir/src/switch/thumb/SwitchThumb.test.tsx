@@ -3,9 +3,19 @@
 import { Errored } from "solid-js";
 import { describe, expect, it } from "vitest";
 
-import { createRenderer, screen } from "#test-utils";
+import { createRenderer, describeConformance, screen } from "#test-utils";
 
 import { Switch } from "../index.ts";
+
+describeConformance(
+  "<Switch.Thumb />",
+  (props) => (
+    <Switch.Root>
+      <Switch.Thumb {...props} />
+    </Switch.Root>
+  ),
+  { tagName: "SPAN" },
+);
 
 describe("<Switch.Thumb />", () => {
   const { render } = createRenderer();
