@@ -35,6 +35,8 @@ packages (`website`, `test/*`) are never versioned.
 - With changesets in this folder, it opens or updates a "Version Packages"
   pull request that bumps the version, writes `packages/menhir/CHANGELOG.md`
   and deletes the changesets.
+- Before merging it, review the references' changelogs
+  ([CONTRIBUTING.md](../CONTRIBUTING.md#reviewing-the-references-changelogs)).
 - Once that pull request is merged, it builds and packs `menhir`, runs the
   package checks, publishes to npm through trusted publishing, and creates
   the git tag and the GitHub release.

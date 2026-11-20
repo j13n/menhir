@@ -236,18 +236,21 @@ What the spike found:
 
 ## 8. Sources and approach
 
-Menhir is written the Solid 2.0 way. Other libraries are consulted in this order, and an earlier source wins when two disagree:
+Menhir is written the Solid 2.0 way. What decides how a component is built, in this order; an earlier one wins when two disagree:
 
 1. **Solid 2.0 idioms** decide the API and the internals: [AGENTS.md](AGENTS.md), `node_modules/solid-js/CHEATSHEET.md`, the migration guide and v2.solidjs.com.
-2. **Solid libraries** show how a problem is solved in Solid: Kobalte's `solid2` branch, solid-primitives (on 2.0) and corvu (1.x; read for API design and decomposition, not as code to adapt).
-3. **Tests.** Kobalte's suite is the model for how a test is written. Where the cases come from is under "Assemble the test list" below.
-4. **Base UI** is a reference for behaviour and accessibility, especially the browser and assistive-technology fixes its tests encode. It is not a model for source structure, API, or test harness.
+2. **The WAI-ARIA Authoring Practices** pattern for the component decides its roles, states and keyboard behaviour.
+3. **Size.** A component costs only what it uses (section 6). Between two ways of meeting 1 and 2, the smaller one wins, and behaviour taken from a reference library has to be worth its bytes.
+4. **Reference libraries** are read for inspiration, and none is a model for Menhir's source structure or API:
+   - Kobalte's `solid2` branch, solid-primitives (on 2.0) and corvu (1.x; read for API design and decomposition, not as code to adapt) show how a problem is solved in Solid. Kobalte's suite is the model for how a test is written.
+   - Base UI is a reference for behaviour and accessibility beyond the pattern, especially the browser and assistive-technology fixes its tests encode.
 
 How this applies to each component:
 
 - **Write behaviour; never translate source.** React re-runs a component on every change while Solid runs it once, so translating hooks loses reactivity and mistimes effects. Kobalte's releases and corvu are Solid 1.x, whose effects, ownership and props helpers changed in 2.0. Prefer Kobalte's `solid2` branch to its releases.
-- **Assemble the test list first.** Start from Kobalte's tests for the component. Add the cases the WAI-ARIA Authoring Practices pattern requires, then go through Base UI's suite for behaviour Kobalte does not cover. Rewrite every case in Kobalte's style against Menhir's API; do not port test files mechanically. Kobalte's coverage is thin for several components, Tabs and Dialog among them (counts in [docs/research/solid-references.md](docs/research/solid-references.md)); for those, most cases will come from Base UI, rewritten. Popover, Tooltip and the `floating` layer have no Kobalte tests. For the focus trap, scroll lock and outside interaction, solid-primitives has Solid 2.0 suites that Kobalte's `solid2` builds on.
-- **Record the sources.** For each component, record the Kobalte commit and the Base UI version consulted. Review their changelogs from time to time and pull in behaviour fixes deliberately.
+- **Assemble the test list first.** Start from the cases the WAI-ARIA Authoring Practices pattern requires. Add Kobalte's cases for the component, then go through Base UI's suite for behaviour neither covers. Rewrite every case in Kobalte's style against Menhir's API; do not port test files mechanically. Kobalte's coverage is thin for several components, Tabs and Dialog among them (counts in [docs/research/solid-references.md](docs/research/solid-references.md)); for those, most cases beyond the pattern will come from Base UI, rewritten. Popover, Tooltip and the `floating` layer have no Kobalte tests. For the focus trap, scroll lock and outside interaction, solid-primitives has Solid 2.0 suites that Kobalte's `solid2` builds on.
+- **Set the size budget with the component.** Its entry point gets a budget in `test/bundle-size` when it is added, and it imports only the layers it is allowed to (section 6).
+- **Record the sources.** For each component, record the date the WAI-ARIA pattern was read, the Kobalte commit and the Base UI version consulted. Review their changelogs at each release and pull in behaviour fixes deliberately ([CONTRIBUTING.md](CONTRIBUTING.md)).
 - **Licences.** Kobalte and Base UI are MIT. Several of Kobalte's test files are partly based on react-spectrum and carry Adobe's Apache-2.0 notice. Copied code or test bodies keep the notices of the files they came from, and the README credits each source. Reading a library for ideas needs no notice.
 
 ### What does not translate directly
