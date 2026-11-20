@@ -120,7 +120,7 @@ describe("createControllableSignal", () => {
   );
 
   // A switch is usually a bug in the consumer, so development builds warn,
-  // as Base UI and React's own inputs do. The value still falls back.
+  // as React's own inputs do. The value still falls back.
   describe("switching between controlled and uncontrolled", () => {
     afterEach(() => vi.restoreAllMocks());
 

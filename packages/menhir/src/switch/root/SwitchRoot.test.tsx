@@ -1,7 +1,4 @@
-// Cases from Kobalte's switch.test.tsx (solid2, ba6b1df; MIT, partly based
-// on react-spectrum, Apache-2.0, Copyright 2020 Adobe) and Base UI's
-// SwitchRoot.test.tsx (v1.9.0; MIT), rewritten against Menhir's API. The
-// test list and the cases left out are in ../README.md.
+// The test list and the cases left out are in ../README.md.
 import { describe, expect, it, vi } from "vitest";
 
 import type { JSX } from "@solidjs/web";

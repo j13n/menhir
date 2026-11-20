@@ -42,28 +42,18 @@ describe("home page", () => {
     );
   });
 
-  test("credits the projects that inspired Menhir", () => {
+  test("credits the projects that inspired Menhir, in one place", () => {
     const { getByRole } = render(() => <Home />);
-    const credits = within(
-      getByRole("region", { name: "Inspiration and credits" }),
-    );
+    const credits = within(getByRole("region", { name: "Credits" }));
     const projects = {
       "Base UI": "https://base-ui.com",
+      Radix: "https://www.radix-ui.com",
       Kobalte: "https://kobalte.dev",
       corvu: "https://corvu.dev",
-      Radix: "https://www.radix-ui.com",
-      "Ark UI": "https://ark-ui.com",
-      "Floating UI": "https://floating-ui.com",
     };
     for (const [name, href] of Object.entries(projects)) {
       expect(credits.getByRole("link", { name })).toHaveAttribute("href", href);
     }
-  });
-
-  test("says Base UI's licence notice is kept", () => {
-    const { getByRole } = render(() => <Home />);
-    expect(
-      getByRole("region", { name: "Inspiration and credits" }),
-    ).toHaveTextContent("copyright notice is kept in Menhir's licence");
+    expect(credits.getAllByRole("link")).toHaveLength(4);
   });
 });

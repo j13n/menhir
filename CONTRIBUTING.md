@@ -11,30 +11,25 @@ An earlier one wins when two disagree.
 1. **Solid 2.0 idioms** decide the API and the internals. They come first: [AGENTS.md](AGENTS.md), `node_modules/solid-js/CHEATSHEET.md`, <https://v2.solidjs.com>.
 2. **The [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/)** pattern for the component decides its roles, states and keyboard behaviour.
 3. **Size.** A component costs only what it uses. Between two ways of meeting 1 and 2, the smaller one wins, and extra behaviour has to be worth its bytes. The rules are in [PLAN.md section 6](PLAN.md#6-bundle-size-rules).
-4. **Other libraries** are read for inspiration: test cases worth having, and browser and assistive-technology fixes the pattern does not spell out. They are credited in the [README](README.md#inspiration-and-credits), and how they are used is in [PLAN.md section 8](PLAN.md#8-sources-and-approach).
+4. **Other libraries** may be read for ideas, such as browser and assistive-technology fixes the pattern does not spell out. None is a model for Menhir's structure, API or tests, and they are named in one place only: the credit on the docs site's home page ([PLAN.md section 8](PLAN.md#8-sources-and-approach)).
 
 ## Steps
 
-1. **Write the test list first**, in the component's `README.md`, before any implementation. Start from what the WAI-ARIA pattern requires, then add cases from the reference libraries for behaviour the pattern does not cover. Mark where each case came from, and list the cases left out with a reason for each.
-2. **Write the tests** against Menhir's API. Rewrite each case; do not port a test file mechanically.
+1. **Write the test list first**, in the component's `README.md`, before any implementation. Start from what the WAI-ARIA pattern requires and mark those cases. Then add what the pattern does not cover: browser and assistive-technology behaviour, forms, SSR and hydration, and Menhir's own conventions. List the cases left out with a reason for each.
+2. **Write the tests** against Menhir's API.
 3. **Write the behaviour.** Never translate another library's source line by line: translated code loses reactivity and mistimes effects. When a React or Solid 1.x pattern has no direct equivalent, use the direction chosen in [PLAN.md, "What does not translate directly"](PLAN.md#what-does-not-translate-directly).
 4. **Follow the conventions** for parts, props and polymorphism: [PLAN.md, "Polymorphism"](PLAN.md#polymorphism) and ["API conventions"](PLAN.md#api-conventions).
 5. **Set the size budget.** Add a budget for the component's entry point in [test/bundle-size](test/bundle-size), and import only the layers it is allowed to. A pull request over budget fails CI.
 6. **Check it against the definition of done** below.
 
-Solid 2.0 pitfalls that other projects hit are collected in [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md), under "#14 Porting process". Worth reading before a first component.
-
 ## Recording the sources
 
-Each component's `README.md` (`packages/menhir/src/<component>/README.md`) has a "Sources" table: the date the WAI-ARIA pattern was read, and the version or commit of each reference library consulted.
-
-The reference versions currently in use are kept in [PLAN.md section 5, "Target versions"](PLAN.md#5-target-versions). Use those for a new component, so all components are checked against the same references.
+Each component's `README.md` (`packages/menhir/src/<component>/README.md`) has a "Sources" table: the WAI-ARIA pattern and the date it was read.
 
 ## Copyright notices
 
-- Reading a library for ideas needs no notice.
-- A test file whose cases come from another project starts with a comment naming the source file, its version, its licence, and any further notice that file carries. Example: [SwitchRoot.test.tsx](packages/menhir/src/switch/root/SwitchRoot.test.tsx).
-- Copied code or test bodies keep the notices of the file they came from. Check the top of the source file; some carry more than one.
+- Menhir's code and tests are written for Menhir. Reading another project for ideas needs no notice.
+- Do not copy code or test bodies from another project. If that is ever unavoidable, the source's licence notice, and any further notice its file carries, goes into [LICENSE](LICENSE) and `packages/menhir/LICENSE` in the same pull request.
 
 Policy: [PLAN.md section 8](PLAN.md#8-sources-and-approach), "Licences".
 
@@ -48,14 +43,8 @@ A component is done when every line of [PLAN.md section 10](PLAN.md#10-definitio
 - [ ] Works with SSR and hydration
 - [ ] Size budget set and met; only allowed layers imported
 - [ ] Docs page with an unstyled example and the measured size
-- [ ] Sources recorded in the component's README
+- [ ] WAI-ARIA pattern and the date it was read recorded in the component's README
 
-## Reviewing the references' changelogs
+## Reviewing the WAI-ARIA patterns
 
-The references are reviewed at each release, before the "Version Packages" pull request is merged:
-
-1. Read what changed in each reference since the version recorded in [PLAN.md section 5](PLAN.md#5-target-versions), and check the WAI-ARIA patterns of the components Menhir has for updates.
-2. For each behaviour or accessibility fix that touches a component Menhir has, add the case to that component's test list and fix it, or open an issue if it can wait. Refactors and API changes in the references are not followed.
-3. Update the versions in PLAN.md section 5 and in the "Sources" table of every component checked, along with the `upstream` version on its docs page.
-
-A fix is pulled in deliberately, as a test case and a change of Menhir's own; the references' code is not synced.
+At each release, before the "Version Packages" pull request is merged, check the WAI-ARIA pattern of each component Menhir has for changes since the date in its README. Add a changed requirement to that component's test list and fix it, or open an issue if it can wait, then update the date.

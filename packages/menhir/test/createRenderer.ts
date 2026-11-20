@@ -14,7 +14,7 @@ import { captureDiagnostics } from "./diagnostics.ts";
 // Solid 2.0 applies updates in a microtask, so the DOM lags behind an event
 // until then. Flushing after every event Testing Library dispatches (through
 // fireEvent and user-event alike) lets an assertion follow an event directly,
-// as Base UI's tests do after React's act(). A part's own state lands a
+// as tests in React do after act(). A part's own state lands a
 // microtask later (`onFlush`), so a test of it awaits `afterFlush()` first;
 // user-event's actions already wait that long.
 configure({
@@ -44,7 +44,7 @@ interface RendererOptions {
 }
 
 /**
- * Call once per `describe`, as in Base UI's tests. Every UI rendered in that
+ * Call once per `describe`. Every UI rendered in that
  * block is unmounted and removed after each test, and a test fails if Solid
  * reported a dev diagnostic while it ran (PLAN.md section 10).
  */

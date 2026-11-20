@@ -8,7 +8,6 @@ import ComponentPage, { type ComponentPageProps } from "./ComponentPage";
 const switchPage: ComponentPageProps = {
   name: "Switch",
   description: "A control that turns a setting on or off.",
-  upstream: { version: "1.9.0", folder: "switch" },
   example: () => <button type="button">Example switch</button>,
   anatomy: "<Switch.Root>\n  <Switch.Thumb />\n</Switch.Root>",
   api: [
@@ -99,14 +98,6 @@ describe("<ComponentPage />", () => {
   test("says when the size has not been measured yet", () => {
     const { getByText } = render(() => <ComponentPage {...switchPage} />);
     expect(getByText("Not measured yet")).toBeInTheDocument();
-  });
-
-  test("links to the Base UI source it was ported from", () => {
-    const { getByRole } = render(() => <ComponentPage {...switchPage} />);
-    expect(getByRole("link", { name: "Base UI 1.9.0" })).toHaveAttribute(
-      "href",
-      "https://github.com/mui/base-ui/tree/v1.9.0/packages/react/src/switch",
-    );
   });
 
   test("updates when a prop changes, without tripping a Solid diagnostic", async () => {

@@ -10,7 +10,6 @@ export default function SwitchPage() {
       <ComponentPage
         name="Switch"
         description="A control that turns a setting on or off. It renders a native button with the switch role, and a hidden checkbox beside it so that forms submit its value."
-        upstream={{ version: "1.9.0", folder: "switch" }}
         // size-limit's measure for menhir/switch (test/bundle-size), with
         // development-only warnings included. Until the size table is
         // generated (#38), update it by hand.
