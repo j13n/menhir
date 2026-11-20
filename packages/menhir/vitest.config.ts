@@ -3,7 +3,7 @@ import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
 // Tests run in jsdom. VITEST_ENV=chromium runs the same suite in Chromium
-// through Playwright, the switch Base UI uses (PLAN.md section 7).
+// through Playwright (PLAN.md section 7).
 const chromium = process.env.VITEST_ENV === "chromium";
 
 // A function, because Vitest writes to the `browser` object of each project.

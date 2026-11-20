@@ -1,7 +1,6 @@
 // The conventions every part that renders an element follows (PLAN.md
 // section 8, "Polymorphism" and "API conventions"), as a suite each part's
-// tests run. Written from Menhir's own rules, not ported from Base UI's
-// describeConformance.
+// tests run.
 import { dynamic } from "@solidjs/web";
 import type { JSX } from "@solidjs/web";
 import { createSignal, flush, merge } from "solid-js";

@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 
 // One size budget per entry point of menhir (PLAN.md section 6), measured
 // with Rolldown, which drops unused parts as a Vite app does; esbuild keeps
-// a whole namespace (docs/research/base-ui-ports.md).
+// a whole `export * as` namespace (PLAN.md section 6, rule 3).
 const budgets = {
   "menhir/switch": "2.3 kB",
 };

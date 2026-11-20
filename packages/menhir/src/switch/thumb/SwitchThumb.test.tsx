@@ -1,5 +1,4 @@
-// Cases from Base UI's SwitchThumb.test.tsx (v1.9.0; MIT), rewritten
-// against Menhir's API. The test list is in ../README.md.
+// The test list is in ../README.md.
 import { Errored } from "solid-js";
 import { describe, expect, it } from "vitest";
 

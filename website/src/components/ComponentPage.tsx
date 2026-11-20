@@ -24,8 +24,6 @@ export type ComponentPageProps = {
   /** Display name, such as "Switch". */
   name: string;
   description: string;
-  /** The Base UI release and the folder under `packages/react/src` it was ported from. */
-  upstream: { version: string; folder: string };
   /** Compressed size of the entry point in bytes, as the size-limit output (#9) reports it. */
   size?: number;
   /** Renders the live example. It is shown without the site's styles. */
@@ -46,14 +44,6 @@ export default function ComponentPage(props: ComponentPageProps) {
           {props.size === undefined
             ? "Not measured yet"
             : formatKilobytes(props.size)}
-        </dd>
-        <dt>Ported from</dt>
-        <dd>
-          <a
-            href={`https://github.com/mui/base-ui/tree/v${props.upstream.version}/packages/react/src/${props.upstream.folder}`}
-          >
-            Base UI {props.upstream.version}
-          </a>
         </dd>
       </dl>
       <Section id="example" title="Example">

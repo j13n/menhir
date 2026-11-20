@@ -1,16 +1,5 @@
-import { For } from "solid-js";
-
 import MenhirScene from "../components/MenhirScene";
 import Section from "../components/Section";
-
-const inspirations = [
-  { name: "Base UI", href: "https://base-ui.com" },
-  { name: "Kobalte", href: "https://kobalte.dev" },
-  { name: "corvu", href: "https://corvu.dev" },
-  { name: "Radix", href: "https://www.radix-ui.com" },
-  { name: "Ark UI", href: "https://ark-ui.com" },
-  { name: "Floating UI", href: "https://floating-ui.com" },
-];
 
 export default function Home() {
   return (
@@ -37,24 +26,13 @@ export default function Home() {
           <code>menhir/switch</code>, so an app only ships what it imports.
         </p>
       </Section>
-      <Section id="credits" title="Inspiration and credits">
+      <Section id="credits" title="Credits">
         <p>
-          Menhir is inspired by other open source projects, and we thank their
-          authors for their work. In no particular order:
-        </p>
-        <ul>
-          <For each={inspirations}>
-            {(project) => (
-              <li>
-                <a href={project.href}>{project.name}</a>
-              </li>
-            )}
-          </For>
-        </ul>
-        <p>
-          Base UI, by the MUI team, is the starting point for Menhir's
-          behaviour, accessibility work and tests. It is MIT licensed, and its
-          copyright notice is kept in Menhir's licence.
+          Menhir draws inspiration from{" "}
+          <a href="https://base-ui.com">Base UI</a>,{" "}
+          <a href="https://www.radix-ui.com">Radix</a>, and the Solid UI
+          libraries <a href="https://kobalte.dev">Kobalte</a> and{" "}
+          <a href="https://corvu.dev">corvu</a>. Thanks to their authors.
         </p>
       </Section>
     </main>

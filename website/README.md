@@ -41,7 +41,6 @@ Every component ships with its page (PLAN.md section 10). For a component export
          <ComponentPage
            name="Switch"
            description="A control that turns a setting on or off."
-           upstream={{ version: "1.9.0", folder: "switch" }}
            example={() => <SwitchExample />}
            anatomy={"<Switch.Root>\n  <Switch.Thumb />\n</Switch.Root>"}
            api={[
@@ -64,7 +63,6 @@ Every component ships with its page (PLAN.md section 10). For a component export
    }
    ```
 
-   - `upstream` is the Base UI release the component was ported from, and its folder under `packages/react/src`. The page links to that exact source.
    - Leave `size` unset. The page says "Not measured yet" until the size budgets (#9) produce measured sizes, which will be wired in from their output rather than written by hand.
 
 3. **Check it:** `pnpm build` (this also regenerates `file-routes.d.ts`), `pnpm typecheck` and `pnpm lint`, then open the page with `pnpm dev`.

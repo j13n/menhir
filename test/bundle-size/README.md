@@ -20,7 +20,7 @@ condition, so it measures the compiled output in `dist`, which is what an app
 bundles in the end.
 
 Rolldown, not esbuild: esbuild keeps a whole `export * as` namespace even when
-an app uses one part (`docs/research/base-ui-ports.md`), and the budgets
+an app uses one part (PLAN.md section 6, rule 3), and the budgets
 should measure what a Vite app gets.
 
 `size.test.ts` runs `size-limit --json` and checks that every entry point in
