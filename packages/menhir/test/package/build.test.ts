@@ -17,14 +17,14 @@ function files(pattern: string, cwd: string, exclude: string[] = []) {
 
 const sources = files("**/*.{ts,tsx}", "src/", ["**/*.test.*"]);
 
-// core has no component that imports it yet, so the Vite build, which starts
-// from the component entries, reaches nothing in it.
-const isCore = (file: string) => file.startsWith("core/");
+// core/index.ts only documents the layer: no entry imports it, so the Vite
+// build, which starts from the component entries, does not reach it.
+const isUnreached = (file: string) => file === "core/index.ts";
 
 describe("built package", () => {
   it("has one compiled file per source module", () => {
     const expected = sources
-      .filter((file) => !isCore(file))
+      .filter((file) => !isUnreached(file))
       .map((file) => file.replace(/\.tsx?$/, ".js"))
       .sort();
 

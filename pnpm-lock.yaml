@@ -196,6 +196,9 @@ importers:
       '@arethetypeswrong/cli':
         specifier: ^0.18.5
         version: 0.18.5
+      '@solidjs/diagnostics':
+        specifier: ^2.0.1
+        version: 2.0.1(@solidjs/web@2.0.1(solid-js@2.0.1))(solid-js@2.0.1)(vitest@5.1.0)
       '@solidjs/testing-library':
         specifier: 1.0.0-rc.2
         version: 1.0.0-rc.2(@solidjs/web@2.0.1(solid-js@2.0.1))(solid-js@2.0.1)

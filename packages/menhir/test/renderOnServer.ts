@@ -3,7 +3,7 @@ import { inject } from "vitest";
 /**
  * Server-renders the default export of a fixture module into a new element
  * in the document, ready for `render(ui, { hydrate: element })`. `fixture` is
- * a path from the package root, such as "/test/spike/SwitchFixture.tsx". Only
+ * a path from the package root, such as "/test/switch/SwitchFixture.tsx". Only
  * available in `*.hydrate.test.tsx` files, which run in the `hydrate` Vitest
  * project.
  */

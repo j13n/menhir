@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
+    "@solidjs/diagnostics": "^2.0.1",
     "@solidjs/testing-library": "1.0.0-rc.2",
     "@solidjs/vite-plugin": "^3.0.1",
     "@solidjs/web": "^2.0.1",

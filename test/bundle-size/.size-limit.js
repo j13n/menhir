@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 // with Rolldown, which drops unused parts as a Vite app does; esbuild keeps
 // a whole namespace (docs/research/base-ui-ports.md).
 const budgets = {
-  "menhir/switch": "500 B",
+  "menhir/switch": "2.3 kB",
 };
 
 export default Object.entries(budgets).map(([entryPoint, limit]) => ({

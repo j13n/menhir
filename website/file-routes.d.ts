@@ -41,6 +41,12 @@ declare module "virtual:file-routes" {
       $$route: FileRouteEagerRef<Pick<typeof import("./src/routes/[...404]"), Extract<"route", keyof typeof import("./src/routes/[...404]")>>>;
     },
     {
+      path: "/components/switch";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/components/switch"), Extract<"default", keyof typeof import("./src/routes/components/switch")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/index"), Extract<"default", keyof typeof import("./src/routes/index")>>>;
@@ -65,6 +71,14 @@ declare module "virtual:file-routes" {
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/[...404]"), Extract<"default", keyof typeof import("./src/routes/[...404]")>>>;
       $$route: FileRouteEagerRef<Pick<typeof import("./src/routes/[...404]"), Extract<"route", keyof typeof import("./src/routes/[...404]")>>>;
+      children?: undefined;
+    },
+    {
+      path: "/components/switch";
+      id: "/components/switch";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/components/switch"), Extract<"default", keyof typeof import("./src/routes/components/switch")>>>;
+      $$route?: undefined;
       children?: undefined;
     }
   ];
