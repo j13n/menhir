@@ -312,6 +312,22 @@ Rules for parts and for the docs:
 - **The props object is reactive.** It is a `merge` view with getters, so the render function spreads it or reads from it in JSX, and never destructures it (AGENTS.md rule 1).
 - **No state argument yet.** Base UI passes `(props, state)`. A part's state reaches the render function as the `data-*` and `aria-*` attributes in `props`. A second argument can be added later without breaking anything, once #12 has settled what state a part exposes.
 
+### API conventions
+
+Decided on 2026-11-20 (#12), worked out on Switch (#15), the first component. Generated ids are deferred (below). Revise after the first two or three components.
+
+- **Form controls are native buttons.** Switch's Root is a `<button type="button" role="switch">`, then a visually hidden `<input type="checkbox" aria-hidden="true" tabindex="-1">` for forms. The button gives keyboard support (Enter on key down, Space on key up), focus, `disabled` and labelling by a `<label>` without code, and the label works in the server HTML before hydration. Base UI's `<span role="switch">` re-implements the button and computes `aria-labelledby` after mounting; Kobalte's hidden native checkbox puts focus on an invisible element and needs five parts. The same applies to Checkbox (`role="checkbox"`) and Radio.
+- **`render` on such a part must render a `<button>`.** Development builds warn otherwise. No `nativeButton` flag: emulating a button would ship in every app (section 6, rule 6).
+- **Parts.** Only what a native element cannot do. Switch is `Root` and `Thumb`; labels are native `<label>` elements. Description and error message parts belong to Field (Phase 4), shared by every control.
+- **Controlled state.** `<state>`, `default<State>` and `on<State>Change`: `checked`/`defaultChecked`/`onCheckedChange`, `pressed`/`onPressedChange`, `open`/`onOpenChange`, `value`/`onValueChange`. Never `onChange`, which is a DOM event in the JSX types and which `mergeElementProps` treats as a handler. An empty controlled value is `null`, since `undefined` means uncontrolled (`createControllableSignal`).
+- **Change callbacks receive the new value only.** A second argument, when a component needs one, is a details object `{ reason, event }`, with no `cancel()` ("Nothing cancels the part's handler" above).
+- **`data-*` attributes use Base UI's names**, `""` when they apply and absent otherwise: `data-checked`/`data-unchecked`, `data-disabled`, `data-readonly`, `data-required`, on every part of the component. A superset of Kobalte's, so styles written for either work. Validity and interaction attributes (`data-valid`, `data-invalid`, `data-touched`, `data-dirty`, `data-filled`, `data-focused`) come with Field. No `data-focus-visible`: `:focus-visible` matches the button.
+- **Boolean props are camelCase**, `readOnly` as in both references, because they are component props, not attributes.
+- **`id` goes on the labelable element**, the button. Generated ids, and whether parts derive theirs from the root's (Kobalte), are deferred to the first component that links its own parts (Tabs, Dialog or Field), which records the decision here.
+- **The hidden input is the form's view of the control.** It is always rendered and takes `name`, `value`, `form`, `required` and `disabled`. A change goes through it (the button clicks it), so the form sees a checkbox's native `input` and `change` events; its click is stopped before it bubbles, so ancestors see the user's click once. A form reset goes back to the default value, through the setter, so a controlled part asks. When the browser blocks a submission and focuses the input, focus moves to the button.
+- **A part used outside its root throws** a descriptive error in development builds (`isDev`).
+- **No state argument** for `render` or `children` yet (see "Polymorphism"); the `data-*` and `aria-*` attributes carry the state.
+
 The helper, built in #13: `core/renderElement.tsx`.
 
 ```tsx
@@ -341,7 +357,7 @@ A part calls it last:
 export function SwitchRoot(props: SwitchRootProps) {
   // own: role, aria-checked, data-*, handlers, ref.
   const elementProps = mergeElementProps(own, omit(props, "render", "checked"));
-  return renderElement(props, elementProps, (p) => <span {...p} />);
+  return renderElement(props, elementProps, (p) => <button {...p} />);
 }
 ```
 
@@ -413,7 +429,7 @@ The component list follows Base UI's, the most complete modern set (38 component
 1. ~~Build Menhir, or contribute to an existing port?~~ Decided on 2026-11-19 (#1): continue with Menhir, as a size-first library with its own design. Reasons, how it differs from ZerNico/base-ui-solid, and the size check that would reverse this are in [docs/research/base-ui-ports.md](docs/research/base-ui-ports.md).
 2. ~~Polymorphism: an `as` prop (Kobalte, corvu), a render function prop (most Base UI ports), or both?~~ Decided on 2026-11-19 (#11): a `render` function prop, and no `as` prop. An `as` prop that takes a tag name adds 1.6 kB gzipped of Solid's runtime to every app. Details in section 8 ("Polymorphism").
 3. ~~Package shape~~ Decided: one `menhir` package with a subpath export per component, as in section 6 ("Package shape").
-4. Public API conventions: part names, controlled-state props and `data-*` attributes. Follow Base UI, Kobalte, or Menhir's own? Matching a library makes its styled layers and docs easier to port, and its tests easier to reuse; Solid 2.0 idiom wins where they conflict (section 8).
+4. Public API conventions: part names, controlled-state props and `data-*` attributes. Follow Base UI, Kobalte, or Menhir's own? Matching a library makes its styled layers and docs easier to port, and its tests easier to reuse; Solid 2.0 idiom wins where they conflict (section 8). Decided on 2026-11-20 (#12), except generated ids, which are deferred to the first component that links its own parts: section 8, "API conventions". Base UI's part names and `data-*` attributes, `on<State>Change` callbacks with the value only, native buttons for form controls.
 5. ~~Is the `solid` export condition still needed in 2.0?~~ Decided on 2026-11-19 (#6): yes. The 2.0 library guide prescribes it, and an SSR app fails without it. No separate server build. Details in section 6.
 6. ~~Test stack~~ Decided: Vitest 5.1, jsdom plus Chromium, `@solidjs/testing-library`, as in section 7.
 7. ~~Tooling~~ Decided: follow the `pnpm create solid@latest` template (oxlint, TypeScript 7, `@solidjs/testing-library`).
