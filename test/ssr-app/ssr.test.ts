@@ -70,9 +70,9 @@ describe("an SSR app that uses menhir", () => {
     const switchEl = document.querySelector<HTMLElement>("[role=switch]")!;
     expect(switchEl).toBe(serverElement);
 
-    switchEl.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "Enter", bubbles: true }),
-    );
+    // A native button turns Enter and Space into a click, but not a
+    // dispatched key event, so click it.
+    switchEl.click();
     await new Promise((resolve) => setTimeout(resolve));
     expect(switchEl.getAttribute("aria-checked")).toBe("true");
   });
