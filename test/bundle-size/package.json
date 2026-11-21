@@ -6,16 +6,25 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "size": "pnpm --filter menhir build && size-limit",
-    "size:json": "pnpm --filter menhir build && mkdir -p dist && size-limit --json > dist/sizes.json",
+    "compare": "size-limit --config comparison.size-limit.js",
+    "size:json": "pnpm --filter menhir build && mkdir -p dist && size-limit --json > dist/sizes.json && node measureComparison.ts",
     "test": "pnpm --filter menhir build && vitest"
   },
   "dependencies": {
     "menhir": "workspace:*"
   },
   "devDependencies": {
+    "@base-ui/react": "~1.9.0",
+    "@kobalte/core": "~0.13.14",
+    "@radix-ui/react-checkbox": "^1.4.1",
+    "@radix-ui/react-separator": "^1.2.0",
+    "@radix-ui/react-switch": "^1.4.1",
+    "@radix-ui/react-toggle": "^1.2.1",
     "@size-limit/file": "~14.3.0",
     "@size-limit/rolldown": "~14.3.0",
     "@types/node": "^26.6.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "rolldown": "~1.2.19",
     "size-limit": "~14.3.0",
     "typescript": "^7.0.2",

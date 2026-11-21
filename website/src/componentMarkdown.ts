@@ -80,7 +80,7 @@ export function llmsTxt(docs: ComponentDoc[]): string {
     "## Docs",
     [
       "- [Getting started](/docs/getting-started): installing Menhir and using a first component.",
-      "- [Bundle size](/docs/bundle-size): each entry point's size and budget, and how they are measured.",
+      "- [Bundle size](/docs/bundle-size): each entry point's size and budget, how it compares with other libraries, and how they are measured.",
     ].join("\n"),
   ];
   return `${blocks.join("\n\n")}\n`;
