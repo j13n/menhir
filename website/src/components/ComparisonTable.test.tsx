@@ -231,7 +231,10 @@ describe("<ComparisonTable />", () => {
   test("leaves utilities out: no other library is measured for them", () => {
     const { getByRole } = render(() => (
       <ComparisonTable
-        sizes={[...sizes, { entryPoint: "menhir/color-mode", size: 913 }]}
+        sizes={[
+          ...sizes,
+          { entryPoint: "menhir/color-mode/local-storage", size: 1010 },
+        ]}
         libraries={libraries}
         components={components}
       />

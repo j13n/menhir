@@ -11,10 +11,13 @@ describe("Color Mode page", () => {
     document.documentElement.removeAttribute("data-theme");
   });
 
-  test("names the utility and its entry point", () => {
-    const { getByRole, getByText } = render(() => <ColorModePage />);
+  test("names the utility and its entry point for each storage", () => {
+    const { getByRole, getAllByText } = render(() => <ColorModePage />);
     expect(getByRole("heading", { level: 1 })).toHaveTextContent("Color Mode");
-    expect(getByText("menhir/color-mode")).toBeInTheDocument();
+    expect(
+      getAllByText("menhir/color-mode/local-storage")[0],
+    ).toBeInTheDocument();
+    expect(getAllByText("menhir/color-mode/cookie")[0]).toBeInTheDocument();
   });
 
   test("shows the toggle live, with its source", () => {

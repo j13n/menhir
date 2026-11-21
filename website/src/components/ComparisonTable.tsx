@@ -9,7 +9,7 @@ import TableScroll from "./TableScroll";
 /**
  * Each component's size in menhir beside its size in other libraries, each
  * with its difference from menhir's, then the module and version measured in
- * each library. Utilities, such as `menhir/color-mode`, are left out.
+ * each library. Utilities, such as `menhir/color-mode/cookie`, are left out.
  */
 export default function ComparisonTable(props: {
   sizes: readonly EntryPointSize[];

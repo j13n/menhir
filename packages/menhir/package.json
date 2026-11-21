@@ -29,10 +29,15 @@
       "solid": "./dist/source/checkbox/index.js",
       "import": "./dist/checkbox/index.js"
     },
-    "./color-mode": {
-      "types": "./dist/source/color-mode/index.d.ts",
-      "solid": "./dist/source/color-mode/index.js",
-      "import": "./dist/color-mode/index.js"
+    "./color-mode/cookie": {
+      "types": "./dist/source/color-mode/cookie/index.d.ts",
+      "solid": "./dist/source/color-mode/cookie/index.js",
+      "import": "./dist/color-mode/cookie/index.js"
+    },
+    "./color-mode/local-storage": {
+      "types": "./dist/source/color-mode/local-storage/index.d.ts",
+      "solid": "./dist/source/color-mode/local-storage/index.js",
+      "import": "./dist/color-mode/local-storage/index.js"
     },
     "./separator": {
       "types": "./dist/source/separator/index.d.ts",

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* The reader picks light, dark or system with the toggle in the header
-   (menhir/color-mode), which sets data-theme on the root element. */
+   (menhir/color-mode/local-storage), which sets data-theme on the root element. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @layer base {

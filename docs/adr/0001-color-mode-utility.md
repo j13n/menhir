@@ -9,5 +9,5 @@ PLAN.md rules out styling and themes, but Menhir ships `menhir/color-mode`. It k
 
 ## Consequences
 
-- The first version leaves out cookie storage for server rendering (#62), custom modes (#63) and a CSP nonce (#64). Each one widens the API, so each needs its own decision.
+- The first version leaves out cookie storage for server rendering (#62), custom modes (#63) and a CSP nonce (#64). Each one widens the API, so each needs its own decision. Cookie storage has since been added: ADR 0002.
 - An entry point can now be a utility with no `index.parts.ts`. The build in `vite.config.ts` adds a parts entry only when the file exists.

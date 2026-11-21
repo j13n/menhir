@@ -1,14 +1,17 @@
-import { flush } from "solid-js";
+import { flush, untrack } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createRenderer, fireEvent, screen } from "#test-utils";
 
+import { clearCookies } from "../../test/color-mode/clearCookies.ts";
 import { stubSystemPreference } from "../../test/color-mode/stubSystemPreference.ts";
-import { nextColorMode } from "./colorMode.ts";
-import type { ColorModeOptions } from "./colorMode.ts";
-import { colorModeScript } from "./colorModeScript.ts";
-import { createColorMode } from "./createColorMode.ts";
-import type { ColorModeState } from "./createColorMode.ts";
+import * as cookie from "./cookie/index.ts";
+import * as local from "./local-storage/index.ts";
+import { createColorMode, nextColorMode } from "./local-storage/index.ts";
+import type {
+  ColorModeOptions,
+  ColorModeState,
+} from "./local-storage/index.ts";
 
 const root = document.documentElement;
 
@@ -16,19 +19,27 @@ describe("createColorMode", () => {
   const { render } = createRenderer();
 
   afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
     localStorage.clear();
+    clearCookies();
     root.removeAttribute("data-theme");
     root.removeAttribute("data-mode");
     root.classList.remove("light", "dark");
-    vi.unstubAllGlobals();
-    vi.restoreAllMocks();
   });
 
-  /** Renders one instance and lets the page settle. */
-  async function setup(options?: ColorModeOptions) {
+  /**
+   * Renders one instance, from `menhir/color-mode/local-storage` unless
+   * another entry point's `createColorMode` is given, and lets the page
+   * settle.
+   */
+  async function setup(
+    options?: ColorModeOptions,
+    create: typeof createColorMode = createColorMode,
+  ) {
     let state!: ColorModeState;
     const result = await render(() => {
-      state = createColorMode(options);
+      state = create(options);
       return (
         <output>
           {state.mode()} {state.system()} {state.resolved()}
@@ -66,28 +77,60 @@ describe("createColorMode", () => {
   });
 
   it("applies the same look as the head script with the same options", async () => {
-    for (const options of [{}, { attribute: "class" as const }]) {
-      for (const saved of [null, "light", "dark"]) {
-        for (const dark of [false, true]) {
-          stubSystemPreference(dark);
-          if (saved) localStorage.setItem("color-mode", saved);
-          (0, eval)(colorModeScript(options));
-          const fromScript = [root.getAttribute("data-theme"), root.className];
-          root.removeAttribute("data-theme");
-          root.className = "";
+    for (const entry of [local, cookie]) {
+      for (const options of [
+        {},
+        { attribute: "class" },
+      ] satisfies ColorModeOptions[]) {
+        for (const saved of [null, "light", "dark"]) {
+          for (const dark of [false, true]) {
+            stubSystemPreference(dark);
+            if (saved && entry === cookie) {
+              document.cookie = `color-mode=${saved}`;
+            } else if (saved) {
+              localStorage.setItem("color-mode", saved);
+            }
+            (0, eval)(entry.colorModeScript(options));
+            const fromScript = [
+              root.getAttribute("data-theme"),
+              root.className,
+            ];
+            root.removeAttribute("data-theme");
+            root.className = "";
 
-          const { unmount } = await setup(options);
-          expect([root.getAttribute("data-theme"), root.className]).toEqual(
-            fromScript,
-          );
-          unmount();
-          root.removeAttribute("data-theme");
-          root.className = "";
-          localStorage.clear();
+            const { unmount } = await setup(options, entry.createColorMode);
+            expect([root.getAttribute("data-theme"), root.className]).toEqual(
+              fromScript,
+            );
+            unmount();
+            root.removeAttribute("data-theme");
+            root.className = "";
+            localStorage.clear();
+            clearCookies();
+          }
         }
       }
     }
   });
+
+  it.each([
+    ["local-storage", local],
+    ["cookie", cookie],
+  ] as const)(
+    "saves where the head script reads, under any storageKey (%s)",
+    async (_, entry) => {
+      stubSystemPreference(false);
+      const options = { storageKey: "site theme; </script>" };
+      const { state, unmount } = await setup(options, entry.createColorMode);
+      state.setMode("dark");
+      flush();
+      unmount();
+      root.removeAttribute("data-theme");
+
+      (0, eval)(entry.colorModeScript(options));
+      expect(root).toHaveAttribute("data-theme", "dark");
+    },
+  );
 
   it("saves a choice, applies it, and forgets it for system", async () => {
     stubSystemPreference(false);
@@ -261,5 +304,106 @@ describe("createColorMode", () => {
       new StorageEvent("storage", { key: "color-mode", newValue: "dark" }),
     );
     expect(state.mode()).toBe("system");
+  });
+
+  describe("from menhir/color-mode/cookie", () => {
+    it("reads the saved choice on the first render", async () => {
+      stubSystemPreference(false);
+      document.cookie = "color-mode=dark";
+      let first: string | undefined;
+      await render(() => {
+        const colorMode = cookie.createColorMode();
+        first = untrack(colorMode.mode);
+        return null;
+      });
+      expect(first).toBe("dark");
+    });
+
+    it("applies the cookie, not localStorage, once settled", async () => {
+      stubSystemPreference(false);
+      document.cookie = "color-mode=dark";
+      localStorage.setItem("color-mode", "light");
+      const { state } = await setup({}, cookie.createColorMode);
+      expect(state.mode()).toBe("dark");
+      expect(root).toHaveAttribute("data-theme", "dark");
+    });
+
+    it("saves a choice in a lasting cookie, and forgets it for system", async () => {
+      stubSystemPreference(false);
+      const { state } = await setup({}, cookie.createColorMode);
+      const written = vi.spyOn(Document.prototype, "cookie", "set");
+
+      state.setMode("dark");
+      flush();
+      expect(document.cookie).toBe("color-mode=dark");
+      expect(localStorage.getItem("color-mode")).toBeNull();
+      expect(root).toHaveAttribute("data-theme", "dark");
+      // Sent with every request to the site, and kept for a year.
+      const setCookie = written.mock.lastCall![0];
+      expect(setCookie).toContain("; Path=/");
+      expect(setCookie).toContain("; Max-Age=31536000");
+      expect(setCookie).toContain("; SameSite=Lax");
+
+      state.setMode("system");
+      flush();
+      expect(document.cookie).toBe("");
+      expect(root).toHaveAttribute("data-theme", "light");
+    });
+
+    it.each(["__Host-color-mode", "__Secure-color-mode"])(
+      "saves a %s cookie as Secure, which its prefix requires",
+      async (storageKey) => {
+        stubSystemPreference(false);
+        const { state } = await setup({ storageKey }, cookie.createColorMode);
+        const written = vi.spyOn(Document.prototype, "cookie", "set");
+
+        state.setMode("dark");
+        flush();
+        const setCookie = written.mock.lastCall?.[0];
+        expect(setCookie).toMatch(new RegExp(`^${storageKey}=dark;`));
+        expect(setCookie).toContain("; Secure");
+        expect(setCookie).toContain("; Path=/");
+      },
+    );
+
+    it("picks up a choice made in another tab when shown again", async () => {
+      stubSystemPreference(false);
+      const { state, unmount } = await setup({}, cookie.createColorMode);
+
+      // Another tab saved a choice while this one was in the background.
+      document.cookie = "color-mode=dark";
+      fireEvent(document, new Event("visibilitychange"));
+      expect(state.mode()).toBe("dark");
+      expect(root).toHaveAttribute("data-theme", "dark");
+
+      unmount();
+      document.cookie = "color-mode=light";
+      fireEvent(document, new Event("visibilitychange"));
+      expect(state.mode()).toBe("dark");
+    });
+
+    it("works without cookies, for the life of the page", async () => {
+      stubSystemPreference(false);
+      const error = () => {
+        throw new Error("SecurityError");
+      };
+      // On the document itself, so that deleting it restores the original.
+      Object.defineProperty(document, "cookie", {
+        configurable: true,
+        get: error,
+        set: error,
+      });
+      try {
+        const { state } = await setup({}, cookie.createColorMode);
+        expect(state.mode()).toBe("system");
+
+        state.setMode("dark");
+        flush();
+        expect(state.mode()).toBe("dark");
+        expect(root).toHaveAttribute("data-theme", "dark");
+      } finally {
+        delete (document as { cookie?: string }).cookie;
+      }
+    });
   });
 });

@@ -5,17 +5,20 @@ import {
   darkQuery,
   defaultAttribute,
   defaultStorageKey,
-  parseColorMode,
   resolveColorMode,
 } from "./colorMode.ts";
 import type {
   ColorMode,
   ColorModeOptions,
+  ColorModeStorage,
   ResolvedColorMode,
 } from "./colorMode.ts";
 
 export interface ColorModeState {
-  /** The reader's choice. `system` until the page has settled. */
+  /**
+   * The reader's choice. `system` until the page has settled, unless it is
+   * saved in a cookie (`menhir/color-mode/cookie`).
+   */
   mode: Accessor<ColorMode>;
   /** The look the system prefers. `light` until the page has settled. */
   system: Accessor<ResolvedColorMode>;
@@ -34,29 +37,38 @@ interface ChangeDetail {
 }
 
 /**
- * The reader's light, dark or system choice, saved in `localStorage` and
- * applied to `<html>` (`ColorModeOptions.attribute`). Follows the system
- * preference while the choice is `system`, and stays in step with the other
- * instances in this tab and with other tabs.
+ * `createColorMode` of each entry point, with the entry point's storage.
  *
- * Call it in a component. The saved choice is read once the page has
- * settled, so the server's HTML and the first client render agree; until
- * then the state is `system` and `light`. The head script from
- * `colorModeScript`, with the same options, applies the choice before the
- * first paint, so the page does not flash in between.
+ * The reader's light, dark or system choice, saved in `storage` and applied
+ * to `<html>` (`ColorModeOptions.attribute`). Follows the system preference
+ * while the choice is `system`, and stays in step with the other instances
+ * in this tab and with other tabs.
+ *
+ * A storage only the browser can read, such as `localStorage`, is read once
+ * the page has settled, so the server's HTML and the first client render
+ * agree; until then the state is `system` and `light`. One the server can
+ * read too, such as a cookie, is read during the first render, so only
+ * `system` waits. The head script applies the choice before the first
+ * paint, so the page does not flash in between.
  */
-export function createColorMode(
+export function createColorModeWithStorage(
+  storage: ColorModeStorage,
   options: ColorModeOptions = {},
 ): ColorModeState {
   const storageKey = options.storageKey ?? defaultStorageKey;
   const attribute = options.attribute ?? defaultAttribute;
 
-  const [mode, setModeSignal] = createSignal<ColorMode>("system");
+  // Storage the server can read too, such as a cookie, gives the first
+  // render the choice; `localStorage` waits until the page has settled.
+  const initialMode: ColorMode = storage.readsOnServer
+    ? storage.read(storageKey)
+    : "system";
+  const [mode, setModeSignal] = createSignal<ColorMode>(initialMode);
   const [system, setSystem] = createSignal<ResolvedColorMode>("light");
 
   // Reads lag writes until the next flush, so the DOM is updated from these
   // copies rather than from the signals.
-  let currentMode: ColorMode = "system";
+  let currentMode: ColorMode = initialMode;
   let currentSystem: ResolvedColorMode = "light";
 
   const update = (next: { mode?: ColorMode; system?: ResolvedColorMode }) => {
@@ -68,35 +80,29 @@ export function createColorMode(
   onSettled(() => {
     const media = window.matchMedia(darkQuery);
     update({
-      mode: parseColorMode(readStorage(storageKey)),
+      mode: storage.read(storageKey),
       system: media.matches ? "dark" : "light",
     });
 
     const onMediaChange = (event: MediaQueryListEvent) =>
       update({ system: event.matches ? "dark" : "light" });
-    const onStorage = (event: StorageEvent) => {
-      // A `null` key means the whole storage was cleared.
-      if (event.key === storageKey || event.key === null) {
-        update({ mode: parseColorMode(event.newValue) });
-      }
-    };
     const onChange = (event: Event) => {
       const detail = (event as CustomEvent<ChangeDetail>).detail;
       if (detail.storageKey === storageKey) update({ mode: detail.mode });
     };
 
     media.addEventListener("change", onMediaChange);
-    window.addEventListener("storage", onStorage);
+    const unwatch = storage.watch(storageKey, (mode) => update({ mode }));
     window.addEventListener(changeEvent, onChange);
     return () => {
       media.removeEventListener("change", onMediaChange);
-      window.removeEventListener("storage", onStorage);
+      unwatch();
       window.removeEventListener(changeEvent, onChange);
     };
   });
 
   const setMode = (next: ColorMode) => {
-    writeStorage(storageKey, next);
+    storage.write(storageKey, next);
     update({ mode: next });
     window.dispatchEvent(
       new CustomEvent<ChangeDetail>(changeEvent, {
@@ -123,24 +129,5 @@ function applyColorMode(
     root.classList.add(resolved);
   } else {
     root.setAttribute(attribute, resolved);
-  }
-}
-
-// Storage can be unavailable, such as with cookies blocked; the choice then
-// lasts until the page is left.
-function readStorage(key: string): string | null {
-  try {
-    return localStorage.getItem(key);
-  } catch {
-    return null;
-  }
-}
-
-function writeStorage(key: string, mode: ColorMode) {
-  try {
-    if (mode === "system") localStorage.removeItem(key);
-    else localStorage.setItem(key, mode);
-  } catch {
-    // See readStorage.
   }
 }

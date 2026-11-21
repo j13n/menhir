@@ -78,7 +78,7 @@ export function llmsTxt(docs: ComponentDoc[]): string {
       )
       .join("\n"),
     "## Utilities",
-    "- [Color Mode](/docs/utilities/color-mode): `menhir/color-mode` keeps the reader's light, dark or system choice, saved and applied to `<html>`, with a head script that applies it before the first paint.",
+    "- [Color Mode](/docs/utilities/color-mode): `menhir/color-mode/local-storage` and `menhir/color-mode/cookie` keep the reader's light, dark or system choice, saved and applied to `<html>`, with a head script that applies it before the first paint.",
     "## Docs",
     [
       "- [Getting started](/docs/getting-started): installing Menhir and using a first component.",
