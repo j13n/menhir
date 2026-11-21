@@ -1,4 +1,5 @@
 import { Checkbox } from "menhir/checkbox";
+import { Meter } from "menhir/meter";
 import { Progress } from "menhir/progress";
 import { Separator } from "menhir/separator";
 import { Switch } from "menhir/switch";
@@ -136,7 +137,7 @@ export default function Home() {
                 aria-labelledby="home-progress-label"
                 class="grid grid-cols-[1fr_auto] gap-2"
               >
-                <span id="home-progress-label">Storage</span>
+                <span id="home-progress-label">Uploading</span>
                 <Progress.Value class="text-sm text-stone-500" />
                 <div class="col-span-2 h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-800">
                   <Progress.Indicator class="h-full w-(--progress) bg-stone-800 dark:bg-stone-300" />
@@ -144,6 +145,22 @@ export default function Home() {
               </Progress.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/progress">Progress</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <Meter.Root
+                value={80}
+                aria-labelledby="home-meter-label"
+                class="grid grid-cols-[1fr_auto] gap-2"
+              >
+                <span id="home-meter-label">Battery</span>
+                <Meter.Value class="text-sm text-stone-500" />
+                <div class="col-span-2 h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-800">
+                  <div class="h-full w-(--meter) bg-stone-800 dark:bg-stone-300" />
+                </div>
+              </Meter.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/meter">Meter</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

@@ -1,0 +1,33 @@
+/* The least CSS that makes the Meter visible: a track, and a fill as wide
+   as --meter, which the Root sets. Everything else is the browser's.
+   Colours are Tailwind's stone palette; light-dark() picks the second one
+   in dark mode (color-scheme: dark). */
+.meter {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  width: 16rem;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.meter-track {
+  grid-column: 1 / -1;
+  height: 0.5rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: light-dark(
+    oklch(92.3% 0.003 48.717) /* stone-200 */,
+    oklch(26.8% 0.007 34.298) /* stone-800 */
+  );
+}
+
+.meter-fill {
+  width: var(--meter);
+  height: 100%;
+  background: light-dark(
+    oklch(26.8% 0.007 34.298) /* stone-800 */,
+    oklch(86.9% 0.005 56.366) /* stone-300 */
+  );
+}
