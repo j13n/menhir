@@ -17,20 +17,20 @@ const headScript = `import { colorModeScript } from "menhir/color-mode/local-sto
 <script innerHTML={colorModeScript()} />`;
 
 const tailwindCss = `/* Tailwind's dark: variant, from the attribute instead of the system. */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant dark (&:where([data-color-mode="dark"], [data-color-mode="dark"] *));
 
 /* Native controls and scrollbars follow the mode too. */
-:root[data-theme="dark"] {
+:root[data-color-mode="dark"] {
   color-scheme: dark;
 }`;
 
 const plainCss = `:root {
   color-scheme: light;
 }
-:root[data-theme="dark"] {
+:root[data-color-mode="dark"] {
   color-scheme: dark;
 }
-/* Then pick colours with light-dark(), or under [data-theme="dark"]. */`;
+/* Then pick colours with light-dark(), or under [data-color-mode="dark"]. */`;
 
 const serverDocument = `import { getRequestEvent } from "@solidjs/web";
 import {
@@ -44,7 +44,7 @@ const mode = colorModeFromCookie(
   getRequestEvent()?.request.headers.get("cookie"),
 );
 
-<html lang="en" data-theme={mode === "system" ? undefined : mode}>
+<html lang="en" data-color-mode={mode === "system" ? undefined : mode}>
   <head>
     {/* Still needed: the server cannot see the system's preference. */}
     <script innerHTML={colorModeScript()} />
@@ -66,7 +66,7 @@ const options: ApiRow[] = [
     name: "attribute",
     type: '"class" | `data-${string}`',
     description:
-      'Where the look goes on <html>: a data attribute set to light or dark, default "data-theme", or "class" for a light or dark class, which Menhir then owns on <html>.',
+      'Where the look goes on <html>: a data attribute set to light or dark, default "data-color-mode", or "class" for a light or dark class, which Menhir then owns on <html>.',
   },
 ];
 
@@ -140,9 +140,9 @@ export default function ColorModePage() {
         system, and stays in step across tabs. A utility, not a component: the
         control is yours, and so is how each mode looks. The toggle in this
         site's header is the example below. For a list of themes rather than
-        light and dark, use <a href="/docs/utilities/theme">Theme</a>; a site
-        with both gives one of them another <code>attribute</code>, since both
-        default to <code>data-theme</code>.
+        light and dark, use <a href="/docs/utilities/theme">Theme</a>. The two
+        write different attributes, <code>data-color-mode</code> and{" "}
+        <code>data-theme</code>, so a site can use both.
       </p>
       <dl>
         <dt>Entry points</dt>

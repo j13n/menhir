@@ -27,7 +27,7 @@ export default function ThemePicker() {
       </label>
       {/* Paper by default; in-[…] styles the other themes from the
           attribute on <html>. */}
-      <p class="rounded-lg bg-amber-50 p-4 text-amber-950 in-[[data-example-theme=forest]]:bg-emerald-900 in-[[data-example-theme=forest]]:text-emerald-50 in-[[data-example-theme=slate]]:bg-slate-800 in-[[data-example-theme=slate]]:text-slate-100">
+      <p class="rounded-lg bg-amber-50 p-4 text-amber-950 in-[[data-theme=forest]]:bg-emerald-900 in-[[data-theme=forest]]:text-emerald-50 in-[[data-theme=slate]]:bg-slate-800 in-[[data-theme=slate]]:text-slate-100">
         Styled from the attribute on &lt;html&gt;.
       </p>
     </div>

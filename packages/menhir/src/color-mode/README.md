@@ -49,10 +49,11 @@ import { colorModeFromCookie } from "menhir/color-mode/cookie";
 Both functions take the same options, so the hook and the script agree:
 `storageKey`, the key or cookie name (default `"color-mode"`), and
 `attribute`, a `data-*` attribute set to `light` or `dark` (default
-`"data-theme"`) or `"class"` for a `light` or `dark` class. With `"class"`,
+`"data-color-mode"`) or `"class"` for a `light` or `dark` class. With `"class"`,
 Menhir owns those two classes on `<html>`: changing the mode removes both
-before adding one. A site that also uses `menhir/theme` gives one of the
-two another `attribute`, since both default to `data-theme`.
+before adding one. The default is `data-color-mode`, not `data-theme`, so
+that `menhir/theme` can have `data-theme` and a site can use both as they
+come (ADR 0003).
 
 Files: `local-storage/` and `cookie/` hold each entry point. The hook
 (`createColorMode.ts`) and the script (`colorModeScript.ts`) are shared by

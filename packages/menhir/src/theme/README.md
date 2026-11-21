@@ -74,9 +74,9 @@ Decisions:
   the `storage` event, or with a cookie, when shown again. See color mode's
   README for why.
 - **The default `storageKey` is `"theme"` and the default `attribute` is
-  `"data-theme"`**, the name most themes are styled from. Color mode also
-  defaults to `data-theme`, so a site that uses both sets `attribute` on one
-  of them; their storage keys differ already.
+  `"data-theme"`**, the name most themes are styled from. Color mode
+  defaults to `data-color-mode` and `"color-mode"`, so a site can use both
+  as they come, and style a theme's dark look under both attributes.
 - **Theme names are letters, digits, `-` and `_`.** A class cannot hold a
   space, and a cookie value is saved encoded, which the head script does not
   undo. Development builds throw for another name, and for a `defaultTheme`
@@ -130,7 +130,7 @@ they say `cookie`.
 - Follows a theme chosen, or storage cleared, in another tab; ignores other
   keys
 - Keeps instances in the same tab in step, apart from a color mode on the
-  same page
+  same page, each on its own default attribute
 - Uses `storageKey` and `attribute`, and swaps classes with `"class"`
 - Rejects a theme the head script could not apply
 - Works without storage, for the life of the page
@@ -148,11 +148,11 @@ they say `cookie`.
 
 ## Left out
 
-| Case                                       | Reason                                                                                          |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| A default that follows the system          | A theme is just a theme; color mode covers light, dark and system (ADR 0003)                    |
-| Light and dark variants of each theme      | Two axes; an app that wants both can use color mode and theme side by side, with two attributes |
-| Live sync of a cookie between visible tabs | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser          |
-| A `nonce` or hash for a strict CSP         | #64, as for color mode                                                                          |
-| Setting `color-scheme` per theme           | Styling: one line of CSS under each theme's attribute, which the docs page shows                |
-| A control                                  | The app's: a `<select>`, radio group or menu; the docs page shows one                           |
+| Case                                       | Reason                                                                                                       |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| A default that follows the system          | A theme is just a theme; color mode covers light, dark and system (ADR 0003). A theme per system scheme: #73 |
+| Light and dark variants of each theme      | Two axes; an app that wants both can use color mode and theme side by side, with two attributes              |
+| Live sync of a cookie between visible tabs | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser                       |
+| A `nonce` or hash for a strict CSP         | #64, as for color mode                                                                                       |
+| Setting `color-scheme` per theme           | Styling: one line of CSS under each theme's attribute, which the docs page shows                             |
+| A control                                  | The app's: a `<select>`, radio group or menu; the docs page shows one                                        |

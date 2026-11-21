@@ -23,7 +23,7 @@ describe("createColorMode", () => {
     vi.restoreAllMocks();
     localStorage.clear();
     clearCookies();
-    root.removeAttribute("data-theme");
+    root.removeAttribute("data-color-mode");
     root.removeAttribute("data-mode");
     root.classList.remove("light", "dark");
   });
@@ -58,7 +58,7 @@ describe("createColorMode", () => {
     expect(state.system()).toBe("dark");
     expect(state.resolved()).toBe("light");
     expect(screen.getByRole("status")).toHaveTextContent("light dark light");
-    expect(root).toHaveAttribute("data-theme", "light");
+    expect(root).toHaveAttribute("data-color-mode", "light");
   });
 
   it("is system with nothing saved, and resolves to the system's look", async () => {
@@ -66,7 +66,7 @@ describe("createColorMode", () => {
     const { state } = await setup();
     expect(state.mode()).toBe("system");
     expect(state.resolved()).toBe("dark");
-    expect(root).toHaveAttribute("data-theme", "dark");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
   });
 
   it("treats an unknown saved value as system", async () => {
@@ -92,18 +92,19 @@ describe("createColorMode", () => {
             }
             (0, eval)(entry.colorModeScript(options));
             const fromScript = [
-              root.getAttribute("data-theme"),
+              root.getAttribute("data-color-mode"),
               root.className,
             ];
-            root.removeAttribute("data-theme");
+            root.removeAttribute("data-color-mode");
             root.className = "";
 
             const { unmount } = await setup(options, entry.createColorMode);
-            expect([root.getAttribute("data-theme"), root.className]).toEqual(
-              fromScript,
-            );
+            expect([
+              root.getAttribute("data-color-mode"),
+              root.className,
+            ]).toEqual(fromScript);
             unmount();
-            root.removeAttribute("data-theme");
+            root.removeAttribute("data-color-mode");
             root.className = "";
             localStorage.clear();
             clearCookies();
@@ -125,10 +126,10 @@ describe("createColorMode", () => {
       state.setMode("dark");
       flush();
       unmount();
-      root.removeAttribute("data-theme");
+      root.removeAttribute("data-color-mode");
 
       (0, eval)(entry.colorModeScript(options));
-      expect(root).toHaveAttribute("data-theme", "dark");
+      expect(root).toHaveAttribute("data-color-mode", "dark");
     },
   );
 
@@ -140,13 +141,13 @@ describe("createColorMode", () => {
     flush();
     expect(state.mode()).toBe("dark");
     expect(localStorage.getItem("color-mode")).toBe("dark");
-    expect(root).toHaveAttribute("data-theme", "dark");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
 
     state.setMode("system");
     flush();
     expect(state.mode()).toBe("system");
     expect(localStorage.getItem("color-mode")).toBeNull();
-    expect(root).toHaveAttribute("data-theme", "light");
+    expect(root).toHaveAttribute("data-color-mode", "light");
   });
 
   it("cycles from a button click with nextColorMode", async () => {
@@ -185,7 +186,7 @@ describe("createColorMode", () => {
     flush();
     expect(state.system()).toBe("dark");
     expect(state.resolved()).toBe("dark");
-    expect(root).toHaveAttribute("data-theme", "dark");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
   });
 
   it("keeps a fixed choice when the system changes", async () => {
@@ -197,7 +198,7 @@ describe("createColorMode", () => {
     flush();
     expect(state.system()).toBe("dark");
     expect(state.resolved()).toBe("light");
-    expect(root).toHaveAttribute("data-theme", "light");
+    expect(root).toHaveAttribute("data-color-mode", "light");
   });
 
   it("follows a choice made in another tab", async () => {
@@ -210,7 +211,7 @@ describe("createColorMode", () => {
       new StorageEvent("storage", { key: "color-mode", newValue: "dark" }),
     );
     expect(state.mode()).toBe("dark");
-    expect(root).toHaveAttribute("data-theme", "dark");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
 
     // Another tab cleared the storage.
     fireEvent(window, new StorageEvent("storage", { key: null }));
@@ -256,7 +257,7 @@ describe("createColorMode", () => {
     });
     expect(state.mode()).toBe("dark");
     expect(root).toHaveAttribute("data-mode", "dark");
-    expect(root).not.toHaveAttribute("data-theme");
+    expect(root).not.toHaveAttribute("data-color-mode");
 
     state.setMode("light");
     flush();
@@ -273,7 +274,7 @@ describe("createColorMode", () => {
     flush();
     expect(root).toHaveClass("light");
     expect(root).not.toHaveClass("dark");
-    expect(root).not.toHaveAttribute("data-theme");
+    expect(root).not.toHaveAttribute("data-color-mode");
   });
 
   it("works without storage, for the life of the page", async () => {
@@ -289,7 +290,7 @@ describe("createColorMode", () => {
     state.setMode("dark");
     flush();
     expect(state.mode()).toBe("dark");
-    expect(root).toHaveAttribute("data-theme", "dark");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
   });
 
   it("stops listening when its owner is disposed", async () => {
@@ -325,7 +326,7 @@ describe("createColorMode", () => {
       localStorage.setItem("color-mode", "light");
       const { state } = await setup({}, cookie.createColorMode);
       expect(state.mode()).toBe("dark");
-      expect(root).toHaveAttribute("data-theme", "dark");
+      expect(root).toHaveAttribute("data-color-mode", "dark");
     });
 
     it("saves a choice in a lasting cookie, and forgets it for system", async () => {
@@ -337,7 +338,7 @@ describe("createColorMode", () => {
       flush();
       expect(document.cookie).toBe("color-mode=dark");
       expect(localStorage.getItem("color-mode")).toBeNull();
-      expect(root).toHaveAttribute("data-theme", "dark");
+      expect(root).toHaveAttribute("data-color-mode", "dark");
       // Sent with every request to the site, and kept for a year.
       const setCookie = written.mock.lastCall![0];
       expect(setCookie).toContain("; Path=/");
@@ -347,7 +348,7 @@ describe("createColorMode", () => {
       state.setMode("system");
       flush();
       expect(document.cookie).toBe("");
-      expect(root).toHaveAttribute("data-theme", "light");
+      expect(root).toHaveAttribute("data-color-mode", "light");
     });
 
     it.each(["__Host-color-mode", "__Secure-color-mode"])(
@@ -374,7 +375,7 @@ describe("createColorMode", () => {
       document.cookie = "color-mode=dark";
       fireEvent(document, new Event("visibilitychange"));
       expect(state.mode()).toBe("dark");
-      expect(root).toHaveAttribute("data-theme", "dark");
+      expect(root).toHaveAttribute("data-color-mode", "dark");
 
       unmount();
       document.cookie = "color-mode=light";
@@ -400,7 +401,7 @@ describe("createColorMode", () => {
         state.setMode("dark");
         flush();
         expect(state.mode()).toBe("dark");
-        expect(root).toHaveAttribute("data-theme", "dark");
+        expect(root).toHaveAttribute("data-color-mode", "dark");
       } finally {
         delete (document as { cookie?: string }).cookie;
       }

@@ -18,7 +18,7 @@ describe("colorModeScript", () => {
     vi.restoreAllMocks();
     localStorage.clear();
     clearCookies();
-    root.removeAttribute("data-theme");
+    root.removeAttribute("data-color-mode");
     root.removeAttribute("data-mode");
     root.classList.remove("light", "dark");
   });
@@ -31,7 +31,7 @@ describe("colorModeScript", () => {
     (dark, expected) => {
       stubSystemPreference(dark);
       runScript(colorModeScript());
-      expect(root).toHaveAttribute("data-theme", expected);
+      expect(root).toHaveAttribute("data-color-mode", expected);
     },
   );
 
@@ -39,14 +39,14 @@ describe("colorModeScript", () => {
     stubSystemPreference(mode === "light");
     localStorage.setItem("color-mode", mode);
     runScript(colorModeScript());
-    expect(root).toHaveAttribute("data-theme", mode);
+    expect(root).toHaveAttribute("data-color-mode", mode);
   });
 
   it("treats an unknown saved value as system", () => {
     stubSystemPreference(true);
     localStorage.setItem("color-mode", "sepia");
     runScript(colorModeScript());
-    expect(root).toHaveAttribute("data-theme", "dark");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
   });
 
   it("falls back to the system when storage throws", () => {
@@ -55,7 +55,7 @@ describe("colorModeScript", () => {
       throw new Error("SecurityError");
     });
     runScript(colorModeScript());
-    expect(root).toHaveAttribute("data-theme", "dark");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
   });
 
   it("reads storageKey and writes attribute", () => {
@@ -65,7 +65,7 @@ describe("colorModeScript", () => {
       colorModeScript({ storageKey: "site-theme", attribute: "data-mode" }),
     );
     expect(root).toHaveAttribute("data-mode", "dark");
-    expect(root).not.toHaveAttribute("data-theme");
+    expect(root).not.toHaveAttribute("data-color-mode");
   });
 
   it("swaps the light and dark classes with attribute class", () => {
@@ -84,7 +84,7 @@ describe("colorModeScript", () => {
     stubSystemPreference(false);
     localStorage.setItem("</script><script>alert(1)</script>", "dark");
     runScript(source);
-    expect(root).toHaveAttribute("data-theme", "dark");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
   });
 
   describe("from menhir/color-mode/cookie", () => {
@@ -93,7 +93,7 @@ describe("colorModeScript", () => {
       document.cookie = `session=abc`;
       document.cookie = `color-mode=${mode}`;
       runScript(cookie.colorModeScript());
-      expect(root).toHaveAttribute("data-theme", mode);
+      expect(root).toHaveAttribute("data-color-mode", mode);
     });
 
     it.each([
@@ -106,7 +106,7 @@ describe("colorModeScript", () => {
         document.cookie = pair;
       }
       runScript(cookie.colorModeScript());
-      expect(root).toHaveAttribute("data-theme", "light");
+      expect(root).toHaveAttribute("data-color-mode", "light");
     });
 
     it("falls back to the system when cookies throw", () => {
@@ -115,7 +115,7 @@ describe("colorModeScript", () => {
         throw new Error("SecurityError");
       });
       runScript(cookie.colorModeScript());
-      expect(root).toHaveAttribute("data-theme", "dark");
+      expect(root).toHaveAttribute("data-color-mode", "dark");
     });
 
     it("reads the cookie named by storageKey, however it is spelled", () => {
@@ -125,7 +125,7 @@ describe("colorModeScript", () => {
       stubSystemPreference(false);
       document.cookie = `${encodeURIComponent(storageKey)}=dark`;
       runScript(source);
-      expect(root).toHaveAttribute("data-theme", "dark");
+      expect(root).toHaveAttribute("data-color-mode", "dark");
     });
   });
 });

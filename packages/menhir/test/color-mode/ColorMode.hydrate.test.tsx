@@ -15,7 +15,7 @@ describe("createColorMode hydration", () => {
     vi.restoreAllMocks();
     localStorage.clear();
     clearCookies();
-    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.removeAttribute("data-color-mode");
   });
 
   it("hydrates the server's system state, then reads the saved choice", async () => {
@@ -43,7 +43,7 @@ describe("createColorMode hydration", () => {
     expect(button).toBe(serverButton);
     expect(button).toHaveAttribute("data-mode", "dark");
     expect(button).toHaveTextContent("dark");
-    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(document.documentElement).toHaveAttribute("data-color-mode", "dark");
 
     await user.click(button);
     expect(button).toHaveAttribute("data-mode", "light");

@@ -53,9 +53,16 @@ const theme = themeFromCookie(
   ...
 </html>`;
 
-const withColorMode = `// Both default to data-theme, so give one of them another attribute.
-const colorMode = createColorMode({ attribute: "data-color-mode" });
+const withColorMode = `// data-color-mode="dark" and data-theme="nord" on <html>.
+const colorMode = createColorMode();
 const theme = createTheme(themeOptions);`;
+
+const withColorModeCss = `:root[data-theme="nord"] {
+  --background: #eceff4;
+}
+:root[data-theme="nord"][data-color-mode="dark"] {
+  --background: #2e3440;
+}`;
 
 const options: ApiRow[] = [
   {
@@ -206,11 +213,15 @@ export default function ThemePage() {
       <Section id="with-color-mode" title="With Color Mode">
         <p>
           Most sites have either a light, dark or system choice or a list of
-          themes. A site with both runs the two side by side, each with its own
-          attribute and storage key:
+          themes. A site with both runs the two side by side: each has its own
+          attribute and storage key, so each theme can have a light and a dark
+          look.
         </p>
         <pre>
           <code>{withColorMode}</code>
+        </pre>
+        <pre>
+          <code>{withColorModeCss}</code>
         </pre>
       </Section>
       <Section id="api" title="API reference">

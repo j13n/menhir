@@ -26,7 +26,7 @@ describe("createTheme", () => {
     clearCookies();
     root.removeAttribute("data-theme");
     root.removeAttribute("data-palette");
-    root.removeAttribute("data-mode");
+    root.removeAttribute("data-color-mode");
     root.className = "";
   });
 
@@ -180,15 +180,19 @@ describe("createTheme", () => {
     await render(() => {
       first = createTheme(options);
       second = createTheme(options);
-      colorMode = createColorMode({ attribute: "data-mode" });
+      colorMode = createColorMode();
       return null;
     });
     flush();
 
     first.setTheme("dracula");
+    colorMode.setMode("dark");
     flush();
     expect(second.theme()).toBe("dracula");
-    expect(colorMode.mode()).toBe("system");
+    expect(colorMode.mode()).toBe("dark");
+    // Each writes its own attribute, so both work with their defaults.
+    expect(root).toHaveAttribute("data-theme", "dracula");
+    expect(root).toHaveAttribute("data-color-mode", "dark");
   });
 
   it("uses storageKey and attribute, and swaps classes with class", async () => {

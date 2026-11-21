@@ -14,7 +14,7 @@ export interface ColorModeOptions {
   storageKey?: string;
   /**
    * Where the resolved mode goes on `<html>`: a `data-*` attribute set to
-   * `light` or `dark` (default `"data-theme"`), or `"class"` for a `light`
+   * `light` or `dark` (default `"data-color-mode"`), or `"class"` for a `light`
    * or `dark` class.
    */
   attribute?: "class" | `data-${string}`;
@@ -24,7 +24,7 @@ export const defaultStorageKey = "color-mode";
 
 /** The fixed modes: every value that is saved, and every look. */
 export const resolvedModes: readonly ResolvedColorMode[] = ["light", "dark"];
-export const defaultAttribute = "data-theme";
+export const defaultAttribute = "data-color-mode";
 
 /** The media query whose match means the system prefers dark. */
 export const darkQuery = "(prefers-color-scheme: dark)";
