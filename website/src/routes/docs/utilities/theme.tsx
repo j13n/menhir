@@ -70,6 +70,43 @@ const withColorSchemeCss = css`:root[data-theme="nord"] {
   --background: #2e3440;
 }`;
 
+const followSystem = ts`export const themeOptions = {
+  themes: ["system", "paper", "slate", "forest"],
+  defaultTheme: "system",
+} as const;`;
+
+const followSystemCss = css`:root[data-theme="paper"],
+:root[data-theme="system"] {
+  color-scheme: light;
+  --background: #fbf7ee;
+  --text: #3d2e1f;
+}
+:root[data-theme="slate"] {
+  color-scheme: dark;
+  --background: #1e293b;
+  --text: #f1f5f9;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] {
+    color-scheme: dark;
+    --background: #1e293b;
+    --text: #f1f5f9;
+  }
+}`;
+
+const followSystemTailwind = css`/* slate: applies under slate, and under system while the system is dark,
+   as in class="bg-amber-50 slate:bg-slate-800". */
+@custom-variant slate {
+  &:where([data-theme="slate"], [data-theme="slate"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}`;
+
 const options: ApiRow[] = [
   {
     name: "themes",
@@ -237,6 +274,36 @@ export default function ThemePage() {
         </p>
         <CodeBlock code={withColorScheme} />
         <CodeBlock code={withColorSchemeCss} />
+      </Section>
+      <Section id="following-the-system" title="Following the system">
+        <p>
+          To follow the system with a theme for each look, such as paper while
+          the system is light and slate while it is dark, add a theme for that
+          choice and style it with a media query. Unlike With Color Scheme, the
+          reader makes one choice: System sits in the same list as the fixed
+          themes.
+        </p>
+        <CodeBlock code={followSystem} />
+        <CodeBlock code={followSystemCss} />
+        <p>
+          The browser switches looks when the system does, and the head script
+          has put <code>system</code> on <code>&lt;html&gt;</code> before the
+          first paint, so the page never shows the wrong one. The server sends{" "}
+          <code>system</code> as it is, so cookie storage needs nothing more.
+        </p>
+        <p>
+          The dark look's values are written twice, for slate and in the media
+          query. With Tailwind CSS, a custom variant can hold the pair instead,
+          so each class is written once and Tailwind writes both rules:
+        </p>
+        <CodeBlock code={followSystemTailwind} />
+        <p>
+          <code>theme()</code> returns <code>system</code>, not the look on
+          screen; a component that needs the look reads{" "}
+          <code>matchMedia("(prefers-color-scheme: dark)")</code>. The pair is
+          the app's: the reader cannot choose which theme shows while the system
+          is light and which while it is dark.
+        </p>
       </Section>
       <Section id="api" title="API reference">
         <ApiTable head="Function" rows={functions} />
