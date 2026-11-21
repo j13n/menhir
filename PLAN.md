@@ -79,12 +79,12 @@ These are structural and must hold from the first commit.
    ```
    The build has to keep that re-export as written; see "Build" in section 7.
 4. **Strict layers.** Enforced by an import-boundary lint rule.
-   | Layer             | Contains                                                                                                                                                                                           | May import                 |
-   | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-   | `core`            | Prop merging, controlled/uncontrolled signal, polymorphism helper, the props of parts that are buttons and toggle buttons, the utilities' saved preference. Ids are Solid's `createUniqueId` (#13) | Nothing internal           |
-   | `floating`        | Positioning, dismissal, focus trap, hover intent, list navigation, typeahead                                                                                                                       | `core`, `@floating-ui/dom` |
-   | Simple components | Switch, Toggle, Checkbox, Tabs, etc.                                                                                                                                                               | `core` only                |
-   | Popup components  | Dialog, Popover, Menu, Select, etc.                                                                                                                                                                | `core`, `floating`         |
+   | Layer             | Contains                                                                                                                                                                                                                         | May import                 |
+   | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+   | `core`            | Prop merging, controlled/uncontrolled signal, polymorphism helper, the props of parts that are buttons and toggle buttons, a part's value along a range, the utilities' saved preference. Ids are Solid's `createUniqueId` (#13) | Nothing internal           |
+   | `floating`        | Positioning, dismissal, focus trap, hover intent, list navigation, typeahead                                                                                                                                                     | `core`, `@floating-ui/dom` |
+   | Simple components | Switch, Toggle, Checkbox, Tabs, etc.                                                                                                                                                                                             | `core` only                |
+   | Popup components  | Dialog, Popover, Menu, Select, etc.                                                                                                                                                                                              | `core`, `floating`         |
 5. **Near-zero dependencies.** `@floating-ui/dom` only. Use built-in `Intl` for number and date formatting.
 6. **Expensive behaviour is a part, not a flag.** Portal, scroll lock and focus trap are composed in, so apps that don't render them don't ship them.
 

@@ -1,9 +1,10 @@
 import type { JSX } from "@solidjs/web";
-import { createMemo, merge, omit } from "solid-js";
+import { merge, omit } from "solid-js";
 
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
+import { createRange } from "../../core/range.ts";
 import { renderElement } from "../../core/renderElement.tsx";
-import type { ElementProps, RenderProp } from "../../core/renderElement.tsx";
+import type { RenderProp } from "../../core/renderElement.tsx";
 import { ProgressRootContext } from "./ProgressRootContext.ts";
 import type { ProgressStateAttributes } from "./ProgressRootContext.ts";
 
@@ -36,34 +37,11 @@ export interface ProgressRootProps extends JSX.HTMLAttributes<HTMLElement> {
  * The progress bar itself: a `<div role="progressbar">`.
  */
 export function ProgressRoot(props: ProgressRootProps) {
-  const min = () => props.min ?? 0;
-  const max = () => props.max ?? 100;
-  const value = () =>
-    props.value == null
-      ? undefined
-      : Math.min(Math.max(props.value, min()), max());
-  // How far along the range the value is, from 0 to 1.
-  const fraction = () => {
-    const current = value();
-    return current === undefined
-      ? undefined
-      : (current - min()) / (max() - min());
-  };
-  const text = createMemo(() => {
-    const current = value();
-    if (current === undefined) return undefined;
-    const format = props.format;
-    // The percent style formats a fraction: of the range, not the value.
-    const percent = !format || format.style === "percent";
-    return new Intl.NumberFormat(
-      props.locale,
-      format ?? { style: "percent" },
-    ).format(percent ? fraction()! : current);
-  });
+  const range = createRange(props, "progressbar", "--progress");
   const state = () => {
-    const current = value();
-    if (current === undefined) return "indeterminate";
-    return current === max() ? "complete" : "progressing";
+    const fraction = range.fraction();
+    if (fraction === undefined) return "indeterminate";
+    return fraction === 1 ? "complete" : "progressing";
   };
   const attributes: ProgressStateAttributes = {
     get "data-indeterminate"() {
@@ -76,42 +54,12 @@ export function ProgressRoot(props: ProgressRootProps) {
       return state() === "complete" ? "" : undefined;
     },
   };
-  const ownProps: ElementProps = {
-    role: "progressbar",
-    get "aria-valuemin"() {
-      return min();
-    },
-    get "aria-valuemax"() {
-      return max();
-    },
-    get "aria-valuenow"() {
-      return value();
-    },
-    get "aria-valuetext"() {
-      return text();
-    },
-    get style() {
-      const current = fraction();
-      return {
-        "--progress": current === undefined ? undefined : `${current * 100}%`,
-      };
-    },
-  };
   const elementProps = mergeElementProps(
-    merge(attributes, ownProps),
+    merge(attributes, range.props),
     omit(props, "render", "value", "min", "max", "format", "locale"),
   );
   return (
-    <ProgressRootContext
-      value={{
-        attributes,
-        // What the bar announces, so that Progress.Value shows it too.
-        valueText: () => {
-          const own = props["aria-valuetext"];
-          return typeof own === "string" ? own : text();
-        },
-      }}
-    >
+    <ProgressRootContext value={{ attributes, valueText: range.valueText }}>
       {renderElement(props, elementProps, (p) => (
         <div {...p} />
       ))}
