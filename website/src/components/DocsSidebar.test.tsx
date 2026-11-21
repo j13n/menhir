@@ -28,13 +28,16 @@ describe("<DocsSidebar />", () => {
     ]);
   });
 
-  test("links to every component page under its own heading, in alphabetical order", () => {
+  test("links to the components overview, then every component page in alphabetical order, under its own heading", () => {
     const { getByRole } = render(() => <DocsSidebar />);
     const nav = within(getByRole("navigation", { name: "Docs" }));
     const heading = nav.getByRole("heading", { name: "Components" });
     expect(within(heading).queryByRole("link")).toBeNull();
 
-    const components = links(nav.getByRole("list", { name: "Components" }));
+    const [overview, ...components] = links(
+      nav.getByRole("list", { name: "Components" }),
+    );
+    expect(overview).toEqual(["Overview", "/docs/components"]);
     expect(components.map(([, href]) => href).sort()).toEqual(
       componentPages.sort(),
     );

@@ -6,8 +6,10 @@ type DocsSection = { title?: string; links: DocsLink[] };
 
 /**
  * The docs pages, grouped and in reading order. Add a guide here when it lands
- * in `src/routes/docs/`. The component pages come from `src/componentDocs`,
- * through `virtual:component-list`, so a page is linked once its doc is listed.
+ * in `src/routes/docs/`. The Components section opens with the overview at
+ * `/docs/components`; the component pages after it come from
+ * `src/componentDocs`, through `virtual:component-list`, so a page is linked
+ * once its doc is listed.
  */
 export const docsSections: DocsSection[] = [
   {
@@ -19,10 +21,13 @@ export const docsSections: DocsSection[] = [
   },
   {
     title: "Components",
-    links: components.map(({ slug, name }) => ({
-      href: `/docs/components/${slug}`,
-      title: name,
-    })),
+    links: [
+      { href: "/docs/components", title: "Overview" },
+      ...components.map(({ slug, name }) => ({
+        href: `/docs/components/${slug}`,
+        title: name,
+      })),
+    ],
   },
 ];
 
