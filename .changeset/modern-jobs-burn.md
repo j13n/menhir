@@ -1,5 +1,0 @@
----
-"menhir": minor
----
-
-Initial release
