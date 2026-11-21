@@ -16,6 +16,7 @@ to "Styling, themes" in PLAN.md's non-goals; see
 | [`storage` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event) (MDN)                     | 2026-11-21 |
 | [`visibilitychange` event](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event) (MDN) | 2026-11-21 |
 | [`Set-Cookie`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie) (MDN)               | 2026-11-21 |
+| [Content Security Policy: nonces and hashes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) (MDN)   | 2026-11-21 |
 
 ## Shape
 
@@ -90,6 +91,10 @@ Decisions:
 - Measured on 2026-11-21, every export gzipped: `local-storage` 1.12 kB,
   `cookie` 1.37 kB, each with about 130 B of development-only checks that
   the measurement counts (#69).
+- **A strict Content Security Policy needs no option**, as for color mode
+  (ADR 0004): the app renders the script element, so it puts its nonce
+  there, or allows the SHA-256 hash of the source, which changes with the
+  options.
 
 ## Test list
 
@@ -108,6 +113,10 @@ they say `cookie`.
 - Rejects a theme name the script could not apply, and a `defaultTheme`
   outside `themes`
 - Cannot close its script element through the options
+- Under a Content Security Policy (Chromium only; jsdom enforces none): is
+  blocked without the policy's nonce or hash; runs in a script element
+  with the policy's nonce; runs when the policy allows the hash of its
+  source; has another hash with another list of themes
 - From `cookie`: applies a saved theme, or the default; applies the default
   when cookies throw; reads an encoded `storageKey` and cannot close its
   script element
@@ -153,6 +162,7 @@ they say `cookie`.
 | A default that follows the system          | A theme is just a theme; color mode covers light, dark and system (ADR 0003). A theme per system scheme: #73 |
 | Light and dark variants of each theme      | Two axes; an app that wants both can use color mode and theme side by side, with two attributes              |
 | Live sync of a cookie between visible tabs | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser                       |
-| A `nonce` or hash for a strict CSP         | #64, as for color mode                                                                                       |
+| A `nonce` option or a published hash       | The app renders the script element, so both are the app's, as for color mode (ADR 0004)                      |
+| The head script as a file                  | A file loads after the page can paint, as for color mode (ADR 0004)                                          |
 | Setting `color-scheme` per theme           | Styling: one line of CSS under each theme's attribute, which the docs page shows                             |
 | A control                                  | The app's: a `<select>`, radio group or menu; the docs page shows one                                        |

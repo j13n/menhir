@@ -32,6 +32,10 @@ export function createColorMode(options?: ColorModeOptions): ColorModeState {
  * ```tsx
  * <script innerHTML={colorModeScript()} />
  * ```
+ *
+ * Under a Content Security Policy without `'unsafe-inline'`, put the
+ * policy's nonce on the element (`<script nonce={nonce} …>`), or allow the
+ * SHA-256 hash of the returned source.
  */
 export function colorModeScript(options?: ColorModeOptions): string {
   return colorModeScriptWithStorage(storage, options);

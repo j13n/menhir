@@ -31,6 +31,10 @@ export function createTheme<const T extends string>(
  * ```tsx
  * <script innerHTML={themeScript(options)} />
  * ```
+ *
+ * Under a Content Security Policy without `'unsafe-inline'`, put the
+ * policy's nonce on the element (`<script nonce={nonce} …>`), or allow the
+ * SHA-256 hash of the returned source.
  */
 export function themeScript<const T extends string>(
   options: ThemeOptions<T>,

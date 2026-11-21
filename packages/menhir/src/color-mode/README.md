@@ -17,6 +17,7 @@ sharing the code below through `core/preference`
 | [`storage` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event) (MDN)                     | 2026-11-21 |
 | [`visibilitychange` event](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event) (MDN) | 2026-11-21 |
 | [`Set-Cookie`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie) (MDN)               | 2026-11-21 |
+| [Content Security Policy: nonces and hashes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) (MDN)   | 2026-11-21 |
 
 ## Shape
 
@@ -117,6 +118,13 @@ Decisions:
   browsers.
 - **The head script's options are escaped** so that a `storageKey` cannot end
   the `<script>` element.
+- **A strict Content Security Policy needs no option** (ADR 0004).
+  `colorModeScript` returns the source and the app renders the element, so
+  the app puts its nonce there, or allows the SHA-256 hash of the source. The
+  source is the same for the same entry point, options and Menhir version, so
+  a build can compute the hash; it is not published, since it would differ
+  per option and change with a release. The script uses nothing else a
+  policy restricts: no `eval`, no inline style, no request.
 
 ## Test list
 
@@ -144,6 +152,11 @@ they say `cookie`.
 - Reads `storageKey` and writes `attribute`
 - Swaps the `light` and `dark` classes with `attribute: "class"`
 - Cannot close its script element through the options
+- Under a Content Security Policy (Chromium only; jsdom enforces none): is
+  blocked without the policy's nonce or hash; runs in a script element
+  with the policy's nonce; runs when the policy allows the hash of its
+  source; has another hash with other options; from `cookie`, runs with a
+  nonce or a hash
 - From `cookie`: applies a saved `light` or `dark` over the
   system; applies the system with no cookie, an unknown value, or only
   cookies whose names contain the key; falls back to the system when cookies
@@ -183,12 +196,13 @@ they say `cookie`.
 
 ## Left out
 
-| Case                                         | Reason                                                                                      |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Live sync of a cookie between visible tabs   | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser      |
-| Modes beyond light, dark and system          | #63                                                                                         |
-| A `nonce` or hash for a strict CSP           | #64                                                                                         |
-| Setting `color-scheme` on `<html>`           | Styling: one line of CSS on the attribute, which the docs page shows                        |
-| Turning transitions off while the mode swaps | Styling: the app decides whether colours fade, and can scope transitions with `motion-safe` |
-| An element other than `<html>`               | The head script runs before the body exists, and one look per page is the common case       |
-| A control                                    | The app's; the docs page shows one built on `nextColorMode`                                 |
+| Case                                         | Reason                                                                                         |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Live sync of a cookie between visible tabs   | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser         |
+| Modes beyond light, dark and system          | #63                                                                                            |
+| A `nonce` option or a published hash         | The app renders the script element, so both are the app's; the docs page shows them (ADR 0004) |
+| The head script as a file                    | A file loads after the page can paint, which is the flash the script prevents (ADR 0004)       |
+| Setting `color-scheme` on `<html>`           | Styling: one line of CSS on the attribute, which the docs page shows                           |
+| Turning transitions off while the mode swaps | Styling: the app decides whether colours fade, and can scope transitions with `motion-safe`    |
+| An element other than `<html>`               | The head script runs before the body exists, and one look per page is the common case          |
+| A control                                    | The app's; the docs page shows one built on `nextColorMode`                                    |
