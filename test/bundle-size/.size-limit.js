@@ -7,6 +7,7 @@ const budgets = {
   "menhir/checkbox": "2.4 kB",
   "menhir/color-mode/cookie": "1.7 kB",
   "menhir/color-mode/local-storage": "1.4 kB",
+  "menhir/progress": "1.4 kB",
   "menhir/separator": "900 B",
   "menhir/switch": "2.3 kB",
   "menhir/theme/cookie": "1.6 kB",

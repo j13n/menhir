@@ -17,6 +17,7 @@
     "@base-ui/react": "~1.9.0",
     "@kobalte/core": "~0.13.14",
     "@radix-ui/react-checkbox": "^1.4.1",
+    "@radix-ui/react-progress": "^1.2.1",
     "@radix-ui/react-separator": "^1.2.0",
     "@radix-ui/react-switch": "^1.4.1",
     "@radix-ui/react-toggle": "^1.2.1",

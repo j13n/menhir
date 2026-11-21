@@ -33,7 +33,7 @@ menhir's `exports` has a budget and is within it.
    as PLAN.md section 7 ("Build") describes. `pnpm test` here now fails:
    the entry point has no budget.
 2. Add a line for it to `budgets` in `.size-limit.js`, such as
-   `"menhir/progress": "600 B"`. The limit is the measured size plus about 20%,
+   `"menhir/meter": "600 B"`. The limit is the measured size plus about 20%,
    rounded: run `pnpm size` to see the size.
 3. Run `pnpm test`.
 
