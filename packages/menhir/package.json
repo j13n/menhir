@@ -29,6 +29,11 @@
       "solid": "./dist/source/checkbox/index.js",
       "import": "./dist/checkbox/index.js"
     },
+    "./separator": {
+      "types": "./dist/source/separator/index.d.ts",
+      "solid": "./dist/source/separator/index.js",
+      "import": "./dist/separator/index.js"
+    },
     "./switch": {
       "types": "./dist/source/switch/index.d.ts",
       "solid": "./dist/source/switch/index.js",
