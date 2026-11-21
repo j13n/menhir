@@ -2,6 +2,8 @@
 // vite-plugin-component-markdown.ts turns the same data into each page's
 // Markdown version.
 
+import type { Highlighted } from "../highlight";
+
 export type PropRow = {
   name: string;
   type: string;
@@ -30,7 +32,8 @@ export type ComponentDoc = {
   /** Display name, such as "Switch". */
   name: string;
   description: string;
-  anatomy: string;
+  /** The parts as TSX, from the tsx tag of src/highlight.ts. */
+  anatomy: Highlighted;
   api: PartApi[];
   keyboard: KeyboardRow[];
 };

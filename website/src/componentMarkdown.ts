@@ -1,5 +1,6 @@
 import type { CodeFile, ComponentDoc } from "./componentDocs/types";
 import { formatSize } from "./formatSize";
+import { codeOf } from "./highlight";
 
 /** Where a component page's Markdown version is served, for agents to read. */
 export const markdownPath = (slug: string) => `/docs/components/${slug}.md`;
@@ -32,7 +33,7 @@ export function componentMarkdown(
     "## Install",
     fence("sh", "pnpm add menhir solid-js @solidjs/web"),
     "## Anatomy",
-    fence("tsx", doc.anatomy),
+    fence("tsx", codeOf(doc.anatomy)),
     "## Example",
     "### Tailwind CSS",
     ...extras.example.tailwind.flatMap(codeFile),

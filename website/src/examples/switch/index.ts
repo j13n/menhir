@@ -1,10 +1,10 @@
 import type { ComponentExampleProps } from "../../components/ComponentExample";
 
 import CssExample from "./css/SwitchExample";
-import cssExampleCode from "./css/SwitchExample.tsx?raw";
-import cssCode from "./css/switch.css?raw";
+import cssExampleCode from "./css/SwitchExample.tsx?highlight";
+import cssCode from "./css/switch.css?highlight";
 import TailwindExample from "./tailwind/SwitchExample";
-import tailwindExampleCode from "./tailwind/SwitchExample.tsx?raw";
+import tailwindExampleCode from "./tailwind/SwitchExample.tsx?highlight";
 
 /** The Switch page's example, with plain CSS and with Tailwind CSS. */
 export const switchExample: ComponentExampleProps = {

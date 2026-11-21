@@ -1,4 +1,4 @@
-import { render, within } from "@solidjs/testing-library";
+import { render } from "@solidjs/testing-library";
 import { describe, expect, test } from "vitest";
 
 // Kept outside src/routes so the file-system router never sees it as a page.
@@ -17,11 +17,14 @@ describe("getting started page", () => {
 
   test("shows how to install Menhir and its peer dependencies", () => {
     const { getByRole } = render(() => <GettingStarted />);
-    const install = within(getByRole("region", { name: "Install" }));
-    expect(install.getByText("pnpm add menhir").tagName).toBe("CODE");
-    expect(install.getByText("pnpm add solid-js @solidjs/web").tagName).toBe(
-      "CODE",
+    const install = getByRole("region", { name: "Install" });
+    const commands = [...install.querySelectorAll("pre code")].map(
+      (code) => code.textContent,
     );
+    expect(commands).toEqual([
+      "pnpm add menhir",
+      "pnpm add solid-js @solidjs/web",
+    ]);
   });
 
   test("shows a first component imported from its own entry point", () => {

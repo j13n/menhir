@@ -1,10 +1,10 @@
 import type { ComponentExampleProps } from "../../components/ComponentExample";
 
 import CssExample from "./css/ProgressExample";
-import cssExampleCode from "./css/ProgressExample.tsx?raw";
-import cssCode from "./css/progress.css?raw";
+import cssExampleCode from "./css/ProgressExample.tsx?highlight";
+import cssCode from "./css/progress.css?highlight";
 import TailwindExample from "./tailwind/ProgressExample";
-import tailwindExampleCode from "./tailwind/ProgressExample.tsx?raw";
+import tailwindExampleCode from "./tailwind/ProgressExample.tsx?highlight";
 
 /** The Progress page's example, with plain CSS and with Tailwind CSS. */
 export const progressExample: ComponentExampleProps = {

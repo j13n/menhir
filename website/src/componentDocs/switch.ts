@@ -1,3 +1,4 @@
+import { tsx } from "../highlight";
 import type { ComponentDoc } from "./types";
 
 export const switchDoc: ComponentDoc = {
@@ -5,7 +6,9 @@ export const switchDoc: ComponentDoc = {
   name: "Switch",
   description:
     "A control that turns a setting on or off. It renders a native button with the switch role, and a hidden checkbox beside it so that forms submit its value.",
-  anatomy: "<Switch.Root>\n  <Switch.Thumb />\n</Switch.Root>",
+  anatomy: tsx`<Switch.Root>
+  <Switch.Thumb />
+</Switch.Root>`,
   api: [
     {
       part: "Root",

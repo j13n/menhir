@@ -1,3 +1,4 @@
+import { tsx } from "../highlight";
 import type { ComponentDoc } from "./types";
 
 export const separatorDoc: ComponentDoc = {
@@ -5,7 +6,7 @@ export const separatorDoc: ComponentDoc = {
   name: "Separator",
   description:
     "A line that divides sections of content or groups of items. It renders a div with role separator and aria-orientation, and draws nothing: give it a size and a colour, selected by data-horizontal or data-vertical. It is not focusable.",
-  anatomy: "<Separator.Root />",
+  anatomy: tsx`<Separator.Root />`,
   api: [
     {
       part: "Root",

@@ -4,12 +4,14 @@ import localStorageSize from "virtual:menhir-sizes/theme/local-storage";
 
 import ApiTable from "../../../components/ApiTable";
 import type { ApiRow } from "../../../components/ApiTable";
+import CodeBlock from "../../../components/CodeBlock";
 import ComponentExample from "../../../components/ComponentExample";
 import Section from "../../../components/Section";
 import { themeExample } from "../../../examples/theme";
 import { formatMeasuredSize } from "../../../formatSize";
+import { css, ts, tsx } from "../../../highlight";
 
-const setup = `import { createTheme, themeScript } from "menhir/theme/local-storage";
+const setup = tsx`import { createTheme, themeScript } from "menhir/theme/local-storage";
 
 // Every theme the reader can choose, and the one shown until they do.
 // Give createTheme and themeScript the same options.
@@ -26,7 +28,7 @@ export const themeOptions = {
 const theme = createTheme(themeOptions);
 theme.setTheme("slate");`;
 
-const css = `:root[data-theme="paper"] {
+const themeCss = css`:root[data-theme="paper"] {
   color-scheme: light;
   --background: #fbf7ee;
   --text: #3d2e1f;
@@ -37,7 +39,7 @@ const css = `:root[data-theme="paper"] {
   --text: #f1f5f9;
 }`;
 
-const serverDocument = `import { getRequestEvent } from "@solidjs/web";
+const serverDocument = tsx`import { getRequestEvent } from "@solidjs/web";
 import { themeFromCookie, themeScript } from "menhir/theme/cookie";
 
 // The server's document. Pass the options given to createTheme.
@@ -53,15 +55,15 @@ const theme = themeFromCookie(
   ...
 </html>`;
 
-const nonceScript = `// nonce: the one the server made for this response, as in
+const nonceScript = tsx`// nonce: the one the server made for this response, as in
 // Content-Security-Policy: script-src 'nonce-<nonce>'
 <script nonce={nonce} innerHTML={themeScript(themeOptions)} />`;
 
-const withColorMode = `// data-color-mode="dark" and data-theme="nord" on <html>.
+const withColorMode = ts`// data-color-mode="dark" and data-theme="nord" on <html>.
 const colorMode = createColorMode();
 const theme = createTheme(themeOptions);`;
 
-const withColorModeCss = `:root[data-theme="nord"] {
+const withColorModeCss = css`:root[data-theme="nord"] {
   --background: #eceff4;
 }
 :root[data-theme="nord"][data-color-mode="dark"] {
@@ -171,17 +173,13 @@ export default function ThemePage() {
           before the page first paints, and call <code>createTheme</code> in the
           component that changes it:
         </p>
-        <pre>
-          <code>{setup}</code>
-        </pre>
+        <CodeBlock code={setup} />
         <p>
           Style each theme from the attribute. Each theme can say whether it is
           light or dark with <code>color-scheme</code>, so native controls and
           scrollbars match it:
         </p>
-        <pre>
-          <code>{css}</code>
-        </pre>
+        <CodeBlock code={themeCss} />
         <p>
           The server cannot see <code>localStorage</code>, so the state starts
           as the default theme and catches up once the page settles; the head
@@ -204,9 +202,7 @@ export default function ThemePage() {
           from the first render. Put the attribute on <code>&lt;html&gt;</code>{" "}
           with <code>themeFromCookie</code>:
         </p>
-        <pre>
-          <code>{serverDocument}</code>
-        </pre>
+        <CodeBlock code={serverDocument} />
         <p>
           The page has to be rendered for each request: a prerendered page has
           no cookie to read, so it shows the default and disagrees with the
@@ -220,9 +216,7 @@ export default function ThemePage() {
           until it is allowed. A server that renders each page can put its nonce
           on the element:
         </p>
-        <pre>
-          <code>{nonceScript}</code>
-        </pre>
+        <CodeBlock code={nonceScript} />
         <p>
           A prerendered page can allow the SHA-256 hash of what{" "}
           <code>themeScript</code> returns instead, as{" "}
@@ -240,12 +234,8 @@ export default function ThemePage() {
           attribute and storage key, so each theme can have a light and a dark
           look.
         </p>
-        <pre>
-          <code>{withColorMode}</code>
-        </pre>
-        <pre>
-          <code>{withColorModeCss}</code>
-        </pre>
+        <CodeBlock code={withColorMode} />
+        <CodeBlock code={withColorModeCss} />
       </Section>
       <Section id="api" title="API reference">
         <ApiTable head="Function" rows={functions} />

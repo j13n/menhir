@@ -1,3 +1,4 @@
+import { tsx } from "../highlight";
 import type { ComponentDoc } from "./types";
 
 export const toggleDoc: ComponentDoc = {
@@ -5,7 +6,7 @@ export const toggleDoc: ComponentDoc = {
   name: "Toggle",
   description:
     "A button that stays pressed until it is pressed again, such as Bold in a text editor. It renders a native button with aria-pressed. Keep its label the same in both states: a Mute toggle stays Mute while pressed, and screen readers announce it as pressed.",
-  anatomy: "<Toggle.Root />",
+  anatomy: tsx`<Toggle.Root />`,
   api: [
     {
       part: "Root",

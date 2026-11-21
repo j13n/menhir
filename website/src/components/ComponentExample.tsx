@@ -1,16 +1,18 @@
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 
-import type { CodeFile } from "../componentDocs/types";
+import type { Highlighted } from "../highlight";
+import CodeBlock from "./CodeBlock";
 import Section from "./Section";
 
-export type { CodeFile };
+/** A source file of an example, highlighted. */
+export type ExampleFile = { name: string; code: Highlighted };
 
 /** One way of styling an example: what it renders and the files it is made of. */
 export type ExampleVariant = {
   render: () => JSX.Element;
-  /** The example's source, imported with `?raw` so the code shown is the code that runs. */
-  files: CodeFile[];
+  /** The example's source, imported with `?highlight` so the code shown is the code that runs. */
+  files: ExampleFile[];
 };
 
 /** A component's example, styled with Tailwind CSS and with plain CSS. */
@@ -76,9 +78,7 @@ export default function ComponentExample(props: ComponentExampleProps) {
             <figcaption class="mb-1 font-mono text-xs text-stone-500 dark:text-stone-400">
               {file.name}
             </figcaption>
-            <pre class="m-0">
-              <code>{file.code}</code>
-            </pre>
+            <CodeBlock code={file.code} class="m-0" />
           </figure>
         )}
       </For>

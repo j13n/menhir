@@ -12,13 +12,15 @@ import {
 import { describe, expect, test } from "vitest";
 
 import type { ComponentDoc } from "./src/componentDocs/types.ts";
+
+import { tsx } from "./src/highlight.ts";
 import componentMarkdown from "./vite-plugin-component-markdown.ts";
 
 const switchDoc: ComponentDoc = {
   slug: "switch",
   name: "Switch",
   description: "A control that turns a setting on or off.",
-  anatomy: "<Switch.Root />",
+  anatomy: tsx`<Switch.Root />`,
   api: [],
   keyboard: [],
 };

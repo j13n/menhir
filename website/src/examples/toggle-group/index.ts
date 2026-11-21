@@ -1,10 +1,10 @@
 import type { ComponentExampleProps } from "../../components/ComponentExample";
 
 import CssExample from "./css/ToggleGroupExample";
-import cssExampleCode from "./css/ToggleGroupExample.tsx?raw";
-import cssCode from "./css/toggle-group.css?raw";
+import cssExampleCode from "./css/ToggleGroupExample.tsx?highlight";
+import cssCode from "./css/toggle-group.css?highlight";
 import TailwindExample from "./tailwind/ToggleGroupExample";
-import tailwindExampleCode from "./tailwind/ToggleGroupExample.tsx?raw";
+import tailwindExampleCode from "./tailwind/ToggleGroupExample.tsx?highlight";
 
 /** The Toggle Group page's example, with plain CSS and with Tailwind CSS. */
 export const toggleGroupExample: ComponentExampleProps = {

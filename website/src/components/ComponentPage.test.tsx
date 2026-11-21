@@ -3,6 +3,7 @@ import { captureArtifact, expectNoDiagnostics } from "@solidjs/diagnostics";
 import { createSignal, flush } from "solid-js";
 import { describe, expect, test, vi } from "vitest";
 
+import { css, tsx } from "../highlight";
 import ComponentPage, { type ComponentPageProps } from "./ComponentPage";
 
 const switchPage: ComponentPageProps = {
@@ -17,8 +18,11 @@ const switchPage: ComponentPageProps = {
         </button>
       ),
       files: [
-        { name: "SwitchExample.tsx", code: '<button class="switch" />' },
-        { name: "switch.css", code: ".switch { border-radius: 9999px; }" },
+        { name: "SwitchExample.tsx", code: tsx`<button class="switch" />` },
+        {
+          name: "switch.css",
+          code: css`.switch { border-radius: 9999px; }`,
+        },
       ],
     },
     tailwind: {
@@ -28,11 +32,16 @@ const switchPage: ComponentPageProps = {
         </button>
       ),
       files: [
-        { name: "SwitchExample.tsx", code: '<button class="rounded-full" />' },
+        {
+          name: "SwitchExample.tsx",
+          code: tsx`<button class="rounded-full" />`,
+        },
       ],
     },
   },
-  anatomy: "<Switch.Root>\n  <Switch.Thumb />\n</Switch.Root>",
+  anatomy: tsx`<Switch.Root>
+  <Switch.Thumb />
+</Switch.Root>`,
   api: [
     {
       part: "Root",

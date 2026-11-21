@@ -1,3 +1,4 @@
+import { tsx } from "../highlight";
 import type { ComponentDoc } from "./types";
 
 export const meterDoc: ComponentDoc = {
@@ -5,7 +6,7 @@ export const meterDoc: ComponentDoc = {
   name: "Meter",
   description:
     'Shows a measurement within a known range, such as a battery\'s charge or the storage a disk has used. It renders a div with role="meter" and the value in aria-valuenow, aria-valuetext and the CSS custom property --meter, and draws nothing: size an element inside it with --meter. For how far a task has got, such as an upload, use Progress instead, and for a value with no meaningful maximum, neither. The role requires a name: give it aria-label, or aria-labelledby naming an element.',
-  anatomy: `<Meter.Root>
+  anatomy: tsx`<Meter.Root>
   <Meter.Value />
 </Meter.Root>`,
   api: [
