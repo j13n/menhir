@@ -45,4 +45,21 @@ describe("<DocsSidebar />", () => {
     expect(names).toEqual(names.toSorted());
     expect(components).toContainEqual(["Switch", "/docs/components/switch"]);
   });
+
+  test("links to every utility page under its own heading", () => {
+    const utilityPages = Object.keys(
+      import.meta.glob("../routes/docs/utilities/*.tsx"),
+    ).map((path) => `/docs/utilities/${path.match(/([^/]+)\.tsx$/)![1]}`);
+
+    const { getByRole } = render(() => <DocsSidebar />);
+    const nav = within(getByRole("navigation", { name: "Docs" }));
+    const utilities = links(nav.getByRole("list", { name: "Utilities" }));
+    expect(utilities.map(([, href]) => href).sort()).toEqual(
+      utilityPages.sort(),
+    );
+    expect(utilities).toContainEqual([
+      "Color Mode",
+      "/docs/utilities/color-mode",
+    ]);
+  });
 });

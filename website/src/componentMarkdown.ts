@@ -62,8 +62,8 @@ export function componentMarkdown(
 
 /**
  * The site's index for agents, served at `/llms.txt` (https://llmstxt.org):
- * what Menhir is, how to install it, and a link to each component's Markdown
- * with the first sentence of its description.
+ * what Menhir is, how to install it, a link to each component's Markdown
+ * with the first sentence of its description, and the utilities' pages.
  */
 export function llmsTxt(docs: ComponentDoc[]): string {
   const blocks = [
@@ -77,6 +77,8 @@ export function llmsTxt(docs: ComponentDoc[]): string {
           `- [${doc.name}](${markdownPath(doc.slug)}): ${firstSentence(doc.description)}`,
       )
       .join("\n"),
+    "## Utilities",
+    "- [Color Mode](/docs/utilities/color-mode): `menhir/color-mode` keeps the reader's light, dark or system choice, saved and applied to `<html>`, with a head script that applies it before the first paint.",
     "## Docs",
     [
       "- [Getting started](/docs/getting-started): installing Menhir and using a first component.",

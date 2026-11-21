@@ -2,6 +2,7 @@ import { Title } from "@solidjs/meta";
 import { sizes } from "virtual:menhir-sizes";
 
 import SizeTable from "../../../components/SizeTable";
+import { isUtility } from "../../../utilities";
 
 export default function Components() {
   return (
@@ -13,7 +14,7 @@ export default function Components() {
         app that uses every part of it, minified and gzipped, with Solid left
         out.
       </p>
-      <SizeTable sizes={sizes} />
+      <SizeTable sizes={sizes.filter((row) => !isUtility(row.entryPoint))} />
     </main>
   );
 }
