@@ -167,6 +167,22 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Toggle, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const control = example.getByRole("button", { name: "Mute" });
+    expect(control).toHaveAttribute("aria-pressed", "false");
+    fireEvent.click(control);
+    // The toggle changes after the click's flush.
+    await Promise.resolve();
+    flush();
+    expect(control).toHaveAttribute("aria-pressed", "true");
+    expect(example.getByRole("link", { name: "Toggle" })).toHaveAttribute(
+      "href",
+      "/docs/components/toggle",
+    );
+  });
+
   test("renders, animates and toggles without tripping a Solid diagnostic", async () => {
     const { artifact } = await captureArtifact(
       () => {
@@ -174,6 +190,7 @@ describe("home page", () => {
         tick(2);
         fireEvent.click(getByRole("switch", { name: "Airplane mode" }));
         fireEvent.click(getByRole("checkbox", { name: "Email updates" }));
+        fireEvent.click(getByRole("button", { name: "Mute" }));
         flush();
       },
       { scenario: "home-page" },

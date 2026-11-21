@@ -34,6 +34,11 @@
       "solid": "./dist/source/switch/index.js",
       "import": "./dist/switch/index.js"
     },
+    "./toggle": {
+      "types": "./dist/source/toggle/index.d.ts",
+      "solid": "./dist/source/toggle/index.js",
+      "import": "./dist/toggle/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [

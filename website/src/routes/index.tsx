@@ -1,5 +1,6 @@
 import { Checkbox } from "menhir/checkbox";
 import { Switch } from "menhir/switch";
+import { Toggle } from "menhir/toggle";
 
 import InstallCommand from "../components/InstallCommand";
 import MenhirScene from "../components/MenhirScene";
@@ -91,6 +92,17 @@ export default function Home() {
               </label>
               <figcaption class="text-sm">
                 <a href="/docs/components/checkbox">Checkbox</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <div class="flex items-center justify-between gap-4">
+                Microphone
+                <Toggle.Root class="shrink-0 cursor-pointer rounded-md border border-stone-300 px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-pressed:border-transparent data-pressed:bg-stone-800 data-pressed:text-white dark:border-stone-700 dark:data-pressed:bg-stone-300 dark:data-pressed:text-stone-900">
+                  Mute
+                </Toggle.Root>
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/toggle">Toggle</a>
               </figcaption>
             </figure>
           </div>

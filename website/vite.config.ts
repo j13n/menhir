@@ -3,6 +3,7 @@ import { fileRoutes } from "filesystem-routing/vite";
 import { defineConfig } from "vitest/config";
 import solid from "@solidjs/vite-plugin";
 
+import componentList from "./vite-plugin-component-list.ts";
 import componentMarkdown from "./vite-plugin-component-markdown.ts";
 import menhirSizes from "./vite-plugin-sizes.ts";
 
@@ -20,6 +21,8 @@ export default defineConfig({
     menhirSizes(),
     // /docs/components/<slug>.md, each component page as Markdown for agents.
     componentMarkdown(),
+    // `virtual:component-list`, the components' slugs and names for the sidebar.
+    componentList(),
   ],
   server: {
     port: 3000,

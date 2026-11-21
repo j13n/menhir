@@ -1,13 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
-  // Files that run in Node: the build and test configs, Vitest global setups,
-  // the tests of the built package and the checks on the workspace. Kept
-  // apart from tsconfig.json so that Node's types stay out of the library's
-  // type program.
+  // Files that run in Node: the layer list the lint config reads, the build
+  // and test configs, Vitest global setups, the tests of the built package
+  // and the checks on the workspace. Kept apart from tsconfig.json so that
+  // Node's types stay out of the library's type program.
   "compilerOptions": {
     "types": ["node"]
   },
   "include": [
+    "layers.ts",
     "vite.config.ts",
     "vitest.config.ts",
     "vitest.package.config.ts",

@@ -2,9 +2,10 @@
 // from (#38), and checks it.
 // `pnpm test` builds menhir first, so the sizes are of the current source.
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
 
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { entryPoints } from "./entryPoints.ts";
 
 const root = import.meta.dirname;
 
@@ -26,13 +27,6 @@ function runSizeLimit(): SizeLimitResult[] {
   if (!Array.isArray(report)) throw new Error(report.error);
   return report;
 }
-
-const manifest = JSON.parse(
-  readFileSync(new URL(import.meta.resolve("menhir/package.json")), "utf8"),
-);
-const entryPoints = Object.keys(manifest.exports)
-  .filter((subpath) => subpath !== "./package.json")
-  .map((subpath) => `menhir/${subpath.slice("./".length)}`);
 
 describe("size-limit", () => {
   let results: SizeLimitResult[];

@@ -1,11 +1,13 @@
 import { For, Show } from "solid-js";
+import { components } from "virtual:component-list";
 
 type DocsLink = { href: string; title: string };
 type DocsSection = { title?: string; links: DocsLink[] };
 
 /**
- * The docs pages, grouped and in reading order. Add a page here when it lands
- * in `src/routes/docs/`, and a component's page under "Components".
+ * The docs pages, grouped and in reading order. Add a guide here when it lands
+ * in `src/routes/docs/`. The component pages come from `src/componentDocs`,
+ * through `virtual:component-list`, so a page is linked once its doc is listed.
  */
 export const docsSections: DocsSection[] = [
   {
@@ -17,10 +19,10 @@ export const docsSections: DocsSection[] = [
   },
   {
     title: "Components",
-    links: [
-      { href: "/docs/components/checkbox", title: "Checkbox" },
-      { href: "/docs/components/switch", title: "Switch" },
-    ],
+    links: components.map(({ slug, name }) => ({
+      href: `/docs/components/${slug}`,
+      title: name,
+    })),
   },
 ];
 
