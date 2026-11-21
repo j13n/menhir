@@ -11,8 +11,9 @@ describe("getting started page", () => {
       "Getting started",
     );
     const status = getByRole("region", { name: "Status" });
-    expect(status).toHaveTextContent("Switch is the first component");
-    expect(status.textContent).not.toMatch(/npm|published/);
+    expect(status).toHaveTextContent(
+      "the API may change between minor versions",
+    );
   });
 
   test("shows how to install Menhir and its peer dependencies", () => {
