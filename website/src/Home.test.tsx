@@ -216,6 +216,19 @@ describe("home page", () => {
     );
   });
 
+  test("shows a Meter with its value, linked to its page", () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const meter = example.getByRole("meter", { name: "Battery" });
+    expect(meter).toHaveAttribute("aria-valuenow", "80");
+    expect(meter).toHaveAttribute("aria-valuetext", "80%");
+    expect(meter).toHaveTextContent("80%");
+    expect(example.getByRole("link", { name: "Meter" })).toHaveAttribute(
+      "href",
+      "/docs/components/meter",
+    );
+  });
+
   test("shows a Progress with its value, linked to its page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));

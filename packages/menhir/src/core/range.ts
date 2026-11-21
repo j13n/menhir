@@ -47,8 +47,8 @@ export interface Range {
 }
 
 /**
- * The value, attributes and text of a part along a range, such as
- * Progress (PLAN.md section 8, "API conventions"). Call it in the
+ * The value, attributes and text of a part along a range, shared by
+ * Progress and Meter (PLAN.md section 8, "API conventions"). Call it in the
  * part's body with the element's role; `property` names the custom
  * property, such as `--progress`.
  * Omit `value`, `min`, `max`, `format` and `locale` from the props the part
@@ -56,7 +56,7 @@ export interface Range {
  */
 export function createRange(
   props: RangeProps,
-  role: "progressbar",
+  role: "progressbar" | "meter",
   property: `--${string}`,
 ): Range {
   const min = () => props.min ?? 0;

@@ -39,6 +39,11 @@
       "solid": "./dist/source/color-mode/local-storage/index.js",
       "import": "./dist/color-mode/local-storage/index.js"
     },
+    "./meter": {
+      "types": "./dist/source/meter/index.d.ts",
+      "solid": "./dist/source/meter/index.js",
+      "import": "./dist/meter/index.js"
+    },
     "./progress": {
       "types": "./dist/source/progress/index.d.ts",
       "solid": "./dist/source/progress/index.js",

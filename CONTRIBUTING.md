@@ -19,8 +19,9 @@ An earlier one wins when two disagree.
 2. **Write the tests** against Menhir's API.
 3. **Write the behaviour.** Never translate another library's source line by line: translated code loses reactivity and mistimes effects. When a React or Solid 1.x pattern has no direct equivalent, use the direction chosen in [PLAN.md, "What does not translate directly"](PLAN.md#what-does-not-translate-directly).
 4. **Follow the conventions** for parts, props and polymorphism: [PLAN.md, "Polymorphism"](PLAN.md#polymorphism) and ["API conventions"](PLAN.md#api-conventions).
-5. **Set the size budget.** Add a budget for the component's entry point in [test/bundle-size](test/bundle-size), and import only the layers it is allowed to. A pull request over budget fails CI.
-6. **Check it against the definition of done** below.
+5. **Add the entry point.** Add the component's subpath to `exports` in `packages/menhir/package.json`, and its name to the components in both READMEs, the repository's and the package's; `test/workspace/readme.test.ts` fails until they match.
+6. **Set the size budget.** Add a budget for the component's entry point in [test/bundle-size](test/bundle-size), and import only the layers it is allowed to. A pull request over budget fails CI.
+7. **Check it against the definition of done** below.
 
 ## Recording the sources
 

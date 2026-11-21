@@ -8,7 +8,7 @@
 // - button.ts: the props type and dev warning of a part that is a native
 //   button.
 // - range.ts: the value, attributes and text of a part along a range,
-//   such as Progress.
+//   shared by Progress and Meter.
 // - toggleButton.ts: the own props of a part that is a toggle button,
 //   shared by Toggle and Toggle Group.
 // - preference/: a reader's choice saved in `localStorage` or a cookie and
