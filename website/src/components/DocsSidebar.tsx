@@ -1,6 +1,8 @@
 import { For, Show } from "solid-js";
 import { components } from "virtual:component-list";
 
+import { utilities } from "../utilities";
+
 type DocsLink = { href: string; title: string };
 type DocsSection = { title?: string; links: DocsLink[] };
 
@@ -9,7 +11,7 @@ type DocsSection = { title?: string; links: DocsLink[] };
  * in `src/routes/docs/`. The Components section opens with the overview at
  * `/docs/components`; the component pages after it come from
  * `src/componentDocs`, through `virtual:component-list`, so a page is linked
- * once its doc is listed.
+ * once its doc is listed. The Utilities section lists `src/utilities.ts`.
  */
 export const docsSections: DocsSection[] = [
   {
@@ -28,6 +30,13 @@ export const docsSections: DocsSection[] = [
         title: name,
       })),
     ],
+  },
+  {
+    title: "Utilities",
+    links: utilities.map(({ slug, name }) => ({
+      href: `/docs/utilities/${slug}`,
+      title: name,
+    })),
   },
 ];
 

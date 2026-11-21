@@ -3,12 +3,13 @@ import type { EntryPointSize } from "virtual:menhir-sizes";
 import type { ComparedLibrary } from "virtual:size-comparison";
 
 import { formatSize } from "../formatSize";
+import { isUtility } from "../utilities";
 import TableScroll from "./TableScroll";
 
 /**
  * Each component's size in menhir beside its size in other libraries, each
  * with its difference from menhir's, then the module and version measured in
- * each library.
+ * each library. Utilities, such as `menhir/color-mode`, are left out.
  */
 export default function ComparisonTable(props: {
   sizes: readonly EntryPointSize[];
@@ -16,6 +17,7 @@ export default function ComparisonTable(props: {
   /** Display names by slug; a component without one shows its slug. */
   components: readonly { slug: string; name: string }[];
 }) {
+  const rows = () => props.sizes.filter((row) => !isUtility(row.entryPoint));
   const slug = (row: EntryPointSize) => row.entryPoint.slice("menhir/".length);
   const name = (row: EntryPointSize) =>
     props.components.find((component) => component.slug === slug(row))?.name ??
@@ -23,7 +25,7 @@ export default function ComparisonTable(props: {
 
   return (
     <Show
-      when={props.sizes.length > 0 && props.libraries.length > 0}
+      when={rows().length > 0 && props.libraries.length > 0}
       fallback={<p>Not measured yet</p>}
     >
       <TableScroll>
@@ -48,7 +50,7 @@ export default function ComparisonTable(props: {
             </tr>
           </thead>
           <tbody>
-            <For each={props.sizes}>
+            <For each={rows()}>
               {(row) => (
                 <tr>
                   <th scope="row">

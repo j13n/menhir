@@ -1,7 +1,12 @@
+import ColorModeToggle from "../examples/color-mode/tailwind/ColorModeToggle";
+
 const link =
   "text-sm font-medium text-stone-700 no-underline hover:text-stone-950 dark:text-stone-300 dark:hover:text-white";
 
-/** The site header: the name, home, and the two sections of the site. */
+/**
+ * The site header: the name, home, the two sections of the site, and the
+ * color mode toggle, which is the Color Mode page's example.
+ */
 export default function NavBar() {
   return (
     <header class="px-6 py-4">
@@ -24,20 +29,23 @@ export default function NavBar() {
           </svg>
           Menhir
         </a>
-        <nav aria-label="Site">
-          <ul class="m-0 flex list-none gap-6 p-0">
-            <li>
-              <a class={link} href="/docs/getting-started">
-                Docs
-              </a>
-            </li>
-            <li>
-              <a class={link} href="/docs/components">
-                Components
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <div class="flex items-center gap-4">
+          <nav aria-label="Site">
+            <ul class="m-0 flex list-none gap-6 p-0">
+              <li>
+                <a class={link} href="/docs/getting-started">
+                  Docs
+                </a>
+              </li>
+              <li>
+                <a class={link} href="/docs/components">
+                  Components
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <ColorModeToggle />
+        </div>
       </div>
     </header>
   );

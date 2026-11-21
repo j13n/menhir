@@ -2,6 +2,7 @@ import { For, Show } from "solid-js";
 import type { EntryPointSize } from "virtual:menhir-sizes";
 
 import { formatSize } from "../formatSize";
+import { entryPointPage } from "../utilities";
 import TableScroll from "./TableScroll";
 
 /** Each entry point's size and budget, from the size-limit report. */
@@ -25,9 +26,7 @@ export default function SizeTable(props: { sizes: readonly EntryPointSize[] }) {
               {(row) => (
                 <tr>
                   <th scope="row">
-                    <a
-                      href={`/docs/components/${row.entryPoint.slice("menhir/".length)}`}
-                    >
+                    <a href={entryPointPage(row.entryPoint)}>
                       <code>{row.entryPoint}</code>
                     </a>
                   </th>

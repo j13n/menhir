@@ -154,6 +154,12 @@ describe("llmsTxt", () => {
     );
   });
 
+  test("links the utilities' pages", () => {
+    expect(llmsTxt([doc])).toContain(
+      "## Utilities\n\n- [Color Mode](/docs/utilities/color-mode): ",
+    );
+  });
+
   test("links the docs pages and ends with one newline", () => {
     expect(llmsTxt([doc])).toMatch(
       /## Docs\n\n- \[Getting started\]\(\/docs\/getting-started\): .+\n- \[Bundle size\]\(\/docs\/bundle-size\): .+\n$/,

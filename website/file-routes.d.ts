@@ -95,6 +95,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/utilities/color-mode";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/utilities/color-mode"), Extract<"default", keyof typeof import("./src/routes/docs/utilities/color-mode")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/index"), Extract<"default", keyof typeof import("./src/routes/index")>>>;
@@ -189,6 +195,14 @@ declare module "virtual:file-routes" {
           id: "/components/separator";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/separator"), Extract<"default", keyof typeof import("./src/routes/docs/components/separator")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/utilities/color-mode";
+          id: "/utilities/color-mode";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/utilities/color-mode"), Extract<"default", keyof typeof import("./src/routes/docs/utilities/color-mode")>>>;
           $$route?: undefined;
           children?: undefined;
         }

@@ -2,6 +2,7 @@ import { Title } from "@solidjs/meta";
 import { sizes } from "virtual:menhir-sizes";
 
 import SizeTable from "../../../components/SizeTable";
+import { isUtility } from "../../../utilities";
 
 export default function Components() {
   return (
@@ -14,7 +15,7 @@ export default function Components() {
         out. Every entry point has a budget, and a change that goes over it
         fails CI.
       </p>
-      <SizeTable sizes={sizes} />
+      <SizeTable sizes={sizes.filter((row) => !isUtility(row.entryPoint))} />
     </main>
   );
 }

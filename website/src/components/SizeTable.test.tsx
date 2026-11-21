@@ -76,4 +76,16 @@ describe("<SizeTable />", () => {
     );
     expectNoDiagnostics(artifact);
   });
+
+  test("links a utility to its page under utilities", () => {
+    const { getByRole } = render(() => (
+      <SizeTable
+        sizes={[{ entryPoint: "menhir/color-mode", size: 913, limit: 1100 }]}
+      />
+    ));
+    expect(getByRole("link", { name: "menhir/color-mode" })).toHaveAttribute(
+      "href",
+      "/docs/utilities/color-mode",
+    );
+  });
 });

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* The theme follows the reader's clock, not their system setting: the root
-   element's data-theme is set from the time of day (src/timeOfDay.ts). */
+/* The reader picks light, dark or system with the toggle in the header
+   (menhir/color-mode), which sets data-theme on the root element. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @layer base {
@@ -60,10 +60,12 @@
     all: initial;
     display: block;
   }
-  .unstyled-example * {
+  /* SVG is left alone: in Chrome, `all` also reverts geometry such as `d`
+     and `r`, which would erase icons. */
+  .unstyled-example *:not(svg, svg *) {
     all: revert;
   }
-  /* At night the browser's own dark defaults keep examples readable. */
+  /* In dark mode the browser's own dark defaults keep examples readable. */
   :root[data-theme="dark"] .unstyled-example {
     color-scheme: dark;
   }

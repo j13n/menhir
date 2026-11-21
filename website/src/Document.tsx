@@ -1,7 +1,6 @@
 import type { ParentProps } from "solid-js";
 import { HydrationScript } from "@solidjs/web";
-
-import { themeBootScript } from "./timeOfDay";
+import { colorModeScript } from "menhir/color-mode";
 
 // The document shell (the index.html replacement), picked up by the
 // src/Document.* convention; it must render the full <html> and ships no
@@ -20,14 +19,15 @@ export default function Document(props: ParentProps) {
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <title>Menhir</title>
-        {/* Picks the light or dark theme from the clock before first paint.
-            The script is a constant from timeOfDay.ts with no outside input.
-            As a child it would be HTML-escaped, which breaks `&&` and `<`. */}
+        {/* Applies the reader's saved color mode, or the system's, before
+            first paint. The script comes from menhir/color-mode, with no
+            outside input. As a child it would be HTML-escaped, which breaks
+            `&&` and `<`. */}
         {/* oxlint-disable-next-line solid/no-innerhtml */}
-        <script innerHTML={themeBootScript} />
+        <script innerHTML={colorModeScript()} />
         <HydrationScript />
       </head>
-      <body class="bg-stone-50 font-sans text-stone-900 transition-colors duration-1000 dark:bg-stone-950 dark:text-stone-100">
+      <body class="bg-stone-50 font-sans text-stone-900 motion-safe:transition-colors motion-safe:duration-150 dark:bg-stone-950 dark:text-stone-100">
         {props.children}
       </body>
     </html>
