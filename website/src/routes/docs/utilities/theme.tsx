@@ -53,6 +53,10 @@ const theme = themeFromCookie(
   ...
 </html>`;
 
+const nonceScript = `// nonce: the one the server made for this response, as in
+// Content-Security-Policy: script-src 'nonce-<nonce>'
+<script nonce={nonce} innerHTML={themeScript(themeOptions)} />`;
+
 const withColorMode = `// data-color-mode="dark" and data-theme="nord" on <html>.
 const colorMode = createColorMode();
 const theme = createTheme(themeOptions);`;
@@ -208,6 +212,25 @@ export default function ThemePage() {
           no cookie to read, so it shows the default and disagrees with the
           saved theme when it hydrates. Cookies have no event for changes made
           in other tabs, so another tab picks up a theme when it is shown again.
+        </p>
+      </Section>
+      <Section id="content-security-policy" title="Content Security Policy">
+        <p>
+          A policy without <code>'unsafe-inline'</code> blocks the head script
+          until it is allowed. A server that renders each page can put its nonce
+          on the element:
+        </p>
+        <pre>
+          <code>{nonceScript}</code>
+        </pre>
+        <p>
+          A prerendered page can allow the SHA-256 hash of what{" "}
+          <code>themeScript</code> returns instead, as{" "}
+          <a href="/docs/utilities/color-mode#content-security-policy">
+            Color Mode
+          </a>{" "}
+          shows. Compute the hash in the build: it changes when the options do,
+          such as the list of themes.
         </p>
       </Section>
       <Section id="with-color-mode" title="With Color Mode">

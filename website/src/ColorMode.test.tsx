@@ -38,6 +38,17 @@ describe("Color Mode page", () => {
     expect(setup).toHaveTextContent("@custom-variant dark");
   });
 
+  test("shows how to allow the head script under a Content Security Policy", () => {
+    const { getByRole } = render(() => <ColorModePage />);
+    const csp = getByRole("region", { name: "Content Security Policy" });
+    expect(csp).toHaveTextContent(
+      "<script nonce={nonce} innerHTML={colorModeScript()} />",
+    );
+    expect(csp).toHaveTextContent(
+      'createHash("sha256").update(colorModeScript()).digest("base64")',
+    );
+  });
+
   test("explains the cycling order for both system looks", () => {
     const { getByRole } = render(() => <ColorModePage />);
     const order = within(getByRole("region", { name: "Cycling order" }));

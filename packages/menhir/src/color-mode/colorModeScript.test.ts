@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { clearCookies } from "../../test/clearCookies.ts";
+import {
+  loadUnderPolicy,
+  scriptHashSource,
+} from "../../test/contentSecurityPolicy.ts";
+import { isJSDOM } from "../../test/isJSDOM.ts";
 import { stubSystemPreference } from "../../test/color-mode/stubSystemPreference.ts";
 import * as cookie from "./cookie/index.ts";
 import { colorModeScript } from "./local-storage/index.ts";
@@ -85,6 +90,78 @@ describe("colorModeScript", () => {
     localStorage.setItem("</script><script>alert(1)</script>", "dark");
     runScript(source);
     expect(root).toHaveAttribute("data-color-mode", "dark");
+  });
+
+  // In Chromium only: jsdom does not enforce a Content Security Policy.
+  describe("under a Content Security Policy", () => {
+    // The look the system is not showing, so only the saved choice gives it.
+    const saved = () =>
+      matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark";
+    // Nothing is allowed but a script with the nonce.
+    const noncePolicy = "default-src 'none'; script-src 'nonce-r4nd0m'";
+
+    it.skipIf(isJSDOM)(
+      "is blocked without the policy's nonce or hash",
+      async () => {
+        localStorage.setItem("color-mode", saved());
+        const html = await loadUnderPolicy(noncePolicy, {
+          source: colorModeScript(),
+        });
+        expect(html).toEqual({});
+      },
+    );
+
+    it.skipIf(isJSDOM)(
+      "runs in a script element with the policy's nonce",
+      async () => {
+        localStorage.setItem("color-mode", saved());
+        const html = await loadUnderPolicy(noncePolicy, {
+          source: colorModeScript(),
+          nonce: "r4nd0m",
+        });
+        expect(html).toEqual({ "data-color-mode": saved() });
+      },
+    );
+
+    it.skipIf(isJSDOM)(
+      "runs when the policy allows the hash of its source",
+      async () => {
+        localStorage.setItem("site-theme", saved());
+        const source = colorModeScript({ storageKey: "site-theme" });
+        const html = await loadUnderPolicy(
+          `script-src ${await scriptHashSource(source)}`,
+          { source },
+        );
+        expect(html).toEqual({ "data-color-mode": saved() });
+      },
+    );
+
+    it.skipIf(isJSDOM)("has another hash with other options", async () => {
+      localStorage.setItem("site-theme", saved());
+      const html = await loadUnderPolicy(
+        `script-src ${await scriptHashSource(colorModeScript())}`,
+        { source: colorModeScript({ storageKey: "site-theme" }) },
+      );
+      expect(html).toEqual({});
+    });
+
+    it.skipIf(isJSDOM)(
+      "from menhir/color-mode/cookie, runs with a nonce or a hash",
+      async () => {
+        document.cookie = `color-mode=${saved()}`;
+        const source = cookie.colorModeScript();
+        const withNonce = await loadUnderPolicy(noncePolicy, {
+          source,
+          nonce: "r4nd0m",
+        });
+        expect(withNonce).toEqual({ "data-color-mode": saved() });
+        const withHash = await loadUnderPolicy(
+          `script-src ${await scriptHashSource(source)}`,
+          { source },
+        );
+        expect(withHash).toEqual({ "data-color-mode": saved() });
+      },
+    );
   });
 
   describe("from menhir/color-mode/cookie", () => {
