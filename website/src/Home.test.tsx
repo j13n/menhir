@@ -183,6 +183,20 @@ describe("home page", () => {
     );
   });
 
+  test("shows vertical Separators, linked to their page", () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const separators = example.getAllByRole("separator");
+    expect(separators).toHaveLength(2);
+    for (const separator of separators) {
+      expect(separator).toHaveAttribute("aria-orientation", "vertical");
+    }
+    expect(example.getByRole("link", { name: "Separator" })).toHaveAttribute(
+      "href",
+      "/docs/components/separator",
+    );
+  });
+
   test("renders, animates and toggles without tripping a Solid diagnostic", async () => {
     const { artifact } = await captureArtifact(
       () => {

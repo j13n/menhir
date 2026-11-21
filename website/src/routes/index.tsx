@@ -1,4 +1,5 @@
 import { Checkbox } from "menhir/checkbox";
+import { Separator } from "menhir/separator";
 import { Switch } from "menhir/switch";
 import { Toggle } from "menhir/toggle";
 
@@ -103,6 +104,24 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/toggle">Toggle</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <div class="flex items-center gap-3">
+                Draft
+                <Separator.Root
+                  orientation="vertical"
+                  class="h-4 w-px bg-stone-300 dark:bg-stone-700"
+                />
+                Review
+                <Separator.Root
+                  orientation="vertical"
+                  class="h-4 w-px bg-stone-300 dark:bg-stone-700"
+                />
+                Publish
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/separator">Separator</a>
               </figcaption>
             </figure>
           </div>

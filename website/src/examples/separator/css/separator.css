@@ -1,0 +1,32 @@
+/* The least CSS that makes the Separator visible: a 1px line, across the
+   width when horizontal and down the height when vertical, selected by
+   data-horizontal and data-vertical. Everything else is the browser's.
+   Colours are Tailwind's stone palette; light-dark() picks the second one
+   in dark mode (color-scheme: dark). */
+.separator-example {
+  width: 16rem;
+  font-family: system-ui, sans-serif;
+}
+
+.separator-example p {
+  margin: 0;
+}
+
+.separator-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.separator {
+  background: light-dark(
+    oklch(86.9% 0.005 56.366) /* stone-300 */,
+    oklch(37.4% 0.01 67.558) /* stone-700 */
+  );
+}
+.separator[data-horizontal] {
+  height: 1px;
+  margin: 0.75rem 0;
+}
+.separator[data-vertical] {
+  width: 1px;
+}
