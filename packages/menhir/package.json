@@ -24,6 +24,11 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
+    "./checkbox": {
+      "types": "./dist/source/checkbox/index.d.ts",
+      "solid": "./dist/source/checkbox/index.js",
+      "import": "./dist/checkbox/index.js"
+    },
     "./switch": {
       "types": "./dist/source/switch/index.d.ts",
       "solid": "./dist/source/switch/index.js",

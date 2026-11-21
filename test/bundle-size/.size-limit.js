@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 // with Rolldown, which drops unused parts as a Vite app does; esbuild keeps
 // a whole `export * as` namespace (PLAN.md section 6, rule 3).
 const budgets = {
+  "menhir/checkbox": "2.4 kB",
   "menhir/switch": "2.3 kB",
 };
 

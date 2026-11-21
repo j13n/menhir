@@ -3,9 +3,12 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { findFloatingModules } from "./findFloatingModules.ts";
 
 describe("the floating layer", () => {
-  it("is not in an app that imports menhir/switch alone", async () => {
-    expect(await findFloatingModules("menhir/switch")).toEqual([]);
-  });
+  it.each(["menhir/checkbox", "menhir/switch"])(
+    "is not in an app that imports %s alone",
+    async (entryPoint) => {
+      expect(await findFloatingModules(entryPoint)).toEqual([]);
+    },
+  );
 });
 
 describe("findFloatingModules", () => {
