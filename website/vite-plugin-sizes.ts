@@ -27,7 +27,8 @@ const sizeJsonCommand = "`pnpm --filter @menhir/bundle-size size:json`";
  * - `virtual:menhir-sizes/<name>` default-exports the size of `menhir/<name>`,
  *   for its component page.
  * - `virtual:size-comparison` exports `libraries`, other libraries' sizes of
- *   the same components, from `comparison.json`.
+ *   their versions of the components, and `menhirTotal`, menhir's compared
+ *   components together, from `comparison.json`.
  *
  * `vite build` fails when a report is missing, or a page asks for an entry
  * point it does not have. The dev server and Vitest warn instead and serve no
@@ -56,16 +57,19 @@ export default function menhirSizes(
       };
 
       if (id === `\0${comparisonId}`) {
-        let libraries: ComparedLibrary[] = [];
+        let comparison: Comparison = { libraries: [] };
         if (existsSync(comparisonFile)) {
           this.addWatchFile(comparisonFile);
-          libraries = readComparison(comparisonFile);
+          comparison = readComparison(comparisonFile);
         } else {
           fail(
             `No comparison report at ${comparisonFile}. Run ${sizeJsonCommand}; \`pnpm build\` in website runs it first.`,
           );
         }
-        return `export const libraries = ${JSON.stringify(libraries)};`;
+        return [
+          `export const libraries = ${JSON.stringify(comparison.libraries)};`,
+          `export const menhirTotal = ${JSON.stringify(comparison.menhirTotal)};`,
+        ].join("\n");
       }
 
       const isList = id === `\0${moduleId}`;
@@ -100,6 +104,8 @@ export default function menhirSizes(
 
 type EntryPointSize = import("virtual:menhir-sizes").EntryPointSize;
 type ComparedLibrary = import("virtual:size-comparison").ComparedLibrary;
+/** `menhirTotal` is missing only when the report is. */
+type Comparison = { menhirTotal?: number; libraries: ComparedLibrary[] };
 
 type SizeLimitResult = { name: string; size: number };
 
@@ -125,9 +131,13 @@ function isResult(value: unknown): value is SizeLimitResult {
 }
 
 /** Reads `comparison.json`, which test/bundle-size/measureComparison.ts writes. */
-export function readComparison(file: string): ComparedLibrary[] {
-  const report: unknown = JSON.parse(readFileSync(file, "utf8"));
-  if (!Array.isArray(report) || !report.every(isComparedLibrary)) {
+export function readComparison(file: string): Comparison {
+  const report = JSON.parse(readFileSync(file, "utf8")) as Comparison | null;
+  if (
+    typeof report?.menhirTotal !== "number" ||
+    !Array.isArray(report.libraries) ||
+    !report.libraries.every(isComparedLibrary)
+  ) {
     throw new Error(
       `${file} is not a comparison report. Run ${sizeJsonCommand} again.`,
     );
@@ -147,6 +157,9 @@ function isComparedLibrary(value: unknown): value is ComparedLibrary {
         typeof component?.module === "string" &&
         typeof component.version === "string" &&
         typeof component.size === "number",
-    )
+    ) &&
+    (library.total === undefined ||
+      (typeof library.total?.size === "number" &&
+        typeof library.total.menhir === "number"))
   );
 }

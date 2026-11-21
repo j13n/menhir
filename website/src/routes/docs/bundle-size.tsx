@@ -1,7 +1,7 @@
 import { Title } from "@solidjs/meta";
 import { components } from "virtual:component-list";
 import { sizes } from "virtual:menhir-sizes";
-import { libraries } from "virtual:size-comparison";
+import { libraries, menhirTotal } from "virtual:size-comparison";
 
 import ComparisonTable from "../../components/ComparisonTable";
 import Section from "../../components/Section";
@@ -22,12 +22,18 @@ export default function BundleSize() {
       </Section>
       <Section id="comparison" title="Other libraries">
         <p>
-          The same components in other libraries, measured the same way. Beside
-          each size is its difference from Menhir's.
+          Each library's version of the same components, measured the same way.
+          Beside each size is its difference from Menhir's.
+        </p>
+        <p>
+          These are sizes only. The libraries differ in API and in what each
+          component includes, so a larger size can come with features Menhir
+          leaves out.
         </p>
         <ComparisonTable
           sizes={sizes}
           libraries={libraries}
+          menhirTotal={menhirTotal}
           components={components}
         />
       </Section>
@@ -45,6 +51,12 @@ export default function BundleSize() {
           <code>solid-js</code> for the Solid ones. The sizes are of the
           versions listed under the table, and are measured again whenever this
           site is built.
+        </p>
+        <p>
+          A component's size counts all the code it needs, so code that two
+          components share is counted in both. The last row of the comparison is
+          of the components imported together, as in an app that uses them all:
+          there shared code is counted once.
         </p>
       </Section>
     </main>

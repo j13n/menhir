@@ -158,19 +158,23 @@ describe("virtual:menhir-sizes", () => {
   });
 });
 
-const radixSwitch = [
-  {
-    name: "Radix",
-    framework: "React",
-    components: {
-      switch: {
-        module: "@radix-ui/react-switch",
-        version: "1.4.1",
-        size: 4690,
+const radixSwitch = {
+  menhirTotal: 1914,
+  libraries: [
+    {
+      name: "Radix",
+      framework: "React",
+      components: {
+        switch: {
+          module: "@radix-ui/react-switch",
+          version: "1.4.1",
+          size: 4690,
+        },
       },
+      total: { size: 4690, menhir: 1914 },
     },
-  },
-];
+  ],
+};
 
 const loadComparison = (comparison: string, command: "build" | "serve") =>
   loadModule<ComparisonModule>(
@@ -183,7 +187,8 @@ const loadComparison = (comparison: string, command: "build" | "serve") =>
 describe("virtual:size-comparison", () => {
   test("lists other libraries' sizes of menhir's components from the comparison report", async () => {
     const { module } = await loadComparison(writeReport(radixSwitch), "build");
-    expect(module.libraries).toEqual(radixSwitch);
+    expect(module.libraries).toEqual(radixSwitch.libraries);
+    expect(module.menhirTotal).toBe(1914);
   });
 
   test("fails the build when the comparison report is missing, and says how to make it", async () => {
@@ -195,21 +200,37 @@ describe("virtual:size-comparison", () => {
   test("serves no libraries in dev and tests when the comparison report is missing, with a warning", async () => {
     const { module, warnings } = await loadComparison(reportPath(), "serve");
     expect(module.libraries).toEqual([]);
+    expect(module.menhirTotal).toBeUndefined();
     expect(warnings).toEqual([
       expect.stringContaining("pnpm --filter @menhir/bundle-size size:json"),
     ]);
   });
 
-  test("rejects a library with a component without a size", async () => {
-    const file = writeReport([
+  const radix = radixSwitch.libraries[0];
+
+  test.each([
+    [
+      "a library with a component without a size",
       {
-        name: "Radix",
-        framework: "React",
-        components: {
-          switch: { module: "@radix-ui/react-switch", version: "1.4.1" },
-        },
+        menhirTotal: 1914,
+        libraries: [
+          {
+            ...radix,
+            components: {
+              switch: { module: "@radix-ui/react-switch", version: "1.4.1" },
+            },
+          },
+        ],
       },
-    ]);
+    ],
+    [
+      "a library with a total without menhir's size",
+      { menhirTotal: 1914, libraries: [{ ...radix, total: { size: 4690 } }] },
+    ],
+    ["a report without menhir's total", { libraries: radixSwitch.libraries }],
+    ["the list of libraries alone, as it was once", radixSwitch.libraries],
+  ])("rejects %s", async (_, report) => {
+    const file = writeReport(report);
     await expect(loadComparison(file, "build")).rejects.toThrow(
       `${file} is not a comparison report`,
     );

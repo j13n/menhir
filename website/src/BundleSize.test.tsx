@@ -9,6 +9,7 @@ vi.mock("virtual:menhir-sizes", () => ({
   sizes: [{ entryPoint: "menhir/switch", size: 1914 }],
 }));
 vi.mock("virtual:size-comparison", () => ({
+  menhirTotal: 1914,
   libraries: [
     {
       name: "Radix",
@@ -20,6 +21,7 @@ vi.mock("virtual:size-comparison", () => ({
           size: 4690,
         },
       },
+      total: { size: 4690, menhir: 1914 },
     },
   ],
 }));
@@ -54,6 +56,26 @@ describe("bundle size page", () => {
     expect(
       comparison.getByRole("list", { name: "Modules measured" }),
     ).toHaveTextContent("Radix: @radix-ui/react-switch 1.4.1");
+  });
+
+  test("says the comparison is of sizes only, not of what a component includes", () => {
+    const { getByRole } = render(() => <BundleSize />);
+    expect(getByRole("region", { name: "Other libraries" })).toHaveTextContent(
+      "These are sizes only. The libraries differ in API and in what each component includes",
+    );
+  });
+
+  test("compares the components imported together", () => {
+    const { getByRole } = render(() => <BundleSize />);
+    const comparison = within(getByRole("region", { name: "Other libraries" }));
+    expect(
+      within(comparison.getByRole("row", { name: /All together/ }))
+        .getAllByRole("cell")
+        .map((cell) => cell.textContent),
+    ).toEqual(["1.9 kB", "4.7 kB145%, 145% larger than Menhir"]);
+    expect(
+      getByRole("region", { name: "How it is measured" }),
+    ).toHaveTextContent("there shared code is counted once");
   });
 
   test("says how the sizes are measured", () => {

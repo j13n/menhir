@@ -6,7 +6,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "size": "pnpm --filter menhir build && size-limit",
-    "compare": "size-limit --config comparison.size-limit.js",
+    "compare": "pnpm --filter menhir build && size-limit --config comparison.size-limit.js",
     "size:json": "pnpm --filter menhir build && mkdir -p dist && size-limit --json > dist/sizes.json && node measureComparison.ts",
     "test": "pnpm --filter menhir build && vitest"
   },

@@ -71,3 +71,22 @@ export const libraries: Library[] = [
     components: {},
   },
 ];
+
+/** Every component some library is compared on, in menhir's order. */
+export const comparedComponents: string[] = [
+  ...new Set(libraries.flatMap((library) => Object.keys(library.components))),
+].sort();
+
+/**
+ * The names of the size checks of comparison.size-limit.js that measure
+ * several components imported together: shared code is counted once, as in
+ * an app that uses them all.
+ */
+export const totalChecks = {
+  /** Every component of `comparedComponents`, in menhir. */
+  menhir: "menhir: all compared components",
+  /** The library's components together. */
+  library: (library: Library) => `${library.name}: all components`,
+  /** The same components in menhir, for the difference. */
+  menhirFor: (library: Library) => `menhir: the components of ${library.name}`,
+};

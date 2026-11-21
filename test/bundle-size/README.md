@@ -9,7 +9,7 @@ The size checks of PLAN.md section 6, "Enforcement". This package depends on
 | `pnpm test`      | Builds menhir, then runs both checks below. Fails if an entry point is over budget or has none.                                                      |
 | `pnpm size`      | Builds menhir and prints each entry point's size against its budget.                                                                                 |
 | `pnpm size:json` | Builds menhir and writes the same results to `dist/sizes.json`, for the docs site's sizes (#38), and the comparison below to `dist/comparison.json`. |
-| `pnpm compare`   | Prints the other libraries' sizes of the comparison below.                                                                                           |
+| `pnpm compare`   | Builds menhir and prints the sizes of the comparison below.                                                                                          |
 
 ## Size budgets
 
@@ -66,29 +66,44 @@ with Rolldown, minified and gzipped. The library's framework packages are
 left out instead of Solid. The checks have no limits: these sizes are shown,
 not enforced.
 
+The same config measures totals: each library's components imported
+together, and the same components of menhir, so that code the components
+share is counted once, as in an app that uses them all. A library that lacks
+a component is compared with menhir on the ones it has. size-limit cannot
+import several modules whole in one check, so the config writes a module that
+re-exports them to `dist/together` and measures that.
+
 `measureComparison.ts` runs that config and, as a script, writes
-`dist/comparison.json`, one object per library:
+`dist/comparison.json`:
 
 ```json
-[
-  {
-    "name": "Radix",
-    "framework": "React",
-    "components": {
-      "switch": {
-        "module": "@radix-ui/react-switch",
-        "version": "1.4.1",
-        "size": 4690
-      }
+{
+  "menhirTotal": 4216,
+  "libraries": [
+    {
+      "name": "Radix",
+      "framework": "React",
+      "components": {
+        "switch": {
+          "module": "@radix-ui/react-switch",
+          "version": "1.4.1",
+          "size": 4690
+        }
+      },
+      "total": { "size": 12427, "menhir": 4103 }
     }
-  }
-]
+  ]
+}
 ```
 
+`menhirTotal` is every compared component of menhir together. A library's
+`total` is its components together (`size`) and menhir's same components
+(`menhir`); a library with none of the components has no `total`.
 `version` is that of the module's package installed here, and `size` is in
 bytes, gzipped. The docs site reads the file through `virtual:size-comparison`
 (`website/vite-plugin-sizes.ts`). `comparison.test.ts` checks that every
-compared component is one menhir has and that each module is measured.
+compared component is one menhir has, and that each module and each total
+is measured.
 
 To compare a component, add the library's package to `devDependencies` here
 and its module to the library's `components` in `comparison.ts`.
