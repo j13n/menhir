@@ -1,8 +1,9 @@
 import type { JSX } from "@solidjs/web";
-import { createMemo, createSignal, omit } from "solid-js";
+import { createSignal, omit } from "solid-js";
 
 import { createListValue } from "../../core/listValue.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
+import { createRovingFocus } from "../../core/rovingFocus.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { ElementProps, RenderProp } from "../../core/renderElement.tsx";
 import { ToggleGroupRootContext } from "./ToggleGroupRootContext.ts";
@@ -33,13 +34,6 @@ export interface ToggleGroupRootProps extends JSX.HTMLAttributes<HTMLElement> {
   render?: RenderProp;
 }
 
-// Document order, which can differ from the order items registered in.
-const byPosition = (a: ToggleGroupItemEntry, b: ToggleGroupItemEntry) =>
-  a.element.compareDocumentPosition(b.element) &
-  Node.DOCUMENT_POSITION_FOLLOWING
-    ? -1
-    : 1;
-
 /**
  * A set of toggle buttons that share one value: a `<div role="group">`
  * around `ToggleGroup.Item`s, with one tab stop among them.
@@ -59,67 +53,28 @@ export function ToggleGroupRoot(props: ToggleGroupRootProps) {
   });
   const vertical = () => props.orientation === "vertical";
 
-  // The items in the focus order, which register once mounted, and the one
-  // that last had focus. The tab stop is that item, or the first enabled
-  // one if it has none, is disabled or is gone.
-  const [items, setItems] = createSignal<ToggleGroupItemEntry[]>([]);
+  // The item that last had focus has the tab stop, else the first enabled
+  // one.
   const [active, setActive] = createSignal<HTMLElement>();
-  const enabledItems = () =>
-    items()
-      .filter((item) => !item.disabled())
-      .sort(byPosition);
-  const tabStop = createMemo(() => {
-    const enabled = enabledItems();
-    return (enabled.find((item) => item.element === active()) ?? enabled[0])
-      ?.element;
+  const roving = createRovingFocus<ToggleGroupItemEntry>({
+    get vertical() {
+      return vertical();
+    },
+    focusable: (item) => !item.disabled(),
+    preferred: (item) => item.element === active(),
   });
-  let group: HTMLElement | undefined;
   // Whether an item has claimed the tab stop of the server HTML.
   let claimed = false;
 
   const context: ToggleGroupRootContextValue = {
+    ...roving,
     pressed: pressed.has,
     press: pressed.set,
     disabled: () => props.disabled,
     // Before any item has registered, as on the server, the first enabled
     // item created has the tab stop, so the server HTML has one too.
-    isTabStop: (element, first) =>
-      items().length ? !!element && tabStop() === element : first,
     claimTabStop: (disabled) => !disabled && !claimed && (claimed = true),
-    register: (item) => {
-      setItems((list) => [...list, item]);
-      return () => setItems((list) => list.filter((other) => other !== item));
-    },
     setActive: (element) => setActive(element),
-    navigate: (event, from) => {
-      // With a modifier, the keys are the browser's or the app's, such as
-      // Alt+Left for back.
-      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey)
-        return;
-      const enabled = enabledItems();
-      const count = enabled.length;
-      const index = enabled.findIndex((item) => item.element === from);
-      // In a right-to-left horizontal group, the next item is on the left.
-      const [previous, next] = vertical()
-        ? ["ArrowUp", "ArrowDown"]
-        : getComputedStyle(group!).direction === "rtl"
-          ? ["ArrowRight", "ArrowLeft"]
-          : ["ArrowLeft", "ArrowRight"];
-      const target =
-        event.key === previous
-          ? index - 1
-          : event.key === next
-            ? index + 1
-            : event.key === "Home"
-              ? 0
-              : event.key === "End"
-                ? count - 1
-                : undefined;
-      if (target === undefined || !count) return;
-      // Arrow keys and Home and End would scroll the page.
-      event.preventDefault();
-      enabled[(target + count) % count].element.focus();
-    },
   };
 
   const ownProps: ElementProps = {
@@ -137,9 +92,6 @@ export function ToggleGroupRoot(props: ToggleGroupRootProps) {
     },
     get "data-disabled"() {
       return props.disabled ? "" : undefined;
-    },
-    ref: (element) => {
-      group = element;
     },
   };
   const elementProps = mergeElementProps(

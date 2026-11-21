@@ -251,6 +251,31 @@ describe("home page", () => {
     );
   });
 
+  test("shows working Tabs, linked to their page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const list = example.getByRole("tablist", { name: "Forecast" });
+    const monday = within(list).getByRole("tab", { name: "Mon" });
+    const tuesday = within(list).getByRole("tab", { name: "Tue" });
+    expect(monday).toHaveAttribute("aria-selected", "true");
+    expect(example.getByRole("tabpanel", { name: "Mon" })).toHaveTextContent(
+      "Sunny, 18°",
+    );
+    fireEvent.click(tuesday);
+    // The tabs select after the click's flush.
+    await Promise.resolve();
+    flush();
+    expect(tuesday).toHaveAttribute("aria-selected", "true");
+    expect(monday).toHaveAttribute("aria-selected", "false");
+    expect(example.getByRole("tabpanel", { name: "Tue" })).toHaveTextContent(
+      "Cloudy, 15°",
+    );
+    expect(example.getByRole("link", { name: "Tabs" })).toHaveAttribute(
+      "href",
+      "/docs/components/tabs",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
@@ -301,6 +326,7 @@ describe("home page", () => {
         fireEvent.click(getByRole("button", { name: "Mute" }));
         fireEvent.click(getByRole("button", { name: "Release notes" }));
         fireEvent.click(getByRole("button", { name: "Is it styled?" }));
+        fireEvent.click(getByRole("tab", { name: "Tue" }));
         flush();
       },
       { scenario: "home-page" },

@@ -11,6 +11,8 @@
 //   button, and the own props of one that flips a state it announces in
 //   `aria-pressed` or `aria-expanded`, shared by Toggle, Toggle Group and
 //   Collapsible.
+// - rovingFocus.ts: one tab stop among a group's items, with arrow keys
+//   between them, shared by Toggle Group and Tabs.
 // - range.ts: the value, attributes and text of a part along a range,
 //   shared by Progress and Meter.
 // - toggleButton.ts: the own props of a part that is a toggle button

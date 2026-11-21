@@ -13,6 +13,7 @@ const budgets = {
   "menhir/progress": "1.4 kB",
   "menhir/separator": "900 B",
   "menhir/switch": "2.3 kB",
+  "menhir/tabs": "2.6 kB",
   "menhir/theme/cookie": "1.6 kB",
   "menhir/theme/local-storage": "1.3 kB",
   "menhir/toggle": "1.4 kB",

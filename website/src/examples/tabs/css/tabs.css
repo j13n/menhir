@@ -1,0 +1,44 @@
+/* The least CSS that makes the Tabs visible: a row of tabs over a line,
+   with the selected one underlined, selected by data-selected. A Panel that
+   is not selected is hidden by its hidden attribute. Everything else is the
+   browser's. Colours are Tailwind's stone palette; light-dark() picks the
+   second one in dark mode (color-scheme: dark). */
+.tabs {
+  width: 20rem;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.tabs-list {
+  display: flex;
+  border-bottom: 1px solid
+    light-dark(
+      oklch(86.9% 0.005 56.366) /* stone-300 */,
+      oklch(37.4% 0.01 67.558) /* stone-700 */
+    );
+}
+
+.tabs-tab {
+  margin-bottom: -1px;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: light-dark(
+    oklch(44.4% 0.011 73.639) /* stone-600 */,
+    oklch(70.9% 0.01 56.259) /* stone-400 */
+  );
+  font: inherit;
+  cursor: pointer;
+}
+
+.tabs-tab[data-selected] {
+  border-bottom-color: currentColor;
+  color: inherit;
+  font-weight: 600;
+}
+
+.tabs-panel {
+  padding: 0.75rem 0;
+}

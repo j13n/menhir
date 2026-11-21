@@ -1,34 +1,30 @@
 import { createContext, useContext } from "solid-js";
 import { isDev } from "@solidjs/web";
 
+import type { RovingFocus } from "../../core/rovingFocus.ts";
+
 /** An item as the group knows it, for focus order and the tab stop. */
 export interface ToggleGroupItemEntry {
   readonly element: HTMLElement;
   readonly disabled: () => boolean;
 }
 
-/** What the group shares with its items. */
-export interface ToggleGroupRootContextValue {
+/** What the group shares with its items, with their roving focus. */
+export interface ToggleGroupRootContextValue extends RovingFocus<ToggleGroupItemEntry> {
   /** Whether the item with this value is pressed. */
   pressed(value: string): boolean;
   /** Asks to press or release the item with this value. */
   press(value: string, pressed: boolean): void;
   /** Whether the whole group is disabled. */
   disabled(): boolean | undefined;
-  /** Whether this item has the group's tab stop. */
-  isTabStop(element: HTMLElement | undefined, first: boolean): boolean;
   /**
    * Whether the item being created is the group's first enabled item, which
    * has the tab stop before any item has registered, as on the server.
    * Called once per item, in its body.
    */
   claimTabStop(disabled: boolean): boolean;
-  /** Adds an item to the focus order; returns what removes it. */
-  register(item: ToggleGroupItemEntry): () => void;
   /** Records the item that received focus, which takes the tab stop. */
   setActive(element: HTMLElement): void;
-  /** Moves focus for an arrow, Home or End key pressed on an item. */
-  navigate(event: KeyboardEvent, from: HTMLElement): void;
 }
 
 // `null` outside a Root, so that the part can name what is missing. Solid's

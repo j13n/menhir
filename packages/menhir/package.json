@@ -79,6 +79,11 @@
       "solid": "./dist/source/theme/local-storage/index.js",
       "import": "./dist/theme/local-storage/index.js"
     },
+    "./tabs": {
+      "types": "./dist/source/tabs/index.d.ts",
+      "solid": "./dist/source/tabs/index.js",
+      "import": "./dist/tabs/index.js"
+    },
     "./toggle": {
       "types": "./dist/source/toggle/index.d.ts",
       "solid": "./dist/source/toggle/index.js",

@@ -5,12 +5,20 @@ import { Meter } from "menhir/meter";
 import { Progress } from "menhir/progress";
 import { Separator } from "menhir/separator";
 import { Switch } from "menhir/switch";
+import { Tabs } from "menhir/tabs";
 import { Toggle } from "menhir/toggle";
 import { ToggleGroup } from "menhir/toggle-group";
 import { For } from "solid-js";
 
 import InstallCommand from "../components/InstallCommand";
 import MenhirScene from "../components/MenhirScene";
+
+// The home page's Tabs example: one tab and one panel per day.
+const forecast = [
+  { name: "Mon", weather: "Sunny, 18°" },
+  { name: "Tue", weather: "Cloudy, 15°" },
+  { name: "Wed", weather: "Rain, 12°" },
+];
 
 const approachItem =
   "rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60";
@@ -208,6 +216,38 @@ export default function Home() {
               </Accordion.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/accordion">Accordion</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <Tabs.Root>
+                <Tabs.List
+                  aria-label="Forecast"
+                  class="flex border-b border-stone-200 dark:border-stone-800"
+                >
+                  <For each={forecast}>
+                    {(day) => (
+                      <Tabs.Tab
+                        value={day.name}
+                        class="-mb-px cursor-pointer border-b-2 border-transparent px-3 py-1 text-sm text-stone-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-selected:border-current data-selected:text-inherit"
+                      >
+                        {day.name}
+                      </Tabs.Tab>
+                    )}
+                  </For>
+                </Tabs.List>
+                <For each={forecast}>
+                  {(day) => (
+                    <Tabs.Panel
+                      value={day.name}
+                      class="pt-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500"
+                    >
+                      {day.weather}
+                    </Tabs.Panel>
+                  )}
+                </For>
+              </Tabs.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/tabs">Tabs</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
