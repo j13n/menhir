@@ -9,4 +9,8 @@
     // Client-side routing: a path without a file gets index.html.
     "not_found_handling": "single-page-application",
   },
+  // Served at menhir-ui.com only. Deploying creates the custom domain and its
+  // DNS record, which needs the zone in this Cloudflare account. With a route
+  // set, the workers.dev address is off.
+  "routes": [{ "pattern": "menhir-ui.com", "custom_domain": true }],
 }
