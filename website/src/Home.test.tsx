@@ -219,7 +219,7 @@ describe("home page", () => {
   test("shows a Progress with its value, linked to its page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
-    const progressbar = example.getByRole("progressbar", { name: "Storage" });
+    const progressbar = example.getByRole("progressbar", { name: "Uploading" });
     expect(progressbar).toHaveAttribute("aria-valuenow", "70");
     expect(progressbar).toHaveAttribute("aria-valuetext", "70%");
     expect(progressbar).toHaveTextContent("70%");

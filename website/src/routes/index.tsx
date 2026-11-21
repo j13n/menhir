@@ -136,7 +136,7 @@ export default function Home() {
                 aria-labelledby="home-progress-label"
                 class="grid grid-cols-[1fr_auto] gap-2"
               >
-                <span id="home-progress-label">Storage</span>
+                <span id="home-progress-label">Uploading</span>
                 <Progress.Value class="text-sm text-stone-500" />
                 <div class="col-span-2 h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-800">
                   <Progress.Indicator class="h-full w-(--progress) bg-stone-800 dark:bg-stone-300" />
