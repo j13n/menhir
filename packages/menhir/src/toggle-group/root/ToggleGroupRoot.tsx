@@ -1,7 +1,7 @@
 import type { JSX } from "@solidjs/web";
-import { createMemo, createSignal, omit, onFlush } from "solid-js";
+import { createMemo, createSignal, omit } from "solid-js";
 
-import { createControllableSignal } from "../../core/createControllableSignal.ts";
+import { createListValue } from "../../core/listValue.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { ElementProps, RenderProp } from "../../core/renderElement.tsx";
@@ -45,12 +45,15 @@ const byPosition = (a: ToggleGroupItemEntry, b: ToggleGroupItemEntry) =>
  * around `ToggleGroup.Item`s, with one tab stop among them.
  */
 export function ToggleGroupRoot(props: ToggleGroupRootProps) {
-  const [value, setValue] = createControllableSignal<string[]>({
+  const pressed = createListValue({
     get value() {
       return props.value;
     },
     get defaultValue() {
-      return props.defaultValue ?? [];
+      return props.defaultValue;
+    },
+    get multiple() {
+      return props.multiple;
     },
     onChange: (value) => props.onValueChange?.(value),
   });
@@ -73,23 +76,10 @@ export function ToggleGroupRoot(props: ToggleGroupRootProps) {
   let group: HTMLElement | undefined;
   // Whether an item has claimed the tab stop of the server HTML.
   let claimed = false;
-  // The value asked for in this turn, if any: reads lag writes, so a second
-  // press before the flush builds on this, not on what `value` still reads.
-  let pending: string[] | undefined;
 
   const context: ToggleGroupRootContextValue = {
-    pressed: (item) => value().includes(item),
-    press: (item, pressed) => {
-      const current = pending ?? value();
-      let next: string[] = pressed ? [item] : [];
-      if (props.multiple) {
-        next = current.filter((other) => other !== item);
-        if (pressed) next.push(item);
-      }
-      if (!pending) onFlush(() => (pending = undefined));
-      pending = next;
-      setValue(next);
-    },
+    pressed: pressed.has,
+    press: pressed.set,
     disabled: () => props.disabled,
     // Before any item has registered, as on the server, the first enabled
     // item created has the tab stop, so the server HTML has one too.

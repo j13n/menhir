@@ -1,3 +1,4 @@
+import { Accordion } from "menhir/accordion";
 import { Checkbox } from "menhir/checkbox";
 import { Collapsible } from "menhir/collapsible";
 import { Meter } from "menhir/meter";
@@ -175,6 +176,38 @@ export default function Home() {
               </Collapsible.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/collapsible">Collapsible</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <Accordion.Root>
+                <For
+                  each={[
+                    {
+                      question: "Is it styled?",
+                      answer: "No: every part takes your classes.",
+                    },
+                    {
+                      question: "Does it work with SSR?",
+                      answer: "Yes, and with hydration.",
+                    },
+                  ]}
+                >
+                  {(item) => (
+                    <Accordion.Item class="border-b border-stone-200 dark:border-stone-800">
+                      <Accordion.Header class="m-0 text-base font-normal">
+                        <Accordion.Trigger class="flex w-full cursor-pointer items-center gap-2 py-2 text-start before:transition-[rotate] before:content-['▸'] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-open:before:rotate-90">
+                          {item.question}
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Panel class="pb-2 text-sm text-stone-500">
+                        {item.answer}
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  )}
+                </For>
+              </Accordion.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/accordion">Accordion</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

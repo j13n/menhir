@@ -5,6 +5,8 @@
 // - mergeElementProps.ts: a part's own props merged with the consumer's.
 // - renderElement.tsx: a part's element, or the consumer's `render`.
 // - createControllableSignal.ts: a controlled/uncontrolled value.
+// - listValue.ts: a controlled/uncontrolled value that lists items, one at
+//   a time or several, shared by Toggle Group and Accordion.
 // - button.ts: the props type and dev warning of a part that is a native
 //   button, and the own props of one that flips a state it announces in
 //   `aria-pressed` or `aria-expanded`, shared by Toggle, Toggle Group and

@@ -1,0 +1,56 @@
+/* The least CSS that makes the Accordion visible: sections divided by a
+   line, and triggers with an arrow that turns down while open, selected by
+   data-open. A closed Panel is hidden by its hidden attribute. Everything
+   else is the browser's. Colours are Tailwind's stone palette; light-dark()
+   picks the second one in dark mode (color-scheme: dark). */
+.accordion {
+  width: 20rem;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.accordion-item {
+  border-bottom: 1px solid
+    light-dark(
+      oklch(86.9% 0.005 56.366) /* stone-300 */,
+      oklch(37.4% 0.01 67.558) /* stone-700 */
+    );
+}
+
+.accordion-header {
+  margin: 0;
+  font: inherit;
+}
+
+.accordion-trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+
+.accordion-trigger::before {
+  content: "▸";
+  transition: rotate 150ms;
+}
+
+.accordion-trigger[data-open]::before {
+  rotate: 90deg;
+}
+
+.accordion-panel {
+  padding-bottom: 0.75rem;
+  color: light-dark(
+    oklch(44.4% 0.011 73.639) /* stone-600 */,
+    oklch(70.9% 0.01 56.259) /* stone-400 */
+  );
+}
