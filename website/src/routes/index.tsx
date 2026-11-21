@@ -2,6 +2,8 @@ import { Checkbox } from "menhir/checkbox";
 import { Separator } from "menhir/separator";
 import { Switch } from "menhir/switch";
 import { Toggle } from "menhir/toggle";
+import { ToggleGroup } from "menhir/toggle-group";
+import { For } from "solid-js";
 
 import InstallCommand from "../components/InstallCommand";
 import MenhirScene from "../components/MenhirScene";
@@ -104,6 +106,27 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/toggle">Toggle</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <ToggleGroup.Root
+                aria-label="Text alignment"
+                defaultValue={["left"]}
+                class="flex gap-1"
+              >
+                <For each={["Left", "Center", "Right"]}>
+                  {(name) => (
+                    <ToggleGroup.Item
+                      value={name.toLowerCase()}
+                      class="flex-1 cursor-pointer rounded-md border border-stone-300 px-2 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-pressed:border-transparent data-pressed:bg-stone-800 data-pressed:text-white dark:border-stone-700 dark:data-pressed:bg-stone-300 dark:data-pressed:text-stone-900"
+                    >
+                      {name}
+                    </ToggleGroup.Item>
+                  )}
+                </For>
+              </ToggleGroup.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/toggle-group">Toggle Group</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

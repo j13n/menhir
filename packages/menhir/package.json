@@ -64,6 +64,11 @@
       "solid": "./dist/source/toggle/index.js",
       "import": "./dist/toggle/index.js"
     },
+    "./toggle-group": {
+      "types": "./dist/source/toggle-group/index.d.ts",
+      "solid": "./dist/source/toggle-group/index.js",
+      "import": "./dist/toggle-group/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [

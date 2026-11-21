@@ -1,13 +1,11 @@
-import { isDev } from "@solidjs/web";
 import type { JSX } from "@solidjs/web";
 import { omit } from "solid-js";
 
-import { warnUnlessButton } from "../../core/button.ts";
-import type { ButtonElementProps } from "../../core/button.ts";
 import { createControllableSignal } from "../../core/createControllableSignal.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { RenderProp } from "../../core/renderElement.tsx";
+import { toggleButtonProps } from "../../core/toggleButton.ts";
 
 export interface ToggleRootProps extends JSX.HTMLAttributes<HTMLElement> {
   /** Whether the toggle is pressed, when controlled. */
@@ -37,30 +35,18 @@ export function ToggleRoot(props: ToggleRootProps) {
     },
     onChange: (value) => props.onPressedChange?.(value),
   });
-  const buttonProps: ButtonElementProps = {
-    type: "button",
-    get disabled() {
-      return props.disabled;
+  const buttonProps = toggleButtonProps(
+    {
+      get pressed() {
+        return pressed();
+      },
+      get disabled() {
+        return props.disabled;
+      },
+      setPressed,
     },
-    // Solid 2.0 removes an attribute set to false, so spell the value out.
-    get "aria-pressed"() {
-      return pressed() ? "true" : "false";
-    },
-    get "data-pressed"() {
-      return pressed() ? "" : undefined;
-    },
-    get "data-unpressed"() {
-      return pressed() ? undefined : "";
-    },
-    get "data-disabled"() {
-      return props.disabled ? "" : undefined;
-    },
-    onClick: () => setPressed(!pressed()),
-    ref: (element) => {
-      // Production builds drop the check with `isDev`.
-      if (isDev) warnUnlessButton(element, "Toggle.Root");
-    },
-  };
+    "Toggle.Root",
+  );
   const elementProps = mergeElementProps(
     buttonProps,
     omit(
