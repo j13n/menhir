@@ -2,7 +2,7 @@
 
 Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles.
 
-Status: planning. Nothing in this document is built yet. Versions were checked on 2026-11-18 and name availability on 2026-11-19.
+Status: in development (2026-11-21). Phase 0 is done and phase 1 is under way (section 9): Switch, Toggle, Checkbox and Separator are built, with the color-mode and theme utilities. Nothing is released yet. Versions were checked on 2026-11-18 and name availability on 2026-11-19.
 
 ## 1. Why this exists
 
