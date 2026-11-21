@@ -21,7 +21,7 @@ Run from this folder, or from the repo root with `pnpm --filter website <script>
 | `pnpm dev`       | Dev server with hot reload                       |
 | `pnpm build`     | Size report, then static site in `dist/client`   |
 | `pnpm serve`     | Serves the production build                      |
-| `pnpm test`      | Vitest in jsdom                                  |
+| `pnpm test`      | Builds menhir, then Vitest in jsdom              |
 | `pnpm typecheck` | `tsc --noEmit`                                   |
 | `pnpm lint`      | oxlint with `eslint-plugin-solid` (`configs/v2`) |
 

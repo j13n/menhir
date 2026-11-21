@@ -7,7 +7,7 @@
     "dev": "vite --port 3100",
     "build": "pnpm --filter @menhir/bundle-size size:json && vite build",
     "serve": "vite preview",
-    "test": "vitest",
+    "test": "pnpm --filter menhir build && vitest",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit"
   },
