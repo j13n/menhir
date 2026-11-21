@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const budgets = {
   "menhir/checkbox": "2.4 kB",
   "menhir/switch": "2.3 kB",
+  "menhir/toggle": "1.4 kB",
 };
 
 export default Object.entries(budgets).map(([entryPoint, limit]) => ({

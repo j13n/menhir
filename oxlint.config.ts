@@ -6,27 +6,12 @@
 import { defineConfig } from "oxlint";
 import solidV2 from "eslint-plugin-solid/configs/v2";
 
+import { popupComponents as popups } from "./packages/menhir/layers.ts";
+
 const library = "packages/menhir/src/**";
 // Files that break the rules on purpose. Linted only by lint.test.ts.
 const fixtures = "packages/menhir/test/workspace/lint-fixtures/**";
 const includeFixtures = process.env.MENHIR_LINT_FIXTURES === "1";
-
-// The popup components, which may import the `floating` layer. Every other
-// folder in src is a simple component, so a new popup is added here.
-const popups = [
-  "dialog",
-  "alert-dialog",
-  "popover",
-  "tooltip",
-  "preview-card",
-  "menu",
-  "context-menu",
-  "menubar",
-  "navigation-menu",
-  "select",
-  "combobox",
-  "autocomplete",
-];
 
 const solidPackages = ["solid-js", "@solidjs/web"];
 

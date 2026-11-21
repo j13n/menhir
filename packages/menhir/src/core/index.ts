@@ -5,6 +5,8 @@
 // - mergeElementProps.ts: a part's own props merged with the consumer's.
 // - renderElement.tsx: a part's element, or the consumer's `render`.
 // - createControllableSignal.ts: a controlled/uncontrolled value.
+// - button.ts: the props type and dev warning of a part that is a native
+//   button.
 //
 // Ids need no helper: parts call Solid's `createUniqueId`, which matches
 // between the server render and hydration (test/core/ids.hydrate.test.tsx).

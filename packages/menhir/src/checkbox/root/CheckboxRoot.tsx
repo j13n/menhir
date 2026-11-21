@@ -2,10 +2,12 @@ import { isDev } from "@solidjs/web";
 import type { JSX } from "@solidjs/web";
 import { merge, omit, onFlush, onSettled, untrack } from "solid-js";
 
+import { warnUnlessButton } from "../../core/button.ts";
+import type { ButtonElementProps } from "../../core/button.ts";
 import { createControllableSignal } from "../../core/createControllableSignal.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
-import type { ElementProps, RenderProp } from "../../core/renderElement.tsx";
+import type { RenderProp } from "../../core/renderElement.tsx";
 import { CheckboxRootContext } from "./CheckboxRootContext.ts";
 import type { CheckboxStateAttributes } from "./CheckboxRootContext.ts";
 
@@ -74,9 +76,7 @@ export function CheckboxRoot(props: CheckboxRootProps) {
       return props.required ? "" : undefined;
     },
   };
-  // `type` and `disabled` are button attributes, which `ElementProps`, typed
-  // for any element, does not list.
-  const buttonProps: ElementProps & { type: "button"; disabled?: boolean } = {
+  const buttonProps: ButtonElementProps = {
     role: "checkbox",
     type: "button",
     get disabled() {
@@ -103,14 +103,8 @@ export function CheckboxRoot(props: CheckboxRootProps) {
     },
     ref: (element) => {
       button = element;
-      // Its keyboard support, focus and labels come from the element being
-      // a button. Production builds drop the check with `isDev`.
-      if (isDev && element.tagName !== "BUTTON") {
-        console.warn(
-          `[menhir] Checkbox.Root's render function rendered a <${element.tagName.toLowerCase()}>. ` +
-            "Render a <button>, which gives the checkbox its keyboard support, focus and labels.",
-        );
-      }
+      // Production builds drop the check with `isDev`.
+      if (isDev) warnUnlessButton(element, "Checkbox.Root");
     },
   };
   let button: HTMLElement | undefined;

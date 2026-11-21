@@ -1,9 +1,14 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { simpleEntryPoints } from "./entryPoints.ts";
 import { findFloatingModules } from "./findFloatingModules.ts";
 
 describe("the floating layer", () => {
-  it.each(["menhir/checkbox", "menhir/switch"])(
+  it("is checked for at least one simple component", () => {
+    expect(simpleEntryPoints).toContain("menhir/switch");
+  });
+
+  it.each(simpleEntryPoints)(
     "is not in an app that imports %s alone",
     async (entryPoint) => {
       expect(await findFloatingModules(entryPoint)).toEqual([]);
