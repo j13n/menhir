@@ -202,6 +202,26 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Collapsible, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const trigger = example.getByRole("button", { name: "Release notes" });
+    const panel = example.getByText(/^Adds Collapsible/);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveAttribute("aria-controls", panel.id);
+    expect(panel).toHaveAttribute("hidden");
+    fireEvent.click(trigger);
+    // The collapsible opens after the click's flush.
+    await Promise.resolve();
+    flush();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(panel).not.toHaveAttribute("hidden");
+    expect(example.getByRole("link", { name: "Collapsible" })).toHaveAttribute(
+      "href",
+      "/docs/components/collapsible",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
@@ -250,6 +270,7 @@ describe("home page", () => {
         fireEvent.click(getByRole("switch", { name: "Airplane mode" }));
         fireEvent.click(getByRole("checkbox", { name: "Email updates" }));
         fireEvent.click(getByRole("button", { name: "Mute" }));
+        fireEvent.click(getByRole("button", { name: "Release notes" }));
         flush();
       },
       { scenario: "home-page" },

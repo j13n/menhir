@@ -24,13 +24,13 @@ export function ToggleGroupItem(props: ToggleGroupItemProps) {
   let element: HTMLElement | undefined;
   const own = toggleButtonProps(
     {
-      get pressed() {
+      get value() {
         return group.pressed(props.value);
       },
       get disabled() {
         return !!(group.disabled() || props.disabled);
       },
-      setPressed: (pressed) => group.press(props.value, pressed),
+      setValue: (pressed) => group.press(props.value, pressed),
     },
     "ToggleGroup.Item",
   );
