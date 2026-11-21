@@ -2,10 +2,15 @@
 
 Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles.
 
+**Docs: [menhir-ui.com](https://menhir-ui.com)**, with every component's parts, props, keyboard behaviour, a live example and its measured size.
+
 ## Install
 
 ```sh
+npm install menhir
 pnpm add menhir
+bun add menhir
+vp add menhir
 ```
 
 Menhir needs Solid 2.0: `solid-js` and `@solidjs/web` are peer dependencies.
@@ -40,7 +45,11 @@ Nothing is styled. Every part exposes its state as data attributes, such as `dat
 }
 ```
 
-The docs, with a live example and the measured size of each entry point, are at [menhir-ui.com](https://menhir-ui.com).
+For everything else, go to the docs:
+
+- [Getting started](https://menhir-ui.com/docs/getting-started)
+- [Components](https://menhir-ui.com/docs/components)
+- [Bundle size](https://menhir-ui.com/docs/bundle-size) of every entry point
 
 ## Status
 
