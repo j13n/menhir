@@ -5,7 +5,7 @@ import { formatSize } from "../formatSize";
 import { entryPointPage } from "../utilities";
 import TableScroll from "./TableScroll";
 
-/** Each entry point's size and budget, from the size-limit report. */
+/** Each entry point's size, from the size-limit report. */
 export default function SizeTable(props: { sizes: readonly EntryPointSize[] }) {
   return (
     <Show when={props.sizes.length > 0} fallback={<p>Not measured yet</p>}>
@@ -18,7 +18,6 @@ export default function SizeTable(props: { sizes: readonly EntryPointSize[] }) {
             <tr>
               <th scope="col">Entry point</th>
               <th scope="col">Size</th>
-              <th scope="col">Budget</th>
             </tr>
           </thead>
           <tbody>
@@ -31,7 +30,6 @@ export default function SizeTable(props: { sizes: readonly EntryPointSize[] }) {
                     </a>
                   </th>
                   <td>{formatSize(row.size)}</td>
-                  <td>{formatSize(row.limit)}</td>
                 </tr>
               )}
             </For>

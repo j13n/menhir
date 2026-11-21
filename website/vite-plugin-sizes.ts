@@ -23,7 +23,7 @@ const sizeJsonCommand = "`pnpm --filter @menhir/bundle-size size:json`";
  * Serves the sizes of the size-limit report, so the site never states a size
  * by hand:
  *
- * - `virtual:menhir-sizes` exports `sizes`, each entry point's size and budget.
+ * - `virtual:menhir-sizes` exports `sizes`, each entry point's size.
  * - `virtual:menhir-sizes/<name>` default-exports the size of `menhir/<name>`,
  *   for its component page.
  * - `virtual:size-comparison` exports `libraries`, other libraries' sizes of
@@ -101,7 +101,7 @@ export default function menhirSizes(
 type EntryPointSize = import("virtual:menhir-sizes").EntryPointSize;
 type ComparedLibrary = import("virtual:size-comparison").ComparedLibrary;
 
-type SizeLimitResult = { name: string; size: number; sizeLimit: number };
+type SizeLimitResult = { name: string; size: number };
 
 export function readSizes(file: string): EntryPointSize[] {
   const report: unknown = JSON.parse(readFileSync(file, "utf8"));
@@ -116,17 +116,12 @@ export function readSizes(file: string): EntryPointSize[] {
   return report.map((result) => ({
     entryPoint: result.name,
     size: result.size,
-    limit: result.sizeLimit,
   }));
 }
 
 function isResult(value: unknown): value is SizeLimitResult {
   const result = value as Partial<SizeLimitResult> | null;
-  return (
-    typeof result?.name === "string" &&
-    typeof result.size === "number" &&
-    typeof result.sizeLimit === "number"
-  );
+  return typeof result?.name === "string" && typeof result.size === "number";
 }
 
 /** Reads `comparison.json`, which test/bundle-size/measureComparison.ts writes. */

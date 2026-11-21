@@ -7,8 +7,8 @@ import type { ComparedLibrary } from "virtual:size-comparison";
 import ComparisonTable from "./ComparisonTable";
 
 const sizes = [
-  { entryPoint: "menhir/separator", size: 746, limit: 900 },
-  { entryPoint: "menhir/switch", size: 1921, limit: 2300 },
+  { entryPoint: "menhir/separator", size: 746 },
+  { entryPoint: "menhir/switch", size: 1921 },
 ];
 
 const components = [
@@ -126,7 +126,7 @@ describe("<ComparisonTable />", () => {
   test("shows no triangle for a size within half a percent of menhir's", () => {
     const { getByRole } = render(() => (
       <ComparisonTable
-        sizes={[{ entryPoint: "menhir/switch", size: 1921, limit: 2300 }]}
+        sizes={[{ entryPoint: "menhir/switch", size: 1921 }]}
         libraries={[
           {
             name: "Radix",
