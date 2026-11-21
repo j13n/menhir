@@ -1,3 +1,4 @@
+import { accordionDoc } from "./accordion";
 import { checkboxDoc } from "./checkbox";
 import { collapsibleDoc } from "./collapsible";
 import { meterDoc } from "./meter";
@@ -10,6 +11,7 @@ import type { ComponentDoc } from "./types";
 
 /** Every component page's content. Add a component here when its page lands. */
 export const componentDocs: ComponentDoc[] = [
+  accordionDoc,
   checkboxDoc,
   collapsibleDoc,
   meterDoc,

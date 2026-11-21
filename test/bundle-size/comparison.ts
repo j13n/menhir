@@ -23,6 +23,7 @@ export const libraries: Library[] = [
     framework: "React",
     ignore: ["react", "react-dom"],
     components: {
+      accordion: "@base-ui/react/accordion",
       checkbox: "@base-ui/react/checkbox",
       collapsible: "@base-ui/react/collapsible",
       meter: "@base-ui/react/meter",
@@ -38,6 +39,7 @@ export const libraries: Library[] = [
     framework: "React",
     ignore: ["react", "react-dom"],
     components: {
+      accordion: "@radix-ui/react-accordion",
       checkbox: "@radix-ui/react-checkbox",
       collapsible: "@radix-ui/react-collapsible",
       progress: "@radix-ui/react-progress",
@@ -52,6 +54,7 @@ export const libraries: Library[] = [
     framework: "Solid 1.x",
     ignore: ["solid-js"],
     components: {
+      accordion: "@kobalte/core/accordion",
       checkbox: "@kobalte/core/checkbox",
       collapsible: "@kobalte/core/collapsible",
       meter: "@kobalte/core/meter",
@@ -63,12 +66,15 @@ export const libraries: Library[] = [
     },
   },
   {
-    // None of menhir's components yet. Its package is `corvu`, with one
-    // module per component, such as `corvu/dialog`.
+    // Its package is `corvu`, with one module per component. Its disclosure
+    // is menhir's collapsible.
     name: "corvu",
     framework: "Solid 1.x",
     ignore: ["solid-js"],
-    components: {},
+    components: {
+      accordion: "corvu/accordion",
+      collapsible: "corvu/disclosure",
+    },
   },
 ];
 

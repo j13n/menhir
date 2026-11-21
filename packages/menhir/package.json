@@ -24,6 +24,11 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
+    "./accordion": {
+      "types": "./dist/source/accordion/index.d.ts",
+      "solid": "./dist/source/accordion/index.js",
+      "import": "./dist/accordion/index.js"
+    },
     "./checkbox": {
       "types": "./dist/source/checkbox/index.d.ts",
       "solid": "./dist/source/checkbox/index.js",

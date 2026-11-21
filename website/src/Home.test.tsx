@@ -222,6 +222,35 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Accordion, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const styled = example.getByRole("button", { name: "Is it styled?" });
+    const ssr = example.getByRole("button", { name: "Does it work with SSR?" });
+    expect(styled.parentElement).toBe(
+      example.getByRole("heading", { name: "Is it styled?" }),
+    );
+    expect(styled).toHaveAttribute("aria-expanded", "false");
+    expect(ssr).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(styled);
+    // The accordion opens after the click's flush.
+    await Promise.resolve();
+    flush();
+    expect(styled).toHaveAttribute("aria-expanded", "true");
+    expect(
+      example.getByRole("region", { name: "Is it styled?" }),
+    ).not.toHaveAttribute("hidden");
+    fireEvent.click(ssr);
+    await Promise.resolve();
+    flush();
+    expect(ssr).toHaveAttribute("aria-expanded", "true");
+    expect(styled).toHaveAttribute("aria-expanded", "false");
+    expect(example.getByRole("link", { name: "Accordion" })).toHaveAttribute(
+      "href",
+      "/docs/components/accordion",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
@@ -271,6 +300,7 @@ describe("home page", () => {
         fireEvent.click(getByRole("checkbox", { name: "Email updates" }));
         fireEvent.click(getByRole("button", { name: "Mute" }));
         fireEvent.click(getByRole("button", { name: "Release notes" }));
+        fireEvent.click(getByRole("button", { name: "Is it styled?" }));
         flush();
       },
       { scenario: "home-page" },
