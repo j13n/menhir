@@ -24,6 +24,7 @@ export const libraries: Library[] = [
     ignore: ["react", "react-dom"],
     components: {
       checkbox: "@base-ui/react/checkbox",
+      collapsible: "@base-ui/react/collapsible",
       meter: "@base-ui/react/meter",
       progress: "@base-ui/react/progress",
       separator: "@base-ui/react/separator",
@@ -38,6 +39,7 @@ export const libraries: Library[] = [
     ignore: ["react", "react-dom"],
     components: {
       checkbox: "@radix-ui/react-checkbox",
+      collapsible: "@radix-ui/react-collapsible",
       progress: "@radix-ui/react-progress",
       separator: "@radix-ui/react-separator",
       switch: "@radix-ui/react-switch",
@@ -51,6 +53,7 @@ export const libraries: Library[] = [
     ignore: ["solid-js"],
     components: {
       checkbox: "@kobalte/core/checkbox",
+      collapsible: "@kobalte/core/collapsible",
       meter: "@kobalte/core/meter",
       progress: "@kobalte/core/progress",
       separator: "@kobalte/core/separator",

@@ -59,6 +59,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/collapsible";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/collapsible"), Extract<"default", keyof typeof import("./src/routes/docs/components/collapsible")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/index"), Extract<"default", keyof typeof import("./src/routes/docs/components/index")>>>;
@@ -251,6 +257,14 @@ declare module "virtual:file-routes" {
           id: "/utilities/color-mode";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/utilities/color-mode"), Extract<"default", keyof typeof import("./src/routes/docs/utilities/color-mode")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/collapsible";
+          id: "/components/collapsible";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/collapsible"), Extract<"default", keyof typeof import("./src/routes/docs/components/collapsible")>>>;
           $$route?: undefined;
           children?: undefined;
         },

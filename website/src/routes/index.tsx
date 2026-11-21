@@ -1,4 +1,5 @@
 import { Checkbox } from "menhir/checkbox";
+import { Collapsible } from "menhir/collapsible";
 import { Meter } from "menhir/meter";
 import { Progress } from "menhir/progress";
 import { Separator } from "menhir/separator";
@@ -161,6 +162,19 @@ export default function Home() {
               </Meter.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/meter">Meter</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <Collapsible.Root>
+                <Collapsible.Trigger class="flex cursor-pointer items-center gap-2 before:transition-[rotate] before:content-['▸'] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-open:before:rotate-90">
+                  Release notes
+                </Collapsible.Trigger>
+                <Collapsible.Panel class="mt-2 text-sm text-stone-500">
+                  Adds Collapsible, a button that shows and hides content.
+                </Collapsible.Panel>
+              </Collapsible.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/collapsible">Collapsible</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

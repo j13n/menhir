@@ -6,11 +6,13 @@
 // - renderElement.tsx: a part's element, or the consumer's `render`.
 // - createControllableSignal.ts: a controlled/uncontrolled value.
 // - button.ts: the props type and dev warning of a part that is a native
-//   button.
+//   button, and the own props of one that flips a state it announces in
+//   `aria-pressed` or `aria-expanded`, shared by Toggle, Toggle Group and
+//   Collapsible.
 // - range.ts: the value, attributes and text of a part along a range,
 //   shared by Progress and Meter.
-// - toggleButton.ts: the own props of a part that is a toggle button,
-//   shared by Toggle and Toggle Group.
+// - toggleButton.ts: the own props of a part that is a toggle button
+//   (`aria-pressed` and `data-pressed`), shared by Toggle and Toggle Group.
 // - preference/: a reader's choice saved in `localStorage` or a cookie and
 //   applied to `<html>`, with its pre-paint head script. What the
 //   color-mode and theme utilities share.

@@ -29,6 +29,11 @@
       "solid": "./dist/source/checkbox/index.js",
       "import": "./dist/checkbox/index.js"
     },
+    "./collapsible": {
+      "types": "./dist/source/collapsible/index.d.ts",
+      "solid": "./dist/source/collapsible/index.js",
+      "import": "./dist/collapsible/index.js"
+    },
     "./color-mode/cookie": {
       "types": "./dist/source/color-mode/cookie/index.d.ts",
       "solid": "./dist/source/color-mode/cookie/index.js",

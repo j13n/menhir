@@ -37,13 +37,13 @@ export function ToggleRoot(props: ToggleRootProps) {
   });
   const buttonProps = toggleButtonProps(
     {
-      get pressed() {
+      get value() {
         return pressed();
       },
       get disabled() {
         return props.disabled;
       },
-      setPressed,
+      setValue: setPressed,
     },
     "Toggle.Root",
   );

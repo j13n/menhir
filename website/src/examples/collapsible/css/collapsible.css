@@ -1,0 +1,41 @@
+/* The least CSS that makes the Collapsible visible: a trigger with an
+   arrow that turns down while open, selected by data-open. The Panel is
+   hidden by its hidden attribute. Everything else is the browser's.
+   Colours are Tailwind's stone palette; light-dark() picks the second one
+   in dark mode (color-scheme: dark). */
+.collapsible {
+  width: 16rem;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.collapsible-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.collapsible-trigger::before {
+  content: "▸";
+  transition: rotate 150ms;
+}
+
+.collapsible-trigger[data-open]::before {
+  rotate: 90deg;
+}
+
+.collapsible-panel {
+  margin-top: 0.5rem;
+  color: light-dark(
+    oklch(44.4% 0.011 73.639) /* stone-600 */,
+    oklch(70.9% 0.01 56.259) /* stone-400 */
+  );
+}
