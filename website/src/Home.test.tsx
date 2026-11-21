@@ -216,6 +216,19 @@ describe("home page", () => {
     );
   });
 
+  test("shows a Progress with its value, linked to its page", () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const progressbar = example.getByRole("progressbar", { name: "Storage" });
+    expect(progressbar).toHaveAttribute("aria-valuenow", "70");
+    expect(progressbar).toHaveAttribute("aria-valuetext", "70%");
+    expect(progressbar).toHaveTextContent("70%");
+    expect(example.getByRole("link", { name: "Progress" })).toHaveAttribute(
+      "href",
+      "/docs/components/progress",
+    );
+  });
+
   test("renders, animates and toggles without tripping a Solid diagnostic", async () => {
     const { artifact } = await captureArtifact(
       () => {

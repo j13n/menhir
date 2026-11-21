@@ -24,6 +24,7 @@ export const libraries: Library[] = [
     ignore: ["react", "react-dom"],
     components: {
       checkbox: "@base-ui/react/checkbox",
+      progress: "@base-ui/react/progress",
       separator: "@base-ui/react/separator",
       switch: "@base-ui/react/switch",
       toggle: "@base-ui/react/toggle",
@@ -36,6 +37,7 @@ export const libraries: Library[] = [
     ignore: ["react", "react-dom"],
     components: {
       checkbox: "@radix-ui/react-checkbox",
+      progress: "@radix-ui/react-progress",
       separator: "@radix-ui/react-separator",
       switch: "@radix-ui/react-switch",
       toggle: "@radix-ui/react-toggle",
@@ -48,6 +50,7 @@ export const libraries: Library[] = [
     ignore: ["solid-js"],
     components: {
       checkbox: "@kobalte/core/checkbox",
+      progress: "@kobalte/core/progress",
       separator: "@kobalte/core/separator",
       switch: "@kobalte/core/switch",
       toggle: "@kobalte/core/toggle-button",

@@ -6,7 +6,7 @@ Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bu
 
 In development and not released yet: `menhir` on npm is a 0.0.0 placeholder that holds the name. Built so far:
 
-- Components: Checkbox, Separator, Switch, Toggle and Toggle Group.
+- Components: Checkbox, Progress, Separator, Switch, Toggle and Toggle Group.
 - Utilities: color mode and theme, each with local-storage and cookie storage.
 
 Each has its own entry point, such as `menhir/switch`, and a page with a live example and its measured size at [menhir-ui.com](https://menhir-ui.com). [PLAN.md](PLAN.md) describes the goals, the bundle-size rules and the roadmap; [CONTRIBUTING.md](CONTRIBUTING.md) describes how a component is built.

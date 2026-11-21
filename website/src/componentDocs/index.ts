@@ -1,4 +1,5 @@
 import { checkboxDoc } from "./checkbox";
+import { progressDoc } from "./progress";
 import { separatorDoc } from "./separator";
 import { switchDoc } from "./switch";
 import { toggleDoc } from "./toggle";
@@ -8,6 +9,7 @@ import type { ComponentDoc } from "./types";
 /** Every component page's content. Add a component here when its page lands. */
 export const componentDocs: ComponentDoc[] = [
   checkboxDoc,
+  progressDoc,
   separatorDoc,
   switchDoc,
   toggleDoc,
