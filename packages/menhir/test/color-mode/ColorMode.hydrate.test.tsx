@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createRenderer, renderOnServer } from "#test-utils";
 
-import { clearCookies } from "./clearCookies.ts";
+import { clearCookies } from "../clearCookies.ts";
 import ColorModeCookieFixture from "./ColorModeCookieFixture.tsx";
 import ColorModeFixture from "./ColorModeFixture.tsx";
 import { stubSystemPreference } from "./stubSystemPreference.ts";

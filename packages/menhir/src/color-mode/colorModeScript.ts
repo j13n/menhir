@@ -1,10 +1,14 @@
+import type { PreferenceStorage } from "../core/preference/preference.ts";
+import { scriptLiteral } from "../core/preference/preference.ts";
+import { preferenceScript } from "../core/preference/preferenceScript.ts";
+
 import {
+  resolvedModes,
   darkQuery,
   defaultAttribute,
   defaultStorageKey,
-  scriptLiteral,
 } from "./colorMode.ts";
-import type { ColorModeOptions, ColorModeStorage } from "./colorMode.ts";
+import type { ColorModeOptions } from "./colorMode.ts";
 
 /**
  * `colorModeScript` of each entry point, with the entry point's storage: the
@@ -12,18 +16,13 @@ import type { ColorModeOptions, ColorModeStorage } from "./colorMode.ts";
  * or the system preference, before the page first paints.
  */
 export function colorModeScriptWithStorage(
-  storage: ColorModeStorage,
+  storage: PreferenceStorage,
   options: ColorModeOptions = {},
 ): string {
-  const key = options.storageKey ?? defaultStorageKey;
-  const attribute = options.attribute ?? defaultAttribute;
-  const apply =
-    attribute === "class"
-      ? 'd.classList.remove(r==="dark"?"light":"dark");d.classList.add(r)'
-      : `d.setAttribute(${scriptLiteral(attribute)},r)`;
-  return (
-    `(function(){var m;try{${storage.script(key)}}catch(e){}` +
-    `var r=m==="light"||m==="dark"?m:matchMedia(${scriptLiteral(darkQuery)}).matches?"dark":"light",` +
-    `d=document.documentElement;${apply}})()`
-  );
+  return preferenceScript(storage, {
+    storageKey: options.storageKey ?? defaultStorageKey,
+    attribute: options.attribute ?? defaultAttribute,
+    values: resolvedModes,
+    fallback: `matchMedia(${scriptLiteral(darkQuery)}).matches?"dark":"light"`,
+  });
 }

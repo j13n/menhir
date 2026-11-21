@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { clearCookies } from "../../test/color-mode/clearCookies.ts";
+import { clearCookies } from "../../test/clearCookies.ts";
 import { stubSystemPreference } from "../../test/color-mode/stubSystemPreference.ts";
 import * as cookie from "./cookie/index.ts";
 import { colorModeScript } from "./local-storage/index.ts";

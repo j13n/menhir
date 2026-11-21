@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createRenderer, fireEvent, screen } from "#test-utils";
 
-import { clearCookies } from "../../test/color-mode/clearCookies.ts";
+import { clearCookies } from "../../test/clearCookies.ts";
 import { stubSystemPreference } from "../../test/color-mode/stubSystemPreference.ts";
 import * as cookie from "./cookie/index.ts";
 import * as local from "./local-storage/index.ts";

@@ -49,6 +49,16 @@
       "solid": "./dist/source/switch/index.js",
       "import": "./dist/switch/index.js"
     },
+    "./theme/cookie": {
+      "types": "./dist/source/theme/cookie/index.d.ts",
+      "solid": "./dist/source/theme/cookie/index.js",
+      "import": "./dist/theme/cookie/index.js"
+    },
+    "./theme/local-storage": {
+      "types": "./dist/source/theme/local-storage/index.d.ts",
+      "solid": "./dist/source/theme/local-storage/index.js",
+      "import": "./dist/theme/local-storage/index.js"
+    },
     "./toggle": {
       "types": "./dist/source/toggle/index.d.ts",
       "solid": "./dist/source/toggle/index.js",

@@ -5,6 +5,9 @@ followed across tabs. A utility, not a component: it renders nothing, and the
 control that changes the mode is the app's. The one exception to "Styling,
 themes" in PLAN.md's non-goals; see `docs/adr/0001-color-mode-utility.md`.
 Cookie storage, for server rendering: `docs/adr/0002-color-mode-cookie-storage.md`.
+Themes are a separate utility, `menhir/theme` (`src/theme/README.md`),
+sharing the code below through `core/preference`
+(`docs/adr/0003-theme-utility.md`).
 
 ## Sources
 
@@ -46,12 +49,20 @@ import { colorModeFromCookie } from "menhir/color-mode/cookie";
 Both functions take the same options, so the hook and the script agree:
 `storageKey`, the key or cookie name (default `"color-mode"`), and
 `attribute`, a `data-*` attribute set to `light` or `dark` (default
-`"data-theme"`) or `"class"` for a `light` or `dark` class.
+`"data-theme"`) or `"class"` for a `light` or `dark` class. With `"class"`,
+Menhir owns those two classes on `<html>`: changing the mode removes both
+before adding one. A site that also uses `menhir/theme` gives one of the
+two another `attribute`, since both default to `data-theme`.
 
-Files: `local-storage/` and `cookie/` hold each entry point and its storage.
-The hook (`createColorMode.ts`) and the script (`colorModeScript.ts`) are
-shared, and take the storage, a `ColorModeStorage` (`colorMode.ts`), as
-their first argument. It is internal.
+Files: `local-storage/` and `cookie/` hold each entry point. The hook
+(`createColorMode.ts`) and the script (`colorModeScript.ts`) are shared by
+both, and take the storage as their first argument. Below them, in
+`src/core/preference/` and shared with `menhir/theme`, are the storages
+(`localStoragePreference`, `cookiePreference`), the saved-choice hook
+(`createPreference`) and the head-script builder (`preferenceScript`). The
+hook adds `system` to `createPreference`: it follows the media query and
+resolves `system` through `createPreference`'s `resolve`. All of it is
+internal.
 
 Decisions:
 
@@ -66,8 +77,10 @@ Decisions:
   before the saved choice is read, undoing the head script.
 - **`system` is stored as no value**: `setMode("system")` removes the key, so
   a reader who never chose has nothing saved.
-- **Instances in one tab stay in step** through a `menhir:color-mode` event
-  on `window`; the `storage` event only reaches other tabs. A site can render
+- **Instances in one tab stay in step** through a `menhir:preference` event
+  on `window`, keyed by `storageKey`, so a theme on the same page keeps
+  apart (it was `menhir:color-mode` before the code was shared with themes;
+  the event is internal); the `storage` event only reaches other tabs. A site can render
   a toggle in its header and another in its docs.
 - **Storage that throws**, as with cookies blocked, is ignored: the choice
   lasts for the page.
@@ -75,11 +88,11 @@ Decisions:
   ships only the storage it imports (PLAN.md section 6, rule 6), and the
   import says which one it uses. The same function names in both make
   switching a change of import. Measured on 2026-11-21, every export
-  gzipped: `local-storage` 1.01 kB, `cookie` 1.25 kB. The shared hook costs
-  `local-storage` about 100 B over the single entry point it replaced
-  (913 B), for the indirection through the storage object.
+  gzipped: `local-storage` 1.16 kB, `cookie` 1.42 kB. Sharing the code
+  with `menhir/theme` through `core/preference` (ADR 0003) cost about
+  150 B of that, for the options objects and the generic hook.
 - **A storage the server can read is read during the first render**
-  (`ColorModeStorage.readsOnServer`). A cookie is read on the server from
+  (`PreferenceStorage.readsOnServer`). A cookie is read on the server from
   `getRequestEvent()` and in the browser from `document.cookie`, so `mode`
   is right from the start and hydration agrees. Reading through
   `@solidjs/web` ties the library to no server framework. `system` still

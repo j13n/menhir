@@ -7,6 +7,9 @@
 // - createControllableSignal.ts: a controlled/uncontrolled value.
 // - button.ts: the props type and dev warning of a part that is a native
 //   button.
+// - preference/: a reader's choice saved in `localStorage` or a cookie and
+//   applied to `<html>`, with its pre-paint head script. What the
+//   color-mode and theme utilities share.
 //
 // Ids need no helper: parts call Solid's `createUniqueId`, which matches
 // between the server render and hydration (test/core/ids.hydrate.test.tsx).
