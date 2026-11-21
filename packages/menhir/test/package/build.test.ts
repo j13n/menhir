@@ -50,7 +50,10 @@ describe("built package", () => {
     // color-mode/cookie/index.ts.
     const expected = files("{*,*/*}/index.ts", "src/")
       .map((file) => `./${dirname(file)}`)
-      .filter((subpath) => subpath !== "./core");
+      .filter((subpath) => subpath !== "./core")
+      // Sorted as subpaths: sorted as files, `toggle-group/index.ts` comes
+      // before `toggle/index.ts`.
+      .sort();
 
     expect(Object.keys(components).sort()).toEqual(expected);
     for (const conditions of Object.values<Record<string, string>>(

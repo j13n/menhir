@@ -27,6 +27,7 @@ export const libraries: Library[] = [
       separator: "@base-ui/react/separator",
       switch: "@base-ui/react/switch",
       toggle: "@base-ui/react/toggle",
+      "toggle-group": "@base-ui/react/toggle-group",
     },
   },
   {
@@ -38,6 +39,7 @@ export const libraries: Library[] = [
       separator: "@radix-ui/react-separator",
       switch: "@radix-ui/react-switch",
       toggle: "@radix-ui/react-toggle",
+      "toggle-group": "@radix-ui/react-toggle-group",
     },
   },
   {
@@ -49,6 +51,7 @@ export const libraries: Library[] = [
       separator: "@kobalte/core/separator",
       switch: "@kobalte/core/switch",
       toggle: "@kobalte/core/toggle-button",
+      "toggle-group": "@kobalte/core/toggle-group",
     },
   },
   {

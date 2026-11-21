@@ -183,6 +183,25 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Toggle Group, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const group = example.getByRole("group", { name: "Text alignment" });
+    const left = within(group).getByRole("button", { name: "Left" });
+    const center = within(group).getByRole("button", { name: "Center" });
+    expect(left).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(center);
+    // The group changes after the click's flush.
+    await Promise.resolve();
+    flush();
+    expect(left).toHaveAttribute("aria-pressed", "false");
+    expect(center).toHaveAttribute("aria-pressed", "true");
+    expect(example.getByRole("link", { name: "Toggle Group" })).toHaveAttribute(
+      "href",
+      "/docs/components/toggle-group",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
