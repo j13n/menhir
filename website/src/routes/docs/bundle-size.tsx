@@ -45,6 +45,10 @@ export default function BundleSize() {
           out, since the app already has them.
         </p>
         <p>
+          The app is a production build. Warnings and errors that Menhir shows
+          only in development are not in it, so they are not counted.
+        </p>
+        <p>
           The other libraries are measured the same way, each module with every
           part of it, and each library's framework is left out as Solid is:{" "}
           <code>react</code> and <code>react-dom</code> for the React libraries,{" "}

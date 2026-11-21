@@ -20,6 +20,17 @@ and `@solidjs/web` left out. It resolves the entry point with Node's `import`
 condition, so it measures the compiled output in `dist`, which is what an app
 bundles in the end.
 
+The size is that of a production app. Menhir's development-only code sits
+behind `isDev` of `@solidjs/web`, and its server-only code behind `isServer`;
+Solid's production build for the browser defines both as `false`, and a
+bundler drops that code (PLAN.md section 6, rule 2). With `@solidjs/web` left
+out, Rolldown would see only an import and keep it all. So
+`productionConstants.ts` has a Rolldown plugin that gives a module that is
+left out the constants of its production build (`solidProduction`), while
+every other export of it stays an import. `productionConstants.test.ts`
+checks the plugin on `fixtures/development-only`, and that no entry point of
+menhir still imports `isDev` or `isServer` when bundled with it.
+
 Rolldown, not esbuild: esbuild keeps a whole `export * as` namespace even when
 an app uses one part (PLAN.md section 6, rule 3), and the budgets
 should measure what a Vite app gets.
@@ -63,8 +74,11 @@ library does not have is left out.
 `comparison.size-limit.js` measures each of those modules as `.size-limit.js`
 measures menhir: an app that imports it and uses every part of it, bundled
 with Rolldown, minified and gzipped. The library's framework packages are
-left out instead of Solid. The checks have no limits: these sizes are shown,
-not enforced.
+left out instead of Solid. These are production sizes too: a Solid library
+is measured with the production constants of its Solid (`production` in
+`comparison.ts`), and the React libraries mark development-only code with
+`process.env.NODE_ENV`, which Rolldown sets to `"production"` itself. The
+checks have no limits: these sizes are shown, not enforced.
 
 The same config measures totals: each library's components imported
 together, and the same components of menhir, so that code the components

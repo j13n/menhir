@@ -86,5 +86,8 @@ describe("bundle size page", () => {
     expect(
       getByRole("region", { name: "How it is measured" }),
     ).toHaveTextContent("react and react-dom for the React libraries");
+    expect(
+      getByRole("region", { name: "How it is measured" }),
+    ).toHaveTextContent("The app is a production build");
   });
 });
