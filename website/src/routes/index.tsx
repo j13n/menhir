@@ -1,3 +1,4 @@
+import { Checkbox } from "menhir/checkbox";
 import { Switch } from "menhir/switch";
 
 import InstallCommand from "../components/InstallCommand";
@@ -76,6 +77,20 @@ export default function Home() {
               </label>
               <figcaption class="text-sm">
                 <a href="/docs/components/switch">Switch</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <label class="flex items-center justify-between gap-4">
+                Email updates
+                <Checkbox.Root
+                  defaultChecked
+                  class="inline-flex size-6 shrink-0 items-center justify-center rounded-md border border-stone-400 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-checked:border-transparent data-checked:bg-stone-800 dark:border-stone-500 dark:text-stone-900 dark:data-checked:bg-stone-300"
+                >
+                  <Checkbox.Indicator class="hidden h-3 w-1.5 -translate-y-px rotate-45 border-r-2 border-b-2 border-current data-checked:block" />
+                </Checkbox.Root>
+              </label>
+              <figcaption class="text-sm">
+                <a href="/docs/components/checkbox">Checkbox</a>
               </figcaption>
             </figure>
           </div>

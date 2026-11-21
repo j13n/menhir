@@ -16,6 +16,7 @@ describe("<DocsSidebar />", () => {
       ["Getting started", "/docs/getting-started"],
       ["Bundle size", "/docs/bundle-size"],
       ["llms.txt", "/docs/llms-txt"],
+      ["Checkbox", "/docs/components/checkbox"],
       ["Switch", "/docs/components/switch"],
     ]);
   });
@@ -26,6 +27,7 @@ describe("<DocsSidebar />", () => {
     const heading = nav.getByRole("heading", { name: "Components" });
     expect(within(heading).queryByRole("link")).toBeNull();
     expect(links(nav.getByRole("list", { name: "Components" }))).toEqual([
+      ["Checkbox", "/docs/components/checkbox"],
       ["Switch", "/docs/components/switch"],
     ]);
   });

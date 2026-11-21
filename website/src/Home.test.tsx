@@ -151,12 +151,29 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Checkbox, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const control = example.getByRole("checkbox", { name: "Email updates" });
+    expect(control).toHaveAttribute("aria-checked", "true");
+    fireEvent.click(control);
+    // The checkbox changes once its click has gone through its hidden input.
+    await Promise.resolve();
+    flush();
+    expect(control).toHaveAttribute("aria-checked", "false");
+    expect(example.getByRole("link", { name: "Checkbox" })).toHaveAttribute(
+      "href",
+      "/docs/components/checkbox",
+    );
+  });
+
   test("renders, animates and toggles without tripping a Solid diagnostic", async () => {
     const { artifact } = await captureArtifact(
       () => {
         const { getByRole } = setup();
         tick(2);
         fireEvent.click(getByRole("switch", { name: "Airplane mode" }));
+        fireEvent.click(getByRole("checkbox", { name: "Email updates" }));
         flush();
       },
       { scenario: "home-page" },

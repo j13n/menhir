@@ -56,8 +56,9 @@ committed, so the site's `pnpm build` runs `pnpm size:json` first.
 `findFloatingModules(specifier)` bundles an app that imports one entry point
 alone, with Rolldown, and returns every module of menhir's `floating` layer and
 every import of `@floating-ui/*` the bundle still has. `floating.test.ts`
-asserts that the list is empty for `menhir/switch`: a simple component must
-not pull in positioning code (PLAN.md section 6, rule 4). The lint rules of
+asserts that the list is empty for `menhir/checkbox` and `menhir/switch`: a
+simple component must not pull in positioning code (PLAN.md section 6, rule
+4). The lint rules of
 rule 4 catch a direct import; this catches one through any chain of modules.
 
 An unresolved import fails the check instead of being left out, so a missing

@@ -17,7 +17,10 @@ export const docsSections: DocsSection[] = [
   },
   {
     title: "Components",
-    links: [{ href: "/docs/components/switch", title: "Switch" }],
+    links: [
+      { href: "/docs/components/checkbox", title: "Checkbox" },
+      { href: "/docs/components/switch", title: "Switch" },
+    ],
   },
 ];
 
