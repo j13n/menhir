@@ -131,7 +131,7 @@ Built in #9, in `test/bundle-size` (its README has the details):
 
 - `.size-limit.js` holds one budget per entry point. `size-limit` 14 measures each with `@size-limit/rolldown`: an app that imports the entry point and uses every part of it, minified and gzipped, Solid left out. Rolldown because esbuild keeps a whole namespace. `size.test.ts` fails if an entry point in `exports` has no budget or is over it.
 - `pnpm size:json` writes the same results to `dist/sizes.json`, from which the docs site generates its size table and each component page's size (#38, `website/vite-plugin-sizes.ts`).
-- The bundle-size page also shows each component's size in other libraries, measured the same way with each library's framework left out (`comparison.ts`). These sizes are shown, not enforced.
+- The bundle-size page also shows each component's size in other libraries, measured the same way with each library's framework left out (`comparison.ts`). These sizes are shown, not enforced. Its last row is of the components imported together, so that shared code is counted once. The page says these are sizes only: the libraries differ in API and in what each component includes.
 - `floating.test.ts` bundles each simple component's entry point, such as `menhir/switch`, alone with Rolldown (every entry point in `exports` except the popups that `packages/menhir/layers.ts` lists for the lint config too) and fails if the bundle has a module from `floating` or an import of `@floating-ui/*`.
 
 ### Package shape

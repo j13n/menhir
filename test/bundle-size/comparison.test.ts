@@ -16,7 +16,7 @@ describe("comparison with other libraries", () => {
   });
 
   it("measures each library's version of a component, with the package version", () => {
-    const measured = measureComparison();
+    const { libraries: measured } = measureComparison();
     expect(measured.map((library) => library.name)).toEqual(
       libraries.map((library) => library.name),
     );
@@ -32,6 +32,28 @@ describe("comparison with other libraries", () => {
         });
         expect(component.size).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it("measures each library's components together, and menhir's same components", () => {
+    const { menhirTotal, libraries: measured } = measureComparison();
+    for (const library of measured) {
+      const sizes = Object.values(library.components).map(
+        (component) => component.size,
+      );
+      if (sizes.length === 0) {
+        expect(library.total).toBeUndefined();
+        continue;
+      }
+      // Together, the components are at least the largest of them and, with
+      // shared code counted once, no more than their sum.
+      expect(library.total!.size).toBeGreaterThanOrEqual(Math.max(...sizes));
+      expect(library.total!.size).toBeLessThanOrEqual(
+        sizes.reduce((sum, size) => sum + size),
+      );
+      // A library's components are some of the compared ones.
+      expect(library.total!.menhir).toBeGreaterThan(0);
+      expect(library.total!.menhir).toBeLessThanOrEqual(menhirTotal);
     }
   });
 });

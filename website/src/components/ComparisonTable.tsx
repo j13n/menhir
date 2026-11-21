@@ -10,10 +10,16 @@ import TableScroll from "./TableScroll";
  * Each component's size in menhir beside its size in other libraries, each
  * with its difference from menhir's, then the module and version measured in
  * each library. Utilities, such as `menhir/color-mode/cookie`, are left out.
+ *
+ * The last row is of the components imported together. A library's
+ * difference there is from the same components of menhir, so a library
+ * that lacks some is compared on the ones it has, and says how many.
  */
 export default function ComparisonTable(props: {
   sizes: readonly EntryPointSize[];
   libraries: readonly ComparedLibrary[];
+  /** Every compared component of menhir together; without it, no total row. */
+  menhirTotal?: number;
   /** Display names by slug; a component without one shows its slug. */
   components: readonly { slug: string; name: string }[];
 }) {
@@ -49,7 +55,15 @@ export default function ComparisonTable(props: {
               </For>
             </tr>
           </thead>
-          <tbody>
+          {/* The line above the total row is stronger than the lines between
+              components. It is the last component's bottom border: in a
+              collapsed table that one wins over the total row's top border. */}
+          <tbody
+            class={{
+              "[&>tr:last-child>*]:border-b-stone-400 dark:[&>tr:last-child>*]:border-b-stone-500":
+                props.menhirTotal !== undefined,
+            }}
+          >
             <For each={rows()}>
               {(row) => (
                 <tr>
@@ -62,12 +76,7 @@ export default function ComparisonTable(props: {
                       <td>
                         <Show
                           when={library.components[slug(row)]}
-                          fallback={
-                            <>
-                              <span aria-hidden="true">—</span>
-                              <span class="sr-only">None</span>
-                            </>
-                          }
+                          fallback={<None />}
                         >
                           {(component) => (
                             <>
@@ -86,6 +95,50 @@ export default function ComparisonTable(props: {
               )}
             </For>
           </tbody>
+          <Show when={props.menhirTotal}>
+            {(menhirTotal) => (
+              <tfoot>
+                <tr>
+                  <th scope="row">
+                    All together
+                    <span class="block text-xs font-normal text-stone-500 dark:text-stone-400">
+                      Shared code counted once
+                    </span>
+                  </th>
+                  <td>{formatSize(menhirTotal())}</td>
+                  <For each={props.libraries}>
+                    {(library) => (
+                      <td>
+                        <Show when={library.total} fallback={<None />}>
+                          {(total) => (
+                            <>
+                              {formatSize(total().size)}
+                              <SizeDifference
+                                size={total().size}
+                                base={total().menhir}
+                              />
+                              <Show
+                                when={
+                                  Object.keys(library.components).length <
+                                  rows().length
+                                }
+                              >
+                                <span class="block text-xs text-stone-500 dark:text-stone-400">
+                                  {Object.keys(library.components).length} of{" "}
+                                  {rows().length} components, against{" "}
+                                  {formatSize(total().menhir)}
+                                </span>
+                              </Show>
+                            </>
+                          )}
+                        </Show>
+                      </td>
+                    )}
+                  </For>
+                </tr>
+              </tfoot>
+            )}
+          </Show>
         </table>
       </TableScroll>
       <ul
@@ -114,6 +167,16 @@ export default function ComparisonTable(props: {
         </For>
       </ul>
     </Show>
+  );
+}
+
+/** A dash, read as "None": the library does not have the component. */
+function None() {
+  return (
+    <>
+      <span aria-hidden="true">—</span>
+      <span class="sr-only">None</span>
+    </>
   );
 }
 

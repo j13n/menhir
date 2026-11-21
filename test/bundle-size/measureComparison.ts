@@ -6,16 +6,38 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { libraries } from "./comparison.ts";
+import { libraries, totalChecks } from "./comparison.ts";
 
 const root = import.meta.dirname;
 
-/** One library in `dist/comparison.json`. */
+/** `dist/comparison.json`. */
+export type Comparison = {
+  /**
+   * The size of every compared component of menhir imported together, in
+   * bytes, minified and gzipped, Solid left out.
+   */
+  menhirTotal: number;
+  libraries: ComparedLibrary[];
+};
+
 export type ComparedLibrary = {
   name: string;
   framework: string;
   /** By the subpath of menhir's entry point, such as `switch`. */
   components: Record<string, ComparedComponent>;
+  /** Left out for a library with none of the components. */
+  total?: ComparedTotal;
+};
+
+/**
+ * A library's components imported together, so that code they share is
+ * counted once, as in an app that uses them all.
+ */
+export type ComparedTotal = {
+  /** In bytes, minified and gzipped, the library's framework left out. */
+  size: number;
+  /** The same components of menhir imported together, Solid left out. */
+  menhir: number;
 };
 
 export type ComparedComponent = {
@@ -27,7 +49,7 @@ export type ComparedComponent = {
   size: number;
 };
 
-export function measureComparison(): ComparedLibrary[] {
+export function measureComparison(): Comparison {
   const run = spawnSync(
     `${root}/node_modules/.bin/size-limit`,
     ["--json", "--config", "comparison.size-limit.js"],
@@ -44,18 +66,32 @@ export function measureComparison(): ComparedLibrary[] {
     ]),
   );
 
-  return libraries.map((library) => ({
-    name: library.name,
-    framework: library.framework,
-    components: Object.fromEntries(
-      Object.entries(library.components).map(([component, module]) => {
-        const size = sizes.get(module);
-        if (size === undefined)
-          throw new Error(`size-limit did not measure ${module}`);
-        return [component, { module, version: packageVersion(module), size }];
+  const sizeOf = (check: string) => {
+    const size = sizes.get(check);
+    if (size === undefined)
+      throw new Error(`size-limit did not measure ${check}`);
+    return size;
+  };
+
+  return {
+    menhirTotal: sizeOf(totalChecks.menhir),
+    libraries: libraries.map((library) => ({
+      name: library.name,
+      framework: library.framework,
+      components: Object.fromEntries(
+        Object.entries(library.components).map(([component, module]) => [
+          component,
+          { module, version: packageVersion(module), size: sizeOf(module) },
+        ]),
+      ),
+      ...(Object.keys(library.components).length > 0 && {
+        total: {
+          size: sizeOf(totalChecks.library(library)),
+          menhir: sizeOf(totalChecks.menhirFor(library)),
+        },
       }),
-    ),
-  }));
+    })),
+  };
 }
 
 /**

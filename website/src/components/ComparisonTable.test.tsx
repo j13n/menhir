@@ -164,6 +164,74 @@ describe("<ComparisonTable />", () => {
     expect(corvu).toHaveTextContent("None");
   });
 
+  test("shows no total row without menhir's total", () => {
+    const { queryByRole } = render(() => (
+      <ComparisonTable
+        sizes={sizes}
+        libraries={libraries}
+        components={components}
+      />
+    ));
+    expect(
+      queryByRole("row", { name: /All together/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  test("ends with the components together, each library against menhir's same components", () => {
+    const [radix, kobalte, corvu] = libraries;
+    const { getByRole } = render(() => (
+      <ComparisonTable
+        sizes={sizes}
+        menhirTotal={2100}
+        libraries={[
+          { ...radix, total: { size: 5250, menhir: 2100 } },
+          // Kobalte with the switch alone: compared with menhir's switch.
+          {
+            ...kobalte,
+            components: { switch: kobalte.components.switch },
+            total: { size: 3472, menhir: 1921 },
+          },
+          corvu,
+        ]}
+        components={components}
+      />
+    ));
+    const row = getByRole("row", { name: /All together/ });
+    expect(within(row).getByRole("rowheader")).toHaveTextContent(
+      "All togetherShared code counted once",
+    );
+    expect(cells(row)).toEqual([
+      "2.1 kB",
+      "5.3 kB150%, 150% larger than Menhir",
+      "3.5 kB81%, 81% larger than Menhir1 of 2 components, against 1.9 kB",
+      "—None",
+    ]);
+  });
+
+  test("draws a stronger line above the total row, and only when there is one", () => {
+    const strong = "[&>tr:last-child>*]:border-b-stone-400";
+    const { getAllByRole } = render(() => (
+      <>
+        <ComparisonTable
+          sizes={sizes}
+          menhirTotal={2100}
+          libraries={libraries}
+          components={components}
+        />
+        <ComparisonTable
+          sizes={sizes}
+          libraries={libraries}
+          components={components}
+        />
+      </>
+    ));
+    const [withTotal, without] = getAllByRole("table").map((table) =>
+      table.querySelector("tbody")!,
+    );
+    expect(withTotal).toHaveClass(strong);
+    expect(without).not.toHaveClass(strong);
+  });
+
   test("lists the module and version measured in each library", () => {
     const { getByRole } = render(() => (
       <ComparisonTable
