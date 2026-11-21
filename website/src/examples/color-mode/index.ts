@@ -1,11 +1,11 @@
 import type { ComponentExampleProps } from "../../components/ComponentExample";
 
-import iconCode from "./ColorModeIcon.tsx?raw";
+import iconCode from "./ColorModeIcon.tsx?highlight";
 import CssExample from "./css/ColorModeToggle";
-import cssExampleCode from "./css/ColorModeToggle.tsx?raw";
-import cssCode from "./css/color-mode-toggle.css?raw";
+import cssExampleCode from "./css/ColorModeToggle.tsx?highlight";
+import cssCode from "./css/color-mode-toggle.css?highlight";
 import TailwindExample from "./tailwind/ColorModeToggle";
-import tailwindExampleCode from "./tailwind/ColorModeToggle.tsx?raw";
+import tailwindExampleCode from "./tailwind/ColorModeToggle.tsx?highlight";
 
 const icon = { name: "ColorModeIcon.tsx", code: iconCode };
 

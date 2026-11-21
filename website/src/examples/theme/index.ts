@@ -1,11 +1,11 @@
 import type { ComponentExampleProps } from "../../components/ComponentExample";
 
 import CssExample from "./css/ThemePicker";
-import cssExampleCode from "./css/ThemePicker.tsx?raw";
-import cssCode from "./css/theme-picker.css?raw";
+import cssExampleCode from "./css/ThemePicker.tsx?highlight";
+import cssCode from "./css/theme-picker.css?highlight";
 import TailwindExample from "./tailwind/ThemePicker";
-import tailwindExampleCode from "./tailwind/ThemePicker.tsx?raw";
-import themesCode from "./themes.ts?raw";
+import tailwindExampleCode from "./tailwind/ThemePicker.tsx?highlight";
+import themesCode from "./themes.ts?highlight";
 
 const themes = { name: "themes.ts", code: themesCode };
 

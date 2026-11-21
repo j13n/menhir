@@ -1,10 +1,10 @@
 import type { ComponentExampleProps } from "../../components/ComponentExample";
 
 import CssExample from "./css/CheckboxExample";
-import cssExampleCode from "./css/CheckboxExample.tsx?raw";
-import cssCode from "./css/checkbox.css?raw";
+import cssExampleCode from "./css/CheckboxExample.tsx?highlight";
+import cssCode from "./css/checkbox.css?highlight";
 import TailwindExample from "./tailwind/CheckboxExample";
-import tailwindExampleCode from "./tailwind/CheckboxExample.tsx?raw";
+import tailwindExampleCode from "./tailwind/CheckboxExample.tsx?highlight";
 
 /** The Checkbox page's example, with plain CSS and with Tailwind CSS. */
 export const checkboxExample: ComponentExampleProps = {

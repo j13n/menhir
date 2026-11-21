@@ -1,3 +1,4 @@
+import { tsx } from "../highlight";
 import type { ComponentDoc } from "./types";
 
 export const checkboxDoc: ComponentDoc = {
@@ -5,7 +6,9 @@ export const checkboxDoc: ComponentDoc = {
   name: "Checkbox",
   description:
     "A control that the user checks or unchecks, with an optional partly checked state. It renders a native button with the checkbox role, and a hidden checkbox beside it so that forms submit its value.",
-  anatomy: "<Checkbox.Root>\n  <Checkbox.Indicator />\n</Checkbox.Root>",
+  anatomy: tsx`<Checkbox.Root>
+  <Checkbox.Indicator />
+</Checkbox.Root>`,
   api: [
     {
       part: "Root",

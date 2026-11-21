@@ -3,11 +3,14 @@ import { describe, expect, test } from "vitest";
 import { componentMarkdown, llmsTxt } from "./componentMarkdown";
 import type { ComponentDoc } from "./componentDocs/types";
 
+import { tsx } from "./highlight";
 const doc: ComponentDoc = {
   slug: "switch",
   name: "Switch",
   description: "A control that turns a setting on or off.",
-  anatomy: "<Switch.Root>\n  <Switch.Thumb />\n</Switch.Root>",
+  anatomy: tsx`<Switch.Root>
+  <Switch.Thumb />
+</Switch.Root>`,
   api: [
     {
       part: "Root",

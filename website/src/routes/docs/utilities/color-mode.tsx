@@ -4,19 +4,21 @@ import localStorageSize from "virtual:menhir-sizes/color-mode/local-storage";
 
 import ApiTable from "../../../components/ApiTable";
 import type { ApiRow } from "../../../components/ApiTable";
+import CodeBlock from "../../../components/CodeBlock";
 import ComponentExample from "../../../components/ComponentExample";
 import TableScroll from "../../../components/TableScroll";
 import Section from "../../../components/Section";
 import { colorModeExample } from "../../../examples/color-mode";
 import { formatMeasuredSize } from "../../../formatSize";
+import { css, ts, tsx } from "../../../highlight";
 
-const headScript = `import { colorModeScript } from "menhir/color-mode/local-storage";
+const headScript = tsx`import { colorModeScript } from "menhir/color-mode/local-storage";
 
 // In the document's <head>, before the styles. As a child, the script would
 // be HTML-escaped, so pass it as innerHTML.
 <script innerHTML={colorModeScript()} />`;
 
-const tailwindCss = `/* Tailwind's dark: variant, from the attribute instead of the system. */
+const tailwindCss = css`/* Tailwind's dark: variant, from the attribute instead of the system. */
 @custom-variant dark (&:where([data-color-mode="dark"], [data-color-mode="dark"] *));
 
 /* Native controls and scrollbars follow the mode too. */
@@ -24,7 +26,7 @@ const tailwindCss = `/* Tailwind's dark: variant, from the attribute instead of 
   color-scheme: dark;
 }`;
 
-const plainCss = `:root {
+const plainCss = css`:root {
   color-scheme: light;
 }
 :root[data-color-mode="dark"] {
@@ -32,7 +34,7 @@ const plainCss = `:root {
 }
 /* Then pick colours with light-dark(), or under [data-color-mode="dark"]. */`;
 
-const serverDocument = `import { getRequestEvent } from "@solidjs/web";
+const serverDocument = tsx`import { getRequestEvent } from "@solidjs/web";
 import {
   colorModeFromCookie,
   colorModeScript,
@@ -55,12 +57,12 @@ const mode = colorModeFromCookie(
 // In the component that changes the mode:
 const colorMode = createColorMode();`;
 
-const nonceScript = `// nonce: the one the server made for this response. It goes in the header,
+const nonceScript = tsx`// nonce: the one the server made for this response. It goes in the header,
 // Content-Security-Policy: script-src 'nonce-<nonce>', and to Solid's own
 // scripts through the nonce option of renderToStream or renderToString.
 <script nonce={nonce} innerHTML={colorModeScript()} />`;
 
-const hashScript = `import { createHash } from "node:crypto";
+const hashScript = ts`import { createHash } from "node:crypto";
 import { colorModeScript } from "menhir/color-mode/local-storage";
 
 // In the build or the server's setup, with the options the page uses.
@@ -183,20 +185,14 @@ export default function ColorModePage() {
           Add the head script, so the saved look is applied before the page
           first paints, without a flash of the other one:
         </p>
-        <pre>
-          <code>{headScript}</code>
-        </pre>
+        <CodeBlock code={headScript} />
         <p>
           Style the modes from the attribute. With Tailwind CSS, point the{" "}
           <code>dark:</code> variant at it:
         </p>
-        <pre>
-          <code>{tailwindCss}</code>
-        </pre>
+        <CodeBlock code={tailwindCss} />
         <p>With plain CSS:</p>
-        <pre>
-          <code>{plainCss}</code>
-        </pre>
+        <CodeBlock code={plainCss} />
         <p>
           Then call <code>createColorMode()</code> in the component that changes
           the mode, as the example does. The server cannot see{" "}
@@ -214,9 +210,7 @@ export default function ColorModePage() {
           from the first render. Put the attribute on <code>&lt;html&gt;</code>{" "}
           with <code>colorModeFromCookie</code>:
         </p>
-        <pre>
-          <code>{serverDocument}</code>
-        </pre>
+        <CodeBlock code={serverDocument} />
         <p>
           The page has to be rendered for each request: a prerendered page has
           no cookie to read, so it shows system and disagrees with the saved
@@ -237,16 +231,12 @@ export default function ColorModePage() {
           restrict.
         </p>
         <p>A server that renders each page can put its nonce on the element:</p>
-        <pre>
-          <code>{nonceScript}</code>
-        </pre>
+        <CodeBlock code={nonceScript} />
         <p>
           A prerendered page has no nonce, so allow the script by the hash of
           its source:
         </p>
-        <pre>
-          <code>{hashScript}</code>
-        </pre>
+        <CodeBlock code={hashScript} />
         <p>
           Compute the hash rather than pasting it: the source depends on the
           entry point and the options, and may change with any Menhir release.

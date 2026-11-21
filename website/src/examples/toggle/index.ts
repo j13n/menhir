@@ -1,10 +1,10 @@
 import type { ComponentExampleProps } from "../../components/ComponentExample";
 
 import CssExample from "./css/ToggleExample";
-import cssExampleCode from "./css/ToggleExample.tsx?raw";
-import cssCode from "./css/toggle.css?raw";
+import cssExampleCode from "./css/ToggleExample.tsx?highlight";
+import cssCode from "./css/toggle.css?highlight";
 import TailwindExample from "./tailwind/ToggleExample";
-import tailwindExampleCode from "./tailwind/ToggleExample.tsx?raw";
+import tailwindExampleCode from "./tailwind/ToggleExample.tsx?highlight";
 
 /** The Toggle page's example, with plain CSS and with Tailwind CSS. */
 export const toggleExample: ComponentExampleProps = {

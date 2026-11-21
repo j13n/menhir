@@ -5,6 +5,7 @@ import solid from "@solidjs/vite-plugin";
 
 import componentList from "./vite-plugin-component-list.ts";
 import componentMarkdown from "./vite-plugin-component-markdown.ts";
+import highlight from "./vite-plugin-highlight.ts";
 import menhirSizes from "./vite-plugin-sizes.ts";
 
 export default defineConfig({
@@ -17,6 +18,9 @@ export default defineConfig({
     solid({ start: true, extensions: [".jsx", ".tsx"], diagnostics: true }), // add `ssr: true` for streaming SSR
     fileRoutes({ types: true }),
     tailwindcss(),
+    // Code highlighted when the site is built: src/highlight.ts's tags,
+    // `?highlight` imports and `virtual:highlight-theme.css`.
+    highlight(),
     // `virtual:menhir-sizes`, from test/bundle-size/dist/sizes.json.
     menhirSizes(),
     // /docs/components/<slug>.md, each component page as Markdown for agents.

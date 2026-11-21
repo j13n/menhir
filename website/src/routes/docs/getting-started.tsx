@@ -1,8 +1,13 @@
 import { Title } from "@solidjs/meta";
 
+import CodeBlock from "../../components/CodeBlock";
 import Section from "../../components/Section";
+import { css, shell, tsx } from "../../highlight";
 
-const usage = `import { Switch } from "menhir/switch";
+const install = shell`pnpm add menhir`;
+const installSolid = shell`pnpm add solid-js @solidjs/web`;
+
+const usage = tsx`import { Switch } from "menhir/switch";
 
 export function AirplaneMode() {
   return (
@@ -15,7 +20,7 @@ export function AirplaneMode() {
   );
 }`;
 
-const styles = `.switch[data-checked] {
+const styles = css`.switch[data-checked] {
   background: steelblue;
 }
 .thumb[data-checked] {
@@ -36,29 +41,21 @@ export default function GettingStarted() {
         <p>In development. Switch is the first component.</p>
       </Section>
       <Section id="install" title="Install">
-        <pre>
-          <code>pnpm add menhir</code>
-        </pre>
+        <CodeBlock code={install} />
         <p>Menhir needs Solid 2.0. If your app does not have it yet:</p>
-        <pre>
-          <code>pnpm add solid-js @solidjs/web</code>
-        </pre>
+        <CodeBlock code={installSolid} />
       </Section>
       <Section id="first-component" title="Your first component">
         <p>
           Import a component from its entry point and compose its parts. Here a
           Switch is labelled by the <code>&lt;label&gt;</code> around it:
         </p>
-        <pre>
-          <code>{usage}</code>
-        </pre>
+        <CodeBlock code={usage} />
         <p>
           Nothing is styled. Every part exposes its state as data attributes,
           such as <code>data-checked</code>, for your CSS to select:
         </p>
-        <pre>
-          <code>{styles}</code>
-        </pre>
+        <CodeBlock code={styles} />
       </Section>
       <Section id="next" title="Next">
         <p>

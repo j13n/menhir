@@ -4,6 +4,7 @@ import { For } from "solid-js";
 import type { ComponentDoc } from "../componentDocs/types";
 import { markdownPath } from "../componentMarkdown";
 import { formatSize } from "../formatSize";
+import CodeBlock from "./CodeBlock";
 import CopyButton from "./CopyButton";
 import ComponentExample, {
   type ComponentExampleProps,
@@ -73,9 +74,7 @@ export default function ComponentPage(props: ComponentPageProps) {
         css={props.example.css}
       />
       <Section id="anatomy" title="Anatomy">
-        <pre>
-          <code>{props.anatomy}</code>
-        </pre>
+        <CodeBlock code={props.anatomy} />
       </Section>
       <Section id="api" title="API reference">
         <For each={props.api}>
