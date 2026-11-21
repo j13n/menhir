@@ -58,8 +58,8 @@ describe("<DocsSidebar />", () => {
       utilityPages.sort(),
     );
     expect(utilities).toContainEqual([
-      "Color Mode",
-      "/docs/utilities/color-mode",
+      "Color Scheme",
+      "/docs/utilities/color-scheme",
     ]);
   });
 });

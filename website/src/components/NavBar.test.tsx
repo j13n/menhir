@@ -7,7 +7,7 @@ import NavBar from "./NavBar";
 describe("<NavBar />", () => {
   afterEach(() => {
     localStorage.clear();
-    document.documentElement.removeAttribute("data-color-mode");
+    document.documentElement.removeAttribute("data-color-scheme");
   });
 
   test("links home, to the docs' getting started page and to the components", () => {
@@ -26,31 +26,38 @@ describe("<NavBar />", () => {
     ).toHaveAttribute("href", "/docs/components");
   });
 
-  test("has the color mode toggle, which cycles the mode and saves it", () => {
+  test("has the color scheme toggle, which cycles the scheme and saves it", () => {
     const { getByRole } = render(() => <NavBar />);
     flush();
     // The test setup's matchMedia reports a light system.
     const toggle = within(getByRole("banner")).getByRole("button", {
-      name: "Color mode: system. Switch to dark.",
+      name: "Color scheme: system. Switch to dark.",
     });
     expect(document.documentElement).toHaveAttribute(
-      "data-color-mode",
+      "data-color-scheme",
       "light",
     );
 
     fireEvent.click(toggle);
     flush();
-    expect(toggle).toHaveAccessibleName("Color mode: dark. Switch to light.");
-    expect(document.documentElement).toHaveAttribute("data-color-mode", "dark");
-    expect(localStorage.getItem("color-mode")).toBe("dark");
+    expect(toggle).toHaveAccessibleName("Color scheme: dark. Switch to light.");
+    expect(document.documentElement).toHaveAttribute(
+      "data-color-scheme",
+      "dark",
+    );
+    expect(localStorage.getItem("color-scheme")).toBe("dark");
 
     fireEvent.click(toggle);
     flush();
-    expect(toggle).toHaveAccessibleName("Color mode: light. Switch to system.");
+    expect(toggle).toHaveAccessibleName(
+      "Color scheme: light. Switch to system.",
+    );
 
     fireEvent.click(toggle);
     flush();
-    expect(toggle).toHaveAccessibleName("Color mode: system. Switch to dark.");
-    expect(localStorage.getItem("color-mode")).toBeNull();
+    expect(toggle).toHaveAccessibleName(
+      "Color scheme: system. Switch to dark.",
+    );
+    expect(localStorage.getItem("color-scheme")).toBeNull();
   });
 });

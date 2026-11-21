@@ -13,7 +13,7 @@ export interface PreferenceOptions<T extends string> {
    */
   values: readonly string[];
   /**
-   * The value while nothing is saved, such as color mode's `system` or a
+   * The value while nothing is saved, such as color scheme's `system` or a
    * default theme. Choosing it removes the saved value.
    */
   unset: T;
@@ -43,7 +43,7 @@ interface ChangeDetail {
 /**
  * A preference of the reader's, saved in `storage` and applied to `<html>`,
  * that stays in step with the other instances in this tab and with other
- * tabs: what color mode and theme share.
+ * tabs: what color scheme and theme share.
  *
  * A storage only the browser can read, such as `localStorage`, is read once
  * the page has settled, so the server's HTML and the first client render

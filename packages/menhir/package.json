@@ -39,15 +39,15 @@
       "solid": "./dist/source/collapsible/index.js",
       "import": "./dist/collapsible/index.js"
     },
-    "./color-mode/cookie": {
-      "types": "./dist/source/color-mode/cookie/index.d.ts",
-      "solid": "./dist/source/color-mode/cookie/index.js",
-      "import": "./dist/color-mode/cookie/index.js"
+    "./color-scheme/cookie": {
+      "types": "./dist/source/color-scheme/cookie/index.d.ts",
+      "solid": "./dist/source/color-scheme/cookie/index.js",
+      "import": "./dist/color-scheme/cookie/index.js"
     },
-    "./color-mode/local-storage": {
-      "types": "./dist/source/color-mode/local-storage/index.d.ts",
-      "solid": "./dist/source/color-mode/local-storage/index.js",
-      "import": "./dist/color-mode/local-storage/index.js"
+    "./color-scheme/local-storage": {
+      "types": "./dist/source/color-scheme/local-storage/index.d.ts",
+      "solid": "./dist/source/color-scheme/local-storage/index.js",
+      "import": "./dist/color-scheme/local-storage/index.js"
     },
     "./meter": {
       "types": "./dist/source/meter/index.d.ts",

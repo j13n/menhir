@@ -88,7 +88,7 @@ export const snippet = highlight(String(Math.random()), "ts");`,
   test("colours tokens light and dark, under the site's own pre styles", () => {
     const css = themeCss();
     expect(css).toMatch(/^@layer base \{/);
-    expect(css).toContain(':root[data-color-mode="dark"] {');
+    expect(css).toContain(':root[data-color-scheme="dark"] {');
     expect(css).toContain(":where(pre.th-code) {");
     expect(css).toContain(".th-keyword { color: var(--th-keyword); }");
   });

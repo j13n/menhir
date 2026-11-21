@@ -59,14 +59,14 @@ const nonceScript = tsx`// nonce: the one the server made for this response, as 
 // Content-Security-Policy: script-src 'nonce-<nonce>'
 <script nonce={nonce} innerHTML={themeScript(themeOptions)} />`;
 
-const withColorMode = ts`// data-color-mode="dark" and data-theme="nord" on <html>.
-const colorMode = createColorMode();
+const withColorScheme = ts`// data-color-scheme="dark" and data-theme="nord" on <html>.
+const colorScheme = createColorScheme();
 const theme = createTheme(themeOptions);`;
 
-const withColorModeCss = css`:root[data-theme="nord"] {
+const withColorSchemeCss = css`:root[data-theme="nord"] {
   --background: #eceff4;
 }
-:root[data-theme="nord"][data-color-mode="dark"] {
+:root[data-theme="nord"][data-color-scheme="dark"] {
   --background: #2e3440;
 }`;
 
@@ -144,7 +144,8 @@ export default function ThemePage() {
         <code>&lt;html&gt;</code>. It stays in step across tabs. A utility, not
         a component: the control is yours, and so is how each theme looks. A
         theme is just a theme, light or dark; for the reader's light, dark or
-        system choice, use <a href="/docs/utilities/color-mode">Color Mode</a>.
+        system choice, use{" "}
+        <a href="/docs/utilities/color-scheme">Color Scheme</a>.
       </p>
       <dl>
         <dt>Entry points</dt>
@@ -220,22 +221,22 @@ export default function ThemePage() {
         <p>
           A prerendered page can allow the SHA-256 hash of what{" "}
           <code>themeScript</code> returns instead, as{" "}
-          <a href="/docs/utilities/color-mode#content-security-policy">
-            Color Mode
+          <a href="/docs/utilities/color-scheme#content-security-policy">
+            Color Scheme
           </a>{" "}
           shows. Compute the hash in the build: it changes when the options do,
           such as the list of themes.
         </p>
       </Section>
-      <Section id="with-color-mode" title="With Color Mode">
+      <Section id="with-color-scheme" title="With Color Scheme">
         <p>
           Most sites have either a light, dark or system choice or a list of
           themes. A site with both runs the two side by side: each has its own
           attribute and storage key, so each theme can have a light and a dark
           look.
         </p>
-        <CodeBlock code={withColorMode} />
-        <CodeBlock code={withColorModeCss} />
+        <CodeBlock code={withColorScheme} />
+        <CodeBlock code={withColorSchemeCss} />
       </Section>
       <Section id="api" title="API reference">
         <ApiTable head="Function" rows={functions} />

@@ -19,7 +19,7 @@
 //   (`aria-pressed` and `data-pressed`), shared by Toggle and Toggle Group.
 // - preference/: a reader's choice saved in `localStorage` or a cookie and
 //   applied to `<html>`, with its pre-paint head script. What the
-//   color-mode and theme utilities share.
+//   color-scheme and theme utilities share.
 //
 // Ids need no helper: parts call Solid's `createUniqueId`, which matches
 // between the server render and hydration (test/core/ids.hydrate.test.tsx).

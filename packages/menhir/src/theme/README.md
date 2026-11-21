@@ -3,9 +3,9 @@
 The reader's choice of theme, out of the app's list: saved, applied to
 `<html>`, and followed across tabs. A utility, not a component: it renders
 nothing, and the control that changes the theme and how each theme looks
-are the app's. Separate from color mode on purpose: a theme is just a
+are the app's. Separate from color scheme on purpose: a theme is just a
 theme, whether it is light or dark, and a site usually has either a light,
-dark or system choice or a list of themes. Widens the color-mode exception
+dark or system choice or a list of themes. Widens the color-scheme exception
 to "Styling, themes" in PLAN.md's non-goals; see
 `docs/adr/0003-theme-utility.md`.
 
@@ -20,7 +20,7 @@ to "Styling, themes" in PLAN.md's non-goals; see
 
 ## Shape
 
-One entry point per storage, as for color mode (ADR 0002), each exporting
+One entry point per storage, as for color scheme (ADR 0002), each exporting
 the same functions:
 
 ```ts
@@ -53,30 +53,30 @@ not compile when there is no sepia.
 Files: `theme.ts` holds the options, the state and the functions both
 entry points share; `local-storage/` and `cookie/` bind each to its
 storage. The storages, the saved-choice hook and the head-script builder
-are in `src/core/preference/`, shared with color mode.
+are in `src/core/preference/`, shared with color scheme.
 
 Decisions:
 
 - **A theme has no link to the system.** There is no `system` choice and
   no `prefers-color-scheme`: before the reader chooses, the page shows
   `defaultTheme`. A site that wants the system's light or dark uses color
-  mode.
+  scheme.
 - **The default theme is stored as no value**: choosing it removes the key,
   so a reader who never chose has nothing saved, and changing
   `defaultTheme` reaches every reader who kept the default.
 - **A saved value that is not one of `themes` is the default**, in the hook,
   in the script and in `themeFromCookie`, so removing a theme from the list
   sends its readers back to the default.
-- **The same reading, saving and syncing as color mode**, through
+- **The same reading, saving and syncing as color scheme**, through
   `core/preference`: `localStorage` is read once the page has settled, a
   cookie during the first render; the DOM is written imperatively; storage
   that throws is ignored; instances in one tab stay in step through a
   `menhir:preference` event keyed by `storageKey`; other tabs follow through
-  the `storage` event, or with a cookie, when shown again. See color mode's
+  the `storage` event, or with a cookie, when shown again. See color scheme's
   README for why.
 - **The default `storageKey` is `"theme"` and the default `attribute` is
-  `"data-theme"`**, the name most themes are styled from. Color mode
-  defaults to `data-color-mode` and `"color-mode"`, so a site can use both
+  `"data-theme"`**, the name most themes are styled from. Color scheme
+  defaults to `data-color-scheme` and `"color-scheme"`, so a site can use both
   as they come, and style a theme's dark look under both attributes.
 - **Theme names are letters, digits, `-` and `_`.** A class cannot hold a
   space, and a cookie value is saved encoded, which the head script does not
@@ -91,7 +91,7 @@ Decisions:
 - Measured on 2026-11-21, every export gzipped: `local-storage` 1.12 kB,
   `cookie` 1.37 kB, each with about 130 B of development-only checks that
   the measurement counts (#69).
-- **A strict Content Security Policy needs no option**, as for color mode
+- **A strict Content Security Policy needs no option**, as for color scheme
   (ADR 0004): the app renders the script element, so it puts its nonce
   there, or allows the SHA-256 hash of the source, which changes with the
   options.
@@ -138,7 +138,7 @@ they say `cookie`.
 - Changes from a `<select>`
 - Follows a theme chosen, or storage cleared, in another tab; ignores other
   keys
-- Keeps instances in the same tab in step, apart from a color mode on the
+- Keeps instances in the same tab in step, apart from a color scheme on the
   same page, each on its own default attribute
 - Uses `storageKey` and `attribute`, and swaps classes with `"class"`
 - Rejects a theme the head script could not apply
@@ -157,12 +157,12 @@ they say `cookie`.
 
 ## Left out
 
-| Case                                       | Reason                                                                                                       |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| A default that follows the system          | A theme is just a theme; color mode covers light, dark and system (ADR 0003). A theme per system scheme: #73 |
-| Light and dark variants of each theme      | Two axes; an app that wants both can use color mode and theme side by side, with two attributes              |
-| Live sync of a cookie between visible tabs | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser                       |
-| A `nonce` option or a published hash       | The app renders the script element, so both are the app's, as for color mode (ADR 0004)                      |
-| The head script as a file                  | A file loads after the page can paint, as for color mode (ADR 0004)                                          |
-| Setting `color-scheme` per theme           | Styling: one line of CSS under each theme's attribute, which the docs page shows                             |
-| A control                                  | The app's: a `<select>`, radio group or menu; the docs page shows one                                        |
+| Case                                       | Reason                                                                                                         |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| A default that follows the system          | A theme is just a theme; color scheme covers light, dark and system (ADR 0003). A theme per system scheme: #73 |
+| Light and dark variants of each theme      | Two axes; an app that wants both can use color scheme and theme side by side, with two attributes              |
+| Live sync of a cookie between visible tabs | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser                         |
+| A `nonce` option or a published hash       | The app renders the script element, so both are the app's, as for color scheme (ADR 0004)                      |
+| The head script as a file                  | A file loads after the page can paint, as for color scheme (ADR 0004)                                          |
+| Setting `color-scheme` per theme           | Styling: one line of CSS under each theme's attribute, which the docs page shows                               |
+| A control                                  | The app's: a `<select>`, radio group or menu; the docs page shows one                                          |

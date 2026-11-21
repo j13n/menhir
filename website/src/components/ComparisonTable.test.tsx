@@ -301,14 +301,14 @@ describe("<ComparisonTable />", () => {
       <ComparisonTable
         sizes={[
           ...sizes,
-          { entryPoint: "menhir/color-mode/local-storage", size: 1010 },
+          { entryPoint: "menhir/color-scheme/local-storage", size: 1010 },
         ]}
         libraries={libraries}
         components={components}
       />
     ));
     expect(
-      within(getByRole("table")).queryByRole("row", { name: /color-mode/ }),
+      within(getByRole("table")).queryByRole("row", { name: /color-scheme/ }),
     ).not.toBeInTheDocument();
   });
 });

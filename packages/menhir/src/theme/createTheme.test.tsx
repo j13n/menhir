@@ -4,8 +4,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRenderer, fireEvent, screen } from "#test-utils";
 
 import { clearCookies } from "../../test/clearCookies.ts";
-import { stubSystemPreference } from "../../test/color-mode/stubSystemPreference.ts";
-import { createColorMode } from "../color-mode/local-storage/index.ts";
+import { stubSystemPreference } from "../../test/color-scheme/stubSystemPreference.ts";
+import { createColorScheme } from "../color-scheme/local-storage/index.ts";
 import * as cookie from "./cookie/index.ts";
 import * as local from "./local-storage/index.ts";
 import { createTheme } from "./local-storage/index.ts";
@@ -26,7 +26,7 @@ describe("createTheme", () => {
     clearCookies();
     root.removeAttribute("data-theme");
     root.removeAttribute("data-palette");
-    root.removeAttribute("data-color-mode");
+    root.removeAttribute("data-color-scheme");
     root.className = "";
   });
 
@@ -172,27 +172,27 @@ describe("createTheme", () => {
     expect(state.theme()).toBe("paper");
   });
 
-  it("keeps instances in the same tab in step, apart from a color mode", async () => {
+  it("keeps instances in the same tab in step, apart from a color scheme", async () => {
     let first!: ThemeState<Theme>;
     let second!: ThemeState<Theme>;
-    let colorMode!: ReturnType<typeof createColorMode>;
+    let colorScheme!: ReturnType<typeof createColorScheme>;
     stubSystemPreference(false);
     await render(() => {
       first = createTheme(options);
       second = createTheme(options);
-      colorMode = createColorMode();
+      colorScheme = createColorScheme();
       return null;
     });
     flush();
 
     first.setTheme("dracula");
-    colorMode.setMode("dark");
+    colorScheme.setScheme("dark");
     flush();
     expect(second.theme()).toBe("dracula");
-    expect(colorMode.mode()).toBe("dark");
+    expect(colorScheme.scheme()).toBe("dark");
     // Each writes its own attribute, so both work with their defaults.
     expect(root).toHaveAttribute("data-theme", "dracula");
-    expect(root).toHaveAttribute("data-color-mode", "dark");
+    expect(root).toHaveAttribute("data-color-scheme", "dark");
   });
 
   it("uses storageKey and attribute, and swaps classes with class", async () => {

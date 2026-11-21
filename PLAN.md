@@ -21,7 +21,7 @@ Status: in development (2026-11-21). Phase 0 is done and phase 1 is under way (s
 
 **Non-goals**
 
-- Styling, themes, or a copy-paste component registry. Those can be built on top later. Two exceptions: the color-mode utility (`menhir/color-mode/local-storage` and `menhir/color-mode/cookie`) keeps the reader's light, dark or system choice, and the theme utility (`menhir/theme/local-storage` and `menhir/theme/cookie`) keeps their choice out of the app's themes, since the state and its pre-paint script are the same in every app; how each mode or theme looks stays the app's (`docs/adr/0001-color-mode-utility.md`, `docs/adr/0003-theme-utility.md`).
+- Styling, themes, or a copy-paste component registry. Those can be built on top later. Two exceptions: the color-scheme utility (`menhir/color-scheme/local-storage` and `menhir/color-scheme/cookie`) keeps the reader's light, dark or system choice, and the theme utility (`menhir/theme/local-storage` and `menhir/theme/cookie`) keeps their choice out of the app's themes, since the state and its pre-paint script are the same in every app; how each color scheme or theme looks stays the app's (`docs/adr/0001-color-scheme-utility.md`, `docs/adr/0003-theme-utility.md`).
 - Support for Solid 1.x.
 - Being a port of, or modelled on, any library. Other libraries may be read for ideas; none sets Menhir's source structure, API, tests or release schedule (section 8).
 - Covering every component other libraries have before the first release.
@@ -88,7 +88,7 @@ These are structural and must hold from the first commit.
 5. **Near-zero dependencies.** `@floating-ui/dom` only. Use built-in `Intl` for number and date formatting.
 6. **Expensive behaviour is a part, not a flag.** Portal, scroll lock and focus trap are composed in, so apps that don't render them don't ship them.
 
-The package manifest, in the shape built in the build spike (#6). It lists one subpath per built component, such as `./switch`, and one per utility and storage, such as `./color-mode/cookie`; `./dialog` shows how each further component is added:
+The package manifest, in the shape built in the build spike (#6). It lists one subpath per built component, such as `./switch`, and one per utility and storage, such as `./color-scheme/cookie`; `./dialog` shows how each further component is added:
 
 ```json
 {

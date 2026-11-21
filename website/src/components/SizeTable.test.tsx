@@ -80,11 +80,13 @@ describe("<SizeTable />", () => {
   test("links a utility to its page under utilities", () => {
     const { getByRole } = render(() => (
       <SizeTable
-        sizes={[{ entryPoint: "menhir/color-mode/local-storage", size: 1010 }]}
+        sizes={[
+          { entryPoint: "menhir/color-scheme/local-storage", size: 1010 },
+        ]}
       />
     ));
     expect(
-      getByRole("link", { name: "menhir/color-mode/local-storage" }),
-    ).toHaveAttribute("href", "/docs/utilities/color-mode");
+      getByRole("link", { name: "menhir/color-scheme/local-storage" }),
+    ).toHaveAttribute("href", "/docs/utilities/color-scheme");
   });
 });

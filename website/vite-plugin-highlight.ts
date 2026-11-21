@@ -42,7 +42,7 @@ export function themeCss() {
   const css = createThemeCss({
     light: menhirLight,
     dark: menhirDark,
-    darkSelector: ':root[data-color-mode="dark"]',
+    darkSelector: ':root[data-color-scheme="dark"]',
     codeBlockSelector: ":where(pre.th-code)",
   });
   return `@layer base {\n${css}\n}\n`;

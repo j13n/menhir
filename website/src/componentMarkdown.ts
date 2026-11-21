@@ -80,7 +80,7 @@ export function llmsTxt(docs: ComponentDoc[]): string {
       )
       .join("\n"),
     "## Utilities",
-    "- [Color Mode](/docs/utilities/color-mode): `menhir/color-mode/local-storage` and `menhir/color-mode/cookie` keep the reader's light, dark or system choice, saved and applied to `<html>`, with a head script that applies it before the first paint.",
+    "- [Color Scheme](/docs/utilities/color-scheme): `menhir/color-scheme/local-storage` and `menhir/color-scheme/cookie` keep the reader's light, dark or system choice, saved and applied to `<html>`, with a head script that applies it before the first paint.",
     "- [Theme](/docs/utilities/theme): `menhir/theme/local-storage` and `menhir/theme/cookie` keep the reader's choice out of the app's themes, saved and applied to `<html>`, with a head script that applies it before the first paint.",
     "## Docs",
     [
