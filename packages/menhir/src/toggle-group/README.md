@@ -36,7 +36,8 @@ components do not import each other (PLAN.md section 6, rule 4).
   `tabindex="0"` and the others `-1`. Before any item has focus, it is the
   first enabled item, as the keyboard interface practice names for toolbars.
   When that item is disabled or removed, the first enabled item takes over.
-  The server HTML gives the first enabled item `tabindex="0"`.
+  The server HTML gives the first enabled item `tabindex="0"`. The roving
+  focus is `core/rovingFocus.ts`, shared with Tabs.
 - **Arrow keys move focus and wrap**: Left and Right in a horizontal group,
   Up and Down in a vertical one, and Home and End to the first and last
   item. They do not press anything; Enter and Space press the focused item,

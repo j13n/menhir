@@ -5,6 +5,7 @@ import { meterDoc } from "./meter";
 import { progressDoc } from "./progress";
 import { separatorDoc } from "./separator";
 import { switchDoc } from "./switch";
+import { tabsDoc } from "./tabs";
 import { toggleDoc } from "./toggle";
 import { toggleGroupDoc } from "./toggle-group";
 import type { ComponentDoc } from "./types";
@@ -18,6 +19,7 @@ export const componentDocs: ComponentDoc[] = [
   progressDoc,
   separatorDoc,
   switchDoc,
+  tabsDoc,
   toggleDoc,
   toggleGroupDoc,
 ];
