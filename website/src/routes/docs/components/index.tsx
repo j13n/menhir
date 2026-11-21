@@ -11,8 +11,7 @@ export default function Components() {
       <p>
         Each component is its own entry point. Its size is what it adds to an
         app that uses every part of it, minified and gzipped, with Solid left
-        out. Every entry point has a budget, and a change that goes over it
-        fails CI.
+        out.
       </p>
       <SizeTable sizes={sizes} />
     </main>

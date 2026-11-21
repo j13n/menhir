@@ -46,10 +46,6 @@ export default function BundleSize() {
           versions listed under the table, and are measured again whenever this
           site is built.
         </p>
-        <p>
-          Every entry point has a budget. A change that takes an entry point
-          over its budget fails CI.
-        </p>
       </Section>
     </main>
   );

@@ -7,12 +7,12 @@ import type { EntryPointSize } from "virtual:menhir-sizes";
 import SizeTable from "./SizeTable";
 
 describe("<SizeTable />", () => {
-  test("lists each entry point with its measured size and budget, linked to its page", () => {
+  test("lists each entry point with its measured size, linked to its page", () => {
     const { getByRole } = render(() => (
       <SizeTable
         sizes={[
-          { entryPoint: "menhir/switch", size: 1914, limit: 2300 },
-          { entryPoint: "menhir/alert-dialog", size: 4050, limit: 5000 },
+          { entryPoint: "menhir/switch", size: 1914 },
+          { entryPoint: "menhir/alert-dialog", size: 4050 },
         ]}
       />
     ));
@@ -23,7 +23,7 @@ describe("<SizeTable />", () => {
       within(table)
         .getAllByRole("columnheader")
         .map((cell) => cell.textContent),
-    ).toEqual(["Entry point", "Size", "Budget"]);
+    ).toEqual(["Entry point", "Size"]);
 
     const row = within(table).getByRole("row", { name: /menhir\/switch/ });
     expect(within(row).getByRole("link")).toHaveAttribute(
@@ -34,7 +34,7 @@ describe("<SizeTable />", () => {
       within(row)
         .getAllByRole("cell")
         .map((cell) => cell.textContent),
-    ).toEqual(["1.9 kB", "2.3 kB"]);
+    ).toEqual(["1.9 kB"]);
 
     expect(
       within(table).getByRole("link", { name: "menhir/alert-dialog" }),
@@ -59,12 +59,12 @@ describe("<SizeTable />", () => {
         ));
         expect(queryByRole("table")).not.toBeInTheDocument();
 
-        setSizes([{ entryPoint: "menhir/switch", size: 1914, limit: 2300 }]);
+        setSizes([{ entryPoint: "menhir/switch", size: 1914 }]);
         flush();
         const row = getByRole("row", { name: /menhir\/switch/ });
         expect(within(row).getAllByRole("cell")[0]).toHaveTextContent("1.9 kB");
 
-        setSizes([{ entryPoint: "menhir/switch", size: 2210, limit: 2300 }]);
+        setSizes([{ entryPoint: "menhir/switch", size: 2210 }]);
         flush();
         expect(
           within(getByRole("row", { name: /menhir\/switch/ })).getAllByRole(

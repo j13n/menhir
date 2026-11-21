@@ -62,8 +62,8 @@ export default function Home() {
             <span class={approachNumber}>3</span>
             <h3 class="mt-1">Size</h3>
             <p class="m-0">
-              A component costs only what it uses. Every entry point has a{" "}
-              <a href="/docs/components">size budget</a> that CI enforces.
+              A component costs only what it uses. Every component's{" "}
+              <a href="/docs/bundle-size">size</a> is published.
             </p>
           </li>
         </ol>
