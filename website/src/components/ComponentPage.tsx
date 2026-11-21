@@ -8,6 +8,7 @@ import ComponentExample, {
   type ComponentExampleProps,
 } from "./ComponentExample";
 import Section from "./Section";
+import TableScroll from "./TableScroll";
 
 export type {
   ComponentDoc,
@@ -67,57 +68,64 @@ export default function ComponentPage(props: ComponentPageProps) {
             <>
               <h3>{part.part}</h3>
               <p>{part.description}</p>
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Prop</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Default</th>
-                    <th scope="col">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <For each={part.props}>
-                    {(prop) => (
-                      <tr>
-                        <th scope="row">
-                          <code>{prop.name}</code>
-                        </th>
-                        <td>
-                          <code>{prop.type}</code>
-                        </td>
-                        <td>{prop.default ?? "—"}</td>
-                        <td>{prop.description}</td>
-                      </tr>
-                    )}
-                  </For>
-                </tbody>
-              </table>
+              <TableScroll>
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Prop</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Default</th>
+                      {/* Keeps descriptions readable on a phone: the table scrolls instead. */}
+                      <th scope="col" class="min-w-48">
+                        Description
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <For each={part.props}>
+                      {(prop) => (
+                        <tr>
+                          <th scope="row">
+                            <code>{prop.name}</code>
+                          </th>
+                          <td>
+                            <code>{prop.type}</code>
+                          </td>
+                          <td>{prop.default ?? "—"}</td>
+                          <td>{prop.description}</td>
+                        </tr>
+                      )}
+                    </For>
+                  </tbody>
+                </table>
+              </TableScroll>
             </>
           )}
         </For>
       </Section>
       <Section id="keyboard" title="Keyboard">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Keys</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <For each={props.keyboard}>
-              {(row) => (
-                <tr>
-                  <th scope="row">
-                    <kbd>{row.keys}</kbd>
-                  </th>
-                  <td>{row.action}</td>
-                </tr>
-              )}
-            </For>
-          </tbody>
-        </table>
+        <TableScroll>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Keys</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <For each={props.keyboard}>
+                {(row) => (
+                  <tr>
+                    <th scope="row">
+                      <kbd>{row.keys}</kbd>
+                    </th>
+                    <td>{row.action}</td>
+                  </tr>
+                )}
+              </For>
+            </tbody>
+          </table>
+        </TableScroll>
       </Section>
     </main>
   );

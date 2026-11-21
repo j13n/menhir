@@ -144,6 +144,15 @@ describe("<ComponentPage />", () => {
     ).toEqual(["boolean", "—", "Whether the switch is on."]);
   });
 
+  test("scrolls its tables inside their own box, so a phone screen does not scroll sideways", () => {
+    const { getAllByRole } = render(() => <ComponentPage {...switchPage} />);
+    const tables = getAllByRole("table");
+    expect(tables).toHaveLength(2);
+    for (const table of tables) {
+      expect(table.parentElement).toHaveClass("overflow-x-auto");
+    }
+  });
+
   test("lists keyboard interactions", () => {
     const { getByRole } = render(() => <ComponentPage {...switchPage} />);
     const keyboard = getByRole("region", { name: "Keyboard" });
