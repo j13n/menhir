@@ -52,6 +52,13 @@ describe("componentMarkdown", () => {
     );
   });
 
+  test("tells an agent how to add the component, before the install command", () => {
+    const markdown = componentMarkdown(doc, { size: 1914, example });
+    expect(markdown).toContain(
+      "- Size: 1.9 kB, minified and gzipped, Solid left out\n\n> To add Switch to a project, install the packages below with the project's package manager, then copy the example that matches how the project is styled, Tailwind CSS or plain CSS, and adapt its markup and class names to the project.\n\n## Install\n",
+    );
+  });
+
   test("says when the size has not been measured yet", () => {
     expect(componentMarkdown(doc, { example })).toContain(
       "- Size: not measured yet\n",

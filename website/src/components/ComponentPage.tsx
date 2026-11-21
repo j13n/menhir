@@ -4,6 +4,7 @@ import { For } from "solid-js";
 import type { ComponentDoc } from "../componentDocs/types";
 import { markdownPath } from "../componentMarkdown";
 import { formatSize } from "../formatSize";
+import CopyButton from "./CopyButton";
 import ComponentExample, {
   type ComponentExampleProps,
 } from "./ComponentExample";
@@ -24,6 +25,10 @@ export type ComponentPageProps = ComponentDoc & {
   example: ComponentExampleProps;
 };
 
+/** The look of the page's links for agents, beside the heading. */
+const agentLinkClass =
+  "text-stone-500 hover:text-stone-950 dark:text-stone-400 dark:hover:text-white";
+
 export default function ComponentPage(props: ComponentPageProps) {
   return (
     <main>
@@ -34,15 +39,25 @@ export default function ComponentPage(props: ComponentPageProps) {
       />
       <div class="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h1 class="m-0">{props.name}</h1>
-        {/* target opts the link out of the router: it is a file, not a page. */}
-        <a
-          href={markdownPath(props.slug)}
-          target="_self"
-          title="This page as Markdown, for agents"
-          class="text-sm text-stone-500 no-underline hover:text-stone-950 dark:text-stone-400 dark:hover:text-white"
-        >
-          View as Markdown
-        </a>
+        <div class="flex items-baseline gap-4 text-sm">
+          <CopyButton
+            getText={() =>
+              `Add the Menhir ${props.name} from ${location.origin}${markdownPath(props.slug)}`
+            }
+            label="Copy prompt"
+            title="A prompt that asks your coding agent to add this component"
+            class={agentLinkClass}
+          />
+          {/* target opts the link out of the router: it is a file, not a page. */}
+          <a
+            href={markdownPath(props.slug)}
+            target="_self"
+            title="This page as Markdown, for agents"
+            class={`no-underline ${agentLinkClass}`}
+          >
+            View as Markdown
+          </a>
+        </div>
       </div>
       <p>{props.description}</p>
       <dl>

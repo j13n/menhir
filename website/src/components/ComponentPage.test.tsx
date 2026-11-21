@@ -1,7 +1,7 @@
 import { fireEvent, render, within } from "@solidjs/testing-library";
 import { captureArtifact, expectNoDiagnostics } from "@solidjs/diagnostics";
 import { createSignal, flush } from "solid-js";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import ComponentPage, { type ComponentPageProps } from "./ComponentPage";
 
@@ -172,12 +172,37 @@ describe("<ComponentPage />", () => {
   test("links its Markdown version beside the page heading, outside the router", () => {
     const { getByRole } = render(() => <ComponentPage {...switchPage} />);
     const link = getByRole("link", { name: "View as Markdown" });
-    expect(link.parentElement).toBe(
-      getByRole("heading", { level: 1 }).parentElement,
-    );
+    expect(
+      getByRole("heading", { level: 1 }).parentElement?.contains(link),
+    ).toBe(true);
     expect(link).toHaveAttribute("href", "/docs/components/switch.md");
     // The router leaves an anchor with a target alone, so the file loads.
     expect(link).toHaveAttribute("target", "_self");
+  });
+
+  test("copies a prompt that asks an agent to add the component from its Markdown", async () => {
+    const writeText = vi.fn(() => Promise.resolve());
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    try {
+      const { getByRole } = render(() => <ComponentPage {...switchPage} />);
+      const button = getByRole("button", { name: "Copy prompt" });
+      expect(button.parentElement).toBe(
+        getByRole("link", { name: "View as Markdown" }).parentElement,
+      );
+
+      fireEvent.click(button);
+      await Promise.resolve();
+      flush();
+      expect(writeText).toHaveBeenCalledWith(
+        `Add the Menhir Switch from ${location.origin}/docs/components/switch.md`,
+      );
+      expect(getByRole("status")).toHaveTextContent("Copied");
+    } finally {
+      Reflect.deleteProperty(navigator, "clipboard");
+    }
   });
 
   test("says when the size has not been measured yet", () => {
