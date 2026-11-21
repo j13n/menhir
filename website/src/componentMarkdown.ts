@@ -28,6 +28,7 @@ export function componentMarkdown(
     `# ${doc.name}`,
     doc.description,
     [`- Entry point: \`menhir/${doc.slug}\``, `- Size: ${size}`].join("\n"),
+    `> To add ${doc.name} to a project, install the packages below with the project's package manager, then copy the example that matches how the project is styled, Tailwind CSS or plain CSS, and adapt its markup and class names to the project.`,
     "## Install",
     fence("sh", "pnpm add menhir solid-js @solidjs/web"),
     "## Anatomy",
