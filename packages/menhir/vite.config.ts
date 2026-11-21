@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 import solid from "@solidjs/vite-plugin";
 import { defineConfig, type Plugin } from "vite";
@@ -7,9 +7,9 @@ import { defineConfig, type Plugin } from "vite";
 // the types under dist/source come from `tsc -p tsconfig.build.json`. Vitest
 // reads vitest.config.ts, not this file.
 
-// One entry per component, named after its subpath export. `exports` in
-// package.json is the only list of components; test/package/build.test.ts
-// checks it against the folders in src.
+// One entry per component or utility, named after its subpath export.
+// `exports` in package.json is the only list of them;
+// test/package/build.test.ts checks it against the folders in src.
 const manifest = JSON.parse(
   readFileSync(new URL("package.json", import.meta.url), "utf8"),
 );
@@ -43,7 +43,10 @@ export default defineConfig({
       entry: Object.fromEntries(
         components.flatMap((name) => [
           [`${name}/index`, `src/${name}/index.ts`],
-          [`${name}/index.parts`, `src/${name}/index.parts.ts`],
+          // A utility, such as color-mode, exports functions and has no parts.
+          ...(existsSync(`src/${name}/index.parts.ts`)
+            ? [[`${name}/index.parts`, `src/${name}/index.parts.ts`]]
+            : []),
         ]),
       ),
       formats: ["es"],

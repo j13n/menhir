@@ -29,6 +29,11 @@
       "solid": "./dist/source/checkbox/index.js",
       "import": "./dist/checkbox/index.js"
     },
+    "./color-mode": {
+      "types": "./dist/source/color-mode/index.d.ts",
+      "solid": "./dist/source/color-mode/index.js",
+      "import": "./dist/color-mode/index.js"
+    },
     "./separator": {
       "types": "./dist/source/separator/index.d.ts",
       "solid": "./dist/source/separator/index.js",
