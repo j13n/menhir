@@ -5,10 +5,12 @@ import { fileURLToPath } from "node:url";
 // a whole `export * as` namespace (PLAN.md section 6, rule 3).
 const budgets = {
   "menhir/checkbox": "2.4 kB",
-  "menhir/color-mode/cookie": "1.5 kB",
-  "menhir/color-mode/local-storage": "1.1 kB",
+  "menhir/color-mode/cookie": "1.7 kB",
+  "menhir/color-mode/local-storage": "1.4 kB",
   "menhir/separator": "900 B",
   "menhir/switch": "2.3 kB",
+  "menhir/theme/cookie": "1.6 kB",
+  "menhir/theme/local-storage": "1.3 kB",
   "menhir/toggle": "1.4 kB",
 };
 

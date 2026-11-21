@@ -7,7 +7,7 @@ import NavBar from "./NavBar";
 describe("<NavBar />", () => {
   afterEach(() => {
     localStorage.clear();
-    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.removeAttribute("data-color-mode");
   });
 
   test("links home, to the docs' getting started page and to the components", () => {
@@ -33,12 +33,15 @@ describe("<NavBar />", () => {
     const toggle = within(getByRole("banner")).getByRole("button", {
       name: "Color mode: system. Switch to dark.",
     });
-    expect(document.documentElement).toHaveAttribute("data-theme", "light");
+    expect(document.documentElement).toHaveAttribute(
+      "data-color-mode",
+      "light",
+    );
 
     fireEvent.click(toggle);
     flush();
     expect(toggle).toHaveAccessibleName("Color mode: dark. Switch to light.");
-    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(document.documentElement).toHaveAttribute("data-color-mode", "dark");
     expect(localStorage.getItem("color-mode")).toBe("dark");
 
     fireEvent.click(toggle);

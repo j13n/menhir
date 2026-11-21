@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 /* The reader picks light, dark or system with the toggle in the header
-   (menhir/color-mode/local-storage), which sets data-theme on the root element. */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+   (menhir/color-mode/local-storage), which sets data-color-mode on the root element. */
+@custom-variant dark (&:where([data-color-mode="dark"], [data-color-mode="dark"] *));
 
 @layer base {
-  :root[data-theme="dark"] {
+  :root[data-color-mode="dark"] {
     color-scheme: dark;
   }
 }
@@ -66,7 +66,7 @@
     all: revert;
   }
   /* In dark mode the browser's own dark defaults keep examples readable. */
-  :root[data-theme="dark"] .unstyled-example {
+  :root[data-color-mode="dark"] .unstyled-example {
     color-scheme: dark;
   }
 }

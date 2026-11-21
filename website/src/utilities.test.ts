@@ -6,6 +6,7 @@ describe("utilities", () => {
   test("tells a utility's entry point from a component's", () => {
     expect(isUtility("menhir/color-mode/local-storage")).toBe(true);
     expect(isUtility("menhir/color-mode/cookie")).toBe(true);
+    expect(isUtility("menhir/theme/local-storage")).toBe(true);
     expect(isUtility("menhir/switch")).toBe(false);
   });
 

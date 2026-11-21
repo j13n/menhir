@@ -1,41 +1,11 @@
-import { parseColorMode, scriptLiteral } from "../colorMode.ts";
-import type { ColorModeOptions, ColorModeStorage } from "../colorMode.ts";
+import { localStoragePreference } from "../../core/preference/localStoragePreference.ts";
+
+import type { ColorModeOptions } from "../colorMode.ts";
 import { colorModeScriptWithStorage } from "../colorModeScript.ts";
 import { createColorModeWithStorage } from "../createColorMode.ts";
 import type { ColorModeState } from "../createColorMode.ts";
 
-/** `localStorage`, which only the browser can read. */
-const storage: ColorModeStorage = {
-  read: (key) => {
-    try {
-      return parseColorMode(localStorage.getItem(key));
-    } catch {
-      // Storage can be unavailable, such as with cookies blocked; the
-      // choice then lasts until the page is left.
-      return "system";
-    }
-  },
-  write: (key, mode) => {
-    try {
-      if (mode === "system") localStorage.removeItem(key);
-      else localStorage.setItem(key, mode);
-    } catch {
-      // See read.
-    }
-  },
-  watch: (key, onChange) => {
-    const onStorage = (event: StorageEvent) => {
-      // A `null` key means the whole storage was cleared.
-      if (event.key === key || event.key === null) {
-        onChange(parseColorMode(event.newValue));
-      }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  },
-  readsOnServer: false,
-  script: (key) => `m=localStorage.getItem(${scriptLiteral(key)})`,
-};
+const storage = localStoragePreference;
 
 /**
  * The reader's light, dark or system choice, saved in `localStorage` and

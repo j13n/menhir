@@ -21,7 +21,7 @@ Status: planning. Nothing in this document is built yet. Versions were checked o
 
 **Non-goals**
 
-- Styling, themes, or a copy-paste component registry. Those can be built on top later. One exception: the color-mode utility (`menhir/color-mode/local-storage` and `menhir/color-mode/cookie`) keeps the reader's light, dark or system choice, since the state and its pre-paint script are the same in every app; how each mode looks stays the app's (`docs/adr/0001-color-mode-utility.md`).
+- Styling, themes, or a copy-paste component registry. Those can be built on top later. Two exceptions: the color-mode utility (`menhir/color-mode/local-storage` and `menhir/color-mode/cookie`) keeps the reader's light, dark or system choice, and the theme utility (`menhir/theme/local-storage` and `menhir/theme/cookie`) keeps their choice out of the app's themes, since the state and its pre-paint script are the same in every app; how each mode or theme looks stays the app's (`docs/adr/0001-color-mode-utility.md`, `docs/adr/0003-theme-utility.md`).
 - Support for Solid 1.x.
 - Being a port of, or modelled on, any library. Other libraries may be read for ideas; none sets Menhir's source structure, API, tests or release schedule (section 8).
 - Covering every component other libraries have before the first release.
@@ -79,16 +79,16 @@ These are structural and must hold from the first commit.
    ```
    The build has to keep that re-export as written; see "Build" in section 7.
 4. **Strict layers.** Enforced by an import-boundary lint rule.
-   | Layer             | Contains                                                                                                  | May import                 |
-   | ----------------- | --------------------------------------------------------------------------------------------------------- | -------------------------- |
-   | `core`            | Prop merging, controlled/uncontrolled signal, polymorphism helper. Ids are Solid's `createUniqueId` (#13) | Nothing internal           |
-   | `floating`        | Positioning, dismissal, focus trap, hover intent, list navigation, typeahead                              | `core`, `@floating-ui/dom` |
-   | Simple components | Switch, Toggle, Checkbox, Tabs, etc.                                                                      | `core` only                |
-   | Popup components  | Dialog, Popover, Menu, Select, etc.                                                                       | `core`, `floating`         |
+   | Layer             | Contains                                                                                                                                   | May import                 |
+   | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+   | `core`            | Prop merging, controlled/uncontrolled signal, polymorphism helper, the utilities' saved preference. Ids are Solid's `createUniqueId` (#13) | Nothing internal           |
+   | `floating`        | Positioning, dismissal, focus trap, hover intent, list navigation, typeahead                                                               | `core`, `@floating-ui/dom` |
+   | Simple components | Switch, Toggle, Checkbox, Tabs, etc.                                                                                                       | `core` only                |
+   | Popup components  | Dialog, Popover, Menu, Select, etc.                                                                                                        | `core`, `floating`         |
 5. **Near-zero dependencies.** `@floating-ui/dom` only. Use built-in `Intl` for number and date formatting.
 6. **Expensive behaviour is a part, not a flag.** Portal, scroll lock and focus trap are composed in, so apps that don't render them don't ship them.
 
-The package manifest, in the shape built in the build spike (#6). It lists `./switch`, `./checkbox`, `./toggle`, `./separator` and the color-mode utility's `./color-mode/local-storage` and `./color-mode/cookie` so far; `./dialog` shows how each further component is added:
+The package manifest, in the shape built in the build spike (#6). It lists `./switch`, `./checkbox`, `./toggle`, `./separator` and the utilities' `./color-mode/local-storage`, `./color-mode/cookie`, `./theme/local-storage` and `./theme/cookie` so far; `./dialog` shows how each further component is added:
 
 ```json
 {

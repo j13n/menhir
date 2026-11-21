@@ -8,7 +8,7 @@ import ColorModePage from "./routes/docs/utilities/color-mode";
 describe("Color Mode page", () => {
   afterEach(() => {
     localStorage.clear();
-    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.removeAttribute("data-color-mode");
   });
 
   test("names the utility and its entry point for each storage", () => {

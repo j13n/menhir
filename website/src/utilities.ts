@@ -3,7 +3,10 @@
  * their pages are at `/docs/utilities/<slug>`. Add one here when its page
  * lands in `src/routes/docs/utilities/`.
  */
-export const utilities = [{ slug: "color-mode", name: "Color Mode" }];
+export const utilities = [
+  { slug: "color-mode", name: "Color Mode" },
+  { slug: "theme", name: "Theme" },
+];
 
 /**
  * The slug of the page of `menhir/<slug>`. A utility with one entry point

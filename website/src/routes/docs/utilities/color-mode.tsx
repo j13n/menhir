@@ -1,13 +1,14 @@
 import { Title } from "@solidjs/meta";
-import { For } from "solid-js";
 import cookieSize from "virtual:menhir-sizes/color-mode/cookie";
 import localStorageSize from "virtual:menhir-sizes/color-mode/local-storage";
 
+import ApiTable from "../../../components/ApiTable";
+import type { ApiRow } from "../../../components/ApiTable";
 import ComponentExample from "../../../components/ComponentExample";
-import Section from "../../../components/Section";
 import TableScroll from "../../../components/TableScroll";
+import Section from "../../../components/Section";
 import { colorModeExample } from "../../../examples/color-mode";
-import { formatSize } from "../../../formatSize";
+import { formatMeasuredSize } from "../../../formatSize";
 
 const headScript = `import { colorModeScript } from "menhir/color-mode/local-storage";
 
@@ -16,20 +17,20 @@ const headScript = `import { colorModeScript } from "menhir/color-mode/local-sto
 <script innerHTML={colorModeScript()} />`;
 
 const tailwindCss = `/* Tailwind's dark: variant, from the attribute instead of the system. */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant dark (&:where([data-color-mode="dark"], [data-color-mode="dark"] *));
 
 /* Native controls and scrollbars follow the mode too. */
-:root[data-theme="dark"] {
+:root[data-color-mode="dark"] {
   color-scheme: dark;
 }`;
 
 const plainCss = `:root {
   color-scheme: light;
 }
-:root[data-theme="dark"] {
+:root[data-color-mode="dark"] {
   color-scheme: dark;
 }
-/* Then pick colours with light-dark(), or under [data-theme="dark"]. */`;
+/* Then pick colours with light-dark(), or under [data-color-mode="dark"]. */`;
 
 const serverDocument = `import { getRequestEvent } from "@solidjs/web";
 import {
@@ -43,7 +44,7 @@ const mode = colorModeFromCookie(
   getRequestEvent()?.request.headers.get("cookie"),
 );
 
-<html lang="en" data-theme={mode === "system" ? undefined : mode}>
+<html lang="en" data-color-mode={mode === "system" ? undefined : mode}>
   <head>
     {/* Still needed: the server cannot see the system's preference. */}
     <script innerHTML={colorModeScript()} />
@@ -54,9 +55,7 @@ const mode = colorModeFromCookie(
 // In the component that changes the mode:
 const colorMode = createColorMode();`;
 
-type Row = { name: string; type: string; description: string };
-
-const options: Row[] = [
+const options: ApiRow[] = [
   {
     name: "storageKey",
     type: "string",
@@ -67,11 +66,11 @@ const options: Row[] = [
     name: "attribute",
     type: '"class" | `data-${string}`',
     description:
-      'Where the look goes on <html>: a data attribute set to light or dark, default "data-theme", or "class" for a light or dark class.',
+      'Where the look goes on <html>: a data attribute set to light or dark, default "data-color-mode", or "class" for a light or dark class, which Menhir then owns on <html>.',
   },
 ];
 
-const state: Row[] = [
+const state: ApiRow[] = [
   {
     name: "mode",
     type: "() => ColorMode",
@@ -97,7 +96,7 @@ const state: Row[] = [
   },
 ];
 
-const functions: Row[] = [
+const functions: ApiRow[] = [
   {
     name: "createColorMode",
     type: "(options?) => ColorModeState",
@@ -129,43 +128,6 @@ const functions: Row[] = [
   },
 ];
 
-function RowTable(props: { head: string; rows: Row[] }) {
-  return (
-    <TableScroll>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">{props.head}</th>
-            <th scope="col">Type</th>
-            <th scope="col" class="min-w-48">
-              Description
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <For each={props.rows}>
-            {(row) => (
-              <tr>
-                <th scope="row">
-                  <code>{row.name}</code>
-                </th>
-                <td>
-                  <code>{row.type}</code>
-                </td>
-                <td>{row.description}</td>
-              </tr>
-            )}
-          </For>
-        </tbody>
-      </table>
-    </TableScroll>
-  );
-}
-
-function sizeText(size: number | undefined) {
-  return size === undefined ? "not measured yet" : formatSize(size);
-}
-
 export default function ColorModePage() {
   return (
     <main>
@@ -177,16 +139,20 @@ export default function ColorModePage() {
         <code>&lt;html&gt;</code>. It follows the system while the choice is
         system, and stays in step across tabs. A utility, not a component: the
         control is yours, and so is how each mode looks. The toggle in this
-        site's header is the example below.
+        site's header is the example below. For a list of themes rather than
+        light and dark, use <a href="/docs/utilities/theme">Theme</a>. The two
+        write different attributes, <code>data-color-mode</code> and{" "}
+        <code>data-theme</code>, so a site can use both.
       </p>
       <dl>
         <dt>Entry points</dt>
         <dd>
           <code>menhir/color-mode/local-storage</code>,{" "}
-          {sizeText(localStorageSize)}
+          {formatMeasuredSize(localStorageSize)}
         </dd>
         <dd>
-          <code>menhir/color-mode/cookie</code>, {sizeText(cookieSize)}
+          <code>menhir/color-mode/cookie</code>,{" "}
+          {formatMeasuredSize(cookieSize)}
         </dd>
       </dl>
       <ComponentExample
@@ -284,18 +250,18 @@ export default function ColorModePage() {
         </p>
       </Section>
       <Section id="api" title="API reference">
-        <RowTable head="Function" rows={functions} />
+        <ApiTable head="Function" rows={functions} />
         <h3>Options</h3>
         <p>
           Taken by <code>createColorMode</code> and <code>colorModeScript</code>
           . Pass both the same options.
         </p>
-        <RowTable head="Option" rows={options} />
+        <ApiTable head="Option" rows={options} />
         <h3>State</h3>
         <p>
           What <code>createColorMode</code> returns.
         </p>
-        <RowTable head="Field" rows={state} />
+        <ApiTable head="Field" rows={state} />
       </Section>
     </main>
   );
