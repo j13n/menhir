@@ -1,50 +1,172 @@
-import { cleanup, render, within } from "@solidjs/testing-library";
-import { afterEach, describe, expect, test } from "vitest";
+import { cleanup, fireEvent, render, within } from "@solidjs/testing-library";
+import { captureArtifact, expectNoDiagnostics } from "@solidjs/diagnostics";
+import { flush } from "solid-js";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
+import { FRAME_MS } from "./components/MenhirScene";
 // Kept outside src/routes so the file-system router never sees it as a page.
 import Home from "./routes/index";
 
-describe("home page", () => {
-  // The animation runs a timer; unmount so it does not outlive each test.
-  afterEach(cleanup);
+/** jsdom has no matchMedia; this answers the reduced-motion query. */
+function preferReducedMotion(reduce: boolean) {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn((query: string) => ({
+      matches: reduce && query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    })),
+  );
+}
 
-  test("says what Menhir is", () => {
-    const { getByRole } = render(() => <Home />);
-    expect(getByRole("heading", { level: 1 })).toHaveTextContent("Menhir");
-    expect(getByRole("main")).toHaveTextContent(
-      "Unstyled, accessible UI primitives for SolidJS 2.0",
-    );
+function setup() {
+  const result = render(() => <Home />);
+  flush();
+  const stone = result.getByRole("img", { name: /menhir/i });
+  return { ...result, stone };
+}
+
+/** Runs the animation clock forward by whole frames and applies the updates. */
+function tick(frames = 1) {
+  vi.advanceTimersByTime(frames * FRAME_MS);
+  flush();
+}
+
+describe("home page", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    preferReducedMotion(false);
   });
 
-  test("shows the menhir animation under the introduction", () => {
-    const { getByRole } = render(() => <Home />);
-    const scene = getByRole("img", { name: /ASCII drawing of a menhir/ });
-    const intro = getByRole("main").querySelector("p");
-    expect(intro?.compareDocumentPosition(scene)).toBe(
+  afterEach(() => {
+    // The animation and the copy confirmation run timers.
+    cleanup();
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+    Reflect.deleteProperty(navigator, "clipboard");
+  });
+
+  test("puts the stone between the name and the tagline", () => {
+    const { getByRole, getByText, stone } = setup();
+    const title = getByRole("heading", { level: 1 });
+    expect(title).toHaveTextContent("Menhir");
+    const tagline = getByText("Unstyled, accessible UI primitives for SolidJS");
+    expect(title.compareDocumentPosition(stone)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
-    expect(
-      getByRole("button", { name: /(Pause|Play) animation/ }),
-    ).toBeInTheDocument();
-  });
-
-  test("states that nothing is published yet", () => {
-    const { getByRole } = render(() => <Home />);
-    const status = getByRole("region", { name: "Status" });
-    expect(status).toHaveTextContent("not published to npm yet");
-  });
-
-  test("shows the install command", () => {
-    const { getByRole } = render(() => <Home />);
-    const install = getByRole("region", { name: "Install" });
-    expect(install.querySelector("pre code")).toHaveTextContent(
-      "pnpm add menhir",
+    expect(stone.compareDocumentPosition(tagline)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
     );
+  });
+
+  test("turns the stone slowly, with no controls around it", () => {
+    const { queryByRole, stone } = setup();
+    const first = stone.textContent;
+    tick();
+    const second = stone.textContent;
+    expect(second).not.toBe(first);
+    tick();
+    expect(stone.textContent).not.toBe(second);
+    expect(
+      queryByRole("button", { name: /(Pause|Play) animation/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  test("keeps the stone still for readers who prefer reduced motion", () => {
+    preferReducedMotion(true);
+    const { stone } = setup();
+    const first = stone.textContent;
+    tick(10);
+    expect(stone.textContent).toBe(first);
+  });
+
+  test("shows the install command, and copies it", async () => {
+    const writeText = vi.fn(() => Promise.resolve());
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    const { getByRole, getByText } = setup();
+    expect(getByText("pnpm add menhir").tagName).toBe("CODE");
+
+    fireEvent.click(getByRole("button", { name: "Copy install command" }));
+    await Promise.resolve();
+    flush();
+    expect(writeText).toHaveBeenCalledWith("pnpm add menhir");
+    expect(getByRole("status")).toHaveTextContent("Copied");
+
+    tick(Math.ceil(2000 / FRAME_MS));
+    expect(getByRole("status")).toHaveTextContent("");
+  });
+
+  test("links to getting started from under the tagline, before the install command", () => {
+    const { getByRole, getByText } = setup();
+    const link = getByRole("link", { name: /Get started/ });
+    expect(link).toHaveAttribute("href", "/docs/getting-started");
+    const tagline = getByText("Unstyled, accessible UI primitives for SolidJS");
+    expect(tagline.compareDocumentPosition(link)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(link.compareDocumentPosition(getByText("pnpm add menhir"))).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
+  test("sets out the approach as a numbered list, without a heading", () => {
+    const { getByRole, queryByRole, queryByText } = setup();
+    const list = getByRole("list", { name: "Approach" });
+    expect(list.tagName).toBe("OL");
+    expect(
+      queryByRole("heading", { name: "Approach" }),
+    ).not.toBeInTheDocument();
+    expect(queryByText(/the earlier one wins/)).not.toBeInTheDocument();
+    expect(
+      within(list)
+        .getAllByRole("heading", { level: 3 })
+        .map((heading) => heading.textContent),
+    ).toEqual(["Solid 2.0 idioms", "WAI-ARIA", "Size"]);
+    expect(
+      within(list).getByRole("link", { name: /WAI-ARIA/ }),
+    ).toHaveAttribute("href", "https://www.w3.org/WAI/ARIA/apg/patterns/");
+  });
+
+  test("shows a working Switch, linked to its page", async () => {
+    const { getByRole } = setup();
+    const examples = getByRole("region", { name: "Examples" });
+    expect(
+      within(examples).queryByRole("heading", { name: "Examples" }),
+    ).not.toBeInTheDocument();
+    const example = within(examples);
+    const control = example.getByRole("switch", { name: "Airplane mode" });
+    expect(control).toHaveAttribute("aria-checked", "false");
+    fireEvent.click(control);
+    // The switch changes once its click has gone through its hidden input.
+    await Promise.resolve();
+    flush();
+    expect(control).toHaveAttribute("aria-checked", "true");
+    expect(example.getByRole("link", { name: "Switch" })).toHaveAttribute(
+      "href",
+      "/docs/components/switch",
+    );
+  });
+
+  test("renders, animates and toggles without tripping a Solid diagnostic", async () => {
+    const { artifact } = await captureArtifact(
+      () => {
+        const { getByRole } = setup();
+        tick(2);
+        fireEvent.click(getByRole("switch", { name: "Airplane mode" }));
+        flush();
+      },
+      { scenario: "home-page" },
+    );
+    expectNoDiagnostics(artifact);
   });
 
   test("credits the projects that inspired Menhir, in one place", () => {
-    const { getByRole } = render(() => <Home />);
-    const credits = within(getByRole("region", { name: "Credits" }));
+    const { getByRole } = setup();
+    const credits = within(getByRole("contentinfo"));
     const projects = {
       "Base UI": "https://base-ui.com",
       Radix: "https://www.radix-ui.com",

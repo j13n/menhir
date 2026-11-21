@@ -4,11 +4,11 @@ The size checks of PLAN.md section 6, "Enforcement". This package depends on
 `menhir` like an installed app, so it measures the built package through its
 `exports`.
 
-| Command          | What it does                                                                                    |
-| ---------------- | ----------------------------------------------------------------------------------------------- |
-| `pnpm test`      | Builds menhir, then runs both checks below. Fails if an entry point is over budget or has none. |
-| `pnpm size`      | Builds menhir and prints each entry point's size against its budget.                            |
-| `pnpm size:json` | Builds menhir and writes the same results to `dist/sizes.json`, for the docs size table (#38).  |
+| Command          | What it does                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| `pnpm test`      | Builds menhir, then runs both checks below. Fails if an entry point is over budget or has none.  |
+| `pnpm size`      | Builds menhir and prints each entry point's size against its budget.                             |
+| `pnpm size:json` | Builds menhir and writes the same results to `dist/sizes.json`, for the docs site's sizes (#38). |
 
 ## Size budgets
 
@@ -46,10 +46,10 @@ The JSON report of `size-limit`, one object per entry point:
 [{ "name": "menhir/switch", "passed": true, "size": 409, "sizeLimit": 500 }]
 ```
 
-`size` and `sizeLimit` are in bytes, gzipped. `size` is the value the `size`
-prop of the docs site's `ComponentPage` takes. The site does not read the
-file yet; that is #38, and its build will have to run `pnpm size:json`, since
-`dist` is not committed.
+`size` and `sizeLimit` are in bytes, gzipped. The docs site reads the file
+through `virtual:menhir-sizes` (`website/vite-plugin-sizes.ts`): its size
+table and each component page's size come from here. `dist` is not
+committed, so the site's `pnpm build` runs `pnpm size:json` first.
 
 ## The floating-leak check
 

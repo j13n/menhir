@@ -41,9 +41,39 @@ declare module "virtual:file-routes" {
       $$route: FileRouteEagerRef<Pick<typeof import("./src/routes/[...404]"), Extract<"route", keyof typeof import("./src/routes/[...404]")>>>;
     },
     {
-      path: "/components/switch";
+      path: "/docs";
       page: true;
-      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/components/switch"), Extract<"default", keyof typeof import("./src/routes/components/switch")>>>;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs"), Extract<"default", keyof typeof import("./src/routes/docs")>>>;
+      $$route?: undefined;
+    },
+    {
+      path: "/docs/bundle-size";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/bundle-size"), Extract<"default", keyof typeof import("./src/routes/docs/bundle-size")>>>;
+      $$route?: undefined;
+    },
+    {
+      path: "/docs/components/";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/index"), Extract<"default", keyof typeof import("./src/routes/docs/components/index")>>>;
+      $$route?: undefined;
+    },
+    {
+      path: "/docs/components/switch";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/switch"), Extract<"default", keyof typeof import("./src/routes/docs/components/switch")>>>;
+      $$route?: undefined;
+    },
+    {
+      path: "/docs/getting-started";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/getting-started"), Extract<"default", keyof typeof import("./src/routes/docs/getting-started")>>>;
+      $$route?: undefined;
+    },
+    {
+      path: "/docs/llms-txt";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/llms-txt"), Extract<"default", keyof typeof import("./src/routes/docs/llms-txt")>>>;
       $$route?: undefined;
     },
     {
@@ -74,12 +104,53 @@ declare module "virtual:file-routes" {
       children?: undefined;
     },
     {
-      path: "/components/switch";
-      id: "/components/switch";
+      path: "/docs";
+      id: "/docs";
       page: true;
-      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/components/switch"), Extract<"default", keyof typeof import("./src/routes/components/switch")>>>;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs"), Extract<"default", keyof typeof import("./src/routes/docs")>>>;
       $$route?: undefined;
-      children?: undefined;
+      children: readonly [
+        {
+          path: "/llms-txt";
+          id: "/llms-txt";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/llms-txt"), Extract<"default", keyof typeof import("./src/routes/docs/llms-txt")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/bundle-size";
+          id: "/bundle-size";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/bundle-size"), Extract<"default", keyof typeof import("./src/routes/docs/bundle-size")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/";
+          id: "/components/";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/index"), Extract<"default", keyof typeof import("./src/routes/docs/components/index")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/getting-started";
+          id: "/getting-started";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/getting-started"), Extract<"default", keyof typeof import("./src/routes/docs/getting-started")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/switch";
+          id: "/components/switch";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/switch"), Extract<"default", keyof typeof import("./src/routes/docs/components/switch")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        }
+      ];
     }
   ];
 }

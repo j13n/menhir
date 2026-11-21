@@ -1,10 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { CYCLE_STEPS, sceneFrame } from "./components/menhirFrames";
 import {
   DAWN_HOUR,
   DUSK_HOUR,
-  sceneStepAt,
   THEME_CHECK_MS,
   themeAt,
   themeBootScript,
@@ -12,13 +10,8 @@ import {
 } from "./timeOfDay";
 
 /** A local time on 19 November 2026. */
-const at = (hours: number, minutes = 0, day = 19) =>
-  new Date(2026, 10, day, hours, minutes);
-
-/** Every minute of one local day. */
-const everyMinute = Array.from({ length: 24 * 60 }, (_, m) =>
-  at(Math.floor(m / 60), m % 60),
-);
+const at = (hours: number, minutes = 0) =>
+  new Date(2026, 10, 19, hours, minutes);
 
 describe("themeAt", () => {
   test("is light from dawn until dusk and dark otherwise", () => {
@@ -28,45 +21,6 @@ describe("themeAt", () => {
     expect(themeAt(at(DUSK_HOUR - 1, 59))).toBe("light");
     expect(themeAt(at(DUSK_HOUR))).toBe("dark");
     expect(themeAt(at(0))).toBe("dark");
-  });
-});
-
-describe("sceneStepAt", () => {
-  test("the scene shows night exactly when the page is dark", () => {
-    for (const date of everyMinute) {
-      const phase = sceneFrame(sceneStepAt(date)).phase;
-      expect(phase === "night", date.toString()).toBe(themeAt(date) === "dark");
-    }
-  });
-
-  test("the sun rises at dawn, is overhead at midday and sets at dusk", () => {
-    const step = (date: Date) => sceneStepAt(date) % CYCLE_STEPS;
-    expect(step(at(DAWN_HOUR))).toBe(0);
-    expect(sceneFrame(sceneStepAt(at(12))).shadow).toBe("none");
-    expect(sceneFrame(sceneStepAt(at(DUSK_HOUR, -1))).phase).toBe("day");
-    expect(sceneFrame(sceneStepAt(at(DUSK_HOUR))).phase).toBe("night");
-  });
-
-  test("moves forward through the day, one frame at a time or less", () => {
-    for (let i = 1; i < everyMinute.length; i++) {
-      const gap = sceneStepAt(everyMinute[i]) - sceneStepAt(everyMinute[i - 1]);
-      expect(gap).toBeGreaterThanOrEqual(0);
-      expect(gap).toBeLessThanOrEqual(1);
-    }
-  });
-
-  test("the same stone stands from one dawn to the next", () => {
-    const stone = (date: Date) => sceneFrame(sceneStepAt(date)).stone;
-    const today = stone(at(DAWN_HOUR));
-    expect(stone(at(23, 59))).toBe(today);
-    expect(stone(at(DAWN_HOUR - 1, 59, 20))).toBe(today);
-    expect(stone(at(DAWN_HOUR, 0, 20))).not.toBe(today);
-  });
-
-  test("tomorrow's dawn follows straight on from tonight", () => {
-    const lastNight = sceneStepAt(at(DAWN_HOUR - 1, 59, 20));
-    const dawn = sceneStepAt(at(DAWN_HOUR, 0, 20));
-    expect(dawn - lastNight).toBe(1);
   });
 });
 

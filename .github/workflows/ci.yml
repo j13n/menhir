@@ -138,8 +138,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup
-      # The site imports menhir through its exports, which point into dist.
-      - run: pnpm --filter menhir build
+      # Builds menhir, whose exports the site imports from dist, and writes
+      # the size-limit report the site's sizes come from, then the site.
       - run: pnpm --filter website build
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v7
