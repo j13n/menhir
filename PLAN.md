@@ -348,10 +348,10 @@ The component list is the set a modern headless library is expected to have. It 
 
 - ~~Evaluate the existing Solid 2.0 libraries (section 4).~~ Done (#1).
 - ~~The two tooling spikes (section 7).~~ Done: test renderer (#5), build (#6).
-- Repo, build, test runner, size budgets, import-boundary lint.
-- `core` layer. ~~Decide the polymorphism pattern.~~ Decided (#11): a `render` function prop (section 8, "Polymorphism").
-- Docs site in `website` (Solid 2.0, `pnpm create solid@latest`): component page template, generated size table, deployment.
-- ~~Claim the npm name and GitHub org.~~ Done (#2): `menhir` 0.0.0 holds the npm name; no org or domain yet (section 3).
+- ~~Repo, build, test runner, size budgets, import-boundary lint.~~ Done.
+- ~~`core` layer.~~ Done. ~~Decide the polymorphism pattern.~~ Decided (#11): a `render` function prop (section 8, "Polymorphism").
+- ~~Docs site in `website` (Solid 2.0, `pnpm create solid@latest`): component page template, generated size table, deployment.~~ Done: deployed at `menhir-ui.com` (#38).
+- ~~Claim the npm name and GitHub org.~~ Done (#2): `menhir` 0.0.0 holds the npm name; no org; the domain is `menhir-ui.com` (section 3).
 
 **Phase 1: simple components** (days each; settles API conventions)
 

@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { clearCookies } from "../../test/clearCookies.ts";
+import {
+  loadUnderPolicy,
+  scriptHashSource,
+} from "../../test/contentSecurityPolicy.ts";
+import { isJSDOM } from "../../test/isJSDOM.ts";
 import { stubSystemPreference } from "../../test/color-mode/stubSystemPreference.ts";
 import * as cookie from "./cookie/index.ts";
 import { colorModeScript } from "./local-storage/index.ts";
@@ -85,6 +90,60 @@ describe("colorModeScript", () => {
     localStorage.setItem("</script><script>alert(1)</script>", "dark");
     runScript(source);
     expect(root).toHaveAttribute("data-color-mode", "dark");
+  });
+
+  // jsdom does not enforce a Content Security Policy.
+  describe.skipIf(isJSDOM)("under a Content Security Policy", () => {
+    it("is blocked by a policy that allows no inline script", async () => {
+      localStorage.setItem("color-mode", "dark");
+      const html = await loadUnderPolicy("script-src 'nonce-r4nd0m'", {
+        source: colorModeScript(),
+      });
+      expect(html).toEqual({});
+    });
+
+    it("runs in a script element with the policy's nonce", async () => {
+      localStorage.setItem("color-mode", "dark");
+      const html = await loadUnderPolicy("script-src 'nonce-r4nd0m'", {
+        source: colorModeScript(),
+        nonce: "r4nd0m",
+      });
+      expect(html).toEqual({ "data-color-mode": "dark" });
+    });
+
+    it("runs when the policy allows the hash of its source", async () => {
+      localStorage.setItem("site-theme", "dark");
+      const source = colorModeScript({ storageKey: "site-theme" });
+      const html = await loadUnderPolicy(
+        `script-src ${await scriptHashSource(source)}`,
+        { source },
+      );
+      expect(html).toEqual({ "data-color-mode": "dark" });
+    });
+
+    it("has another hash with other options", async () => {
+      localStorage.setItem("site-theme", "dark");
+      const html = await loadUnderPolicy(
+        `script-src ${await scriptHashSource(colorModeScript())}`,
+        { source: colorModeScript({ storageKey: "site-theme" }) },
+      );
+      expect(html).toEqual({});
+    });
+
+    it("from menhir/color-mode/cookie, runs with a nonce or a hash", async () => {
+      document.cookie = "color-mode=dark";
+      const source = cookie.colorModeScript();
+      const withNonce = await loadUnderPolicy("script-src 'nonce-r4nd0m'", {
+        source,
+        nonce: "r4nd0m",
+      });
+      expect(withNonce).toEqual({ "data-color-mode": "dark" });
+      const withHash = await loadUnderPolicy(
+        `script-src ${await scriptHashSource(source)}`,
+        { source },
+      );
+      expect(withHash).toEqual({ "data-color-mode": "dark" });
+    });
   });
 
   describe("from menhir/color-mode/cookie", () => {
