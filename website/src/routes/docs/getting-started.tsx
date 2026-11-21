@@ -38,7 +38,11 @@ export default function GettingStarted() {
         imports.
       </p>
       <Section id="status" title="Status">
-        <p>In development. Switch is the first component.</p>
+        <p>
+          Early 0.x versions: the API may change between minor versions. The
+          simple components are built; Dialog, Popover and the other popups come
+          next.
+        </p>
       </Section>
       <Section id="install" title="Install">
         <CodeBlock code={install} />

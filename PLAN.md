@@ -2,7 +2,7 @@
 
 Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles.
 
-Status: in development (2026-11-21). Phase 0 is done and phase 1 is under way (section 9). What is built is what `packages/menhir/package.json` exports; the READMEs name it, and `test/workspace/readme.test.ts` keeps their lists in step with `exports`. Nothing is released yet. Versions were checked on 2026-11-18 and name availability on 2026-11-19.
+Status: first release (2026-11-21). Phases 0 and 1 are done and released as 0.1.0; phase 2 is next (section 9). What is built is what `packages/menhir/package.json` exports; the READMEs name it, and `test/workspace/readme.test.ts` keeps their lists in step with `exports`. Versions were checked on 2026-11-18 and name availability on 2026-11-19.
 
 ## 1. Why this exists
 
@@ -29,7 +29,7 @@ Status: in development (2026-11-21). Phase 0 is done and phase 1 is under way (s
 ## 3. Name
 
 - **Menhir**: a single standing stone. Fits "primitive", short, easy to say.
-- npm: `menhir` and `menhir-ui` were both unclaimed on 2026-11-18 and still were on 2026-11-19. `menhir` 0.0.0 was published as a placeholder on 2026-11-19 (README, LICENSE and `package.json` only). `menhir-ui` is not held: the library is one package, and an empty second one would only squat the name. Publish from `packages/menhir`, since the workspace root is private; the npm account needs two-factor authentication for writes.
+- npm: `menhir` and `menhir-ui` were both unclaimed on 2026-11-18 and still were on 2026-11-19. `menhir` 0.0.0 was published as a placeholder on 2026-11-19 (README, LICENSE and `package.json` only) and held the name until the first release, 0.1.0. `menhir-ui` is not held: the library is one package, and an empty second one would only squat the name. Publish from `packages/menhir`, since the workspace root is private; the npm account needs two-factor authentication for writes.
 - npm scope `@menhir`: already exists, with no public packages (2026-11-19). Not needed, since the package is unscoped (section 6, "Package shape").
 - GitHub: the `menhir` account is taken by a user created in 2012, whose public repositories were last pushed in 2016. `menhir-ui`, `menhirjs` and `menhir-solid` were free on 2026-11-19. Decided on 2026-11-19 (#2): no org for now; the repository stays at `j13n/menhir`.
 - Domains (RDAP and registry whois, 2026-11-19): `menhir.com`, `menhir.dev`, `menhir.io` and `menhir.org` are registered. `menhir.sh`, `menhirui.dev`, `menhir-ui.dev`, `menhirui.com`, `menhir-ui.com`, `menhirjs.dev` and `menhirjs.com` were free. `menhir.js.org` is unclaimed; js.org subdomains are free for JavaScript projects. Decided on 2026-11-21 (#38): the docs site is at `menhir-ui.com`, bought through TransIP, with DNS on Cloudflare and the domain attached to the `menhir-docs` Worker as a custom domain in `website/wrangler.jsonc`.
@@ -358,13 +358,14 @@ The component list is the set a modern headless library is expected to have. It 
 
 **Phase 1: simple components** (days each; settles API conventions)
 
-- Switch, Toggle, Toggle Group, Checkbox, Separator, Progress, Meter, Collapsible, Accordion, Tabs.
+- ~~Switch, Toggle, Toggle Group, Checkbox, Separator, Progress, Meter, Collapsible, Accordion, Tabs.~~ Done.
+- First release, 0.1.0, without an announcement (#35): it puts the release pipeline to work and lets the API conventions meet users before Phase 2 builds on them.
 
 **Phase 2: floating layer, then the first popups** (the bulk of the work)
 
 - `floating` layer: positioning, dismissal, focus trap, scroll lock, portal.
 - Dialog, Alert Dialog, Popover, Tooltip.
-- First public release once Dialog and Popover are excellent.
+- Announcement once Dialog and Popover are excellent.
 
 **Phase 3: list-based popups**
 
@@ -389,7 +390,7 @@ The component list is the set a modern headless library is expected to have. It 
 
 | Risk                                           | Mitigation                                                                                                                                                |
 | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Solo maintainer burnout                        | Narrow scope; release after Phase 2; no promise of full parity.                                                                                           |
+| Solo maintainer burnout                        | Narrow scope; announce after Phase 2; no promise of full parity.                                                                                          |
 | WAI-ARIA patterns change                       | Record the date each component's pattern was read and check it at each release, as section 8 describes.                                                   |
 | React patterns leak in                         | Section 8 puts Solid 2.0 idioms first, and no library's source is translated. The diagnostics line in section 10 catches React-shaped effects.            |
 | Solid 2.0 ecosystem and tooling still settling | Keep dependencies minimal; isolate 2.0-specific code in `core`.                                                                                           |
