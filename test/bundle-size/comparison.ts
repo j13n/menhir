@@ -1,3 +1,8 @@
+import {
+  solid1Production,
+  type ProductionConstants,
+} from "./productionConstants.ts";
+
 /**
  * Other component libraries, for the comparison on the docs site's
  * bundle-size page. Each maps a component of menhir, by the subpath of its
@@ -13,6 +18,13 @@ export type Library = {
    * menhir's: an app that uses the library has them already.
    */
   ignore: string[];
+  /**
+   * The constants of the framework's production build, which the
+   * development-only and server-only code of a Solid library sits behind.
+   * The React libraries need none: theirs sits behind
+   * `process.env.NODE_ENV`, which Rolldown sets to `"production"` itself.
+   */
+  production?: ProductionConstants;
   /** Such as `{ switch: "@radix-ui/react-switch" }`. */
   components: Record<string, string>;
 };
@@ -55,6 +67,7 @@ export const libraries: Library[] = [
     name: "Kobalte",
     framework: "Solid 1.x",
     ignore: ["solid-js"],
+    production: solid1Production,
     components: {
       accordion: "@kobalte/core/accordion",
       checkbox: "@kobalte/core/checkbox",
@@ -74,6 +87,7 @@ export const libraries: Library[] = [
     name: "corvu",
     framework: "Solid 1.x",
     ignore: ["solid-js"],
+    production: solid1Production,
     components: {
       accordion: "corvu/accordion",
       collapsible: "corvu/disclosure",

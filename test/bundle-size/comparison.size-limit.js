@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { comparedComponents, libraries, totalChecks } from "./comparison.ts";
+import { inProduction, solidProduction } from "./productionConstants.ts";
 
 const file = (module) => fileURLToPath(import.meta.resolve(module));
 
@@ -29,6 +30,11 @@ function together(name, modules) {
   return { [entry]: "*" };
 }
 
+const production = (library) =>
+  library.production && {
+    modifyRolldownConfig: inProduction(library.production),
+  };
+
 const menhirTogether = (name, components) => ({
   name,
   import: together(
@@ -37,11 +43,13 @@ const menhirTogether = (name, components) => ({
   ),
   gzip: true,
   ignore: ["solid-js", "@solidjs/web"],
+  modifyRolldownConfig: inProduction(solidProduction),
 });
 
 // Each other library's version of a menhir component (comparison.ts),
 // measured as .size-limit.js measures menhir's entry points, with the
-// library's framework left out instead of Solid. No budgets: these sizes are
+// library's framework left out instead of Solid, and as its production
+// build too (`library.production`). No budgets: these sizes are
 // shown, not enforced. The name of a check is the module it measures.
 //
 // Then the totals (`totalChecks`): each library's components imported
@@ -54,6 +62,7 @@ export default [
       import: { [file(module)]: "*" },
       gzip: true,
       ignore: library.ignore,
+      ...production(library),
     })),
   ),
   menhirTogether(totalChecks.menhir, comparedComponents),
@@ -68,6 +77,7 @@ export default [
         ),
         gzip: true,
         ignore: library.ignore,
+        ...production(library),
       },
       menhirTogether(
         totalChecks.menhirFor(library),
