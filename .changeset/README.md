@@ -34,7 +34,8 @@ packages (`website`, `test/*`) are never versioned.
 
 - With changesets in this folder, it opens or updates a "Version Packages"
   pull request that bumps the version, writes `packages/menhir/CHANGELOG.md`
-  and deletes the changesets.
+  and deletes the changesets. Its CI run waits for approval, since the
+  workflow opened it: approve the run on the pull request.
 - Before merging it, review the references' changelogs
   ([CONTRIBUTING.md](../CONTRIBUTING.md#reviewing-the-references-changelogs)).
 - Once that pull request is merged, it builds and packs `menhir`, runs the

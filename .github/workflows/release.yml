@@ -50,9 +50,8 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           cache: "false"
-      # A pull request opened with the workflow's token does not trigger CI.
-      # Before merging, run the CI workflow on its branch from the Actions tab
-      # (ci.yml has a workflow_dispatch trigger for this).
+      # A pull request opened with the workflow's token gets a CI run that
+      # waits for approval: approve it on the pull request before merging.
       - uses: changesets/action/version@v2
 
   pack:

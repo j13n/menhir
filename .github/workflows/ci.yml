@@ -4,9 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
-  # For the "Version Packages" pull request, which release.yml opens with the
-  # workflow's token and so gets no pull_request run. Run this workflow on its
-  # branch from the Actions tab; the checks show on the pull request.
+  # To run the checks on any branch from the Actions tab.
   workflow_dispatch:
 
 permissions:
@@ -36,9 +34,13 @@ jobs:
 
   changeset:
     name: Changeset
-    # Pull requests only: the "Version Packages" pull request, run by hand,
-    # deletes the changesets on purpose.
-    if: github.event_name == 'pull_request'
+    # Pull requests only, and not the "Version Packages" pull request that
+    # release.yml opens from this branch: it deletes the changesets on
+    # purpose. A skipped job satisfies the required check.
+    if: >-
+      github.event_name == 'pull_request' &&
+      !(github.head_ref == 'changeset-release/main' &&
+        github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
