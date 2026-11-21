@@ -166,7 +166,7 @@ describe("llmsTxt", () => {
 
   test("links the utilities' pages", () => {
     expect(llmsTxt([doc])).toContain(
-      "## Utilities\n\n- [Color Mode](/docs/utilities/color-mode): ",
+      "## Utilities\n\n- [Color Scheme](/docs/utilities/color-scheme): ",
     );
   });
 

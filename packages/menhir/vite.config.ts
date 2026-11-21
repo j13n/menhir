@@ -43,7 +43,7 @@ export default defineConfig({
       entry: Object.fromEntries(
         components.flatMap((name) => [
           [`${name}/index`, `src/${name}/index.ts`],
-          // A utility, such as color-mode, exports functions and has no parts.
+          // A utility, such as color-scheme, exports functions and has no parts.
           ...(existsSync(`src/${name}/index.parts.ts`)
             ? [[`${name}/index.parts`, `src/${name}/index.parts.ts`]]
             : []),

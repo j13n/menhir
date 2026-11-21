@@ -47,7 +47,7 @@ describe("built package", () => {
     const { "./package.json": _, ...components } = manifest.exports;
     // A component is a folder in src with an index.ts. core is internal. A
     // utility can have several, one folder down, such as
-    // color-mode/cookie/index.ts.
+    // color-scheme/cookie/index.ts.
     const expected = files("{*,*/*}/index.ts", "src/")
       .map((file) => `./${dirname(file)}`)
       .filter((subpath) => subpath !== "./core")

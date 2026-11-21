@@ -1,11 +1,11 @@
-import ColorModeToggle from "../examples/color-mode/tailwind/ColorModeToggle";
+import ColorSchemeToggle from "../examples/color-scheme/tailwind/ColorSchemeToggle";
 
 const link =
   "text-sm font-medium text-stone-700 no-underline hover:text-stone-950 dark:text-stone-300 dark:hover:text-white";
 
 /**
  * The site header: the name, home, the two sections of the site, and the
- * color mode toggle, which is the Color Mode page's example.
+ * color scheme toggle, which is the Color Scheme page's example.
  */
 export default function NavBar() {
   return (
@@ -44,7 +44,7 @@ export default function NavBar() {
               </li>
             </ul>
           </nav>
-          <ColorModeToggle />
+          <ColorSchemeToggle />
         </div>
       </div>
     </header>
