@@ -3,11 +3,10 @@ import { extname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createThemeCss } from "@tanstack/highlight/theme";
-import { githubDarkTheme } from "@tanstack/highlight/themes/github-dark";
-import { githubLightTheme } from "@tanstack/highlight/themes/github-light";
 import MagicString from "magic-string";
 import { parseSync, type Plugin } from "vite";
 
+import { menhirDark, menhirLight } from "./highlight-theme.ts";
 import { highlight, type Language } from "./src/highlight.ts";
 
 const highlightModule = fileURLToPath(
@@ -41,8 +40,8 @@ const extensions: Record<string, Language> = {
  */
 export function themeCss() {
   const css = createThemeCss({
-    light: githubLightTheme,
-    dark: githubDarkTheme,
+    light: menhirLight,
+    dark: menhirDark,
     darkSelector: ':root[data-color-mode="dark"]',
     codeBlockSelector: ":where(pre.th-code)",
   });
