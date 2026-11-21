@@ -6,7 +6,7 @@ import BundleSize from "./routes/docs/bundle-size";
 
 // The size reports are not built for the tests; these stand in for them.
 vi.mock("virtual:menhir-sizes", () => ({
-  sizes: [{ entryPoint: "menhir/switch", size: 1914, limit: 2300 }],
+  sizes: [{ entryPoint: "menhir/switch", size: 1914 }],
 }));
 vi.mock("virtual:size-comparison", () => ({
   libraries: [
@@ -25,7 +25,7 @@ vi.mock("virtual:size-comparison", () => ({
 }));
 
 describe("bundle size page", () => {
-  test("shows every entry point's size and budget, and says they are gzipped", () => {
+  test("shows every entry point's size, and says they are gzipped", () => {
     const { getByRole, getByText } = render(() => <BundleSize />);
     expect(getByRole("heading", { level: 1 })).toHaveTextContent("Bundle size");
     expect(
@@ -39,7 +39,7 @@ describe("bundle size page", () => {
       within(row)
         .getAllByRole("cell")
         .map((cell) => cell.textContent),
-    ).toEqual(["1.9 kB", "2.3 kB"]);
+    ).toEqual(["1.9 kB"]);
   });
 
   test("compares each component's size with other libraries'", () => {

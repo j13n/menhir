@@ -6,7 +6,7 @@ import Components from "./routes/docs/components/index";
 
 // The size report is not built for the tests; this stands in for it.
 vi.mock("virtual:menhir-sizes", () => ({
-  sizes: [{ entryPoint: "menhir/switch", size: 1914, limit: 2300 }],
+  sizes: [{ entryPoint: "menhir/switch", size: 1914 }],
 }));
 
 describe("components page", () => {

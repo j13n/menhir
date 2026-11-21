@@ -5,8 +5,6 @@ declare module "virtual:menhir-sizes" {
     entryPoint: string;
     /** Measured size in bytes, minified and gzipped, Solid left out. */
     size: number;
-    /** The entry point's budget in bytes, measured the same way. */
-    limit: number;
   };
 
   /** One row per entry point of menhir. Empty when the report is missing. */

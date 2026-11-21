@@ -93,11 +93,9 @@ const loadSwitchSize = (file: string, command: "build" | "serve") =>
   loadModule<SizeModule>(file, command, "virtual:menhir-sizes/switch");
 
 describe("virtual:menhir-sizes", () => {
-  test("lists each entry point's measured size and budget from the size-limit report", async () => {
+  test("lists each entry point's measured size from the size-limit report", async () => {
     const { module } = await loadSizes(writeReport(switchReport), "build");
-    expect(module.sizes).toEqual([
-      { entryPoint: "menhir/switch", size: 1914, limit: 2300 },
-    ]);
+    expect(module.sizes).toEqual([{ entryPoint: "menhir/switch", size: 1914 }]);
   });
 
   test("gives a component page its entry point's measured size", async () => {
