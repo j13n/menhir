@@ -166,8 +166,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      # wrangler-action runs `pnpm add wrangler` in website, which needs the
-      # workspace installed.
+      # Installs the workspace, which includes website's pinned wrangler; the
+      # action finds it there instead of installing its own.
       - uses: ./.github/actions/setup
         with:
           cache: "false"
@@ -181,6 +181,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          # Must match wrangler in website/package.json. On a mismatch the action
+          # runs `pnpm add wrangler`, which fails on esbuild's and workerd's
+          # unapproved build scripts.
           wranglerVersion: "4.165.0"
           packageManager: pnpm
           workingDirectory: website

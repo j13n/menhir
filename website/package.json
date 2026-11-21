@@ -23,7 +23,8 @@
     "tailwindcss": "^4.3.5",
     "typescript": "^7.0.2",
     "vite": "^8.3.8",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "wrangler": "4.165.0"
   },
   "dependencies": {
     "@solidjs/meta": "^2.0.0",

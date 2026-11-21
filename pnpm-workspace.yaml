@@ -4,6 +4,13 @@ packages:
   - test/bundle-size
   - test/ssr-app
 
+# Packages whose install scripts pnpm may run. Wrangler (the docs deploy)
+# brings esbuild and workerd; both ship their binaries as platform-specific
+# optional dependencies, so their scripts are not needed and stay off.
+allowBuilds:
+  esbuild: false
+  workerd: false
+
 # pnpm settings for the whole workspace. The Solid packages release in lockstep
 # and templates track them closely; exclude the whole family from any
 # minimumReleaseAge policy so fresh Solid releases install immediately.
