@@ -16,7 +16,9 @@ describe("<SizeTable />", () => {
         ]}
       />
     ));
-    const table = getByRole("table");
+    const table = getByRole("table", {
+      name: "Minified and gzipped, Solid left out",
+    });
     expect(
       within(table)
         .getAllByRole("columnheader")

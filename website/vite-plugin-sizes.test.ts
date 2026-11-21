@@ -15,6 +15,7 @@ import menhirSizes from "./vite-plugin-sizes.ts";
 
 type SizesModule = typeof import("virtual:menhir-sizes");
 type SizeModule = typeof import("virtual:menhir-sizes/switch");
+type ComparisonModule = typeof import("virtual:size-comparison");
 
 const switchReport = [
   { name: "menhir/switch", passed: true, size: 1914, sizeLimit: 2300 },
@@ -32,13 +33,15 @@ function writeReport(report: unknown) {
 }
 
 /**
- * Imports the module `id` through Vite with the plugin reading `file`: from a
- * dev server for "serve", from a build for "build".
+ * Imports the module `id` through Vite with the plugin reading `file`, and
+ * `comparison` for other libraries' sizes: from a dev server for "serve",
+ * from a build for "build".
  */
 async function loadModule<M>(
   file: string,
   command: "build" | "serve",
   id: string,
+  comparison?: string,
 ) {
   const warnings: string[] = [];
   const logger = createLogger("silent");
@@ -49,7 +52,7 @@ async function loadModule<M>(
     configFile: false,
     root: dirname(file),
     customLogger: logger,
-    plugins: [menhirSizes({ file })],
+    plugins: [menhirSizes({ file, comparison })],
   };
 
   if (command === "serve") {
@@ -154,5 +157,63 @@ describe("virtual:menhir-sizes", () => {
         `${file} is not a size-limit --json report`,
       );
     }
+  });
+});
+
+const radixSwitch = [
+  {
+    name: "Radix",
+    framework: "React",
+    components: {
+      switch: {
+        module: "@radix-ui/react-switch",
+        version: "1.4.1",
+        size: 4690,
+      },
+    },
+  },
+];
+
+const loadComparison = (comparison: string, command: "build" | "serve") =>
+  loadModule<ComparisonModule>(
+    writeReport(switchReport),
+    command,
+    "virtual:size-comparison",
+    comparison,
+  );
+
+describe("virtual:size-comparison", () => {
+  test("lists other libraries' sizes of menhir's components from the comparison report", async () => {
+    const { module } = await loadComparison(writeReport(radixSwitch), "build");
+    expect(module.libraries).toEqual(radixSwitch);
+  });
+
+  test("fails the build when the comparison report is missing, and says how to make it", async () => {
+    await expect(loadComparison(reportPath(), "build")).rejects.toThrow(
+      "pnpm --filter @menhir/bundle-size size:json",
+    );
+  });
+
+  test("serves no libraries in dev and tests when the comparison report is missing, with a warning", async () => {
+    const { module, warnings } = await loadComparison(reportPath(), "serve");
+    expect(module.libraries).toEqual([]);
+    expect(warnings).toEqual([
+      expect.stringContaining("pnpm --filter @menhir/bundle-size size:json"),
+    ]);
+  });
+
+  test("rejects a library with a component without a size", async () => {
+    const file = writeReport([
+      {
+        name: "Radix",
+        framework: "React",
+        components: {
+          switch: { module: "@radix-ui/react-switch", version: "1.4.1" },
+        },
+      },
+    ]);
+    await expect(loadComparison(file, "build")).rejects.toThrow(
+      `${file} is not a comparison report`,
+    );
   });
 });

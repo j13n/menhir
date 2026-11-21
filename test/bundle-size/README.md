@@ -4,11 +4,12 @@ The size checks of PLAN.md section 6, "Enforcement". This package depends on
 `menhir` like an installed app, so it measures the built package through its
 `exports`.
 
-| Command          | What it does                                                                                     |
-| ---------------- | ------------------------------------------------------------------------------------------------ |
-| `pnpm test`      | Builds menhir, then runs both checks below. Fails if an entry point is over budget or has none.  |
-| `pnpm size`      | Builds menhir and prints each entry point's size against its budget.                             |
-| `pnpm size:json` | Builds menhir and writes the same results to `dist/sizes.json`, for the docs site's sizes (#38). |
+| Command          | What it does                                                                                                                                         |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm test`      | Builds menhir, then runs both checks below. Fails if an entry point is over budget or has none.                                                      |
+| `pnpm size`      | Builds menhir and prints each entry point's size against its budget.                                                                                 |
+| `pnpm size:json` | Builds menhir and writes the same results to `dist/sizes.json`, for the docs site's sizes (#38), and the comparison below to `dist/comparison.json`. |
+| `pnpm compare`   | Prints the other libraries' sizes of the comparison below.                                                                                           |
 
 ## Size budgets
 
@@ -50,6 +51,47 @@ The JSON report of `size-limit`, one object per entry point:
 through `virtual:menhir-sizes` (`website/vite-plugin-sizes.ts`): its size
 table and each component page's size come from here. `dist` is not
 committed, so the site's `pnpm build` runs `pnpm size:json` first.
+
+## Comparison with other libraries
+
+The docs site's bundle-size page shows each component's size beside the same
+component in other libraries. `comparison.ts` lists the libraries: for each,
+its framework, the framework's packages, and the module of its version of each
+menhir component, by the subpath of menhir's entry point. A component the
+library does not have is left out.
+
+`comparison.size-limit.js` measures each of those modules as `.size-limit.js`
+measures menhir: an app that imports it and uses every part of it, bundled
+with Rolldown, minified and gzipped. The library's framework packages are
+left out instead of Solid. The checks have no limits: these sizes are shown,
+not enforced.
+
+`measureComparison.ts` runs that config and, as a script, writes
+`dist/comparison.json`, one object per library:
+
+```json
+[
+  {
+    "name": "Radix",
+    "framework": "React",
+    "components": {
+      "switch": {
+        "module": "@radix-ui/react-switch",
+        "version": "1.4.1",
+        "size": 4690
+      }
+    }
+  }
+]
+```
+
+`version` is that of the module's package installed here, and `size` is in
+bytes, gzipped. The docs site reads the file through `virtual:size-comparison`
+(`website/vite-plugin-sizes.ts`). `comparison.test.ts` checks that every
+compared component is one menhir has and that each module is measured.
+
+To compare a component, add the library's package to `devDependencies` here
+and its module to the library's `components` in `comparison.ts`.
 
 ## The floating-leak check
 
