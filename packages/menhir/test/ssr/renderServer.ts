@@ -24,11 +24,13 @@ export default async function setup(project: TestProject) {
   const http = createHttpServer(async (request, response) => {
     response.setHeader("Access-Control-Allow-Origin", "*");
     try {
-      const path = new URL(request.url!, "http://localhost").searchParams.get(
-        "fixture",
-      )!;
+      const query = new URL(request.url!, "http://localhost").searchParams;
       const entry = await vite.ssrLoadModule("/test/ssr/serverEntry.ts");
-      response.end(await entry.render(path));
+      response.end(
+        await entry.render(query.get("fixture")!, {
+          cookie: query.get("cookie") ?? undefined,
+        }),
+      );
     } catch (error) {
       response.statusCode = 500;
       response.end(error instanceof Error ? error.stack : String(error));

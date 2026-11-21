@@ -4,15 +4,21 @@ The reader's light, dark or system choice: saved, applied to `<html>`, and
 followed across tabs. A utility, not a component: it renders nothing, and the
 control that changes the mode is the app's. The one exception to "Styling,
 themes" in PLAN.md's non-goals; see `docs/adr/0001-color-mode-utility.md`.
+Cookie storage, for server rendering: `docs/adr/0002-color-mode-cookie-storage.md`.
 
 ## Sources
 
-| Source                                                                                                       | Read       |
-| ------------------------------------------------------------------------------------------------------------ | ---------- |
-| [`prefers-color-scheme`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) (MDN) | 2026-11-21 |
-| [`storage` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event) (MDN)               | 2026-11-21 |
+| Source                                                                                                             | Read       |
+| ------------------------------------------------------------------------------------------------------------------ | ---------- |
+| [`prefers-color-scheme`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) (MDN)       | 2026-11-21 |
+| [`storage` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event) (MDN)                     | 2026-11-21 |
+| [`visibilitychange` event](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event) (MDN) | 2026-11-21 |
+| [`Set-Cookie`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie) (MDN)               | 2026-11-21 |
 
 ## Shape
+
+One entry point per storage, each exporting the same functions, so
+switching storage is a change of import:
 
 ```ts
 import {
@@ -20,7 +26,9 @@ import {
   createColorMode,
   nextColorMode,
   resolveColorMode,
-} from "menhir/color-mode";
+} from "menhir/color-mode/local-storage";
+// or, for a server that renders the chosen mode, the same and one more:
+import { colorModeFromCookie } from "menhir/color-mode/cookie";
 ```
 
 - `createColorMode(options?)` returns `mode`, `system` and `resolved`
@@ -31,19 +39,27 @@ import {
   from `system`, the opposite of the system's look, then the system's look,
   then `system`. A click from `system` always changes the look.
 - `resolveColorMode(mode, system)` replaces `system` with the system's look.
+- `colorModeFromCookie(cookieHeader, options?)`, from the cookie entry point
+  only, reads the mode from a `Cookie` request header, for a server that
+  puts the attribute on its own `<html>`.
 
 Both functions take the same options, so the hook and the script agree:
-`storageKey` (default `"color-mode"`) and `attribute`, a `data-*` attribute
-set to `light` or `dark` (default `"data-theme"`) or `"class"` for a `light`
-or `dark` class.
+`storageKey`, the key or cookie name (default `"color-mode"`), and
+`attribute`, a `data-*` attribute set to `light` or `dark` (default
+`"data-theme"`) or `"class"` for a `light` or `dark` class.
+
+Files: `local-storage/` and `cookie/` hold each entry point and its storage.
+The hook (`createColorMode.ts`) and the script (`colorModeScript.ts`) are
+shared, and take the storage, a `ColorModeStorage` (`colorMode.ts`), as
+their first argument. It is internal.
 
 Decisions:
 
-- **The saved choice is read in `onSettled`.** The server cannot see the
-  reader's storage or system, so it renders `system` and `light`; reading
-  storage during the first client render would make hydration disagree. The
-  head script has already applied the right look, so the page does not
-  flash; only content that shows the mode, such as a toggle's icon, catches
+- **A choice in `localStorage` is read in `onSettled`.** The server cannot
+  see the reader's `localStorage` or system, so it renders `system` and `light`;
+  reading storage during the first client render would make hydration
+  disagree. The head script has already applied the right look, so the page
+  does not flash; only content that shows the mode, such as a toggle's icon, catches
   up once the page settles.
 - **The DOM is written imperatively**, from `setMode` and the listeners, not
   from an effect. An effect's first run would apply the default `light`
@@ -55,10 +71,43 @@ Decisions:
   a toggle in its header and another in its docs.
 - **Storage that throws**, as with cookies blocked, is ignored: the choice
   lasts for the page.
+- **Each storage is an entry point**, not an option (ADR 0002): an app
+  ships only the storage it imports (PLAN.md section 6, rule 6), and the
+  import says which one it uses. The same function names in both make
+  switching a change of import. Measured on 2026-11-21, every export
+  gzipped: `local-storage` 1.01 kB, `cookie` 1.25 kB. The shared hook costs
+  `local-storage` about 100 B over the single entry point it replaced
+  (913 B), for the indirection through the storage object.
+- **A storage the server can read is read during the first render**
+  (`ColorModeStorage.readsOnServer`). A cookie is read on the server from
+  `getRequestEvent()` and in the browser from `document.cookie`, so `mode`
+  is right from the start and hydration agrees. Reading through
+  `@solidjs/web` ties the library to no server framework. `system` still
+  waits for `onSettled`. A page rendered without a request, such as a
+  prerendered one, has no cookie to read: it renders `system`, and
+  hydration disagrees with a saved choice. Cookie storage needs per-request
+  rendering.
+- **The head script stays with cookies.** The server cannot see
+  `prefers-color-scheme`, so `system` still needs it; with a fixed mode it
+  applies what the server rendered.
+- **The cookie is `Path=/`, `SameSite=Lax` and lasts a year**, so every page
+  of the site is sent it and a returning reader keeps the choice. It is not
+  `HttpOnly`, since the script and the hook read it. It is not `Secure`, so it
+  also works on `http://localhost`; it holds nothing private. A `storageKey`
+  with the `__Host-` or `__Secure-` prefix gets `Secure`, which a browser
+  requires for those names. Its name is saved encoded, as `serializeCookie`
+  writes it, and the script looks for the encoded name.
+- **Other tabs read a cookie when shown again** (`visibilitychange`):
+  cookies have no `storage` event. Two windows side by side do not follow
+  each other live; the `cookieStore` `change` event would, but only in some
+  browsers.
 - **The head script's options are escaped** so that a `storageKey` cannot end
   the `<script>` element.
 
 ## Test list
+
+Tests go through the entry points: `menhir/color-mode/local-storage` unless
+they say `cookie`.
 
 `colorMode.test.ts`
 
@@ -66,6 +115,11 @@ Decisions:
 - `nextColorMode` cycles through every mode, for a light and a dark system
 - `nextColorMode` changes the look on the first click from `system`
 - `parseColorMode` reads `light` and `dark`, and anything else as `system`
+
+`colorModeFromCookie.test.ts`
+
+- `colorModeFromCookie` reads the mode from a `Cookie` header, anything else
+  as `system`, and the cookie named by `storageKey`
 
 `colorModeScript.test.ts`
 
@@ -76,14 +130,20 @@ Decisions:
 - Reads `storageKey` and writes `attribute`
 - Swaps the `light` and `dark` classes with `attribute: "class"`
 - Cannot close its script element through the options
+- From `cookie`: applies a saved `light` or `dark` over the
+  system; applies the system with no cookie, an unknown value, or only
+  cookies whose names contain the key; falls back to the system when cookies
+  throw; reads an encoded `storageKey` and cannot close its script element
 
 `createColorMode.test.tsx`
 
 - Reads the saved choice and the system once settled, and applies the look
 - Is `system` with nothing saved, and resolves to the system's look
 - Treats an unknown saved value as `system`
-- Applies the same look as the head script with the same options, for every
-  saved value, system preference and attribute kind
+- Applies the same look as the head script with the same options, for each
+  entry point, saved value, system preference and attribute kind
+- Saves where the head script reads, for each entry point, under a
+  `storageKey` that needs encoding and escaping
 - Saves a choice and applies it; `system` removes the saved value
 - Cycles from a button click with `nextColorMode`
 - Follows the system while the choice is `system`, and not otherwise
@@ -92,17 +152,26 @@ Decisions:
 - Uses `storageKey` and `attribute`, and swaps classes with `"class"`
 - Works without storage, for the life of the page
 - Stops listening when its owner is disposed
+- From `cookie`: reads the saved choice on the first render;
+  applies the cookie, not `localStorage`, once settled; saves a choice in a
+  cookie for every path, for a year, and removes it for `system`; saves a
+  `__Host-` or `__Secure-` name as `Secure`; picks up
+  another tab's choice when shown again, until disposed; works without
+  cookies, for the life of the page
 
 `test/color-mode/ColorMode.hydrate.test.tsx`
 
 - The server renders `system`; hydration adopts it without warnings, then
   reads the saved choice and changes it on click
+- From `cookie`, the server renders the cookie's choice from the
+  request; hydration adopts it without warnings, and a click saves the next
+  one
 
 ## Left out
 
 | Case                                         | Reason                                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Cookie storage, for server rendering         | #62                                                                                         |
+| Live sync of a cookie between visible tabs   | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser      |
 | Modes beyond light, dark and system          | #63                                                                                         |
 | A `nonce` or hash for a strict CSP           | #64                                                                                         |
 | Setting `color-scheme` on `<html>`           | Styling: one line of CSS on the attribute, which the docs page shows                        |

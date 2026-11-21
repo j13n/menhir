@@ -3,16 +3,19 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createRenderer, renderOnServer } from "#test-utils";
 
+import { clearCookies } from "./clearCookies.ts";
+import ColorModeCookieFixture from "./ColorModeCookieFixture.tsx";
 import ColorModeFixture from "./ColorModeFixture.tsx";
 import { stubSystemPreference } from "./stubSystemPreference.ts";
 
 describe("createColorMode hydration", () => {
   const { render } = createRenderer();
   afterEach(() => {
-    localStorage.clear();
-    document.documentElement.removeAttribute("data-theme");
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
+    localStorage.clear();
+    clearCookies();
+    document.documentElement.removeAttribute("data-theme");
   });
 
   it("hydrates the server's system state, then reads the saved choice", async () => {
@@ -44,5 +47,34 @@ describe("createColorMode hydration", () => {
 
     await user.click(button);
     expect(button).toHaveAttribute("data-mode", "light");
+  });
+
+  it("renders the cookie's choice on the server, and hydrates it", async () => {
+    const container = await renderOnServer(
+      "/test/color-mode/ColorModeCookieFixture.tsx",
+      { cookie: "session=abc; color-mode=dark" },
+    );
+    const serverButton = container.querySelector("button")!;
+    expect(serverButton).toHaveAttribute("data-mode", "dark");
+    expect(serverButton).toHaveTextContent("dark");
+
+    stubSystemPreference(false);
+    document.cookie = "color-mode=dark";
+    const warn = vi.spyOn(console, "warn");
+    const error = vi.spyOn(console, "error");
+    const { user } = await render(() => <ColorModeCookieFixture />, {
+      hydrate: container,
+    });
+    flush();
+    expect(warn).not.toHaveBeenCalled();
+    expect(error).not.toHaveBeenCalled();
+
+    const button = container.querySelector("button")!;
+    expect(button).toBe(serverButton);
+    expect(button).toHaveAttribute("data-mode", "dark");
+
+    await user.click(button);
+    expect(button).toHaveAttribute("data-mode", "light");
+    expect(document.cookie).toBe("color-mode=light");
   });
 });

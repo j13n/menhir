@@ -1,5 +1,10 @@
 import { inject } from "vitest";
 
+export interface RenderOnServerOptions {
+  /** The request's `Cookie` header, as `getRequestEvent()` sees it. */
+  cookie?: string;
+}
+
 /**
  * Server-renders the default export of a fixture module into a new element
  * in the document, ready for `render(ui, { hydrate: element })`. `fixture` is
@@ -7,16 +12,20 @@ import { inject } from "vitest";
  * available in `*.hydrate.test.tsx` files, which run in the `hydrate` Vitest
  * project.
  */
-export async function renderOnServer(fixture: string): Promise<HTMLElement> {
+export async function renderOnServer(
+  fixture: string,
+  options: RenderOnServerOptions = {},
+): Promise<HTMLElement> {
   const url = inject("renderServerUrl");
   if (!url) {
     throw new Error(
       "renderOnServer needs the render server of the `hydrate` Vitest project. Name the test file *.hydrate.test.tsx.",
     );
   }
-  const response = await fetch(
-    `${url}/?fixture=${encodeURIComponent(fixture)}`,
-  );
+  // A query parameter, because a browser's fetch cannot set `Cookie`.
+  const query = new URLSearchParams({ fixture });
+  if (options.cookie !== undefined) query.set("cookie", options.cookie);
+  const response = await fetch(`${url}/?${query}`);
   const html = await response.text();
   if (!response.ok) throw new Error(`Server render failed:\n${html}`);
 

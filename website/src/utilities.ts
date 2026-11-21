@@ -5,10 +5,13 @@
  */
 export const utilities = [{ slug: "color-mode", name: "Color Mode" }];
 
-/** The slug of `menhir/<slug>`. */
-const slugOf = (entryPoint: string) => entryPoint.slice("menhir/".length);
+/**
+ * The slug of the page of `menhir/<slug>`. A utility with one entry point
+ * per variant, such as `menhir/color-mode/cookie`, has one page for all.
+ */
+const slugOf = (entryPoint: string) => entryPoint.split("/")[1]!;
 
-/** Whether an entry point, such as `menhir/color-mode`, is a utility. */
+/** Whether an entry point, such as `menhir/color-mode/cookie`, is a utility. */
 export function isUtility(entryPoint: string) {
   const slug = slugOf(entryPoint);
   return utilities.some((utility) => utility.slug === slug);

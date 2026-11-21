@@ -1,6 +1,6 @@
 import type { ParentProps } from "solid-js";
 import { HydrationScript } from "@solidjs/web";
-import { colorModeScript } from "menhir/color-mode";
+import { colorModeScript } from "menhir/color-mode/local-storage";
 
 // The document shell (the index.html replacement), picked up by the
 // src/Document.* convention; it must render the full <html> and ships no
@@ -20,7 +20,7 @@ export default function Document(props: ParentProps) {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <title>Menhir</title>
         {/* Applies the reader's saved color mode, or the system's, before
-            first paint. The script comes from menhir/color-mode, with no
+            first paint. The script comes from menhir/color-mode/local-storage, with no
             outside input. As a child it would be HTML-escaped, which breaks
             `&&` and `<`. */}
         {/* oxlint-disable-next-line solid/no-innerhtml */}

@@ -1,5 +1,5 @@
 import { Match, Switch } from "solid-js";
-import type { ColorMode } from "menhir/color-mode";
+import type { ColorMode } from "menhir/color-mode/local-storage";
 
 /** A sun, a moon or a screen, for the light, dark and system modes. */
 export default function ColorModeIcon(props: { mode: ColorMode }) {

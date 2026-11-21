@@ -1,4 +1,7 @@
-import { createColorMode, nextColorMode } from "menhir/color-mode";
+import {
+  createColorMode,
+  nextColorMode,
+} from "menhir/color-mode/local-storage";
 
 import ColorModeIcon from "../ColorModeIcon";
 
