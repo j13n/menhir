@@ -108,9 +108,6 @@ they say `cookie`.
 - Rejects a theme name the script could not apply, and a `defaultTheme`
   outside `themes`
 - Cannot close its script element through the options
-- Under a Content Security Policy (Chromium only; jsdom enforces none): is
-  blocked by a policy that allows no inline script; runs in a script element
-  with the policy's nonce; runs when the policy allows the hash of its source
 - From `cookie`: applies a saved theme, or the default; applies the default
   when cookies throw; reads an encoded `storageKey` and cannot close its
   script element
@@ -156,6 +153,6 @@ they say `cookie`.
 | A default that follows the system          | A theme is just a theme; color mode covers light, dark and system (ADR 0003). A theme per system scheme: #73 |
 | Light and dark variants of each theme      | Two axes; an app that wants both can use color mode and theme side by side, with two attributes              |
 | Live sync of a cookie between visible tabs | No `storage` event for cookies; `cookieStore`'s `change` event is not in every browser                       |
-| A `nonce` option or a published hash       | The app renders the script element, so both are the app's, as for color mode (ADR 0004)                      |
+| A `nonce` or hash for a strict CSP         | #64, as for color mode                                                                                       |
 | Setting `color-scheme` per theme           | Styling: one line of CSS under each theme's attribute, which the docs page shows                             |
 | A control                                  | The app's: a `<select>`, radio group or menu; the docs page shows one                                        |

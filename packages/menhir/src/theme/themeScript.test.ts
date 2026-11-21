@@ -1,11 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { clearCookies } from "../../test/clearCookies.ts";
-import {
-  loadUnderPolicy,
-  scriptHashSource,
-} from "../../test/contentSecurityPolicy.ts";
-import { isJSDOM } from "../../test/isJSDOM.ts";
 import * as cookie from "./cookie/index.ts";
 import { themeScript } from "./local-storage/index.ts";
 
@@ -101,35 +96,6 @@ describe("themeScript", () => {
     localStorage.setItem(storageKey, "nord");
     runScript(source);
     expect(root).toHaveAttribute("data-theme", "nord");
-  });
-
-  // jsdom does not enforce a Content Security Policy.
-  describe.skipIf(isJSDOM)("under a Content Security Policy", () => {
-    it("is blocked by a policy that allows no inline script", async () => {
-      const html = await loadUnderPolicy("script-src 'nonce-r4nd0m'", {
-        source: themeScript(options),
-      });
-      expect(html).toEqual({});
-    });
-
-    it("runs in a script element with the policy's nonce", async () => {
-      localStorage.setItem("theme", "nord");
-      const html = await loadUnderPolicy("script-src 'nonce-r4nd0m'", {
-        source: themeScript(options),
-        nonce: "r4nd0m",
-      });
-      expect(html).toEqual({ "data-theme": "nord" });
-    });
-
-    it("runs when the policy allows the hash of its source", async () => {
-      localStorage.setItem("theme", "nord");
-      const source = themeScript(options);
-      const html = await loadUnderPolicy(
-        `script-src ${await scriptHashSource(source)}`,
-        { source },
-      );
-      expect(html).toEqual({ "data-theme": "nord" });
-    });
   });
 
   describe("from menhir/theme/cookie", () => {

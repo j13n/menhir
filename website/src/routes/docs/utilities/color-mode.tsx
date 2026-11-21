@@ -55,18 +55,6 @@ const mode = colorModeFromCookie(
 // In the component that changes the mode:
 const colorMode = createColorMode();`;
 
-const nonceScript = `// The server makes a new nonce for each response and sends it in the header:
-// Content-Security-Policy: script-src 'nonce-<nonce>'
-<script nonce={nonce} innerHTML={colorModeScript()} />
-<HydrationScript nonce={nonce} />`;
-
-const hashScript = `import { createHash } from "node:crypto";
-import { colorModeScript } from "menhir/color-mode/local-storage";
-
-// In the build or the server's setup, with the options the page uses.
-const hash = createHash("sha256").update(colorModeScript()).digest("base64");
-// Content-Security-Policy: script-src 'sha256-<hash>'`;
-
 const options: ApiRow[] = [
   {
     name: "storageKey",
@@ -225,33 +213,6 @@ export default function ColorModePage() {
           never reaches it; with a fixed mode the script applies what the server
           already rendered. Cookies have no event for changes made in other
           tabs, so another tab picks up a choice when it is shown again.
-        </p>
-      </Section>
-      <Section id="content-security-policy" title="Content Security Policy">
-        <p>
-          A policy without <code>'unsafe-inline'</code> blocks the head script
-          until it is allowed, by a nonce or by its hash.{" "}
-          <code>colorModeScript</code> returns the script's source and the
-          element is yours, so neither needs an option. The script itself only
-          reads the saved choice and sets the attribute, which a policy does not
-          restrict.
-        </p>
-        <p>A server that renders each page can put its nonce on the element:</p>
-        <pre>
-          <code>{nonceScript}</code>
-        </pre>
-        <p>
-          A prerendered page has no nonce, so allow the script by the hash of
-          its source:
-        </p>
-        <pre>
-          <code>{hashScript}</code>
-        </pre>
-        <p>
-          Compute the hash rather than pasting it: the source depends on the
-          entry point and the options, and may change with any Menhir release.
-          Loading the script from a file instead would let the page paint before
-          it runs, which is the flash it is there to prevent.
         </p>
       </Section>
       <Section id="cycling-order" title="Cycling order">
