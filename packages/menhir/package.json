@@ -111,6 +111,9 @@
     "test:chromium": "VITEST_ENV=chromium vitest",
     "test:package": "pnpm build && vitest run --config vitest.package.config.ts"
   },
+  "dependencies": {
+    "@floating-ui/dom": "^1.8.0"
+  },
   "peerDependencies": {
     "@solidjs/web": "^2.0.0",
     "solid-js": "^2.0.0"

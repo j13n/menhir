@@ -192,6 +192,10 @@ importers:
         version: 3.10.1
 
   packages/menhir:
+    dependencies:
+      '@floating-ui/dom':
+        specifier: ^1.8.0
+        version: 1.8.0
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.18.5

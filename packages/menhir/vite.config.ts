@@ -60,7 +60,13 @@ export default defineConfig({
       formats: ["es"],
     },
     rolldownOptions: {
-      external: [/^solid-js(\/|$)/, /^@solidjs\/web(\/|$)/],
+      // Peer dependencies, and `@floating-ui/dom`, menhir's dependency: an
+      // app's bundler resolves it, so it is not copied into dist.
+      external: [
+        /^solid-js(\/|$)/,
+        /^@solidjs\/web(\/|$)/,
+        /^@floating-ui\/dom$/,
+      ],
       output: {
         // One output file per source module (rule 2).
         preserveModules: true,
