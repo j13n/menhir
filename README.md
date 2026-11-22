@@ -6,9 +6,9 @@ Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bu
 
 ## Status
 
-Released on npm as [`menhir`](https://www.npmjs.com/package/menhir), in early 0.x versions: the API may change between minor versions. Tooltip and the other popups come next. Built so far:
+Released on npm as [`menhir`](https://www.npmjs.com/package/menhir), in early 0.x versions: the API may change between minor versions. Menu and the other list popups come next. Built so far:
 
-- Components: Accordion, Alert Dialog, Checkbox, Collapsible, Dialog, Meter, Popover, Progress, Separator, Switch, Tabs, Toggle and Toggle Group.
+- Components: Accordion, Alert Dialog, Checkbox, Collapsible, Dialog, Meter, Popover, Progress, Separator, Switch, Tabs, Toggle, Toggle Group and Tooltip.
 - Utilities: color scheme and theme, each with local-storage and cookie storage.
 
 Each has its own entry point, such as `menhir/switch`, and a page on the website. [PLAN.md](PLAN.md) describes the goals, the bundle-size rules and the roadmap; [CONTRIBUTING.md](CONTRIBUTING.md) describes how a component is built.

@@ -1,6 +1,7 @@
 import { Dialog } from "menhir/dialog";
 import { Popover } from "menhir/popover";
 import { Switch } from "menhir/switch";
+import { Tooltip } from "menhir/tooltip";
 
 export function App() {
   return (
@@ -21,6 +22,13 @@ export function App() {
           <Popover.Close>Close</Popover.Close>
         </Popover.Popup>
       </Popover.Root>
+      <Tooltip.Root>
+        <Tooltip.Trigger>Bold</Tooltip.Trigger>
+        <Tooltip.Popup>
+          <Tooltip.Arrow />
+          Ctrl+B
+        </Tooltip.Popup>
+      </Tooltip.Root>
     </>
   );
 }

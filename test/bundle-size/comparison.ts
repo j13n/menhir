@@ -48,6 +48,7 @@ export const libraries: Library[] = [
       tabs: "@base-ui/react/tabs",
       toggle: "@base-ui/react/toggle",
       "toggle-group": "@base-ui/react/toggle-group",
+      tooltip: "@base-ui/react/tooltip",
     },
   },
   {
@@ -67,6 +68,7 @@ export const libraries: Library[] = [
       tabs: "@radix-ui/react-tabs",
       toggle: "@radix-ui/react-toggle",
       "toggle-group": "@radix-ui/react-toggle-group",
+      tooltip: "@radix-ui/react-tooltip",
     },
   },
   {
@@ -88,6 +90,7 @@ export const libraries: Library[] = [
       tabs: "@kobalte/core/tabs",
       toggle: "@kobalte/core/toggle-button",
       "toggle-group": "@kobalte/core/toggle-group",
+      tooltip: "@kobalte/core/tooltip",
     },
   },
   {
@@ -102,6 +105,7 @@ export const libraries: Library[] = [
       collapsible: "corvu/disclosure",
       dialog: "corvu/dialog",
       popover: "corvu/popover",
+      tooltip: "corvu/tooltip",
     },
   },
 ];

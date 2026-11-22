@@ -94,6 +94,18 @@ describe("built package", () => {
     expect(code).not.toMatch(middleware);
   });
 
+  it("leaves out the Group, and the delay group, when the app renders no Group", async () => {
+    // The group keeps the time of the last closing, which nothing else in
+    // Tooltip reads.
+    const group = /Date\.now\(\)/;
+    expect(await bundle("tooltip.js")).toMatch(group);
+
+    const code = await bundle("tooltipWithoutGroup.js");
+    expect(code).toContain("function TooltipRoot");
+    expect(code).not.toContain("TooltipGroup(");
+    expect(code).not.toMatch(group);
+  });
+
   it("bundles the parts Dialog and Alert Dialog share once, and Dialog's outside press", async () => {
     const code = await bundle("dialogAndAlertDialog.js");
     const count = (name: string) =>

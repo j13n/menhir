@@ -390,6 +390,32 @@ describe("home page", () => {
     );
   });
 
+  test("shows working Tooltips, linked to their page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const bold = example.getByRole("button", { name: "Bold" });
+    const tooltip = document.getElementById(
+      bold.getAttribute("aria-describedby")!,
+    )!;
+    expect(tooltip).toHaveAttribute("role", "tooltip");
+    expect(bold).toHaveAccessibleDescription("Make text bold (Ctrl+B)");
+    expect(tooltip).toHaveAttribute("data-closed");
+    // Keyboard focus opens it; jsdom matches :focus-visible on any focus.
+    bold.focus();
+    await Promise.resolve();
+    flush();
+    expect(tooltip).toHaveAttribute("data-open");
+    fireEvent.keyDown(bold, { key: "Escape" });
+    await Promise.resolve();
+    flush();
+    expect(tooltip).toHaveAttribute("data-closed");
+    expect(example.getByRole("link", { name: "Tooltip" })).toHaveAttribute(
+      "href",
+      "/docs/components/tooltip",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));

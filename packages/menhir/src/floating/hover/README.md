@@ -112,8 +112,8 @@ because another opened reports the other trigger's `pointerenter`.
   hover gets `pointerenter` at contact and `pointerleave` after lifting,
   so a tap opens nothing unless the pen rests longer than the delay.
 - **Grouping is a part, not module state.** `createHoverGroup` makes a
-  group object, which the popup's part that groups triggers (#34 names
-  it) provides through context, and each popup passes to `createHover`.
+  group object, which the popup's part that groups triggers (Tooltip's
+  `Tooltip.Group`, #34) provides through context, and each popup passes to `createHover`.
   Module state would group every popup of every kind in the app, run for
   apps that never group, and be shared between requests on the server. A
   member opens at once while another member is open, or within `timeout`
@@ -236,6 +236,6 @@ Measured on 2026-11-22. `hover.ts` includes `safeArea.ts`.
 | `hover.ts`    | 905 B | 1100 B |
 | `group.ts`    | 251 B | 300 B  |
 
-Tooltip will use `hover` and, through its part that groups triggers,
-`group`; a submenu `safeArea` alone. Dialog and Alert Dialog bundle none
+Tooltip uses `hover` and, through `Tooltip.Group`, `group` (#34); a
+submenu will use `safeArea` alone. Dialog and Alert Dialog bundle none
 of it (`test/bundle-size/popupModules.ts`).

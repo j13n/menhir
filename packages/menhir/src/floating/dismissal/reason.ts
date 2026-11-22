@@ -14,6 +14,8 @@
  *   and the popup (`floating/hover`).
  * - `close-press`: the popup's own close button, pressed by pointer or
  *   keyboard (Dialog's `Close`).
+ * - `trigger-focus`: the trigger received keyboard focus, or lost it
+ *   (Tooltip).
  */
 export type OpenChangeReason =
   | "escape-key"
@@ -21,7 +23,8 @@ export type OpenChangeReason =
   | "trigger-press"
   | "close-request"
   | "trigger-hover"
-  | "close-press";
+  | "close-press"
+  | "trigger-focus";
 
 /**
  * The second argument of `onOpenChange`. `event` is the event that caused

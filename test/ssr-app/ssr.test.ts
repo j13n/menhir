@@ -43,7 +43,7 @@ describe("an SSR app that uses menhir", () => {
     expect(server).toContain("ssrHydrationKey");
   });
 
-  it("renders on the server and hydrates on the client, where a Dialog and a Popover open", async () => {
+  it("renders on the server and hydrates on the client, where a Dialog, a Popover and a Tooltip open", async () => {
     // In a Node process of its own: inside this jsdom test, the bundle's
     // import of Solid would resolve to the browser build.
     const html = execFileSync(
@@ -60,6 +60,9 @@ describe("an SSR app that uses menhir", () => {
     expect(html).toContain('aria-haspopup="dialog"');
     expect(html).toMatch(/<dialog[^>]*data-closed/);
     expect(html).toMatch(/<div(?=[^>]*popover="auto")(?=[^>]*data-closed)/);
+    expect(html).toMatch(
+      /<div(?=[^>]*popover="manual")(?=[^>]*role="tooltip")/,
+    );
 
     document.body.innerHTML = `<div id="app">${html}</div>`;
     for (const script of document.body.querySelectorAll("script")) {
@@ -107,5 +110,14 @@ describe("an SSR app that uses menhir", () => {
     await new Promise((resolve) => setTimeout(resolve));
     expect(popoverTrigger.getAttribute("aria-expanded")).toBe("true");
     expect(popover.hasAttribute("data-open")).toBe(true);
+
+    const tooltip = document.querySelector("[role=tooltip]")!;
+    const tooltipTrigger = document.querySelector<HTMLElement>(
+      `[aria-describedby="${tooltip.id}"]`,
+    )!;
+    // Keyboard focus opens it; jsdom matches `:focus-visible` on any focus.
+    tooltipTrigger.focus();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(tooltip.hasAttribute("data-open")).toBe(true);
   });
 });
