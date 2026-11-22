@@ -2,7 +2,7 @@
 
 Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles.
 
-Status: first release (2026-11-21). Phases 0 and 1 are done and released as 0.1.0; phase 2 is next (section 9). What is built is what `packages/menhir/package.json` exports; the READMEs name it, and `test/workspace/readme.test.ts` keeps their lists in step with `exports`. Versions were checked on 2026-11-18 and name availability on 2026-11-19.
+Status: first release (2026-11-21). Phases 0 and 1 are done and released as 0.1.0, and 0.1.1 is current; phase 2 is next (section 9). Its tickets, and those of phase 3, were written out on 2026-11-22. What is built is what `packages/menhir/package.json` exports; the READMEs name it, and `test/workspace/readme.test.ts` keeps their lists in step with `exports`. Versions were checked on 2026-11-18 and name availability on 2026-11-19.
 
 ## 1. Why this exists
 
@@ -48,7 +48,16 @@ The Solid 2.0 libraries were evaluated by reading their code on 2026-11-19 (#1),
 | ---------------- | ------- | ----------------------------------------------------------- |
 | solid-js         | 2.0.1   | Peer dependency. 1.x not supported.                         |
 | @solidjs/web     | 2.0.1   | Peer dependency. Rendering and JSX types moved here in 2.0. |
-| @floating-ui/dom | 1.8.0   | Only runtime dependency, used by popup components only.     |
+| @floating-ui/dom | 1.8.0   | Only runtime dependency, used by positioned popups only.    |
+
+### Browsers
+
+Decided on 2026-11-22 (#94; ADR 0006): **Baseline Widely available** on the date of each release, plus one exception, the `popover` attribute.
+
+- A feature is used without a fallback once it is Widely available: in every core browser (Chrome, Edge, Firefox and Safari, on desktop and on mobile) for 30 months. Before that it is not used, and no fallback is shipped for it (section 6, rule 6).
+- **The exception:** `popover`, with `popovertarget`, `:popover-open` and the `toggle` events of a popover. It has been Newly available since 2025-01-27 and is Widely available from 2027-07-27. The gap is iOS Safari 17.0 to 18.2, where a tap outside does not close a popover; everything else works there. It is worth the exception because without it Popover, Tooltip and every menu ship a portal, a stacking order and their own light dismiss (section 8, "What the browser does for popups").
+- Status is read from the `web-features` package (3.47.0 on 2026-11-22), which computes Baseline from MDN's browser-compat-data (8.1.10 on the same day). A decision that depends on support records the date it was checked.
+- Tests run in Chromium. The spike in #94 also ran in Playwright's Firefox and WebKit (Chromium 159, Firefox 159, WebKit 27.2): these are current engines, so they show how a feature behaves, not how far back it works.
 
 Solid 2.0 changes that affect a component library (confirm against the official migration guide, `MIGRATION.md` in the solid repo, and v2.solidjs.com):
 
@@ -82,11 +91,11 @@ These are structural and must hold from the first commit.
    | Layer             | Contains                                                                                                                                                                                                                                                                           | May import                 |
    | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
    | `core`            | Prop merging, controlled/uncontrolled signal, polymorphism helper, the props of parts that are buttons and toggle buttons, a part's value along a range, a value that lists items, a group's roving focus, the utilities' saved preference. Ids are Solid's `createUniqueId` (#13) | Nothing internal           |
-   | `floating`        | Positioning, dismissal, focus trap, hover intent, list navigation, typeahead                                                                                                                                                                                                       | `core`, `@floating-ui/dom` |
+   | `floating`        | Positioning, dismissal, focus (the Tab wrap of a modal popup, overrides of initial and return focus), scroll lock, presence, hover intent, list navigation, typeahead. No portal: popups are in the top layer (section 8, "What the browser does for popups")                      | `core`, `@floating-ui/dom` |
    | Simple components | Switch, Toggle, Checkbox, Tabs, etc.                                                                                                                                                                                                                                               | `core` only                |
    | Popup components  | Dialog, Popover, Menu, Select, etc.                                                                                                                                                                                                                                                | `core`, `floating`         |
 5. **Near-zero dependencies.** `@floating-ui/dom` only. Use built-in `Intl` for number and date formatting.
-6. **Expensive behaviour is a part, not a flag.** Portal, scroll lock and focus trap are composed in, so apps that don't render them don't ship them.
+6. **Expensive behaviour is a part, not a flag.** Scroll lock and each positioning middleware are composed in, so apps that don't render them don't ship them. Behaviour the browser does is not shipped at all (section 8, "What the browser does for popups").
 
 The package manifest, in the shape built in the build spike (#6). It lists one subpath per built component, such as `./switch`, and one per utility and storage, such as `./color-scheme/cookie`; `./dialog` shows how each further component is added:
 
@@ -343,6 +352,66 @@ export function SwitchRoot(props: SwitchRootProps) {
 - Spread cost, measured in #13 (jsdom, counting attribute writes and getter reads; 2026-11-19). A part with two own attributes and a consumer `title`, built three ways: all props through the merged spread; own attributes written in JSX with the consumer's props spread; no spread at all. In all three, changing one value re-read every dynamic attribute of the element once and wrote only the changed ones. Writing own attributes in JSX next to a spread kept nothing separate, so parts keep them in the merge. Calling the merge inline in the spread gave the same writes but ran the merge again on every change. Timing was not measured, nor a spread over a store, whose keys can change.
 - Tests (`src/core/renderElement.test.tsx`, `test/core/renderElement.hydrate.test.tsx`): the default element, another tag, a component; `render` passed as an expression is read once without a diagnostic; server render then hydration adopts the element in all three cases, and when the render function calls `dynamic` itself, with nothing logged; a handler, a `class` and a ref written before and after the spread, to pin down the rule above; a type test that `ElementProps` spreads onto `a`, `button` and `input`.
 
+### What the browser does for popups
+
+Decided on 2026-11-22 (#94; ADR 0006), for the browsers of section 5. Support was checked that day in `web-features` 3.47.0 and browser-compat-data 8.1.10. The spike built a modal dialog and an anchored non-modal popup twice, once on the platform and once by hand, and ran the same keyboard, focus and pointer cases against both in Chromium 159, Firefox 159 and WebKit 27.2. The engines agreed on every case except three, named below: where Shift+Tab goes from a modal dialog's first element, the exit transition, and where focus is after a refused Escape on a popover. The spike's code is not kept in the repository; the cases and results below are its record.
+
+| Feature                                          | Baseline on 2026-11-22                          | Decision                                                                                                         |
+| ------------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `<dialog>` with `showModal()`                    | Widely available (since 2024-09-14)             | **Use** for Dialog and Alert Dialog                                                                              |
+| `popover` (`auto`, `manual`) and `popovertarget` | Newly available (2025-01-27); Widely 2027-07-27 | **Use**, as section 5's exception: `auto` for Popover and the menus, `manual` for Tooltip                        |
+| `popover="hint"`                                 | Not Baseline (no Safari release)                | Do not use; Tooltip is `manual`                                                                                  |
+| `inert`                                          | Widely available (since 2025-10-11)             | **Use**, not `aria-hidden`, if a modal popup is ever not a `<dialog>`; `showModal()` makes the page inert itself |
+| The top layer                                    | With `<dialog>` and `popover`                   | **Use**; no portal                                                                                               |
+| CSS anchor positioning                           | Not Baseline (no Firefox)                       | Do not use; `@floating-ui/dom` stays (section 5)                                                                 |
+| `CloseWatcher`                                   | Not Baseline (Safari 27.3 is in beta)           | Do not use; a modal `<dialog>` and an `auto` popover already answer close requests                               |
+| `closedby`                                       | Not Baseline (Safari 27.3 is in beta)           | Do not use; outside press is written                                                                             |
+| `requestClose()`                                 | Newly available (2025-05-27)                    | Do not use                                                                                                       |
+| `commandfor` / `command`                         | Newly available (2025-12-12)                    | Do not use                                                                                                       |
+| `interestfor`                                    | Not Baseline (Chromium only)                    | Do not use                                                                                                       |
+| `@starting-style`, `transition-behavior`         | Newly available (2024-08-06); Widely 2027-02-06 | Menhir needs neither; a consumer's CSS may use them for entry animations                                         |
+| `overlay` (CSS)                                  | Not Baseline (Chromium only)                    | Do not rely on it; exit animations are presence's job (#96)                                                      |
+| `:has()`                                         | Widely available (since 2026-06-19)             | Available for a scroll lock in CSS (#28)                                                                         |
+
+No feature is used "where supported, with a fallback": the fallback would be the code the feature was meant to save (section 6, rule 6).
+
+What `<dialog>` with `showModal()` did in all three engines, and what is left to write:
+
+- **Done by the browser:** the top layer (above a `z-index: 9999` element), an inert page (a script cannot focus outside it, and Chromium's accessibility tree leaves the outside out), Escape (as a `cancel` event), initial focus on the first focusable element, return focus to the element focused before, nested dialogs closing one Escape at a time with focus returning step by step, `::backdrop`, and close requests, which include the back gesture on Android (HTML standard, "Close requests and close watchers").
+- **Left to write:**
+  - **Controlled state:** an effect calls `showModal()` and `close()`.
+  - **Outside press:** a press on the `::backdrop` targets the `<dialog>` element itself. It closes only if the press both started and ended there, so a text selection dragged out of the dialog does not close it.
+  - **The Tab wrap.** The browser lets Tab leave the last element for the browser's own UI, and Shift+Tab from the first. The WAI-ARIA pattern says "Tab and Shift + Tab do not move focus outside the dialog" (read on 2026-11-22), and it outranks size (sources above). The spike's version, a keydown handler over a tabbable search, made Tab and Shift+Tab cycle inside the dialog in all three engines. Without it, Tab from the last element went to the browser's UI in all three, and Shift+Tab from the first went there in Chromium and to the `<dialog>` itself in Firefox and WebKit.
+  - **A refused Escape is held only once.** The spec makes `cancel` cancelable only with history-action activation. In all three engines the second Escape fired a `cancel` that could not be prevented, then `close`, even with a click inside the dialog between the two. A controlled Dialog that keeps its state at `true` calls `showModal()` again from `close`; it stays modal and focus stays where it was. Dismissal (#26) reports that close once, not twice.
+  - **Scroll lock:** the page still scrolls behind a modal dialog in all three. `html:has(dialog:modal) { overflow: hidden }` stopped it in all three with no script; #28 starts from there.
+  - **Exit animations:** a CSS-only exit transition ran only in Chromium (`overlay`). Firefox and WebKit removed the dialog at once. Presence (#96) keeps the dialog open while it animates, then calls `close()`.
+- **Constraints it brings:**
+  - **The Popup part is a `<dialog>`.** A `render` function must return a `<dialog>`, since `showModal()` exists on no other element; a development build can check it.
+  - **Server HTML can only say `<dialog open>`,** which is a non-modal dialog: the page stays focusable until hydration, and `showModal()` throws `InvalidStateError` on it, so hydration calls `close()` first. Dialog (#31) decides between that and rendering a `defaultOpen` dialog closed on the server.
+
+What `popover="auto"` with `popovertarget` did in all three engines, rendered in place after its trigger:
+
+- **Done by the browser:** the top layer (not clipped by an `overflow: hidden` ancestor, above a `z-index: 9999` element), light dismiss by a press outside, Escape, return focus to the trigger on Escape, `aria-expanded` on the trigger (Chromium's accessibility tree), Tab from the trigger into the popup and from its last element on to what follows the trigger, a press on the trigger closing it without reopening, and nested popovers closing one at a time.
+- **Left to write:**
+  - **Controlled state:** the `toggle` event reports the change. `beforetoggle` cannot be cancelled on close, so a controlled popover that refuses a close is shown again in a microtask. After an Escape, focus has already moved to the trigger in Chromium and Firefox; WebKit left it in the popup.
+  - **The reason for the close.** One `toggle` event covers Escape, outside press and a trigger press. Dismissal (#26) tells them apart with its own Escape and pointer listeners.
+  - **Positioning:** `@floating-ui/dom` with the `fixed` strategy, which is what the top layer is.
+- **Constraints it brings:**
+  - **`popovertarget` needs an id on the popup.** The root's generated id provides it ("Generated ids belong to the root").
+  - **A closed popover is `display: none`** in the browser's own stylesheet, so server HTML with `defaultOpen` stays hidden until hydration calls `showPopover()`. The Popover (#33) decides how to handle it.
+  - **Nesting follows the document tree,** or the `popovertarget` invoker. `showPopover({ source })` is not Widely available.
+  - **Focus leaving does not close it:** Tab from the popup's last element to the page left it open in all three. A `manual` popover stayed open when an `auto` one opened and on a press outside, so Tooltip neither closes nor is closed by a Popover.
+
+Sizes, measured as `test/bundle-size` measures (Rolldown through Vite 8, minified, gzipped, Solid left out with its production constants). Each is an app that renders the prototype, less an app with only a button (257 B). The hand-built prototypes are lower bounds: no radio groups or shadow roots in the tabbable search, no iOS handling, no padding for fixed elements in the scroll lock.
+
+| Prototype                                                                          | Platform | By hand |
+| ---------------------------------------------------------------------------------- | -------- | ------- |
+| Modal dialog: controlled, Escape, outside press, initial and return focus, nesting | 487 B    | 1,130 B |
+| The same with the Tab wrap                                                         | 780 B    | 1,130 B |
+| Anchored popup, positioned with `@floating-ui/dom`                                 | 7,553 B  | 8,192 B |
+
+Of the anchored popup, `@floating-ui/dom` is 6,989 B: `computePosition` with `offset`, `flip` and `shift`, and `autoUpdate`. `computePosition` alone is 4,583 B and `autoUpdate` alone 2,187 B. The hand-built popup is also still covered by an element with a high `z-index` outside its portal, which no number of bytes fixes. Positioning is the largest cost of any popup by far. It stays on `@floating-ui/dom` until CSS anchor positioning is Widely available; #25 measures each middleware.
+
 ## 9. Roadmap
 
 The component list is the set a modern headless library is expected to have. It decides which components exist, not how they are built.
@@ -363,14 +432,16 @@ The component list is the set a modern headless library is expected to have. It 
 
 **Phase 2: floating layer, then the first popups** (the bulk of the work)
 
-- `floating` layer: positioning, dismissal, focus trap, scroll lock, portal.
-- Dialog, Alert Dialog, Popover, Tooltip.
-- Announcement once Dialog and Popover are excellent.
+- ~~First, decide what the browser does for popups, and which browsers are supported (#94).~~ Decided: Baseline Widely available plus `popover` (section 5); `<dialog>` and `popover` put every popup in the top layer, so there is no portal (section 8, "What the browser does for popups"). Beside it, set up the layer (#95): the folder, whether it is internal, how a module's size is measured, and where the stack of open popups lives.
+- `floating` layer: positioning (#25), dismissal (#26), focus (#27), scroll lock (#28), hover intent (#30), presence (#96), which keeps a closing popup in the document until its exit animation has ended.
+- Dialog (#31), which settles the popup conventions as Switch settled the first ones; then Alert Dialog (#32), Popover (#33), which settles the parts of a positioned popup, and Tooltip (#34).
+- Announcement once Dialog and Popover are excellent (#88).
 
 **Phase 3: list-based popups**
 
-- List navigation and typeahead.
-- Menu, Context Menu, Select, Combobox, Autocomplete, Menubar, Navigation Menu.
+- List navigation (#97) and typeahead (#98).
+- Menu (#99), which settles the list popup conventions; Context Menu (#100) and Menubar (#101), which build on it; Select (#102); Combobox (#103) and Autocomplete (#104), which builds on it; Navigation Menu (#105).
+- These tickets were written before the floating layer existed (tracking issue #36). Each has a "Settle after Phase 2" list and is not started until that list is checked off.
 
 **Phase 4: forms and the rest**
 
@@ -384,7 +455,17 @@ The component list is the set a modern headless library is expected to have. It 
 - Works with SSR and hydration.
 - Size budget set and met; only allowed layers imported.
 - Docs page with an unstyled example and the measured size.
-- Its sources are recorded (section 8).
+- Its sources are recorded (section 8), and which browsers and screen readers it was tried with.
+- A changeset (AGENTS.md, "Changesets").
+
+A module of the `floating` layer has no entry point, so no budget and no docs page of its own. It is done when:
+
+- Its test list is in its README, with the cases left out and a reason for each, and its tests pass in jsdom and Chromium.
+- No Solid dev diagnostics are reported while its tests run.
+- It works with SSR and hydration: nothing reads `document` or `window` at import time or during a server render.
+- A popup that does not use it does not bundle it, and its measured size is in its README (#95 decides how it is measured).
+- It imports only what the `floating` layer may (section 6, rule 4).
+- Its sources are recorded, and the decisions made on it are in this plan.
 
 ## 11. Risks
 
@@ -406,6 +487,9 @@ The component list is the set a modern headless library is expected to have. It 
 5. ~~Is the `solid` export condition still needed in 2.0?~~ Decided on 2026-11-19 (#6): yes. The 2.0 library guide prescribes it, and an SSR app fails without it. No separate server build. Details in section 6.
 6. ~~Test stack~~ Decided: Vitest 5.1, jsdom plus Chromium, `@solidjs/testing-library`, as in section 7.
 7. ~~Tooling~~ Decided: follow the `pnpm create solid@latest` template (oxlint, TypeScript 7, `@solidjs/testing-library`).
+8. ~~Which browsers are supported, and how much of a popup the browser does?~~ Decided on 2026-11-22 (#94; ADR 0006): Baseline Widely available, plus `popover` (section 5, "Browsers"). Details in section 8, "What the browser does for popups".
+9. Is the `floating` layer internal, as `core` is, or does it get entry points for apps and styled layers that build their own popups (#95)?
+10. May a popup import another popup? The lint rule allows `core` and `floating` only, and Alert Dialog builds on Dialog (#32). The answer also serves Context Menu, Menubar and Autocomplete.
 
 ## References
 
