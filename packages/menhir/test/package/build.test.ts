@@ -69,28 +69,40 @@ describe("built package", () => {
   });
 
   it("lets a bundler drop a part the app does not use", async () => {
-    const result = await build({
-      configFile: false,
-      logLevel: "silent",
-      build: {
-        write: false,
-        minify: false,
-        lib: {
-          entry: new URL("test/package/fixtures/rootOnly.js", root).pathname,
-          formats: ["es"],
-        },
-        rolldownOptions: { external: [/^solid-js/, /^@solidjs\//] },
-      },
-    });
-    // Library mode gives one bundle per format, and without the watch option
-    // never a watcher.
-    const [bundle] = [result].flat();
-    if (!bundle || !("output" in bundle)) {
-      throw new Error("Expected one bundle from the build");
-    }
-    const { code } = bundle.output[0];
+    const code = await bundle("rootOnly.js");
 
     expect(code).toContain("function SwitchRoot");
     expect(code).not.toContain("SwitchThumb");
   });
+
+  it("leaves out a popup's part the app does not render", async () => {
+    const code = await bundle("dialogWithoutDescription.js");
+
+    expect(code).toContain("function DialogTitle");
+    expect(code).not.toContain("DialogDescription");
+  });
 });
+
+/** Bundles a fixture app as a bundler would, and returns its code. */
+async function bundle(fixture: string): Promise<string> {
+  const result = await build({
+    configFile: false,
+    logLevel: "silent",
+    build: {
+      write: false,
+      minify: false,
+      lib: {
+        entry: new URL(`test/package/fixtures/${fixture}`, root).pathname,
+        formats: ["es"],
+      },
+      rolldownOptions: { external: [/^solid-js/, /^@solidjs\//] },
+    },
+  });
+  // Library mode gives one bundle per format, and without the watch option
+  // never a watcher.
+  const [bundle] = [result].flat();
+  if (!bundle || !("output" in bundle)) {
+    throw new Error("Expected one bundle from the build");
+  }
+  return bundle.output[0].code;
+}

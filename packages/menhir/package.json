@@ -49,6 +49,11 @@
       "solid": "./dist/source/color-scheme/local-storage/index.js",
       "import": "./dist/color-scheme/local-storage/index.js"
     },
+    "./dialog": {
+      "types": "./dist/source/dialog/index.d.ts",
+      "solid": "./dist/source/dialog/index.js",
+      "import": "./dist/dialog/index.js"
+    },
     "./meter": {
       "types": "./dist/source/meter/index.d.ts",
       "solid": "./dist/source/meter/index.js",

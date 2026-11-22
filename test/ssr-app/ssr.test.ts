@@ -43,7 +43,7 @@ describe("an SSR app that uses menhir", () => {
     expect(server).toContain("ssrHydrationKey");
   });
 
-  it("renders on the server and hydrates on the client", async () => {
+  it("renders on the server and hydrates on the client, where a Dialog opens", async () => {
     // In a Node process of its own: inside this jsdom test, the bundle's
     // import of Solid would resolve to the browser build.
     const html = execFileSync(
@@ -57,12 +57,25 @@ describe("an SSR app that uses menhir", () => {
       { encoding: "utf8" },
     );
     expect(html).toContain('role="switch"');
+    expect(html).toContain('aria-haspopup="dialog"');
+    expect(html).toMatch(/<dialog[^>]*data-closed/);
 
     document.body.innerHTML = `<div id="app">${html}</div>`;
     for (const script of document.body.querySelectorAll("script")) {
       (0, eval)(script.textContent);
     }
     const serverElement = document.querySelector<HTMLElement>("[role=switch]")!;
+    const serverDialog = document.querySelector("dialog")!;
+    // jsdom has no showModal(), which opening the dialog calls, nor the
+    // ResizeObserver its scroll lock uses.
+    HTMLDialogElement.prototype.showModal = function () {
+      this.setAttribute("open", "");
+    };
+    globalThis.ResizeObserver = class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
 
     await import(/* @vite-ignore */ bundle("entry-client"));
 
@@ -75,5 +88,12 @@ describe("an SSR app that uses menhir", () => {
     switchEl.click();
     await new Promise((resolve) => setTimeout(resolve));
     expect(switchEl.getAttribute("aria-checked")).toBe("true");
+
+    const dialog = document.querySelector("dialog")!;
+    expect(dialog).toBe(serverDialog);
+    document.querySelector<HTMLElement>("[aria-haspopup=dialog]")!.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(dialog.open).toBe(true);
+    expect(dialog.hasAttribute("data-open")).toBe(true);
   });
 });

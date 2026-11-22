@@ -44,6 +44,7 @@ A component is done when every line of [PLAN.md section 10](PLAN.md#10-definitio
 - [ ] Works with SSR and hydration
 - [ ] Size budget set and met; only allowed layers imported
 - [ ] Docs page with an unstyled example and the measured size
+- [ ] A working example on the home page, and a row on the bundle-size page's comparison
 - [ ] WAI-ARIA pattern and the date it was read recorded in the component's README
 
 ## Reviewing the WAI-ARIA patterns

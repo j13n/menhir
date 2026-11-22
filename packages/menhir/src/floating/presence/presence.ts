@@ -18,9 +18,7 @@ import { createEffect } from "solid-js";
  * `data-closed` starts, and hides it at once if none is running; infinite
  * and paused ones do not count. Meanwhile the popup is `inert`, unless it is
  * a popover that holds focus, which only returns focus to its trigger from
- * inside. Opening again cancels the exit. A non-modal `<dialog open>` from
- * the server is made modal without a `close` event. Nothing runs on the
- * server.
+ * inside. Opening again cancels the exit. Nothing runs on the server.
  */
 export function createPresence(options: {
   readonly popup: HTMLElement | undefined;
@@ -37,13 +35,9 @@ export function createPresence(options: {
       const dialog = popup instanceof HTMLDialogElement ? popup : undefined;
       stopLeaving?.();
       if (open) {
+        // Still shown if it was leaving.
         if (dialog) {
-          if (!dialog.matches(":modal")) {
-            // A non-modal `<dialog open>` from the server. `close()` would
-            // fire `close`, a task later; removing `open` fires nothing.
-            dialog.removeAttribute("open");
-            dialog.showModal();
-          }
+          if (!dialog.open) dialog.showModal();
         } else if (!popup.matches(":popover-open")) popup.showPopover();
         return;
       }

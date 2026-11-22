@@ -53,7 +53,7 @@ createPresence({
   at import time.
 - **jsdom has no `showModal()`, `showPopover()` or `getAnimations()`**, so
   a popup that is open in a jsdom test needs them stubbed, as
-  `Presence.hydrate.test.tsx` stubs `showModal()`. A closed popup calls
+  `test/dialog/stubDialog.ts` stubs them for Dialog. A closed popup calls
   nothing.
 
 ### Decisions
@@ -129,13 +129,6 @@ createPresence({
   `@starting-style` is Widely available from 2027-02-06; until then an
   older browser shows the popup without the entry transition, and a
   `@keyframes` entry works everywhere.
-- **A `<dialog open>` from the server is made modal without closing it.**
-  Server HTML can only render a non-modal `<dialog open>` (#94). Opening it
-  removes `open` and calls `showModal()` in the same task: no `close` event
-  fires, which dismissal would report, and the style is never computed in
-  between, so an entry animation that started at page load runs on, and
-  none starts again (Chromium, 2026-11-22). `close()` first would fire
-  `close` a task later. Dialog (#31) decides what the server renders.
 - **A popup removed while it leaves needs nothing more.** Solid removes a
   disposed popup from the document, which takes it out of the top layer
   and cancels its animations, so the wait ends by itself and `close()`
@@ -182,18 +175,12 @@ animations' `finish()`.
 - Removed while it leaves, it is out of the top layer, and the wait ends (C)
 - With dismissal and the scroll lock: Escape runs the exit, the close is reported once, and the page unlocks and the browser returns focus only once it has closed (C)
 
-`test/floating/presence/Presence.hydrate.test.tsx`
-
-- The server render runs the module and renders a `defaultOpen` dialog with `open`: nothing runs during a server render
-- Hydration adopts the server's elements without warnings
-- After hydration the dialog is modal, no `close` event fired, and its entry animation runs on rather than starting again (C)
-- Closing after hydration runs the exit and closes the dialog (C)
-
 ## Left out
 
 | Case                                                 | Reason                                                                                                                                      |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | An exit for a popover the browser hides itself       | See Decisions: `beforetoggle` cannot be cancelled on closing. Popover (#33) decides                                                         |
+| A `<dialog open>` from the server                    | A popup open by default is rendered closed on the server, and hydration opens it (PLAN.md section 8, "Popups"). Removed in #31              |
 | What the server renders for a `defaultOpen` popover  | A closed popover is `display: none` until it is shown, so hydration would show it with its entry animation. Popover (#33) decides           |
 | An animation the consumer starts on another element  | Only the popup's subtree and pseudo-elements are asked. A popup whose exit is on an element outside it hides before that has ended          |
 | A non-modal `<dialog>`                               | Every `<dialog>` popup is modal (ADR 0006), so a `<dialog>` is shown with `showModal()`                                                     |
@@ -209,6 +196,6 @@ Measured on 2026-11-22.
 
 | File          | Size  | Budget |
 | ------------- | ----- | ------ |
-| `presence.ts` | 519 B | 650 B  |
+| `presence.ts` | 499 B | 650 B  |
 
 Every popup will import it.

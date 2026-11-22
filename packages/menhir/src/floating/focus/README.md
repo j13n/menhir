@@ -231,7 +231,7 @@ Measured on 2026-11-22.
 | `returnFocus.ts`                  | 476 B | 600 B   |
 | `initialFocus.ts`                 | 306 B | 350 B   |
 
-Dialog and Alert Dialog will use `tabWrap`, `initialFocus` and
+Dialog uses `tabWrap`, `initialFocus` and
 `returnFocus`; a non-modal Popover `initialFocus` and `returnFocus` at most.
 `test/bundle-size/popupModules.test.ts` checks that each of those two alone
 bundles no Tab wrap and no tabbable search, and `popupModules.ts` that

@@ -83,6 +83,7 @@ reasons; they do not rename these.
 | `trigger-press` | The trigger was pressed, by pointer or keyboard: a popover's `popovertarget` closing it                                           |
 | `close-request` | The browser closed the popup for another reason: the back gesture on Android, a `<form method="dialog">`, another popover opening |
 | `trigger-hover` | The pointer rested on the trigger, or left the trigger and the popup (`floating/hover`, #30)                                      |
+| `close-press`   | The popup's own close button was pressed, by pointer or keyboard: Dialog's `Close` (#31)                                          |
 
 ### Decisions
 
@@ -236,7 +237,7 @@ Measured on 2026-11-22. `reason.ts` holds types only, so it adds nothing.
 | `popoverClose.ts` | 526 B | 650 B  |
 | `escape.ts`       | 344 B | 400 B  |
 
-Dialog will use `dialogClose` and `outsidePress`, Alert Dialog
+Dialog uses `dialogClose` and `outsidePress`, Alert Dialog will use
 `dialogClose` alone, Popover and the menus `popoverClose`, and Tooltip
 `escape` (`test/bundle-size/popupModules.ts` checks what each must not
 bundle).

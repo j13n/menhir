@@ -13,6 +13,7 @@ const budgets = {
   "menhir/collapsible": "1.5 kB",
   "menhir/color-scheme/cookie": "1.7 kB",
   "menhir/color-scheme/local-storage": "1.4 kB",
+  "menhir/dialog": "4.2 kB",
   "menhir/meter": "1.3 kB",
   "menhir/progress": "1.4 kB",
   "menhir/separator": "900 B",
