@@ -73,17 +73,32 @@ export async function tap(point: Point) {
 }
 
 /**
- * A touch that starts at `point` and drags up, which scrolls the page down,
- * and resolves once the scroll has ended: a tap while the page still
- * moves only stops it, with no `click`. Explicit touch events: Chromium on
- * Linux turns `Input.synthesizeScrollGesture` into a tap, with no scroll.
+ * Resolves once a scroll of the page, or of an element in it, has ended, or
+ * after `timeout` milliseconds if nothing scrolls. Called once the input
+ * has been sent, so a scroll from before it does not count.
  */
-export async function touchScroll(point: Point) {
-  const cdp = await session();
-  const ended = new Promise((resolve) => {
-    document.addEventListener("scrollend", resolve, { once: true });
-    setTimeout(resolve, 2000);
+function scrollEnded(timeout: number) {
+  return new Promise((resolve) => {
+    // A scroll container's `scrollend` does not bubble; in capture it
+    // passes the document.
+    document.addEventListener("scrollend", resolve, {
+      once: true,
+      capture: true,
+    });
+    setTimeout(resolve, timeout);
   });
+}
+
+/**
+ * A touch that starts at `point` and drags up, which scrolls the page down,
+ * and resolves once the scroll has ended, or after `timeout` milliseconds
+ * if the page does not scroll: a tap while the page still moves only stops
+ * it, with no `click`. Explicit touch events: Chromium on Linux turns
+ * `Input.synthesizeScrollGesture` into a tap, with no scroll.
+ */
+export async function touchScroll(point: Point, timeout = 2000) {
+  const cdp = await session();
+  const ended = scrollEnded(timeout);
   await cdp.send("Input.dispatchTouchEvent", {
     type: "touchStart",
     touchPoints: [point],
@@ -99,6 +114,22 @@ export async function touchScroll(point: Point) {
     touchPoints: [],
   });
   await ended;
+}
+
+/**
+ * A turn of the mouse wheel over `point`, down by `deltaY` pixels, that
+ * resolves once the scroll it starts has ended, or after `timeout`
+ * milliseconds if nothing scrolls.
+ */
+export async function wheel(point: Point, deltaY = 300, timeout = 500) {
+  const cdp = await session();
+  await cdp.send("Input.dispatchMouseEvent", {
+    type: "mouseWheel",
+    ...point,
+    deltaX: 0,
+    deltaY,
+  });
+  await scrollEnded(timeout);
 }
 
 /** Lets the browser's queued events, such as `close` and `toggle`, run. */
