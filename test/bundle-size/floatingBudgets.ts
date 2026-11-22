@@ -28,5 +28,5 @@ export const floatingBudgets: Record<string, string> = {
   "focus/returnFocus": "600 B",
   "focus/initialFocus": "350 B",
   // scroll-lock/README.md records its size.
-  "scroll-lock/scrollLock": "800 B",
+  "scroll-lock/scrollLock": "950 B",
 };

@@ -6,7 +6,9 @@ modal dialog in all three engines, and `html:has(dialog:modal) { overflow:
 hidden }` stopped it with no script (#94; PLAN.md section 8, "What the
 browser does for popups"). This folder sets that style on `<html>` while a
 modal popup is open, and adds what the rule leaves: the count of nested
-popups, the scrollbar's width, and putting the page's own styles back.
+popups, the scrollbar's width, putting the page's own styles back, and
+`touch-action` on the popup for iOS Safari, which scrolls the page from a
+drag on the backdrop whatever the page's `overflow`.
 
 One file, which only modal popups import (PLAN.md section 6, rule 6): a
 non-modal Popover and Tooltip leave the page scrolling.
@@ -95,11 +97,14 @@ createScrollLock({
   nothing. The lock does not set `scrollbar-gutter` itself: it is Widely
   available only from 2027-06-11 (PLAN.md section 5). An app may set it on
   `<html>` and have no shift and no padding.
-- **No `overscroll-behavior`.** With `<html>` at `overflow: hidden`, the
-  viewport is not user-scrollable, so a scroll that reaches the end of a
-  scrollable area in the popup has nothing to chain to: in Chromium the
-  page stayed put. An app may still set `overscroll-behavior: contain` on a
-  scrollable area for its own reasons.
+- **`overscroll-behavior: contain` on the popup.** With `<html>` at
+  `overflow: hidden`, Chromium does not chain a scroll from the popup to
+  the page anyway. iOS Safari does: a dialog that scrolls, because it is
+  taller than the screen or because the on-screen keyboard left it less
+  room, scrolled the page once it reached its end. With `contain` on the
+  dialog it stopped there. The lock sets it inline while the popup holds
+  the lock, and puts the popup's own value back. On a dialog that does not scroll, `contain` did not stop a drag with the keyboard open, which `touch-action` does (below); `none` on `<html>` and
+  `<body>` stopped nothing (see "iOS Safari").
 - **The page unlocks once the popup has closed**, not when its state turns
   false, as return focus does (`floating/focus`). A popup that presence
   (#96) keeps shown while it animates out is still modal and the page
@@ -111,7 +116,34 @@ createScrollLock({
 - **A refused close keeps the lock.** The lock follows the popup's state,
   not the browser's `close` event, so a controlled dialog that dismissal
   opens again after a second Escape stays locked.
-- **iOS Safari**: no script for it yet. See "iOS Safari" below.
+- **`touch-action: pinch-zoom` on a popup that does not scroll itself.**
+  iOS Safari 26.5 scrolled the page from a drag on the backdrop of a
+  modal dialog, though `<html>` was at `overflow: hidden`: a drag on the
+  backdrop hits the `<dialog>`, and from there the scroll reached the page.
+  With `touch-action: pinch-zoom` on the dialog, a drag on the backdrop or
+  on the dialog's own text pans nothing, with the keyboard open as well,
+  while a scrollable area inside still scrolls and pinch zoom still works.
+  The lock sets it inline, as it does `contain`.
+- **Only while the popup does not overflow.** A modal `<dialog>` is a
+  scroll container (`overflow: auto` in the browser's stylesheet), and
+  Chromium applies a scroll container's own `touch-action` to its
+  scrolling: with `pinch-zoom` on a dialog taller than the screen, a touch
+  drag scrolled it 5 px where it scrolled 490 px without (2026-11-22). So a
+  popup whose content overflows keeps its own value, and scrolls by touch;
+  on iOS it leaves only thin strips of backdrop, and `contain` keeps its
+  scroll from reaching the page. A `ResizeObserver` on the
+  popup and its children checks again as they change size, so content that
+  arrives after the popup opened counts. It is part of the one file, not a
+  file of its own: every modal popup has iOS users, and the module does not
+  tell browsers apart.
+- **Zoomed in, the popup pans with two fingers.** `pinch-zoom` allows only
+  pinch gestures on the popup, and WebKit counts a two-finger drag as one:
+  a user who has zoomed in moves the view over the popup with two fingers,
+  and one finger scrolls only a scrollable area. A two-finger drag can also
+  scroll the page behind the popup. Accepted for the page never scrolling
+  from a one-finger drag; VoiceOver and the system's Zoom use gestures of
+  their own. Chrome on Android honours `touch-action` too, so zoomed in, it
+  pans the same way.
 
 ## Test list
 
@@ -145,6 +177,10 @@ wires the module as Dialog (#31) will, with `createDialogClose` for Escape.
 - A dialog opened again before it closed keeps one lock (C)
 - A dialog disposed while open unlocks the page
 - Listens for `close` and `toggle` only while a closing dialog is still shown, and stops on close, on opening again and on disposal (C)
+- A dialog that fits gets `touch-action: pinch-zoom` and `overscroll-behavior: contain` while open, and its own values back after (C)
+- A scroll area in a dialog that fits still scrolls by touch (C)
+- A dialog taller than the screen keeps its own `touch-action`, and scrolls by touch, with `contain` (C)
+- The check runs again while open, as the content grows past the screen and shrinks back (C)
 
 `test/floating/scroll-lock/ScrollLock.hydrate.test.tsx`
 
@@ -156,7 +192,9 @@ wires the module as Dialog (#31) will, with `createDialogClose` for Escape.
 
 | Case                                                                  | Reason                                                                                                                              |
 | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| iOS Safari                                                            | Chromium tests cannot show it; see below                                                                                            |
+| iOS Safari                                                            | Chromium tests cannot show it; tried on a device, see below                                                                         |
+| Chrome on iOS: a drag on the text of a dialog that fits               | Scrolls the page, where Safari's does not; not a Baseline core browser (PLAN.md section 5). Follow-up in #114                       |
+| A popup with a set height whose content gains children while open     | Only a change of size runs the check again, and a new child resizes neither the popup nor the children already observed             |
 | A page's scrollbar on the left, in a right-to-left page               | The padding goes on the right, where Chromium keeps the page's scrollbar in a right-to-left page. Not checked in Firefox and WebKit |
 | An app stylesheet that sets `overflow` on `<html>` with `!important`  | It wins over the inline style. Setting the lock's own with `!important` would win over the app's choice too                         |
 | `position: fixed` elements that do not use `--hidden-scrollbar-width` | They widen by the scrollbar's width while locked; see Decisions                                                                     |
@@ -165,28 +203,47 @@ wires the module as Dialog (#31) will, with `createDialogClose` for Escape.
 
 ## iOS Safari
 
-Not tried yet. No iOS device or simulator was at hand when the module was
-written (2026-11-22, on a machine without Xcode), so the module has no
-script for iOS Safari, and none should be added before a test on a device
-or in the simulator shows it is needed (rule 6).
+Tried on 2026-11-22 on an iPhone 17 with iOS 26.5.1, in Safari and in
+Chrome, which runs on WebKit there, against a test page over the local
+network: a page taller than the screen and a modal dialog with an input
+and a scrollable area, opened partway down the page. Not tried on an older
+iOS.
 
-What to try, on the oldest iOS Safari the supported browsers include
-(PLAN.md section 5) and on the current one, with a page taller than the
-screen and a modal dialog open:
+What the module of #113 did, with `overflow: hidden` on `<html>` only:
+the computed `overflow` of `<html>` was `hidden`, yet a drag on the
+backdrop scrolled the page, in Safari and in Chrome. While the page
+coasted, a drag on the scrollable area scrolled the page too, until it
+stopped.
 
-1. Drag on the backdrop: the page must not scroll.
-2. Drag inside a scrollable area of the dialog to its end, and on: the area
-   scrolls, the page does not, and the page does not bounce.
-3. Focus an input in the dialog so that the on-screen keyboard opens, then
-   drag on the backdrop and in the dialog: the page must not scroll.
-4. Pinch to zoom in, then drag: the zoomed view pans, which is how a user
-   who zooms reaches the dialog's content, but the page under the dialog
-   must not scroll. Panning must not be blocked.
-5. Close the dialog: the page is where it was, and scrolls again.
+Each candidate added to that, with the dialog open:
 
-Record here the device or simulator, the iOS version, the date, and the
-result of each step. A step that fails is a case for script, as a file of
-its own if only iOS needs it.
+| Candidate                                            | Drag on the backdrop | Scrollable area | Drag on the dialog's text | Keyboard open | Zoomed in                               |
+| ---------------------------------------------------- | -------------------- | --------------- | ------------------------- | ------------- | --------------------------------------- |
+| `overflow: hidden` on `<body>` too                   | Page scrolls         |                 |                           |               | The dialog moved off centre             |
+| `overscroll-behavior: none` on `<html>` and `<body>` | Page scrolls         |                 |                           |               | The dialog moved off centre             |
+| `<body>` pinned with `position: fixed` (no module)   | Still                | Does not scroll |                           |               |                                         |
+| `touch-action: pinch-zoom` on `::backdrop`           | Still                | Scrolls         | Still                     |               | Safari's toolbar resized during drags   |
+| `overscroll-behavior: contain` on the dialog         | Still                | Scrolls         | Still                     | Page scrolls  | Page scrolls                            |
+| `touch-action: pinch-zoom` on the dialog             | Still                | Scrolls         | Still                     | Still         | Two fingers pan and can scroll the page |
+
+A dialog taller than the screen still scrolled with `touch-action:
+pinch-zoom` on it in Safari, unlike in Chromium (see Decisions), and with
+`overscroll-behavior: contain`.
+
+The module as built here, with `contain` and the `touch-action` check of
+Decisions. A first pass without `contain` failed step 3: with the keyboard
+open the dialog no longer fitted, so it scrolled by touch, and at its end
+the page scrolled; with `contain` it stopped.
+
+| Step                                                     | Safari                          | Chrome       |
+| -------------------------------------------------------- | ------------------------------- | ------------ |
+| 1. Drag on the backdrop: the page stays                  | Passes                          | Passes       |
+| 2. Drag in the scrollable area: it scrolls, the page not | Passes                          | Passes       |
+| Drag on the dialog's text: the page stays                | Passes                          | Page scrolls |
+| 3. Keyboard open, drag: the page stays                   | Passes                          |              |
+| 4. Zoomed in: the view pans                              | With two fingers; see Decisions |              |
+| 5. Closed: the page is where it was, and scrolls again   | Passes                          |              |
+| A dialog taller than the screen scrolls                  | Passes                          |              |
 
 ## Size
 
@@ -197,7 +254,7 @@ Measured on 2026-11-22.
 
 | File            | Size  | Budget |
 | --------------- | ----- | ------ |
-| `scrollLock.ts` | 653 B | 800 B  |
+| `scrollLock.ts` | 821 B | 950 B  |
 
 Dialog and Alert Dialog will import it; `test/bundle-size/popupModules.ts`
 checks that Popover and Tooltip do not.
