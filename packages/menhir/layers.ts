@@ -17,3 +17,18 @@ export const popupComponents = [
   "combobox",
   "autocomplete",
 ];
+
+// The modules of the `floating` layer (PLAN.md section 6), one folder each
+// in src/floating, as src/floating/README.md lists them. A popup imports a
+// module from its folder directly. test/bundle-size/popupModules.ts names
+// the modules each popup must not bundle from this list.
+export const floatingModules = [
+  "positioning",
+  "dismissal",
+  "focus",
+  "scroll-lock",
+  "presence",
+  "hover",
+  "list-navigation",
+  "typeahead",
+] as const;

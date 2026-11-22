@@ -142,6 +142,16 @@ Built in #9, in `test/bundle-size` (its README has the details):
 - `pnpm size:json` writes the same results to `dist/sizes.json`, from which the docs site generates its size table and each component page's size (#38, `website/vite-plugin-sizes.ts`).
 - The bundle-size page also shows each component's size in other libraries, measured the same way with each library's framework left out (`comparison.ts`). These sizes are shown, not enforced. Its last row is of the components imported together, so that shared code is counted once. The page says these are sizes only: the libraries differ in API and in what each component includes.
 - `floating.test.ts` bundles each simple component's entry point, such as `menhir/switch`, alone with Rolldown (every entry point in `exports` except the popups that `packages/menhir/layers.ts` lists for the lint config too) and fails if the bundle has a module from `floating` or an import of `@floating-ui/*`.
+- `popupModules.test.ts` does the same for each popup, against what that popup must not bundle (`popupModules.ts`): `menhir/dialog` and `menhir/alert-dialog` bundle no `@floating-ui/*`, no positioning and no hover. A row is checked once its popup is in `exports`, and a fixture popup proves the check reports a module it should not bundle (#95).
+- `floatingSize.test.ts` holds each module of the `floating` layer to its budget in `floatingBudgets.ts` (below), and fails if a folder in `src/floating` has none.
+
+### The `floating` layer
+
+Set up on 2026-11-22 (#95). `packages/menhir/src/floating/README.md` lists the modules, one folder each, and the layer's rules. `floatingModules` in `packages/menhir/layers.ts` lists the same folders for the checks in `test/bundle-size`. Three decisions:
+
+- **Internal**, as `core` is: no entry point in `exports`, so a module can change without a release note until 1.0. Apps and styled layers use the popup components. `test/package/build.test.ts` exempts both layers from its `exports` check. Revisit after Phase 2 if a styled layer asks to build its own popups.
+- **A budget per module file, measured and not published.** A module has no entry point, so `test/bundle-size/floatingBudgets.ts` gives one to each file a popup imports, keyed by its path under `dist/floating`. `floating.size-limit.js` measures each the way `.size-limit.js` measures an entry point: an app that imports it and uses all of it, minified and gzipped, Solid left out, `@floating-ui/dom` counted. These sizes are not in `dist/sizes.json`, so the docs site does not show them; each module's README records its own. So that a module is built before any popup imports it, `vite.config.ts` makes every file in `src/floating` an entry.
+- **No shared stack of open popups.** Since #94 the top layer is the stack: a modal `<dialog>` and an `auto` popover nest by themselves, only the topmost dialog is not inert, and scroll lock can be a CSS rule on `dialog:modal`. A module asks the browser (`:modal`, `:popover-open`, the event's target). A Tooltip's Escape listener calls `preventDefault()`, which stops the close request, so a dialog below it stays open. If a module ever needs a stack, it lives in `floating/stack/`, created in the browser on first use and never at import time, since module state is shared between requests on the server.
 
 ### Package shape
 

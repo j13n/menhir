@@ -45,12 +45,14 @@ describe("built package", () => {
 
   it("exports each component, listing types, then solid, then import", () => {
     const { "./package.json": _, ...components } = manifest.exports;
-    // A component is a folder in src with an index.ts. core is internal. A
-    // utility can have several, one folder down, such as
-    // color-scheme/cookie/index.ts.
+    // A component is a folder in src with an index.ts. The layers, core and
+    // floating, are internal. A utility can have several, one folder down,
+    // such as color-scheme/cookie/index.ts.
+    const isInternal = (subpath: string) =>
+      /^\.\/(core|floating)(\/|$)/.test(subpath);
     const expected = files("{*,*/*}/index.ts", "src/")
       .map((file) => `./${dirname(file)}`)
-      .filter((subpath) => subpath !== "./core")
+      .filter((subpath) => !isInternal(subpath))
       // Sorted as subpaths: sorted as files, `toggle-group/index.ts` comes
       // before `toggle/index.ts`.
       .sort();
