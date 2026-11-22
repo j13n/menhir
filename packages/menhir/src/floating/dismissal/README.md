@@ -84,6 +84,7 @@ reasons; they do not rename these.
 | `close-request` | The browser closed the popup for another reason: the back gesture on Android, a `<form method="dialog">`, another popover opening |
 | `trigger-hover` | The pointer rested on the trigger, or left the trigger and the popup (`floating/hover`, #30)                                      |
 | `close-press`   | The popup's own close button was pressed, by pointer or keyboard: Dialog's `Close` (#31)                                          |
+| `trigger-focus` | The trigger received keyboard focus, or lost it: Tooltip's own (#34)                                                              |
 
 ### Decisions
 
@@ -219,7 +220,7 @@ wire each module as a popup component will, through
 | Case                                                         | Reason                                                                                                                                                                                              |
 | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A popover's outside press, Escape and nesting as code        | The browser's light dismiss and close requests do them (#94); this folder only reports the reason                                                                                                   |
-| A dialog or popover opened above an open Tooltip             | Escape closes the Tooltip first. A popup opening over the trigger takes its hover or focus, which closes the Tooltip (#34); checking the top layer for it would cost bytes in every Tooltip         |
+| A dialog or popover opened above an open Tooltip             | Escape would close the Tooltip first, but a popup opened from the trigger closes it: pressing the Trigger does, by pointer or keyboard (#34, `src/tooltip/Tooltip.popups.test.tsx`)                 |
 | A press on the page's scrollbar while a dialog is open       | The page should not scroll behind a modal dialog (scroll lock, #28), and the test browser's input reaches elements, not the viewport's scrollbar. The dialog's own scrollbar is tested              |
 | Outside press in shadow roots and portals                    | No popup is portalled (#94), and the backdrop press targets the `<dialog>` whatever is behind it                                                                                                    |
 | Safari's `keyCode` 229 for an Escape that ends a composition | Tests run in Chromium (PLAN.md section 5), which reports `isComposing`; revisit with a WebKit report                                                                                                |

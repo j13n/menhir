@@ -25,6 +25,7 @@ const budgets = {
   "menhir/theme/local-storage": "1.2 kB",
   "menhir/toggle": "1.2 kB",
   "menhir/toggle-group": "2.3 kB",
+  "menhir/tooltip": "11.5 kB",
 };
 
 export default Object.entries(budgets).map(([entryPoint, limit]) => ({

@@ -109,6 +109,11 @@
       "solid": "./dist/source/toggle-group/index.js",
       "import": "./dist/toggle-group/index.js"
     },
+    "./tooltip": {
+      "types": "./dist/source/tooltip/index.d.ts",
+      "solid": "./dist/source/tooltip/index.js",
+      "import": "./dist/tooltip/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
