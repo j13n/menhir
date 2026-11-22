@@ -15,7 +15,12 @@ const dom = () => ({
   browser: chromium
     ? {
         enabled: true,
-        provider: playwright(),
+        // Playwright hides scrollbars in headless Chromium. Shown, they take
+        // their width from the page as on a desktop with classic scrollbars,
+        // which the scroll lock's layout tests need (#28).
+        provider: playwright({
+          launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] },
+        }),
         headless: true,
         instances: [{ browser: "chromium" as const }],
         screenshotFailures: false,

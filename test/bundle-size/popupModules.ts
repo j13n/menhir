@@ -26,16 +26,19 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "hover",
     "dismissal/outsidePress",
   ],
-  // A non-modal popover keeps the browser's Tab order (#27, #33). A modal
-  // Popover part, if #33 adds one to this entry, changes this row.
-  "menhir/popover": ["focus/tabWrap", "focus/tabbable"],
-  // A tooltip closes on Escape only (#26, #34) and takes no focus (#27).
+  // A non-modal popover keeps the browser's Tab order (#27, #33) and leaves
+  // the page scrolling (#28). A modal Popover part, if #33 adds one to this
+  // entry, changes this row.
+  "menhir/popover": ["focus/tabWrap", "focus/tabbable", "scroll-lock"],
+  // A tooltip closes on Escape only (#26, #34), takes no focus (#27) and
+  // leaves the page scrolling (#28).
   "menhir/tooltip": [
     "dismissal/outsidePress",
     "dismissal/dialogClose",
     "dismissal/popoverClose",
     "focus/tabWrap",
     "focus/tabbable",
+    "scroll-lock",
   ],
 };
 

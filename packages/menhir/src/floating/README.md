@@ -45,6 +45,7 @@ size and bundle checks in `test/bundle-size`.
   Escape listener calls `preventDefault()`, so a dialog below it stays open.
   If a module ever needs a stack, it lives in `stack/`, created in the browser
   on first use and never at import time, since module state is shared between
-  requests on the server.
+  requests on the server. A count is not a stack: scroll lock counts the
+  popups holding it in its own module, written only from effects.
 - **Nothing runs at import time or during a server render** (rule 2). Listeners
   exist only while a popup is open.

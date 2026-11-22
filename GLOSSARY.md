@@ -44,6 +44,10 @@ _Avoid_: Blocking; "a modal" as a noun for a dialog
 The layer that covers the rest of the page behind a modal popup.
 _Avoid_: Overlay, scrim, underlay, mask
 
+**Scroll lock**:
+While a modal popup is open, the page behind it does not scroll.
+_Avoid_: Body lock, scroll block, no-scroll
+
 **Dismiss**:
 To close a popup from outside it: Escape, an outside press, or another close request from the browser, such as the back gesture on Android.
 _Avoid_: Hide (for a dismissal), cancel
