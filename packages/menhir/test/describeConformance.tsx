@@ -36,6 +36,7 @@ const idAttributes = new Set([
   "aria-flowto",
   "aria-labelledby",
   "aria-owns",
+  "popovertarget",
 ]);
 
 /** The attributes the part sets itself, other than ids, class and style. */

@@ -266,10 +266,11 @@ every part, Rolldown, minified, gzipped, Solid left out. Measured on
 
 | Entry point     | Size    | Budget |
 | --------------- | ------- | ------ |
-| `menhir/dialog` | 3,497 B | 4.2 kB |
+| `menhir/dialog` | 3,514 B | 4.2 kB |
 
 Sharing the Popup's code with Alert Dialog (#32) added 27 B (3,470 B
-before). Most of it is the `floating` layer: presence, `dialogClose`,
+before), and moving the Root's id slots to `core/slot.ts`, which Popover
+shares (#33), 17 B. Most of it is the `floating` layer: presence, `dialogClose`,
 `outsidePress`, `tabWrap` with its tabbable search, `initialFocus`,
 `returnFocus` and `scrollLock` (each module's README has its size). An app
 that renders no Description, or no Title, does not bundle that part

@@ -17,6 +17,8 @@
 //   shared by Progress and Meter.
 // - toggleButton.ts: the own props of a part that is a toggle button
 //   (`aria-pressed` and `data-pressed`), shared by Toggle and Toggle Group.
+// - slot.ts: a value one part registers once mounted, for another part to
+//   read, such as the id of a popup's Title, shared by Dialog and Popover.
 // - preference/: a reader's choice saved in `localStorage` or a cookie and
 //   applied to `<html>`, with its pre-paint head script. What the
 //   color-scheme and theme utilities share.

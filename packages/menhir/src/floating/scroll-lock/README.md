@@ -27,9 +27,9 @@ In order of precedence (PLAN.md section 8).
 
 ## Shape
 
-| File            | Exports            | Used by                                     | What it does                                              |
-| --------------- | ------------------ | ------------------------------------------- | --------------------------------------------------------- |
-| `scrollLock.ts` | `createScrollLock` | Dialog, Alert Dialog, a modal Popover (#33) | Keeps the page from scrolling while a modal popup is open |
+| File            | Exports            | Used by              | What it does                                              |
+| --------------- | ------------------ | -------------------- | --------------------------------------------------------- |
+| `scrollLock.ts` | `createScrollLock` | Dialog, Alert Dialog | Keeps the page from scrolling while a modal popup is open |
 
 The options are getters, as in `floating/dismissal` and `floating/focus`:
 
@@ -53,8 +53,8 @@ createScrollLock({
   to `element.style` is not. In Chromium on 2026-11-22, with a policy of
   `style-src 'self'`, the write applied and an added `<style>` did not. A rule the
   docs ask apps to copy would make the lock depend on the app's CSS. The
-  inline style also lets a modal popup that is not a `<dialog>`, such as a
-  modal Popover (#33), lock the page. The cost is the count below, which
+  inline style also lets a modal popup that is not a `<dialog>` lock the
+  page, should one be built (Popover, #33, left a modal Popover out). The cost is the count below, which
   the `:has()` rule would have had from the browser.
 - **A page that scrolls in another element needs no lock.** A popup in the
   top layer has the viewport as its containing block, so a scroll from its

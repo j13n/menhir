@@ -4,6 +4,7 @@ import { Checkbox } from "menhir/checkbox";
 import { Collapsible } from "menhir/collapsible";
 import { Dialog } from "menhir/dialog";
 import { Meter } from "menhir/meter";
+import { Popover } from "menhir/popover";
 import { Progress } from "menhir/progress";
 import { Separator } from "menhir/separator";
 import { Switch } from "menhir/switch";
@@ -313,6 +314,34 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/alert-dialog">Alert Dialog</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <div class="flex items-center justify-between gap-4">
+                Inbox
+                <Popover.Root>
+                  <Popover.Trigger class="shrink-0 cursor-pointer rounded-md border border-stone-300 px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700">
+                    Notifications
+                  </Popover.Trigger>
+                  <Popover.Popup
+                    sideOffset={8}
+                    class="w-56 origin-(--transform-origin) overflow-visible rounded-lg border border-stone-200 bg-white p-4 text-sm text-inherit shadow-lg transition-[opacity,scale] duration-150 data-closed:scale-95 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:scale-95 starting:data-open:opacity-0"
+                  >
+                    <Popover.Arrow class="absolute size-2.5 rotate-45 border-stone-200 bg-white data-[side=bottom]:-top-1.5 data-[side=bottom]:border-t data-[side=bottom]:border-l data-[side=left]:-right-1.5 data-[side=left]:border-t data-[side=left]:border-r data-[side=right]:-left-1.5 data-[side=right]:border-b data-[side=right]:border-l data-[side=top]:-bottom-1.5 data-[side=top]:border-r data-[side=top]:border-b dark:border-stone-800 dark:bg-stone-900" />
+                    <Popover.Title class="m-0 text-sm font-semibold">
+                      All caught up
+                    </Popover.Title>
+                    <Popover.Description class="mt-1 mb-3 text-stone-500">
+                      No new notifications.
+                    </Popover.Description>
+                    <Popover.Close class="cursor-pointer rounded-md border border-stone-300 px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700">
+                      Close
+                    </Popover.Close>
+                  </Popover.Popup>
+                </Popover.Root>
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/popover">Popover</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

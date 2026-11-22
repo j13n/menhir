@@ -82,6 +82,18 @@ describe("built package", () => {
     expect(code).not.toContain("DialogDescription");
   });
 
+  it("leaves out the Arrow, and the arrow middleware, when the app renders no Arrow", async () => {
+    // `@floating-ui/dom` names its middleware, so the bundle shows which
+    // it holds.
+    const middleware = /name: "arrow"/;
+    expect(await bundle("popover.js")).toMatch(middleware);
+
+    const code = await bundle("popoverWithoutArrow.js");
+    expect(code).toContain("function PopoverPopup");
+    expect(code).not.toContain("PopoverArrow");
+    expect(code).not.toMatch(middleware);
+  });
+
   it("bundles the parts Dialog and Alert Dialog share once, and Dialog's outside press", async () => {
     const code = await bundle("dialogAndAlertDialog.js");
     const count = (name: string) =>

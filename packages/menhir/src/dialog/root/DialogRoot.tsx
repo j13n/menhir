@@ -1,7 +1,7 @@
 import type { JSX } from "@solidjs/web";
-import { createSignal } from "solid-js";
 
 import { createControllableSignal } from "../../core/createControllableSignal.ts";
+import { createIdSlot } from "../../core/slot.ts";
 import type { OpenChangeDetails } from "../../floating/dismissal/reason.ts";
 import { DialogRootContext } from "./DialogRootContext.ts";
 import type {
@@ -20,25 +20,6 @@ export interface DialogRootProps {
    */
   onOpenChange?: (open: boolean, details: OpenChangeDetails) => void;
   children?: JSX.Element;
-}
-
-/**
- * The `id` a part hands over once mounted, for another part to name: the
- * current one, and what hands one over and returns what takes it back. A
- * part takes back only its own, so a later one that replaced it stays.
- */
-function createIdSlot(): [
-  id: () => string | undefined,
-  set: (id: () => string | false) => () => void,
-] {
-  const [slot, setSlot] = createSignal<(() => string | false) | undefined>();
-  // `false`, the consumer's way to remove the part's `id`, names nothing.
-  const id = () => slot()?.() || undefined;
-  const set = (next: () => string | false) => {
-    setSlot(() => next);
-    return () => setSlot((current) => (current === next ? undefined : current));
-  };
-  return [id, set];
 }
 
 /**
@@ -64,15 +45,15 @@ export function DialogRoot(props: DialogRootProps) {
       return open() ? undefined : "";
     },
   };
-  const [titleId, setTitleId] = createIdSlot();
-  const [descriptionId, setDescriptionId] = createIdSlot();
+  const [titleId, registerTitleId] = createIdSlot();
+  const [descriptionId, registerDescriptionId] = createIdSlot();
   const context: DialogRootContextValue = {
     open,
     setOpen,
     titleId,
-    setTitleId,
+    registerTitleId,
     descriptionId,
-    setDescriptionId,
+    registerDescriptionId,
     attributes,
   };
   return (

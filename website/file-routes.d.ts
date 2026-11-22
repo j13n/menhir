@@ -95,6 +95,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/popover";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/popover"), Extract<"default", keyof typeof import("./src/routes/docs/components/popover")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/progress";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/progress"), Extract<"default", keyof typeof import("./src/routes/docs/components/progress")>>>;
@@ -265,6 +271,14 @@ declare module "virtual:file-routes" {
           id: "/components/toggle";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/toggle"), Extract<"default", keyof typeof import("./src/routes/docs/components/toggle")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/popover";
+          id: "/components/popover";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/popover"), Extract<"default", keyof typeof import("./src/routes/docs/components/popover")>>>;
           $$route?: undefined;
           children?: undefined;
         },

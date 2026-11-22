@@ -43,6 +43,20 @@ function stubDialog() {
   );
 }
 
+/**
+ * jsdom has no `popover`: `showPopover()` displays the element, which
+ * jsdom's own stylesheet hides as a closed popover, and nothing animates.
+ */
+function stubPopover() {
+  HTMLElement.prototype.showPopover = function () {
+    this.style.display = "block";
+  };
+  HTMLElement.prototype.hidePopover = function () {
+    this.style.removeProperty("display");
+  };
+  Element.prototype.getAnimations = () => [];
+}
+
 function setup() {
   const result = render(() => <Home />);
   flush();
@@ -69,6 +83,8 @@ describe("home page", () => {
     vi.unstubAllGlobals();
     Reflect.deleteProperty(HTMLDialogElement.prototype, "showModal");
     Reflect.deleteProperty(HTMLDialogElement.prototype, "close");
+    Reflect.deleteProperty(HTMLElement.prototype, "showPopover");
+    Reflect.deleteProperty(HTMLElement.prototype, "hidePopover");
     Reflect.deleteProperty(Element.prototype, "getAnimations");
     Reflect.deleteProperty(navigator, "clipboard");
   });
@@ -346,6 +362,31 @@ describe("home page", () => {
     expect(example.getByRole("link", { name: "Alert Dialog" })).toHaveAttribute(
       "href",
       "/docs/components/alert-dialog",
+    );
+  });
+
+  test("shows a working Popover, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const trigger = example.getByRole("button", { name: "Notifications" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(trigger);
+    // The popover opens after the click's flush.
+    await Promise.resolve();
+    flush();
+    const popover = getByRole("dialog", { name: "All caught up" });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(popover).toHaveAttribute("data-open");
+    expect(popover).toHaveAccessibleDescription("No new notifications.");
+    fireEvent.click(within(popover).getByRole("button", { name: "Close" }));
+    await Promise.resolve();
+    flush();
+    expect(popover).toHaveAttribute("data-closed");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(example.getByRole("link", { name: "Popover" })).toHaveAttribute(
+      "href",
+      "/docs/components/popover",
     );
   });
 
