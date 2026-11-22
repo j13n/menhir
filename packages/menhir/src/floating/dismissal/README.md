@@ -144,7 +144,7 @@ Every test fails if Solid reports a dev diagnostic while it runs
 (`it.skipIf(isJSDOM)`): jsdom has no top layer, no light dismiss, no close
 requests and no layout. Real key and pointer input, which the browser
 acts on, comes from `vitest/browser` and the Chrome DevTools Protocol
-(`test/floating/dismissal/input.ts`). The test popups in
+(`test/floating/input.ts`). The test popups in
 `test/floating/dismissal/` (`Dialog.tsx`, `Popover.tsx`, `Tooltip.tsx`)
 wire each module as a popup component will, through
 `createControllableSignal`.

@@ -15,8 +15,6 @@ interface Listener {
  */
 export function trackListeners() {
   const present = new Set<Listener>();
-  const add = EventTarget.prototype.addEventListener;
-  const remove = EventTarget.prototype.removeEventListener;
   const find = (
     target: EventTarget,
     type: string,
@@ -36,24 +34,38 @@ export function trackListeners() {
     }
     return { entry: undefined, capture };
   };
-  vi.spyOn(EventTarget.prototype, "addEventListener").mockImplementation(
-    function (this: EventTarget, type, listener, options) {
+  // A browser defines the window's methods on the window itself, as it does
+  // for every global object, so they are spied on there too.
+  const owners: EventTarget[] = [EventTarget.prototype];
+  if (Object.hasOwn(window, "addEventListener")) owners.push(window);
+  for (const owner of owners) {
+    const add = owner.addEventListener;
+    const remove = owner.removeEventListener;
+    vi.spyOn(owner, "addEventListener").mockImplementation(function (
+      this: EventTarget,
+      type,
+      listener,
+      options,
+    ) {
       if (listener) {
         const { entry, capture } = find(this, type, listener, options);
         if (!entry) present.add({ target: this, type, listener, capture });
       }
       add.call(this, type, listener, options);
-    },
-  );
-  vi.spyOn(EventTarget.prototype, "removeEventListener").mockImplementation(
-    function (this: EventTarget, type, listener, options) {
+    });
+    vi.spyOn(owner, "removeEventListener").mockImplementation(function (
+      this: EventTarget,
+      type,
+      listener,
+      options,
+    ) {
       if (listener) {
         const { entry } = find(this, type, listener, options);
         if (entry) present.delete(entry);
       }
       remove.call(this, type, listener, options);
-    },
-  );
+    });
+  }
   let baseline = new Set<Listener>();
   return {
     mark() {
