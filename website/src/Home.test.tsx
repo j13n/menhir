@@ -328,6 +328,27 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Alert Dialog, linked to its page", async () => {
+    stubDialog();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    fireEvent.click(example.getByRole("button", { name: "Delete draft" }));
+    // The dialog opens after the click's flush.
+    await Promise.resolve();
+    flush();
+    const dialog = getByRole("alertdialog", { name: "Delete this draft?" });
+    expect(dialog).toHaveAttribute("open");
+    expect(dialog).toHaveAccessibleDescription("It cannot be undone.");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    await Promise.resolve();
+    flush();
+    expect(dialog).not.toHaveAttribute("open");
+    expect(example.getByRole("link", { name: "Alert Dialog" })).toHaveAttribute(
+      "href",
+      "/docs/components/alert-dialog",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
@@ -384,6 +405,10 @@ describe("home page", () => {
         fireEvent.click(getByRole("button", { name: "Edit" }));
         flush();
         fireEvent.click(getByRole("button", { name: "Done", hidden: true }));
+        flush();
+        fireEvent.click(getByRole("button", { name: "Delete draft" }));
+        flush();
+        fireEvent.click(getByRole("button", { name: "Cancel", hidden: true }));
         flush();
         tick();
       },

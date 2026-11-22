@@ -81,6 +81,23 @@ describe("built package", () => {
     expect(code).toContain("function DialogTitle");
     expect(code).not.toContain("DialogDescription");
   });
+
+  it("bundles the parts Dialog and Alert Dialog share once, and Dialog's outside press", async () => {
+    const code = await bundle("dialogAndAlertDialog.js");
+    const count = (name: string) =>
+      code.split(new RegExp(`function ${name}\\b`)).length - 1;
+
+    for (const name of [
+      "DialogRoot",
+      "DialogTitle",
+      "renderDialogPopup",
+      "DialogPopup",
+      "AlertDialogPopup",
+      "createOutsidePress",
+    ]) {
+      expect(count(name)).toBe(1);
+    }
+  });
 });
 
 /** Bundles a fixture app as a bundler would, and returns its code. */

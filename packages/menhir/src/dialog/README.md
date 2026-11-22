@@ -130,6 +130,14 @@ What the browser does, the `floating` layer adds, and the parts decide:
   on a Collapsible (#22) and a popup (#96). While the Popup leaves, it has
   `data-closed`, which is the exit; the entry is the consumer's
   `@starting-style` or `@keyframes` on `[data-open]`.
+- **Alert Dialog builds on these parts** (#32): `menhir/alert-dialog`
+  re-exports the Root, Trigger, Title, Description and Close, and its Popup
+  calls the same `popup/renderDialogPopup.tsx` as this one, with the
+  `alertdialog` role and without `createOutsidePress`, which only
+  `DialogPopup.tsx` passes. So an app with both pays for the shared code
+  once (`src/alert-dialog/README.md`, "Size"). A part outside its Root
+  names both Roots in its error, since the part cannot tell which one is
+  missing.
 - **Nested dialogs** need nothing of their own: a Dialog inside another's
   Popup opens over it, Escape closes the topmost (the close request goes to
   it alone), the outside press of each counts only on its own backdrop,
@@ -258,9 +266,10 @@ every part, Rolldown, minified, gzipped, Solid left out. Measured on
 
 | Entry point     | Size    | Budget |
 | --------------- | ------- | ------ |
-| `menhir/dialog` | 3,470 B | 4.2 kB |
+| `menhir/dialog` | 3,497 B | 4.2 kB |
 
-Most of it is the `floating` layer: presence, `dialogClose`,
+Sharing the Popup's code with Alert Dialog (#32) added 27 B (3,470 B
+before). Most of it is the `floating` layer: presence, `dialogClose`,
 `outsidePress`, `tabWrap` with its tabbable search, `initialFocus`,
 `returnFocus` and `scrollLock` (each module's README has its size). An app
 that renders no Description, or no Title, does not bundle that part

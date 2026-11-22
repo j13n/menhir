@@ -80,6 +80,10 @@ _Avoid_: Tabbable (as a noun), focus stop
 In a modal popup, Tab from the last tab stop moving to the first, and Shift+Tab from the first to the last, so focus stays inside.
 _Avoid_: Focus trap, focus lock, focus loop
 
+**Base popup**:
+The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32). The only popup it may import (PLAN.md section 6, rule 4).
+_Avoid_: Parent popup, super-component
+
 ### Popup parts
 
 The parts every popup is built from, as `Dialog.Root`, `Dialog.Trigger` and so on (#31).

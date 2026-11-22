@@ -1,4 +1,5 @@
 import { Accordion } from "menhir/accordion";
+import { AlertDialog } from "menhir/alert-dialog";
 import { Checkbox } from "menhir/checkbox";
 import { Collapsible } from "menhir/collapsible";
 import { Dialog } from "menhir/dialog";
@@ -283,6 +284,35 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/dialog">Dialog</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <div class="flex items-center justify-between gap-4">
+                Draft
+                <AlertDialog.Root>
+                  <AlertDialog.Trigger class="shrink-0 cursor-pointer rounded-md border border-stone-300 px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700">
+                    Delete draft
+                  </AlertDialog.Trigger>
+                  <AlertDialog.Popup class="m-auto w-[min(22rem,calc(100%-2rem))] rounded-xl border border-stone-200 bg-white p-6 text-inherit transition-opacity duration-150 backdrop:bg-black/40 backdrop:backdrop-blur-xs backdrop:transition-opacity backdrop:duration-150 data-closed:opacity-0 data-closed:backdrop:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:open:opacity-0 starting:open:backdrop:opacity-0">
+                    <AlertDialog.Title class="m-0 text-base font-semibold">
+                      Delete this draft?
+                    </AlertDialog.Title>
+                    <AlertDialog.Description class="mt-2 text-sm text-stone-500">
+                      It cannot be undone.
+                    </AlertDialog.Description>
+                    <div class="mt-6 flex justify-end gap-2">
+                      <AlertDialog.Close class="cursor-pointer rounded-md border border-stone-300 px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700">
+                        Cancel
+                      </AlertDialog.Close>
+                      <AlertDialog.Close class="cursor-pointer rounded-md bg-red-700 px-3 py-1 text-sm text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700">
+                        Delete
+                      </AlertDialog.Close>
+                    </div>
+                  </AlertDialog.Popup>
+                </AlertDialog.Root>
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/alert-dialog">Alert Dialog</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

@@ -9,6 +9,7 @@ import { inProduction, solidProduction } from "./productionConstants.ts";
 // is not in a production app, so it is not counted (rule 2).
 const budgets = {
   "menhir/accordion": "1.8 kB",
+  "menhir/alert-dialog": "4.1 kB",
   "menhir/checkbox": "2 kB",
   "menhir/collapsible": "1.5 kB",
   "menhir/color-scheme/cookie": "1.7 kB",
