@@ -1,5 +1,14 @@
 # menhir
 
+## 0.1.3
+
+### Patch Changes
+
+- 747bbb2: Adds Tooltip (`menhir/tooltip`): a description of its trigger, on a `popover="manual"` element, shown on hover after a delay and at once on keyboard focus, with Root, Trigger, Popup, Arrow and Group parts. `onOpenChange` reports the new reason `"trigger-focus"`.
+- 566dc2a: Adds Dialog (`menhir/dialog`): a modal dialog on a native `<dialog>`, with Root, Trigger, Popup, Title, Description and Close parts.
+- cdee2a7: Adds Alert Dialog (`menhir/alert-dialog`): a modal dialog with the `alertdialog` role that a press on the backdrop does not close, built on Dialog's parts, so an app with both pays for them once.
+- 157eda0: Adds Popover (`menhir/popover`): a non-modal popup placed against its trigger, on a `popover="auto"` element, with Root, Trigger, Popup, Arrow, Title, Description and Close parts.
+
 ## 0.1.2
 
 ### Patch Changes
