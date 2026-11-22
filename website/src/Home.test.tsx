@@ -20,6 +20,29 @@ function preferReducedMotion(reduce: boolean) {
   );
 }
 
+/**
+ * jsdom has no showModal(), close(), getAnimations() or ResizeObserver,
+ * which an open Dialog calls. `close` fires a task later, as in a browser.
+ */
+function stubDialog() {
+  HTMLDialogElement.prototype.showModal = function () {
+    this.setAttribute("open", "");
+  };
+  HTMLDialogElement.prototype.close = function () {
+    this.removeAttribute("open");
+    setTimeout(() => this.dispatchEvent(new Event("close")));
+  };
+  Element.prototype.getAnimations = () => [];
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    },
+  );
+}
+
 function setup() {
   const result = render(() => <Home />);
   flush();
@@ -44,6 +67,9 @@ describe("home page", () => {
     cleanup();
     vi.useRealTimers();
     vi.unstubAllGlobals();
+    Reflect.deleteProperty(HTMLDialogElement.prototype, "showModal");
+    Reflect.deleteProperty(HTMLDialogElement.prototype, "close");
+    Reflect.deleteProperty(Element.prototype, "getAnimations");
     Reflect.deleteProperty(navigator, "clipboard");
   });
 
@@ -276,6 +302,32 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Dialog, linked to its page", async () => {
+    stubDialog();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const trigger = example.getByRole("button", { name: "Edit" });
+    expect(trigger).toHaveAttribute("aria-haspopup", "dialog");
+    fireEvent.click(trigger);
+    // The dialog opens after the click's flush.
+    await Promise.resolve();
+    flush();
+    const dialog = getByRole("dialog", { name: "Edit profile" });
+    expect(dialog).toHaveAttribute("open");
+    expect(dialog).toHaveAccessibleDescription(
+      "Your name is shown on your posts.",
+    );
+    fireEvent.click(within(dialog).getByRole("button", { name: "Done" }));
+    await Promise.resolve();
+    flush();
+    expect(dialog).not.toHaveAttribute("open");
+    expect(dialog).toHaveAttribute("data-closed");
+    expect(example.getByRole("link", { name: "Dialog" })).toHaveAttribute(
+      "href",
+      "/docs/components/dialog",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
@@ -317,6 +369,7 @@ describe("home page", () => {
   });
 
   test("renders, animates and toggles without tripping a Solid diagnostic", async () => {
+    stubDialog();
     const { artifact } = await captureArtifact(
       () => {
         const { getByRole } = setup();
@@ -328,6 +381,11 @@ describe("home page", () => {
         fireEvent.click(getByRole("button", { name: "Is it styled?" }));
         fireEvent.click(getByRole("tab", { name: "Tue" }));
         flush();
+        fireEvent.click(getByRole("button", { name: "Edit" }));
+        flush();
+        fireEvent.click(getByRole("button", { name: "Done", hidden: true }));
+        flush();
+        tick();
       },
       { scenario: "home-page" },
     );

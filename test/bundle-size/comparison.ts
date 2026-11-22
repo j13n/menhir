@@ -38,6 +38,7 @@ export const libraries: Library[] = [
       accordion: "@base-ui/react/accordion",
       checkbox: "@base-ui/react/checkbox",
       collapsible: "@base-ui/react/collapsible",
+      dialog: "@base-ui/react/dialog",
       meter: "@base-ui/react/meter",
       progress: "@base-ui/react/progress",
       separator: "@base-ui/react/separator",
@@ -55,6 +56,7 @@ export const libraries: Library[] = [
       accordion: "@radix-ui/react-accordion",
       checkbox: "@radix-ui/react-checkbox",
       collapsible: "@radix-ui/react-collapsible",
+      dialog: "@radix-ui/react-dialog",
       progress: "@radix-ui/react-progress",
       separator: "@radix-ui/react-separator",
       switch: "@radix-ui/react-switch",
@@ -72,6 +74,7 @@ export const libraries: Library[] = [
       accordion: "@kobalte/core/accordion",
       checkbox: "@kobalte/core/checkbox",
       collapsible: "@kobalte/core/collapsible",
+      dialog: "@kobalte/core/dialog",
       meter: "@kobalte/core/meter",
       progress: "@kobalte/core/progress",
       separator: "@kobalte/core/separator",
@@ -91,6 +94,7 @@ export const libraries: Library[] = [
     components: {
       accordion: "corvu/accordion",
       collapsible: "corvu/disclosure",
+      dialog: "corvu/dialog",
     },
   },
 ];

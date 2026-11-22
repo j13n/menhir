@@ -12,13 +12,16 @@
  *   popover opening.
  * - `trigger-hover`: the pointer rested on the trigger, or left the trigger
  *   and the popup (`floating/hover`).
+ * - `close-press`: the popup's own close button, pressed by pointer or
+ *   keyboard (Dialog's `Close`).
  */
 export type OpenChangeReason =
   | "escape-key"
   | "outside-press"
   | "trigger-press"
   | "close-request"
-  | "trigger-hover";
+  | "trigger-hover"
+  | "close-press";
 
 /**
  * The second argument of `onOpenChange`. `event` is the event that caused

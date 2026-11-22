@@ -1,6 +1,7 @@
 import { accordionDoc } from "./accordion";
 import { checkboxDoc } from "./checkbox";
 import { collapsibleDoc } from "./collapsible";
+import { dialogDoc } from "./dialog";
 import { meterDoc } from "./meter";
 import { progressDoc } from "./progress";
 import { separatorDoc } from "./separator";
@@ -15,6 +16,7 @@ export const componentDocs: ComponentDoc[] = [
   accordionDoc,
   checkboxDoc,
   collapsibleDoc,
+  dialogDoc,
   meterDoc,
   progressDoc,
   separatorDoc,

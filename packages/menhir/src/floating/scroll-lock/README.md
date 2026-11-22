@@ -256,5 +256,5 @@ Measured on 2026-11-22.
 | --------------- | ----- | ------ |
 | `scrollLock.ts` | 821 B | 950 B  |
 
-Dialog and Alert Dialog will import it; `test/bundle-size/popupModules.ts`
+Dialog imports it, and Alert Dialog will; `test/bundle-size/popupModules.ts`
 checks that Popover and Tooltip do not.

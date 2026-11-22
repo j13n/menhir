@@ -1,9 +1,8 @@
 // A test dialog for createPresence: a trigger and a `<dialog>` with
 // `data-open` and `data-closed`, through createControllableSignal, which
 // createPresence shows and hides, with createDialogClose for Escape, as
-// Dialog (#31) will be. The server renders a `defaultOpen` dialog with
-// `open`, the only open dialog server HTML can say (#94).
-import { isServer, type JSX } from "@solidjs/web";
+// Dialog (#31) is.
+import type { JSX } from "@solidjs/web";
 import { untrack } from "solid-js";
 
 import { createControllableSignal } from "../../../src/core/createControllableSignal.ts";
@@ -75,7 +74,6 @@ export function Dialog(props: DialogProps) {
       </button>
       <dialog
         ref={(el) => (dialog = el)}
-        open={isServer && untrack(open) ? true : undefined}
         aria-label="Dialog"
         data-testid="Dialog"
         class={props.class}

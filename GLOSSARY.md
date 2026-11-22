@@ -41,7 +41,7 @@ Of a popup: the rest of the page cannot be reached while it is open. A popup tha
 _Avoid_: Blocking; "a modal" as a noun for a dialog
 
 **Backdrop**:
-The layer that covers the rest of the page behind a modal popup.
+The layer that covers the rest of the page behind a modal popup. It is the browser's `::backdrop`, not a part.
 _Avoid_: Overlay, scrim, underlay, mask
 
 **Scroll lock**:
@@ -79,3 +79,27 @@ _Avoid_: Tabbable (as a noun), focus stop
 **Tab wrap**:
 In a modal popup, Tab from the last tab stop moving to the first, and Shift+Tab from the first to the last, so focus stays inside.
 _Avoid_: Focus trap, focus lock, focus loop
+
+### Popup parts
+
+The parts every popup is built from, as `Dialog.Root`, `Dialog.Trigger` and so on (#31).
+
+**Root**:
+The part that holds a component's state and shares it with the other parts. A popup's Root holds whether it is open and renders no element.
+_Avoid_: Provider, container, wrapper
+
+**Popup** (the part):
+The element the browser shows in the top layer: a `<dialog>` for a dialog, a `popover` element otherwise.
+_Avoid_: Content, panel, positioner
+
+**Title**:
+The heading that names a popup, through the Popup's `aria-labelledby`.
+_Avoid_: Label, heading, header
+
+**Description**:
+The text that says what a popup is for, through the Popup's `aria-describedby`.
+_Avoid_: Body, subtitle
+
+**Close**:
+A button inside a popup that closes it.
+_Avoid_: Dismiss button, cancel (as the part's name)

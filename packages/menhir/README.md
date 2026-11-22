@@ -53,9 +53,9 @@ For everything else, go to the docs:
 
 ## Status
 
-Early 0.x versions: the API may change between minor versions. Dialog, Popover and the other popups come next; the plan and roadmap are in the [repository](https://github.com/j13n/menhir). Built so far:
+Early 0.x versions: the API may change between minor versions. Popover and the other popups come next; the plan and roadmap are in the [repository](https://github.com/j13n/menhir). Built so far:
 
-- Components: Accordion, Checkbox, Collapsible, Meter, Progress, Separator, Switch, Tabs, Toggle and Toggle Group.
+- Components: Accordion, Checkbox, Collapsible, Dialog, Meter, Progress, Separator, Switch, Tabs, Toggle and Toggle Group.
 - Utilities: color scheme and theme, each with local-storage and cookie storage.
 
 ## Licence
