@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.2
+
+### Patch Changes
+
+- 289963c: menhir now depends on `@floating-ui/dom` 1.8, for the positioned popups to come. Installs download it; an app bundles it only through a popup that is positioned.
+
 ## 0.1.1
 
 ### Patch Changes
