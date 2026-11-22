@@ -36,6 +36,7 @@ export const libraries: Library[] = [
     ignore: ["react", "react-dom"],
     components: {
       accordion: "@base-ui/react/accordion",
+      "alert-dialog": "@base-ui/react/alert-dialog",
       checkbox: "@base-ui/react/checkbox",
       collapsible: "@base-ui/react/collapsible",
       dialog: "@base-ui/react/dialog",
@@ -54,6 +55,7 @@ export const libraries: Library[] = [
     ignore: ["react", "react-dom"],
     components: {
       accordion: "@radix-ui/react-accordion",
+      "alert-dialog": "@radix-ui/react-alert-dialog",
       checkbox: "@radix-ui/react-checkbox",
       collapsible: "@radix-ui/react-collapsible",
       dialog: "@radix-ui/react-dialog",
@@ -72,6 +74,7 @@ export const libraries: Library[] = [
     production: solid1Production,
     components: {
       accordion: "@kobalte/core/accordion",
+      "alert-dialog": "@kobalte/core/alert-dialog",
       checkbox: "@kobalte/core/checkbox",
       collapsible: "@kobalte/core/collapsible",
       dialog: "@kobalte/core/dialog",

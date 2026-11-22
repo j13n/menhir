@@ -29,6 +29,11 @@
       "solid": "./dist/source/accordion/index.js",
       "import": "./dist/accordion/index.js"
     },
+    "./alert-dialog": {
+      "types": "./dist/source/alert-dialog/index.d.ts",
+      "solid": "./dist/source/alert-dialog/index.js",
+      "import": "./dist/alert-dialog/index.js"
+    },
     "./checkbox": {
       "types": "./dist/source/checkbox/index.d.ts",
       "solid": "./dist/source/checkbox/index.js",

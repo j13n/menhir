@@ -18,6 +18,14 @@ export const popupComponents = [
   "autocomplete",
 ];
 
+// The popup each popup builds on, by folder in src: the one popup it may
+// import besides `core` and `floating` (PLAN.md section 6, rule 4; #32).
+// oxlint.config.ts allows these imports and no others between popups, so
+// an app that uses both pays for the shared parts once.
+export const popupBases: Record<string, string> = {
+  "alert-dialog": "dialog",
+};
+
 // The modules of the `floating` layer (PLAN.md section 6), one folder each
 // in src/floating, as src/floating/README.md lists them. A popup imports a
 // module from its folder directly. test/bundle-size/popupModules.ts names

@@ -6,7 +6,10 @@
 import { defineConfig } from "oxlint";
 import solidV2 from "eslint-plugin-solid/configs/v2";
 
-import { popupComponents as popups } from "./packages/menhir/layers.ts";
+import {
+  popupBases,
+  popupComponents as popups,
+} from "./packages/menhir/layers.ts";
 
 const library = "packages/menhir/src/**";
 // Files that break the rules on purpose. Linted only by lint.test.ts.
@@ -33,7 +36,11 @@ export default defineConfig({
     "boundaries/elements": [
       { type: "core", pattern: "src/core" },
       { type: "floating", pattern: "src/floating" },
-      { type: "popup", pattern: `src/{${popups.join(",")}}` },
+      {
+        type: "popup",
+        pattern: `src/{${popups.join(",")}}`,
+        capture: ["name"],
+      },
       { type: "simple", pattern: "src/*" },
     ],
     "boundaries/files": [{ category: "test", pattern: "**/*.test.{ts,tsx}" }],
@@ -85,6 +92,14 @@ export default defineConfig({
                 from: { element: { type: "popup" } },
                 allow: { to: { element: { types: ["core", "floating"] } } },
               },
+              // A popup that builds on another imports that one too, as Alert
+              // Dialog imports Dialog's parts (popupBases).
+              ...Object.entries(popupBases).map(([popup, base]) => ({
+                from: { element: { type: "popup", captured: { name: popup } } },
+                allow: {
+                  to: { element: { type: "popup", captured: { name: base } } },
+                },
+              })),
               // Tests are not shipped, so they import what they need.
               {
                 from: { file: { categories: "test" } },

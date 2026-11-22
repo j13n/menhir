@@ -48,7 +48,7 @@ describe("<Dialog.Title />", () => {
 
     expect(
       screen.getByText(
-        "Error: [menhir] Dialog parts must be placed within <Dialog.Root>.",
+        "Error: [menhir] Dialog parts must be placed within <Dialog.Root>, and Alert Dialog parts within <AlertDialog.Root>.",
       ),
     ).toBeInTheDocument();
   });

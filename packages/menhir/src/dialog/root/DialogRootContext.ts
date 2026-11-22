@@ -44,8 +44,9 @@ export function useDialogRootContext(): DialogRootContextValue {
   const context = useContext(DialogRootContext);
   // Production builds drop the check, and its message, with `isDev`.
   if (isDev && !context) {
+    // Alert Dialog's parts are Dialog's (#32), and cannot tell which.
     throw new Error(
-      "[menhir] Dialog parts must be placed within <Dialog.Root>.",
+      "[menhir] Dialog parts must be placed within <Dialog.Root>, and Alert Dialog parts within <AlertDialog.Root>.",
     );
   }
   return context!;

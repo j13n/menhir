@@ -237,7 +237,7 @@ Measured on 2026-11-22. `reason.ts` holds types only, so it adds nothing.
 | `popoverClose.ts` | 526 B | 650 B  |
 | `escape.ts`       | 344 B | 400 B  |
 
-Dialog uses `dialogClose` and `outsidePress`, Alert Dialog will use
-`dialogClose` alone, Popover and the menus `popoverClose`, and Tooltip
+Dialog uses `dialogClose` and `outsidePress`, Alert Dialog uses
+`dialogClose` alone (#32), Popover and the menus `popoverClose`, and Tooltip
 `escape` (`test/bundle-size/popupModules.ts` checks what each must not
 bundle).

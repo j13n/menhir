@@ -61,6 +61,10 @@ describe("lint", () => {
       "dialog/importsFloatingUi.ts": ["boundaries(dependencies)"],
       "dialog/importsSwitch.ts": ["boundaries(dependencies)"],
       "dialog/importsPopover.ts": ["boundaries(dependencies)"],
+      // A popup imports the popup it builds on, and no other: Alert Dialog
+      // imports Dialog, not Popover, and Dialog does not import it back.
+      "alert-dialog/importsPopover.ts": ["boundaries(dependencies)"],
+      "dialog/importsAlertDialog.ts": ["boundaries(dependencies)"],
       // Compound components are namespace re-exports, not Object.assign.
       "switch/compound.ts": ["eslint(no-restricted-properties)"],
       // No root barrel: every module sits in a layer's folder.
