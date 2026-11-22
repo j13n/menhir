@@ -72,15 +72,33 @@ export async function tap(point: Point) {
   });
 }
 
-/** A touch that starts at `point` and scrolls the page down. */
+/**
+ * A touch that starts at `point` and drags up, which scrolls the page down,
+ * and resolves once the scroll has ended: a tap while the page still
+ * moves only stops it, with no `click`. Explicit touch events: Chromium on
+ * Linux turns `Input.synthesizeScrollGesture` into a tap, with no scroll.
+ */
 export async function touchScroll(point: Point) {
   const cdp = await session();
-  await cdp.send("Input.synthesizeScrollGesture", {
-    ...point,
-    yDistance: -200,
-    gestureSourceType: "touch",
-    speed: 2000,
+  const ended = new Promise((resolve) => {
+    document.addEventListener("scrollend", resolve, { once: true });
+    setTimeout(resolve, 2000);
   });
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [point],
+  });
+  for (let step = 1; step <= 5; step++) {
+    await cdp.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{ x: point.x, y: point.y - step * 50 }],
+    });
+  }
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await ended;
 }
 
 /** Lets the browser's queued events, such as `close` and `toggle`, run. */
