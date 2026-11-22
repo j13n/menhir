@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      body { font: 17px/1.5 system-ui, sans-serif; margin: 1rem; }
+      li { margin: 0.6rem 0; font-size: 20px; }
+    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scroll lock comparison</title>
+  </head>
+  <body>
+    <h1>Scroll lock comparison</h1>
+    <p>
+      Manual tests for #114. Each page: the same tall page and dialog, each
+      library's defaults.
+    </p>
+    <ul>
+      <li><a href="/radix.html">Radix (React)</a></li>
+      <li><a href="/base-ui.html">Base UI (React)</a></li>
+      <li><a href="/kobalte.html">Kobalte (Solid 1)</a></li>
+      <li><a href="/corvu.html">corvu (Solid 1)</a></li>
+      <li><a id="menhir">Menhir (Solid 2)</a></li>
+    </ul>
+    <script>
+      document.getElementById("menhir").href = `http://${location.hostname}:5180/`;
+    </script>
+  </body>
+</html>

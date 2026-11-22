@@ -1,0 +1,17 @@
+{
+  "name": "@menhir/manual-scroll-lock-menhir",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@solidjs/web": "^2.0.1",
+    "solid-js": "^2.0.1"
+  },
+  "devDependencies": {
+    "@solidjs/vite-plugin": "^3.0.1",
+    "vite": "^8.3.8"
+  }
+}

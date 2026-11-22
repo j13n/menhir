@@ -20,6 +20,9 @@ export default defineConfig({
   ignorePatterns: [
     "**/*.gen.*",
     "dist",
+    // Other libraries' components, in React and Solid 1, which the Solid 2
+    // rules do not fit. Manual tests, compared on a device.
+    "test/manual/*/libraries/**",
     ...(includeFixtures ? [] : [fixtures]),
   ],
   settings: {
