@@ -4,6 +4,7 @@ import { checkboxDoc } from "./checkbox";
 import { collapsibleDoc } from "./collapsible";
 import { dialogDoc } from "./dialog";
 import { meterDoc } from "./meter";
+import { popoverDoc } from "./popover";
 import { progressDoc } from "./progress";
 import { separatorDoc } from "./separator";
 import { switchDoc } from "./switch";
@@ -20,6 +21,7 @@ export const componentDocs: ComponentDoc[] = [
   collapsibleDoc,
   dialogDoc,
   meterDoc,
+  popoverDoc,
   progressDoc,
   separatorDoc,
   switchDoc,

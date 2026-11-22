@@ -119,8 +119,9 @@ createPresence({
   hide it before its state changes, since `beforetoggle` cannot be
   cancelled on closing. Showing it again to animate out would close the
   other popovers, and a popover shown from `display: none` has no style to
-  transition from. Popover (#33) and the menus decide whether that is
-  enough, or whether they dismiss a `manual` popover themselves.
+  transition from. Popover (#33) decided that is enough: its Trigger and
+  Close close it through its state, which waits for the exit; the menus
+  decide for themselves.
 - **No further `data-*` attribute.** `data-open` and `data-closed` (PLAN.md
   section 8, "API conventions") are enough: a closed popup at rest is
   `display: none`, so `[data-closed]` styles only the exit. The entry is
@@ -179,9 +180,9 @@ animations' `finish()`.
 
 | Case                                                 | Reason                                                                                                                                      |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| An exit for a popover the browser hides itself       | See Decisions: `beforetoggle` cannot be cancelled on closing. Popover (#33) decides                                                         |
+| An exit for a popover the browser hides itself       | See Decisions: `beforetoggle` cannot be cancelled on closing. Popover (#33) decided to leave it out                                         |
 | A `<dialog open>` from the server                    | A popup open by default is rendered closed on the server, and hydration opens it (PLAN.md section 8, "Popups"). Removed in #31              |
-| What the server renders for a `defaultOpen` popover  | A closed popover is `display: none` until it is shown, so hydration would show it with its entry animation. Popover (#33) decides           |
+| What the server renders for a `defaultOpen` popover  | A closed popover is `display: none` until it is shown, so hydration shows it with its entry animation. Popover (#33) renders it closed      |
 | An animation the consumer starts on another element  | Only the popup's subtree and pseudo-elements are asked. A popup whose exit is on an element outside it hides before that has ended          |
 | A non-modal `<dialog>`                               | Every `<dialog>` popup is modal (ADR 0006), so a `<dialog>` is shown with `showModal()`                                                     |
 | An animation that starts on another's `animationend` | That event comes after the check that follows the last animation settling, so the popup has hidden already. `animation-delay` chains them   |

@@ -43,7 +43,7 @@ describe("an SSR app that uses menhir", () => {
     expect(server).toContain("ssrHydrationKey");
   });
 
-  it("renders on the server and hydrates on the client, where a Dialog opens", async () => {
+  it("renders on the server and hydrates on the client, where a Dialog and a Popover open", async () => {
     // In a Node process of its own: inside this jsdom test, the bundle's
     // import of Solid would resolve to the browser build.
     const html = execFileSync(
@@ -59,6 +59,7 @@ describe("an SSR app that uses menhir", () => {
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-haspopup="dialog"');
     expect(html).toMatch(/<dialog[^>]*data-closed/);
+    expect(html).toMatch(/<div(?=[^>]*popover="auto")(?=[^>]*data-closed)/);
 
     document.body.innerHTML = `<div id="app">${html}</div>`;
     for (const script of document.body.querySelectorAll("script")) {
@@ -71,6 +72,8 @@ describe("an SSR app that uses menhir", () => {
     HTMLDialogElement.prototype.showModal = function () {
       this.setAttribute("open", "");
     };
+    // Nor `popover`, which opening the popover calls.
+    HTMLElement.prototype.showPopover = function () {};
     globalThis.ResizeObserver = class {
       observe() {}
       unobserve() {}
@@ -95,5 +98,14 @@ describe("an SSR app that uses menhir", () => {
     await new Promise((resolve) => setTimeout(resolve));
     expect(dialog.open).toBe(true);
     expect(dialog.hasAttribute("data-open")).toBe(true);
+
+    const popover = document.querySelector("[popover]")!;
+    const popoverTrigger = document.querySelector<HTMLElement>(
+      `[popovertarget="${popover.id}"]`,
+    )!;
+    popoverTrigger.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(popoverTrigger.getAttribute("aria-expanded")).toBe("true");
+    expect(popover.hasAttribute("data-open")).toBe(true);
   });
 });

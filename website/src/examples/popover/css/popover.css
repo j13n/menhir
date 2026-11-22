@@ -1,0 +1,105 @@
+/* The least CSS that makes the Popover look like one: a card below its
+   trigger, with an arrow. Menhir places the popup and writes data-side; the
+   arrow sits on the edge that faces the trigger. The browser's own popover
+   styles scroll its overflow, which would clip the arrow. It fades in on
+   data-open and out on data-closed, growing from the trigger with
+   --transform-origin. Colours are Tailwind's stone palette; light-dark()
+   picks the second one in dark mode (color-scheme: dark). */
+.popover-trigger,
+.popover-close {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid
+    light-dark(
+      oklch(86.9% 0.005 56.366) /* stone-300 */,
+      oklch(44.4% 0.011 73.639) /* stone-600 */
+    );
+  border-radius: 0.375rem;
+  background: transparent;
+  color: inherit;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.popover-popup {
+  --border: light-dark(
+    oklch(92.3% 0.003 48.717) /* stone-200 */,
+    oklch(37.4% 0.01 67.558) /* stone-700 */
+  );
+  --background: light-dark(white, oklch(21.6% 0.006 56.043) /* stone-900 */);
+  width: 16rem;
+  padding: 1rem;
+  overflow: visible;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--background);
+  color: inherit;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 10%);
+  transform-origin: var(--transform-origin);
+}
+
+.popover-popup[data-open] {
+  animation: popover-in 150ms ease-out;
+}
+
+.popover-popup[data-closed] {
+  animation: popover-in 150ms ease-in reverse;
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    scale: 0.95;
+  }
+}
+
+/* A square turned 45 degrees, half of it outside the popup's edge, with
+   the popup's border on the two sides that show. */
+.popover-arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  rotate: 45deg;
+  background: var(--background);
+}
+
+.popover-arrow[data-side="bottom"] {
+  top: -6px;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+.popover-arrow[data-side="top"] {
+  bottom: -6px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.popover-arrow[data-side="right"] {
+  left: -6px;
+  border-bottom: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+.popover-arrow[data-side="left"] {
+  right: -6px;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.popover-title {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.popover-description {
+  margin: 0.25rem 0 0.75rem;
+  color: light-dark(
+    oklch(44.4% 0.011 73.639) /* stone-600 */,
+    oklch(70.9% 0.01 56.259) /* stone-400 */
+  );
+}

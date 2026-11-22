@@ -23,7 +23,7 @@ export function DialogTitle(props: DialogTitleProps) {
   const id = () => props.id ?? generated;
   // Named once mounted, so the Popup names only a Title that is rendered,
   // and none in the server HTML (README, "Decisions").
-  onSettled(() => root.setTitleId(id));
+  onSettled(() => root.registerTitleId(id));
   const ownProps = merge(root.attributes, {
     get id() {
       return id();

@@ -22,14 +22,14 @@ export interface DialogRootContextValue {
   /** The `id` of the rendered Title, which the Popup names, if any. */
   titleId(): string | undefined;
   /**
-   * Hands over the `id` of a mounted Title, as a getter. Returns what takes
-   * it back, for the Title's disposal.
+   * Registers the `id` of a mounted Title, as a getter. Returns what
+   * unregisters it, for the Title's disposal.
    */
-  setTitleId(id: () => string | false): () => void;
+  registerTitleId(id: () => string | false): () => void;
   /** The `id` of the rendered Description, which the Popup names, if any. */
   descriptionId(): string | undefined;
-  /** As `setTitleId`, for the Description. */
-  setDescriptionId(id: () => string | false): () => void;
+  /** As `registerTitleId`, for the Description. */
+  registerDescriptionId(id: () => string | false): () => void;
   /** The `data-*` attributes every part carries. */
   readonly attributes: DialogStateAttributes;
 }

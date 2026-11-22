@@ -165,16 +165,17 @@ every part, Rolldown, minified, gzipped, Solid left out. Measured on
 
 | App                                       | Size    | Budget |
 | ----------------------------------------- | ------- | ------ |
-| `menhir/alert-dialog`                     | 3,356 B | 4.1 kB |
-| `menhir/dialog`                           | 3,497 B | 4.2 kB |
-| `menhir/dialog` and `menhir/alert-dialog` | 3,549 B |        |
+| `menhir/alert-dialog`                     | 3,371 B | 4.1 kB |
+| `menhir/dialog`                           | 3,514 B | 4.2 kB |
+| `menhir/dialog` and `menhir/alert-dialog` | 3,557 B |        |
 
-Alert Dialog is Dialog less the outside press. An app with both pays 52 B
-over Dialog alone, Alert Dialog's own Popup, instead of 3,356 B for a second
+Alert Dialog is Dialog less the outside press. An app with both pays 43 B
+over Dialog alone, Alert Dialog's own Popup, instead of 3,371 B for a second
 copy: the shared parts, the Popup's shared code and the `floating` modules
 are bundled once (`test/package` checks it on the built package). Sharing
 the Popup's code cost Dialog 27 B (3,470 B before #32), for the function
-both Popups call.
+both Popups call. Moving the Root's id slots to `core/slot.ts`, which
+Popover shares (#33), added 15 B (3,356 B before).
 
 The two together were measured as `test/bundle-size/comparison.size-limit.js`
 measures components together: an app that imports both entry points and uses

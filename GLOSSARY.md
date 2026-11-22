@@ -28,6 +28,10 @@ _Avoid_: Invoker, activator, toggle, opener
 What a positioned popup is placed against, usually its trigger.
 _Avoid_: Reference, reference element, target
 
+**Arrow**:
+The part of a positioned popup that points at the middle of its anchor, on the popup's edge that faces it.
+_Avoid_: Caret, pointer, tip, beak
+
 **Side**:
 The edge of the anchor a positioned popup is placed against: top, right, bottom or left.
 _Avoid_: Placement (for the side alone), position

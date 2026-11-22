@@ -126,9 +126,9 @@ createReturnFocus({
   will keep it while it animates, on its `close` or `toggle` event.
 - **How a popup composes the Tab wrap** (rule 6): Dialog and Alert Dialog
   are always modal and call `createTabWrap` from their Popup. A modal
-  Popover is #33's to decide, between a part and a ref factory over
-  `createTabWrap`; not a `modal` flag, which would ship the wrap in every
-  app.
+  Popover is left out (#33): a popup that keeps focus inside is a Dialog,
+  a `modal` flag would ship the wrap in every app, and a part or a ref
+  factory over a widened `createTabWrap` would be a second Dialog.
 - **No hiding of the page outside**: `showModal()` makes it inert (#94).
 
 ## Test list

@@ -126,10 +126,15 @@ reasons; they do not rename these.
   if the state still says open. Not in an `onFlush` from `beforetoggle`:
   with real input that flush runs inside the browser's hide, while the
   popover is still showing.
-- **For Popover (#33):** follow an opening by the trigger on `toggle`, not
+- **A popup opened by `popovertarget`** follows the opening on `toggle`, not
   `beforetoggle`. With real input, the state's flush would run inside the
   browser's show, and an effect that calls `showPopover()` would throw
-  (`test/floating/dismissal/Popover.tsx`).
+  (`test/floating/dismissal/Popover.tsx`). Popover (#33) does neither: its
+  Trigger's click calls `preventDefault()`, so the browser does not toggle
+  it, and opens it through its state, so it is shown in the flush that
+  places it. The `popovertarget` stays, so light dismiss counts the Trigger
+  as inside; a close by the Trigger is the Popover's own, which this module
+  does not report.
 - **Focus leaving closes nothing here.** The browser leaves a popover open
   when focus leaves it (#94), and a modal dialog keeps focus. Tooltip
   closes on blur of its trigger, which is Tooltip's own (#34).

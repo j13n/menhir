@@ -23,7 +23,7 @@ export function DialogDescription(props: DialogDescriptionProps) {
   const id = () => props.id ?? generated;
   // Named once mounted, so the Popup names only a Description that is
   // rendered, and none in the server HTML (README, "Decisions").
-  onSettled(() => root.setDescriptionId(id));
+  onSettled(() => root.registerDescriptionId(id));
   const ownProps = merge(root.attributes, {
     get id() {
       return id();
