@@ -28,6 +28,14 @@ _Avoid_: Invoker, activator, toggle, opener
 What a positioned popup is placed against, usually its trigger.
 _Avoid_: Reference, reference element, target
 
+**Side**:
+The edge of the anchor a positioned popup is placed against: top, right, bottom or left.
+_Avoid_: Placement (for the side alone), position
+
+**Alignment**:
+Where along its side a positioned popup sits against the anchor: start, center or end, following the writing direction.
+_Avoid_: Placement (for the alignment alone), justify
+
 **Modal**:
 Of a popup: the rest of the page cannot be reached while it is open. A popup that is not modal leaves the page usable.
 _Avoid_: Blocking; "a modal" as a noun for a dialog

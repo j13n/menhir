@@ -7,4 +7,14 @@
  * sizes are not published on the docs site; each module's README records
  * its own. The limit is the measured size plus about 20%, rounded.
  */
-export const floatingBudgets: Record<string, string> = {};
+export const floatingBudgets: Record<string, string> = {
+  // positioning/README.md records each size, and what each middleware adds
+  // to createPosition, which counts the shared code of @floating-ui/dom.
+  "positioning/createPosition": "6650 B",
+  "positioning/offset": "700 B",
+  "positioning/flip": "1450 B",
+  "positioning/shift": "600 B",
+  "positioning/size": "1000 B",
+  "positioning/arrow": "1050 B",
+  "positioning/hide": "650 B",
+};
