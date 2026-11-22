@@ -61,6 +61,17 @@ export default function GettingStarted() {
         </p>
         <CodeBlock code={styles} />
       </Section>
+      <Section id="styling-with-an-agent" title="Styling with a coding agent">
+        <p>
+          Menhir ships a skill for coding agents that styles its components in
+          one consistent look, such as the shadcn look. Point your agent at it
+          with a line in your project's <code>AGENTS.md</code>: "To style Menhir
+          components, follow{" "}
+          <code>node_modules/menhir/skills/menhir-styling/SKILL.md</code>".{" "}
+          <a href="/docs/styling">Styling</a> has the rest: the looks, what to
+          ask for, and a look of your own.
+        </p>
+      </Section>
       <Section id="next" title="Next">
         <p>
           See <a href="/docs/components">all components</a>, with each one's

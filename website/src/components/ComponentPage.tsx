@@ -22,7 +22,7 @@ export type {
 export type ComponentPageProps = ComponentDoc & {
   /** Compressed size of the entry point in bytes: the default export of `virtual:menhir-sizes/<slug>`. */
   size?: number;
-  /** The live example, styled with Tailwind CSS and with plain CSS. */
+  /** The live example, styled with Tailwind CSS and with plain CSS, and in each look that has one. */
   example: ComponentExampleProps;
 };
 
@@ -72,6 +72,7 @@ export default function ComponentPage(props: ComponentPageProps) {
       <ComponentExample
         tailwind={props.example.tailwind}
         css={props.example.css}
+        looks={props.example.looks}
       />
       <Section id="anatomy" title="Anatomy">
         <CodeBlock code={props.anatomy} />

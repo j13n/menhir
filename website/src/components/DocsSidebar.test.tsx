@@ -23,6 +23,7 @@ describe("<DocsSidebar />", () => {
     const nav = within(getByRole("navigation", { name: "Docs" }));
     expect(links(nav.getAllByRole("list")[0])).toEqual([
       ["Getting started", "/docs/getting-started"],
+      ["Styling", "/docs/styling"],
       ["Bundle size", "/docs/bundle-size"],
       ["llms.txt", "/docs/llms-txt"],
     ]);

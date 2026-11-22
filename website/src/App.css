@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* The looks of the styling skill, for the component pages' look examples.
+   Each applies only inside its data-look attribute. */
+@import "./looks/shadcn/tokens.css";
 
 /* The reader picks light, dark or system with the toggle in the header
    (menhir/color-scheme/local-storage), which sets data-color-scheme on the root element. */

@@ -11,7 +11,7 @@ An earlier one wins when two disagree.
 1. **Solid 2.0 idioms** decide the API and the internals. They come first: [AGENTS.md](AGENTS.md), `node_modules/solid-js/CHEATSHEET.md`, <https://v2.solidjs.com>.
 2. **The [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/)** pattern for the component decides its roles, states and keyboard behaviour.
 3. **Size.** A component costs only what it uses. Between two ways of meeting 1 and 2, the smaller one wins, and extra behaviour has to be worth its bytes. The rules are in [PLAN.md section 6](PLAN.md#6-bundle-size-rules).
-4. **Other libraries** may be read for ideas, such as browser and assistive-technology fixes the pattern does not spell out. None is a model for Menhir's structure, API or tests, and they are named in one place only: the credit on the docs site's home page ([PLAN.md section 8](PLAN.md#8-sources-and-approach)).
+4. **Other libraries** may be read for ideas, such as browser and assistive-technology fixes the pattern does not spell out. None is a model for Menhir's structure, API or tests. They are credited in one place, the docs site's home page, and named elsewhere only where the library is the subject: a size comparison, a manual behaviour comparison, or a look of the styling skill, which is named after what it looks like ([PLAN.md section 8](PLAN.md#8-sources-and-approach)).
 
 ## Steps
 
@@ -31,8 +31,18 @@ Each component's `README.md` (`packages/menhir/src/<component>/README.md`) has a
 
 - Menhir's code and tests are written for Menhir. Reading another project for ideas needs no notice.
 - Do not copy code or test bodies from another project. If that is ever unavoidable, the source's licence notice, and any further notice its file carries, goes into [LICENSE](LICENSE) and `packages/menhir/LICENSE` in the same pull request.
+- A look of the styling skill that reproduces another library's styles is the exception, since reproducing them is its purpose. The library's licence goes in the look's own `LICENSE`, and a line in both LICENSE files points to it.
 
 Policy: [PLAN.md section 8](PLAN.md#8-sources-and-approach), "Licences".
+
+## Looks of the styling skill
+
+The package ships a skill for coding agents, `packages/menhir/skills/menhir-styling`, that styles components in a look. Each look's sources live on the website, so that its worked examples are the ones the component pages render:
+
+- `website/src/looks/<look>/`: `tokens.css`, `LOOK.md` (setup, tokens, recipes) and `LICENSE`. The look is listed in `website/src/looks/index.ts` and in the table in the skill's `SKILL.md`, and its tokens are imported in `website/src/App.css`.
+- `website/src/examples/<component>/<look>/`: a worked example, added to the component's example in `index.ts` so that its page offers the look. It uses only the look's tokens and the recipes in `LOOK.md`; a class the recipes do not have goes into `LOOK.md` first, and so does a colour that is not a token, with its reason.
+
+The skill's `looks/` folder is generated from these. After changing any of them, run `pnpm --filter website skill`; `website/styling-skill.test.ts` fails while the committed copies differ.
 
 ## Definition of done
 

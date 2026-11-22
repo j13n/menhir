@@ -85,6 +85,7 @@ export function llmsTxt(docs: ComponentDoc[]): string {
     "## Docs",
     [
       "- [Getting started](/docs/getting-started): installing Menhir and using a first component.",
+      "- [Styling](/docs/styling): styling a component through its data attributes, and the styling skill in `node_modules/menhir/skills/menhir-styling`, which styles components in one look, such as the shadcn look.",
       "- [Bundle size](/docs/bundle-size): each entry point's size, how it compares with other libraries, and how they are measured.",
     ].join("\n"),
   ];
