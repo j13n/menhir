@@ -21,13 +21,14 @@ import type { Accessor } from "solid-js";
  * (`onFlush`), so async work that `onChange` starts does not hold it back.
  * Setting the value it already has, counting earlier sets in the same turn,
  * does nothing. Set from event handlers, not from a component body or a
- * memo.
+ * memo. A set may pass `details`, such as why a popup closed, which
+ * `onChange` receives after the value.
  */
-export function createControllableSignal<T>(options: {
+export function createControllableSignal<T, Details = void>(options: {
   readonly value?: T;
   readonly defaultValue: T;
-  onChange?: (value: T) => void;
-}): [value: Accessor<T>, setValue: (next: T) => void] {
+  onChange?: (value: T, details: Details) => void;
+}): [value: Accessor<T>, setValue: (next: T, details: Details) => void] {
   // A writable derived signal that reads the default once, untracked, so a
   // later change to it does not reset the value. Seeding through a function
   // also keeps a function-valued default from being taken as a derivation.
@@ -61,14 +62,14 @@ export function createControllableSignal<T>(options: {
   // Reads lag writes, so a set is compared with the last value set in this
   // turn, if any, not with what `value` still reads.
   let pending: [T] | undefined;
-  const setValue = (next: T) => {
+  const setValue = (next: T, details: Details) => {
     if (Object.is(next, pending ? pending[0] : untrack(value))) return;
     // The part's own write is an update of its own, after the pending
     // flush: written inline, it would be held with any async work that
     // `onChange` starts, such as a fetch, and the part would not change
     // until that work settled.
     if (!untrack(isControlled)) onFlush(() => setInternal(() => next));
-    options.onChange?.(next);
+    options.onChange?.(next, details);
     const set: [T] = [next];
     pending = set;
     // `onFlush` callbacks run in call order, each flushed before the next,

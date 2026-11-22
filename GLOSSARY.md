@@ -43,3 +43,11 @@ _Avoid_: Blocking; "a modal" as a noun for a dialog
 **Backdrop**:
 The layer that covers the rest of the page behind a modal popup.
 _Avoid_: Overlay, scrim, underlay, mask
+
+**Dismiss**:
+To close a popup from outside it: Escape, an outside press, or another close request from the browser, such as the back gesture on Android.
+_Avoid_: Hide (for a dismissal), cancel
+
+**Outside press**:
+A press outside a popup that dismisses it: on a dialog's backdrop, or anywhere outside a popover. It counts on release, and only if the press also started outside.
+_Avoid_: Click outside, interact outside, pointer down outside

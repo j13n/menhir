@@ -35,4 +35,13 @@ describe("findForbiddenModules", () => {
       ]),
     ).toEqual(["@floating-ui", "positioning"]);
   });
+
+  it("reports a forbidden file of a module, and not the module's other files", async () => {
+    expect(
+      await findForbiddenModules("./fixtures/leaky/dist/dialog/index.js", [
+        "dismissal/escape",
+        "dismissal/outsidePress",
+      ]),
+    ).toEqual(["dismissal/escape"]);
+  });
 });

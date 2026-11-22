@@ -141,9 +141,11 @@ to show the check reports both kinds of module.
 ## What each popup must not bundle
 
 `popupModules.ts` lists, by popup entry point, the modules of the `floating`
-layer it must not bundle, by folder name, and `@floating-ui` for any of its
-packages. `menhir/dialog` and `menhir/alert-dialog` bundle no `@floating-ui/*`,
-no positioning and no hover. `findForbiddenModules(specifier, forbidden)` bundles
+layer it must not bundle, by folder name or as one file of a folder, such as
+`dismissal/outsidePress`, and `@floating-ui` for any of its packages.
+`menhir/dialog` and `menhir/alert-dialog` bundle no `@floating-ui/*`, no
+positioning and no hover, Alert Dialog no `dismissal/outsidePress` either, and
+`menhir/tooltip` no dismissal but `escape`. `findForbiddenModules(specifier, forbidden)` bundles
 the entry point as `findFloatingModules` does and returns the forbidden ones it
 finds. `popupModules.test.ts` checks every row whose popup is in menhir's
 `exports` and skips the rest, so a row is written with the popup's ticket and

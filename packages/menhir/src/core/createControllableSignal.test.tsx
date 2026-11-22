@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRenderer, screen } from "#test-utils";
 
 import { Toggle } from "../../test/core/Toggle.tsx";
+import { createControllableSignal } from "./createControllableSignal.ts";
 
 describe("createControllableSignal", () => {
   const { render } = createRenderer();
@@ -116,6 +117,27 @@ describe("createControllableSignal", () => {
         "aria-pressed",
         "false",
       );
+    },
+  );
+
+  // A popup passes why it opened or closed (floating/dismissal/reason.ts).
+  it.each(["uncontrolled", "controlled"])(
+    "hands onChange the details a set passes (%s)",
+    async (mode) => {
+      const onChange = vi.fn();
+      let setValue!: (value: boolean, details: { reason: string }) => void;
+      await render(() => {
+        [, setValue] = createControllableSignal<boolean, { reason: string }>({
+          value: mode === "controlled" ? true : undefined,
+          defaultValue: true,
+          onChange,
+        });
+        return null;
+      });
+
+      setValue(false, { reason: "escape-key" });
+
+      expect(onChange.mock.calls).toEqual([[false, { reason: "escape-key" }]]);
     },
   );
 

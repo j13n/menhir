@@ -17,4 +17,9 @@ export const floatingBudgets: Record<string, string> = {
   "positioning/size": "1000 B",
   "positioning/arrow": "1050 B",
   "positioning/hide": "650 B",
+  // dismissal/README.md records each size.
+  "dismissal/dialogClose": "550 B",
+  "dismissal/outsidePress": "500 B",
+  "dismissal/popoverClose": "650 B",
+  "dismissal/escape": "400 B",
 };
