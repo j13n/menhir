@@ -1,0 +1,71 @@
+body {
+  font:
+    17px/1.5 system-ui,
+    sans-serif;
+  margin: 0;
+  padding: 6rem 1rem 1rem;
+}
+#status {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0.4rem 1rem;
+  background: #ffd;
+  border-bottom: 1px solid #cc9;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 100;
+  overflow-wrap: anywhere;
+}
+.row {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #eee;
+}
+.area {
+  height: 9rem;
+  overflow: auto;
+  border: 1px solid #aaa;
+  margin: 0.5rem 0;
+  padding: 0 0.5rem;
+}
+input {
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.4rem;
+}
+button {
+  font-size: 16px;
+  padding: 0.4rem 0.8rem;
+}
+/* The libraries render no <dialog>: a backdrop and a popup, styled alike. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.35);
+  z-index: 50;
+}
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 26rem);
+  max-height: calc(100% - 2em - 6px);
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #888;
+  border-radius: 8px;
+  z-index: 51;
+}
+dialog {
+  width: min(90vw, 26rem);
+  border: 1px solid #888;
+  border-radius: 8px;
+}
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.35);
+}
