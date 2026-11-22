@@ -24,21 +24,22 @@ let restoreStyles: (() => void) | undefined;
  * closed, not when its state turns false: after the flush that closed it,
  * or on its `close` or `toggle` event if it is still shown then, as while
  * an exit animation runs. A popup disposed while open unlocks it at once.
+ * While open, the popup gets `overscroll-behavior: contain` and, if it
+ * does not scroll itself, `touch-action: pinch-zoom`, without which iOS
+ * Safari scrolls the page from a drag on it or on its backdrop.
  */
 export function createScrollLock(options: {
   readonly popup: HTMLElement | undefined;
   readonly open: boolean;
 }): void {
-  // Whether this popup holds a lock, and what ends the wait for it to
-  // close, while it is still shown after its state turned false.
-  let held = false;
+  // What ends this popup's lock while it holds one, and what ends the wait
+  // for it to close, while it is still shown after its state turned false.
+  let held: (() => void) | undefined;
   let stopWaiting: (() => void) | undefined;
   const release = () => {
     stopWaiting?.();
-    if (held) {
-      held = false;
-      unlock();
-    }
+    held?.();
+    held = undefined;
   };
   // Disposal releases at once, before the check queued below runs.
   onCleanup(release);
@@ -50,8 +51,12 @@ export function createScrollLock(options: {
       // Opened again before the last closing finished: it keeps its lock.
       stopWaiting?.();
       if (!held) {
-        held = true;
         lock();
+        const unlockTouch = lockTouch(popup);
+        held = () => {
+          unlockTouch();
+          unlock();
+        };
       }
       return () => {
         // After the popup's own close in this flush, whichever effect runs
@@ -96,7 +101,48 @@ function lock() {
       `${parseFloat(computed.paddingRight) + scrollbarWidth}px`;
     lockStyles["--hidden-scrollbar-width"] = `${scrollbarWidth}px`;
   }
-  const saved = Object.keys(lockStyles).map(
+  restoreStyles = saveStyles(style, Object.keys(lockStyles));
+  for (const name in lockStyles) style.setProperty(name, lockStyles[name]!);
+}
+
+function unlock() {
+  if (!--locks) restoreStyles!();
+}
+
+/**
+ * What keeps iOS Safari from scrolling the page through the popup, whatever
+ * the page's `overflow`: `overscroll-behavior: contain`, so a popup that
+ * scrolls stops at its end, and `touch-action: pinch-zoom` on a popup that
+ * does not scroll itself, so that a drag on it, or on its backdrop, which
+ * hits the popup, pans nothing. Checked again as the popup or its content
+ * changes size. A popup that scrolls keeps its own `touch-action`, since
+ * Chromium would no longer scroll it by touch.
+ */
+function lockTouch(popup: HTMLElement): () => void {
+  const style = popup.style;
+  const restoreContain = saveStyles(style, ["overscroll-behavior"]);
+  const restoreTouch = saveStyles(style, ["touch-action"]);
+  style.setProperty("overscroll-behavior", "contain");
+  const observer = new ResizeObserver(() => {
+    for (const child of popup.children) observer.observe(child);
+    if (
+      popup.scrollHeight > popup.clientHeight ||
+      popup.scrollWidth > popup.clientWidth
+    )
+      restoreTouch();
+    else style.setProperty("touch-action", "pinch-zoom");
+  });
+  observer.observe(popup);
+  return () => {
+    observer.disconnect();
+    restoreTouch();
+    restoreContain();
+  };
+}
+
+/** Saves the inline values of `names`, and returns what puts them back. */
+function saveStyles(style: CSSStyleDeclaration, names: string[]): () => void {
+  const saved = names.map(
     (name) =>
       [
         name,
@@ -104,15 +150,10 @@ function lock() {
         style.getPropertyPriority(name),
       ] as const,
   );
-  for (const name in lockStyles) style.setProperty(name, lockStyles[name]!);
-  restoreStyles = () => {
+  return () => {
     for (const [name, value, priority] of saved) {
       if (value) style.setProperty(name, value, priority);
       else style.removeProperty(name);
     }
   };
-}
-
-function unlock() {
-  if (!--locks) restoreStyles!();
 }

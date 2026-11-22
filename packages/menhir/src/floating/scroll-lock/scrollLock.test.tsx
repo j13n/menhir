@@ -1,5 +1,13 @@
 import { createSignal, flush, Show } from "solid-js";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { createRenderer, isJSDOM, screen } from "#test-utils";
 
@@ -24,6 +32,21 @@ function TallPage() {
 
 /** A point on the backdrop: the top left corner of the viewport. */
 const backdrop = { x: 5, y: 5 };
+
+// jsdom has no ResizeObserver, which the touch-action check uses, and no
+// layout for it to observe.
+if (isJSDOM) {
+  beforeAll(() => {
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe() {}
+        disconnect() {}
+      },
+    );
+  });
+  afterAll(() => vi.unstubAllGlobals());
+}
 
 describe("createScrollLock", () => {
   const { render } = createRenderer();
@@ -519,6 +542,110 @@ describe("createScrollLock", () => {
         await closing();
         unmount();
         expect(toggle()).toEqual([]);
+      },
+    );
+  });
+
+  // iOS Safari scrolls the page from a drag on the backdrop or on a dialog
+  // that does not scroll, `overflow: hidden` or not; `touch-action:
+  // pinch-zoom` on the dialog stops it (README, "iOS Safari"). Chromium
+  // cannot show that drag; these show where the property goes, and that
+  // what should still scroll by touch does.
+  describe("touch-action on the popup", () => {
+    function dialog() {
+      return screen.getByTestId("Dialog");
+    }
+
+    async function renderDialog() {
+      const [open, setOpen] = createSignal(false);
+      const [long, setLong] = createSignal(false);
+      await render(() => (
+        <Dialog open={open()} onOpenChange={setOpen}>
+          <p>Top</p>
+          <div data-testid="area" style={{ height: "100px", overflow: "auto" }}>
+            <div style={{ height: "1000px" }}>Long content</div>
+          </div>
+          <Show when={long()}>
+            <div style={{ height: "3000px" }}>
+              Content taller than the screen
+            </div>
+          </Show>
+        </Dialog>
+      ));
+      const settle = async () => {
+        flush();
+        // The check runs once the dialog has been laid out.
+        await nextTask();
+      };
+      return {
+        async setOpen(value: boolean) {
+          setOpen(value);
+          await settle();
+        },
+        async setLong(value: boolean) {
+          setLong(value);
+          await settle();
+        },
+      };
+    }
+
+    it.skipIf(isJSDOM)(
+      "gives a dialog that fits pinch-zoom and contain while open, and puts its own values back",
+      async () => {
+        const { setOpen } = await renderDialog();
+        dialog().style.touchAction = "manipulation";
+
+        dialog().style.overscrollBehavior = "auto";
+
+        await setOpen(true);
+        expect(dialog().style.touchAction).toBe("pinch-zoom");
+        expect(dialog().style.overscrollBehavior).toBe("contain");
+        await setOpen(false);
+
+        expect(dialog().style.touchAction).toBe("manipulation");
+        expect(dialog().style.overscrollBehavior).toBe("auto");
+      },
+    );
+
+    it.skipIf(isJSDOM)(
+      "lets a scroll area in a dialog that fits scroll by touch",
+      async () => {
+        const { setOpen } = await renderDialog();
+        await setOpen(true);
+        const area = screen.getByTestId("area");
+
+        await touchScroll(centerOf(area), 600);
+
+        expect(area.scrollTop).toBeGreaterThan(0);
+      },
+    );
+
+    it.skipIf(isJSDOM)(
+      "leaves a dialog taller than the screen its own touch-action, so it scrolls by touch, and contains it",
+      async () => {
+        const { setOpen, setLong } = await renderDialog();
+        await setLong(true);
+        await setOpen(true);
+
+        expect(dialog().style.touchAction).toBe("");
+        expect(dialog().style.overscrollBehavior).toBe("contain");
+        await touchScroll(centerOf(screen.getByText("Top")), 600);
+        expect(dialog().scrollTop).toBeGreaterThan(0);
+      },
+    );
+
+    it.skipIf(isJSDOM)(
+      "checks again while open, as the content grows past the screen and shrinks back",
+      async () => {
+        const { setOpen, setLong } = await renderDialog();
+        await setOpen(true);
+        expect(dialog().style.touchAction).toBe("pinch-zoom");
+
+        await setLong(true);
+        expect(dialog().style.touchAction).toBe("");
+        await setLong(false);
+
+        expect(dialog().style.touchAction).toBe("pinch-zoom");
       },
     );
   });
