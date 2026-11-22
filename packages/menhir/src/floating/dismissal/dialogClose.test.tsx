@@ -4,8 +4,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRenderer, isJSDOM, screen } from "#test-utils";
 
 import { Dialog } from "../../../test/floating/dismissal/Dialog.tsx";
-import { keyboard, nextTask } from "../../../test/floating/dismissal/input.ts";
-import { trackListeners } from "../../../test/floating/dismissal/listeners.ts";
+import { keyboard, nextTask } from "../../../test/floating/input.ts";
+import { trackListeners } from "../../../test/floating/listeners.ts";
 
 function dialogNamed(name = "Dialog") {
   return screen.getByRole<HTMLDialogElement>("dialog", { name, hidden: true });

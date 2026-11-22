@@ -9,7 +9,7 @@ import {
 } from "#test-utils";
 
 import DismissalFixture from "./DismissalFixture.tsx";
-import { keyboard, nextTask } from "./input.ts";
+import { keyboard, nextTask } from "../input.ts";
 
 const fixture = "/test/floating/dismissal/DismissalFixture.tsx";
 

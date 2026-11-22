@@ -9,8 +9,8 @@ import {
   keyboard,
   nextTask,
   press,
-} from "../../../test/floating/dismissal/input.ts";
-import { trackListeners } from "../../../test/floating/dismissal/listeners.ts";
+} from "../../../test/floating/input.ts";
+import { trackListeners } from "../../../test/floating/listeners.ts";
 
 function popoverNamed(name = "Popover") {
   return screen.getByTestId(name);

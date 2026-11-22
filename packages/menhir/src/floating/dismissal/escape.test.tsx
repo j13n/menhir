@@ -4,8 +4,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRenderer, fireEvent, isJSDOM, screen } from "#test-utils";
 
 import { Dialog } from "../../../test/floating/dismissal/Dialog.tsx";
-import { keyboard, nextTask } from "../../../test/floating/dismissal/input.ts";
-import { trackListeners } from "../../../test/floating/dismissal/listeners.ts";
+import { keyboard, nextTask } from "../../../test/floating/input.ts";
+import { trackListeners } from "../../../test/floating/listeners.ts";
 import { Popover } from "../../../test/floating/dismissal/Popover.tsx";
 import { Tooltip } from "../../../test/floating/dismissal/Tooltip.tsx";
 

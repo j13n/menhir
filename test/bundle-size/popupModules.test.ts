@@ -1,3 +1,5 @@
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, it } from "vitest";
 
 import { popupComponents } from "../../packages/menhir/layers.ts";
@@ -22,6 +24,40 @@ describe("forbiddenModules", () => {
   it("names only popup entry points", () => {
     for (const entryPoint of Object.keys(forbiddenModules))
       expect(popupComponents).toContain(entryPoint.slice("menhir/".length));
+  });
+});
+
+// One file per behaviour (PLAN.md section 6, rule 6), checked on the
+// modules themselves until the popups that use them are built.
+describe("a floating module alone", () => {
+  const built = (file: string) =>
+    fileURLToPath(
+      new URL(
+        `dist/floating/${file}.js`,
+        import.meta.resolve("menhir/package.json"),
+      ),
+    );
+
+  it.each(["focus/initialFocus", "focus/returnFocus"] as const)(
+    "%s bundles no Tab wrap and no tabbable search",
+    async (file) => {
+      expect(
+        await findForbiddenModules(built(file), [
+          "focus/tabWrap",
+          "focus/tabbable",
+        ]),
+      ).toEqual([]);
+    },
+  );
+
+  it("Escape bundles no other way of closing", async () => {
+    expect(
+      await findForbiddenModules(built("dismissal/escape"), [
+        "dismissal/outsidePress",
+        "dismissal/dialogClose",
+        "dismissal/popoverClose",
+      ]),
+    ).toEqual([]);
   });
 });
 

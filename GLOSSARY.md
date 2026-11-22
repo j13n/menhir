@@ -51,3 +51,11 @@ _Avoid_: Hide (for a dismissal), cancel
 **Outside press**:
 A press outside a popup that dismisses it: on a dialog's backdrop, or anywhere outside a popover. It counts on release, and only if the press also started outside.
 _Avoid_: Click outside, interact outside, pointer down outside
+
+**Tab stop**:
+An element that Tab moves focus to. A radio group is one tab stop, however many radios it has.
+_Avoid_: Tabbable (as a noun), focus stop
+
+**Tab wrap**:
+In a modal popup, Tab from the last tab stop moving to the first, and Shift+Tab from the first to the last, so focus stays inside.
+_Avoid_: Focus trap, focus lock, focus loop

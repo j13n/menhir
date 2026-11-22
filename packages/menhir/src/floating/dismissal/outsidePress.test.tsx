@@ -10,8 +10,8 @@ import {
   press,
   tap,
   touchScroll,
-} from "../../../test/floating/dismissal/input.ts";
-import { trackListeners } from "../../../test/floating/dismissal/listeners.ts";
+} from "../../../test/floating/input.ts";
+import { trackListeners } from "../../../test/floating/listeners.ts";
 
 function dialogNamed(name = "Dialog") {
   return screen.getByRole<HTMLDialogElement>("dialog", { name, hidden: true });
