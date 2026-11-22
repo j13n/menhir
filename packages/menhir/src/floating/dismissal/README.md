@@ -82,6 +82,7 @@ reasons; they do not rename these.
 | `outside-press` | A press outside: on a dialog's backdrop, or a popover's light dismiss                                                             |
 | `trigger-press` | The trigger was pressed, by pointer or keyboard: a popover's `popovertarget` closing it                                           |
 | `close-request` | The browser closed the popup for another reason: the back gesture on Android, a `<form method="dialog">`, another popover opening |
+| `trigger-hover` | The pointer rested on the trigger, or left the trigger and the popup (`floating/hover`, #30)                                      |
 
 ### Decisions
 

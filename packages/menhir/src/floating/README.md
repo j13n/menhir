@@ -17,7 +17,7 @@ out, the sources and the module's measured size.
 | `focus/`           | The Tab wrap of a modal dialog, overrides of initial and return focus, finding tabbable elements | #27    |
 | `scroll-lock/`     | Stops the page scrolling behind a modal popup                                                    | #28    |
 | `presence/`        | Keeps a closing popup open until its exit animation has ended                                    | #96    |
-| `hover/`           | Opens and closes a popup on hover, with delays                                                   | #30    |
+| `hover/`           | Opens and closes a popup on hover, with delays, a safe area to the popup and delay groups        | #30    |
 | `list-navigation/` | Arrow keys between the items of a list popup                                                     | #97    |
 | `typeahead/`       | Moves to the item whose text the user types                                                      | #98    |
 
@@ -48,4 +48,6 @@ size and bundle checks in `test/bundle-size`.
   requests on the server. A count is not a stack: scroll lock counts the
   popups holding it in its own module, written only from effects.
 - **Nothing runs at import time or during a server render** (rule 2). Listeners
-  exist only while a popup is open.
+  exist only while a popup is open, except on the trigger of a module that
+  opens the popup from it: `hover/` listens on the trigger from mount to
+  disposal, since it opens while closed.

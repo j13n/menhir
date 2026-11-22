@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { popupComponents } from "../../packages/menhir/layers.ts";
 import { entryPoints } from "./entryPoints.ts";
+import { bundleApp } from "./findFloatingModules.ts";
 import { findForbiddenModules, forbiddenModules } from "./popupModules.ts";
 
 describe.each(Object.entries(forbiddenModules))(
@@ -49,6 +50,25 @@ describe("a floating module alone", () => {
       ).toEqual([]);
     },
   );
+
+  // A submenu uses the safe area without the delays (#30).
+  it("the safe area bundles no timer, and no other file of hover", async () => {
+    const file = built("hover/safeArea");
+    expect(
+      await findForbiddenModules(file, ["hover/hover", "hover/group"]),
+    ).toEqual([]);
+    const code = (await bundleApp(file))
+      .map((chunk) => (chunk.type === "chunk" ? chunk.code : ""))
+      .join("\n");
+    expect(code).toContain("trackSafeArea");
+    expect(code).not.toMatch(/setTimeout|setInterval/);
+  });
+
+  it("hover bundles no group", async () => {
+    expect(
+      await findForbiddenModules(built("hover/hover"), ["hover/group"]),
+    ).toEqual([]);
+  });
 
   it("Escape bundles no other way of closing", async () => {
     expect(

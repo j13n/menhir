@@ -59,6 +59,35 @@ export async function press(
   });
 }
 
+/**
+ * Moves the mouse, or a pen that hovers, through `points` in turn, as a
+ * pointer moves: one move event each.
+ */
+export async function movePointer(
+  points: Point[],
+  pointerType: "mouse" | "pen" = "mouse",
+) {
+  const cdp = await session();
+  for (const point of points) {
+    await cdp.send("Input.dispatchMouseEvent", {
+      type: "mouseMoved",
+      ...point,
+      pointerType,
+    });
+  }
+}
+
+/** The points of a straight line from `from` to `to`, in `steps` steps. */
+export function line(from: Point, to: Point, steps = 10): Point[] {
+  return Array.from({ length: steps }, (_, index) => {
+    const t = (index + 1) / steps;
+    return {
+      x: from.x + (to.x - from.x) * t,
+      y: from.y + (to.y - from.y) * t,
+    };
+  });
+}
+
 /** A short touch at one point. */
 export async function tap(point: Point) {
   const cdp = await session();

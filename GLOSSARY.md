@@ -56,6 +56,18 @@ _Avoid_: Hide (for a dismissal), cancel
 A press outside a popup that dismisses it: on a dialog's backdrop, or anywhere outside a popover. It counts on release, and only if the press also started outside.
 _Avoid_: Click outside, interact outside, pointer down outside
 
+**Hover delay**:
+How long the pointer rests on a trigger before its popup opens (`delay`), or how long after it has left before the popup closes (`closeDelay`).
+_Avoid_: Hover intent (for the delay alone), debounce
+
+**Safe area**:
+The space between where the pointer left a trigger and its popup, or the popup and its trigger, that the pointer may cross without the popup closing.
+_Avoid_: Safe triangle, safe polygon, hover bridge
+
+**Delay group**:
+Triggers whose popups open at once, without the hover delay, while one of them is open or shortly after it closed, such as the tooltips of a toolbar.
+_Avoid_: Tooltip provider, delay provider
+
 **Tab stop**:
 An element that Tab moves focus to. A radio group is one tab stop, however many radios it has.
 _Avoid_: Tabbable (as a noun), focus stop

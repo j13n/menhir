@@ -10,9 +10,15 @@
  * - `close-request`: the browser closed the popup for another reason, such
  *   as the back gesture on Android, a `<form method="dialog">` or another
  *   popover opening.
+ * - `trigger-hover`: the pointer rested on the trigger, or left the trigger
+ *   and the popup (`floating/hover`).
  */
 export type OpenChangeReason =
-  "escape-key" | "outside-press" | "trigger-press" | "close-request";
+  | "escape-key"
+  | "outside-press"
+  | "trigger-press"
+  | "close-request"
+  | "trigger-hover";
 
 /**
  * The second argument of `onOpenChange`. `event` is the event that caused
