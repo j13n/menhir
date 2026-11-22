@@ -137,3 +137,34 @@ rule 4 catch a direct import; this catches one through any chain of modules.
 An unresolved import fails the check instead of being left out, so a missing
 build cannot pass as "no leak". `fixtures/leaky` is a package that does leak,
 to show the check reports both kinds of module.
+
+## What each popup must not bundle
+
+`popupModules.ts` lists, by popup entry point, the modules of the `floating`
+layer it must not bundle, by folder name, and `@floating-ui` for any of its
+packages. `menhir/dialog` and `menhir/alert-dialog` bundle no `@floating-ui/*`,
+no positioning and no hover. `findForbiddenModules(specifier, forbidden)` bundles
+the entry point as `findFloatingModules` does and returns the forbidden ones it
+finds. `popupModules.test.ts` checks every row whose popup is in menhir's
+`exports` and skips the rest, so a row is written with the popup's ticket and
+starts counting when the popup lands. A row may name only popups from
+`packages/menhir/layers.ts` and folders from its `floatingModules`.
+`fixtures/leaky/dist/dialog` is a popup that bundles dismissal, which it may,
+and positioning with `@floating-ui/dom`, which it may not: the check reports
+positioning and `@floating-ui`, and not dismissal.
+
+## Budgets of the floating layer
+
+The `floating` layer is internal, so its modules have no entry point and no
+budget in `.size-limit.js`. `floatingBudgets.ts` gives one to each file of the
+layer that a popup imports, keyed by its path under menhir's `dist/floating`,
+such as `"dismissal/escape": "300 B"`. `floating.size-limit.js` measures each as
+`.size-limit.js` measures an entry point, with `@floating-ui/dom` counted, and
+`floatingSize.test.ts` fails if one is over its budget or if a folder in
+`packages/menhir/src/floating` has none. These sizes are not in
+`dist/sizes.json`, so the docs site does not show them; a module's README
+records its own.
+
+To add a budget: build menhir, run `pnpm exec size-limit --config
+floating.size-limit.js` here with a generous limit to see the size, then set
+the limit to the size plus about 20%, rounded.

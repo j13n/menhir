@@ -1,32 +1,10 @@
 // Runs `size-limit --json`, the report the docs site's sizes are generated
 // from (#38), and checks it.
 // `pnpm test` builds menhir first, so the sizes are of the current source.
-import { spawnSync } from "node:child_process";
-
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { entryPoints } from "./entryPoints.ts";
-
-const root = import.meta.dirname;
-
-type SizeLimitResult = {
-  name: string;
-  size: number;
-  sizeLimit: number;
-  passed: boolean;
-};
-
-function runSizeLimit(): SizeLimitResult[] {
-  const run = spawnSync(`${root}/node_modules/.bin/size-limit`, ["--json"], {
-    cwd: root,
-    encoding: "utf8",
-  });
-  // Over budget, size-limit exits with 1 and still prints the report. On an
-  // error, such as a missing config, it prints `{ "error": stack }` instead.
-  const report = JSON.parse(run.stdout);
-  if (!Array.isArray(report)) throw new Error(report.error);
-  return report;
-}
+import { runSizeLimit, type SizeLimitResult } from "./runSizeLimit.ts";
 
 describe("size-limit", () => {
   let results: SizeLimitResult[];

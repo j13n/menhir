@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, globSync, readFileSync } from "node:fs";
 
 import solid from "@solidjs/vite-plugin";
 import { defineConfig, type Plugin } from "vite";
@@ -16,6 +16,13 @@ const manifest = JSON.parse(
 const components = Object.keys(manifest.exports)
   .filter((subpath) => subpath !== "./package.json")
   .map((subpath) => subpath.slice("./".length));
+
+// Every module of the `floating` layer is an entry too, so that one no popup
+// imports yet is still built, and can be measured (test/bundle-size,
+// floatingBudgets.ts). The layer is internal: `exports` does not list it.
+const floatingEntries = globSync("src/floating/**/*.{ts,tsx}", {
+  exclude: ["**/*.test.*", "**/*.d.ts"],
+}).map((file) => [file.slice("src/".length).replace(/\.tsx?$/, ""), file]);
 
 // Rolldown 1.2 compiles `export * as Switch from "./index.parts"` into an
 // object of getters, and a bundler cannot drop unused parts from an object
@@ -40,15 +47,16 @@ export default defineConfig({
     target: "esnext",
     minify: false,
     lib: {
-      entry: Object.fromEntries(
-        components.flatMap((name) => [
+      entry: Object.fromEntries([
+        ...components.flatMap((name) => [
           [`${name}/index`, `src/${name}/index.ts`],
           // A utility, such as color-scheme, exports functions and has no parts.
           ...(existsSync(`src/${name}/index.parts.ts`)
             ? [[`${name}/index.parts`, `src/${name}/index.parts.ts`]]
             : []),
         ]),
-      ),
+        ...floatingEntries,
+      ]),
       formats: ["es"],
     },
     rolldownOptions: {

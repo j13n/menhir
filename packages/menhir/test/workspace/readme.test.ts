@@ -6,6 +6,8 @@ import { readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
 
+import { floatingModules } from "../../layers.ts";
+
 const workspaceRoot = new URL("../../../../", import.meta.url);
 const read = (path: string) =>
   readFileSync(new URL(path, workspaceRoot), "utf8");
@@ -47,5 +49,16 @@ describe.each(["README.md", "packages/menhir/README.md"])("%s", (path) => {
 
   it("names every utility, and no other", () => {
     expect(listed(readme, "Utilities").sort()).toEqual(utilities.sort());
+  });
+});
+
+describe("src/floating/README.md", () => {
+  it("lists every module of layers.ts, and no other", () => {
+    const folders = [
+      ...read("packages/menhir/src/floating/README.md").matchAll(
+        /^\| `([a-z-]+)\/`/gm,
+      ),
+    ].map((match) => match[1]);
+    expect(folders.sort()).toEqual([...floatingModules].sort());
   });
 });

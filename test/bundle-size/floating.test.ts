@@ -27,7 +27,9 @@ describe("findFloatingModules", () => {
 
   it("reports a floating module that the entry pulls in", () => {
     expect(leaky).toContainEqual(
-      expect.stringMatching(/\/fixtures\/leaky\/dist\/floating\/position\.js$/),
+      expect.stringMatching(
+        /\/fixtures\/leaky\/dist\/floating\/positioning\/position\.js$/,
+      ),
     );
   });
 
