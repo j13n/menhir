@@ -11,13 +11,10 @@ const floatingModule = /\/dist\/(source\/)?floating\//;
 const floatingUiImport = /^@floating-ui\//;
 
 /**
- * Bundles an app that imports `specifier` alone, with Rolldown, and returns
- * what it includes from the `floating` layer (PLAN.md section 6, rule 4).
- * An empty list means no leak.
+ * Bundles an app that imports `specifier` alone and uses all of it, with
+ * Rolldown, unminified, and returns its chunks.
  */
-export async function findFloatingModules(
-  specifier: string,
-): Promise<string[]> {
+export async function bundleApp(specifier: string) {
   const { output } = await build({
     input: appId,
     cwd: import.meta.dirname,
@@ -40,7 +37,18 @@ export async function findFloatingModules(
       },
     ],
   });
+  return output;
+}
 
+/**
+ * Bundles an app that imports `specifier` alone, with Rolldown, and returns
+ * what it includes from the `floating` layer (PLAN.md section 6, rule 4).
+ * An empty list means no leak.
+ */
+export async function findFloatingModules(
+  specifier: string,
+): Promise<string[]> {
+  const output = await bundleApp(specifier);
   return output.flatMap((file) =>
     file.type === "chunk"
       ? [
