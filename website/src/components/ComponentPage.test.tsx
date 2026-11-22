@@ -64,6 +64,23 @@ const switchPage: ComponentPageProps = {
   keyboard: [{ keys: "Space", action: "Toggles the switch." }],
 };
 
+/** The Switch page's example, with one in the shadcn look as well. */
+const withShadcnLook: ComponentPageProps["example"] = {
+  ...switchPage.example,
+  looks: {
+    shadcn: {
+      render: () => (
+        <button type="button" class="bg-primary">
+          shadcn switch
+        </button>
+      ),
+      files: [
+        { name: "SwitchExample.tsx", code: tsx`<button class="bg-primary" />` },
+      ],
+    },
+  },
+};
+
 /** Each code file under the example, as its caption and its code. */
 const codeFiles = (figures: HTMLElement[]) =>
   figures.map((figure) => [
@@ -122,6 +139,40 @@ describe("<ComponentPage />", () => {
     expect(codeFiles(example.getAllByRole("figure"))).toEqual([
       ["SwitchExample.tsx", '<button class="switch" />'],
       ["switch.css", ".switch { border-radius: 9999px; }"],
+    ]);
+  });
+
+  test("offers each look the component has an example in, after Tailwind CSS and CSS", () => {
+    const { getByRole } = render(() => (
+      <ComponentPage {...switchPage} example={withShadcnLook} />
+    ));
+    const styling = within(getByRole("region", { name: "Example" })).getByRole(
+      "group",
+      { name: "Styling" },
+    );
+    expect(
+      within(styling)
+        .getAllByRole("radio")
+        .map((radio) => radio.parentElement?.textContent),
+    ).toEqual(["Tailwind CSS", "CSS", "shadcn"]);
+  });
+
+  test("switches to a look's example, inside the look and with the site's Tailwind preflight, and its code", () => {
+    const { getByRole } = render(() => (
+      <ComponentPage {...switchPage} example={withShadcnLook} />
+    ));
+    const example = within(getByRole("region", { name: "Example" }));
+    fireEvent.click(example.getByRole("radio", { name: "shadcn" }));
+    flush();
+    expect(example.getByRole("radio", { name: "shadcn" })).toBeChecked();
+    expect(
+      example.queryByRole("button", { name: "Tailwind switch" }),
+    ).toBeNull();
+    const live = example.getByRole("button", { name: "shadcn switch" });
+    expect(live.closest('[data-look="shadcn"]')).not.toBeNull();
+    expect(live.closest(".unstyled-example")).toBeNull();
+    expect(codeFiles(example.getAllByRole("figure"))).toEqual([
+      ["SwitchExample.tsx", '<button class="bg-primary" />'],
     ]);
   });
 

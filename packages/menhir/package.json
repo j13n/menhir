@@ -117,7 +117,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "skills"
   ],
   "imports": {
     "#test-utils": "./test/index.ts"

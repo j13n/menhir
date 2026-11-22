@@ -11,7 +11,7 @@ The reader's choice of light, dark or system, where system follows the operating
 _Avoid_: Color mode, appearance, dark mode (as the name of the choice)
 
 **Theme**:
-A named look out of the app's list, such as sepia or high contrast, whether it is light or dark.
+A named set of colours out of the app's list, such as sepia or high contrast, whether it is light or dark.
 _Avoid_: Palette, skin, color scheme
 
 ### Popups
@@ -111,3 +111,21 @@ _Avoid_: Body, subtitle
 **Close**:
 A button inside a popup that closes it.
 _Avoid_: Dismiss button, cancel (as the part's name)
+
+### Styling
+
+**Look**:
+A complete visual style for Menhir's components, such as the shadcn look: tokens, recipes and a worked example per component, shipped in the styling skill. An app has one look; a look can have several themes.
+_Avoid_: Theme, style, skin, preset
+
+**Token**:
+A named value of a look, such as `primary` or `radius`, that every component in the look uses instead of a raw colour or size.
+_Avoid_: Variable (for the named value), design token (in full)
+
+**Recipe**:
+A look's rule for one kind of part, such as its buttons, focus ring or popup surface, written as the classes that make it.
+_Avoid_: Variant, pattern
+
+**Worked example**:
+A component styled in a look, generated into the styling skill from the website's example, for an agent to start from.
+_Avoid_: Template, snippet, recipe (recipes are the look's rules)

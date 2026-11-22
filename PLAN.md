@@ -21,7 +21,7 @@ Status: first release (2026-11-21). Phases 0 and 1 are done and released as 0.1.
 
 **Non-goals**
 
-- Styling, themes, or a copy-paste component registry. Those can be built on top later. Two exceptions: the color-scheme utility (`menhir/color-scheme/local-storage` and `menhir/color-scheme/cookie`) keeps the reader's light, dark or system choice, and the theme utility (`menhir/theme/local-storage` and `menhir/theme/cookie`) keeps their choice out of the app's themes, since the state and its pre-paint script are the same in every app; how each color scheme or theme looks stays the app's (`docs/adr/0001-color-scheme-utility.md`, `docs/adr/0003-theme-utility.md`).
+- Styling, themes, or a copy-paste component registry. Those can be built on top later. Two exceptions: the color-scheme utility (`menhir/color-scheme/local-storage` and `menhir/color-scheme/cookie`) keeps the reader's light, dark or system choice, and the theme utility (`menhir/theme/local-storage` and `menhir/theme/cookie`) keeps their choice out of the app's themes, since the state and its pre-paint script are the same in every app; how each color scheme or theme looks stays the app's (`docs/adr/0001-color-scheme-utility.md`, `docs/adr/0003-theme-utility.md`). The styling skill (`packages/menhir/skills/menhir-styling`) is not an exception: it ships no CSS in any entry point, only tokens and worked examples for a coding agent to style the app's own components with (`docs/adr/0007-styling-skill.md`).
 - Support for Solid 1.x.
 - Being a port of, or modelled on, any library. Other libraries may be read for ideas; none sets Menhir's source structure, API, tests or release schedule (section 8).
 - Covering every component other libraries have before the first release.
@@ -241,7 +241,7 @@ Menhir is written the Solid 2.0 way. What decides how a component is built, in t
 1. **Solid 2.0 idioms** decide the API and the internals: [AGENTS.md](AGENTS.md), `node_modules/solid-js/CHEATSHEET.md`, the migration guide and v2.solidjs.com.
 2. **The WAI-ARIA Authoring Practices** pattern for the component decides its roles, states and keyboard behaviour.
 3. **Size.** A component costs only what it uses (section 6). Between two ways of meeting 1 and 2, the smaller one wins, and extra behaviour has to be worth its bytes.
-4. **Other libraries** may be read for ideas, such as browser and assistive-technology fixes the pattern does not spell out. None is a model for Menhir's source structure, API or tests. They are credited in one place, the docs site's home page, and not named anywhere else.
+4. **Other libraries** may be read for ideas, such as browser and assistive-technology fixes the pattern does not spell out. None is a model for Menhir's source structure, API or tests. They are credited in one place, the docs site's home page. Elsewhere a library is named only where it is the subject: the size comparison (`test/bundle-size`), a manual behaviour comparison (`test/manual`), or a look of the styling skill, which is named after what it looks like (`docs/adr/0007-styling-skill.md`). A library is never named as the reason for a Menhir decision.
 
 How this applies to each component:
 
@@ -249,7 +249,7 @@ How this applies to each component:
 - **Assemble the test list first.** Start from the cases the WAI-ARIA Authoring Practices pattern requires, then add browser and assistive-technology behaviour, forms, SSR and hydration, and Menhir's own conventions. Write each test against Menhir's API.
 - **Set the size budget with the component.** Its entry point gets a budget in `test/bundle-size` when it is added, and it imports only the layers it is allowed to (section 6).
 - **Record the sources.** For each component, record the WAI-ARIA pattern and the date it was read, and check the pattern for changes at each release ([CONTRIBUTING.md](CONTRIBUTING.md)).
-- **Licences.** Menhir's code and tests are its own; reading another project for ideas needs no notice. Code or test bodies are not copied from other projects. If that is ever unavoidable, the source's licence notice goes into LICENSE with the change.
+- **Licences.** Menhir's code and tests are its own; reading another project for ideas needs no notice. Code or test bodies are not copied from other projects. If that is ever unavoidable, the source's licence notice goes into LICENSE with the change. A look of the styling skill reproduces another library's styles on purpose; that library's licence goes in the look's own `LICENSE` (CONTRIBUTING, "Copyright notices").
 
 ### What does not translate directly
 
@@ -502,6 +502,7 @@ The component list is the set a modern headless library is expected to have. It 
 - ~~First, decide what the browser does for popups, and which browsers are supported (#94).~~ Decided: Baseline Widely available plus `popover` (section 5); `<dialog>` and `popover` put every popup in the top layer, so there is no portal (section 8, "What the browser does for popups"). Beside it, set up the layer (#95): the folder, whether it is internal, how a module's size is measured, and where the stack of open popups lives.
 - `floating` layer: positioning (#25), dismissal (#26), focus (#27), scroll lock (#28), hover intent (#30), presence (#96), which keeps a closing popup in the document until its exit animation has ended.
 - ~~Dialog (#31), which settles the popup conventions as Switch settled the first ones.~~ Done: section 8, "API conventions", "Popups". ~~Alert Dialog (#32).~~ Done: it builds on Dialog (section 6, rule 4). ~~Popover (#33), which settles the parts of a positioned popup.~~ Done: section 8, "API conventions", "Positioned popups". ~~Tooltip (#34).~~ Done: section 8, "API conventions", "Popups that open on hover and focus".
+- ~~Styling skill, with the shadcn look (#124).~~ Done: `packages/menhir/skills/menhir-styling`, generated from the website's looks (`docs/adr/0007-styling-skill.md`). Three agents ran it twice in identical fresh apps: after the first run's gaps were filled, Dialog came out the same in all three, and Accordion, which has no worked example, the same but for the Root's width; their Switch, Checkbox, Dialog and Accordion were then rendered and checked in Chromium, in light and dark. A Bootstrap 5 look, in plain CSS, comes next.
 - Announcement once Dialog and Popover are excellent (#88).
 
 **Phase 3: list-based popups**

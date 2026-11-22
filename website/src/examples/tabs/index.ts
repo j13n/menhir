@@ -3,10 +3,12 @@ import type { ComponentExampleProps } from "../../components/ComponentExample";
 import CssExample from "./css/TabsExample";
 import cssExampleCode from "./css/TabsExample.tsx?highlight";
 import cssCode from "./css/tabs.css?highlight";
+import ShadcnExample from "./shadcn/TabsExample";
+import shadcnExampleCode from "./shadcn/TabsExample.tsx?highlight";
 import TailwindExample from "./tailwind/TabsExample";
 import tailwindExampleCode from "./tailwind/TabsExample.tsx?highlight";
 
-/** The Tabs page's example, with plain CSS and with Tailwind CSS. */
+/** The Tabs page's example, with plain CSS and with Tailwind CSS, and in the shadcn look. */
 export const tabsExample: ComponentExampleProps = {
   css: {
     render: CssExample,
@@ -18,5 +20,11 @@ export const tabsExample: ComponentExampleProps = {
   tailwind: {
     render: TailwindExample,
     files: [{ name: "TabsExample.tsx", code: tailwindExampleCode }],
+  },
+  looks: {
+    shadcn: {
+      render: ShadcnExample,
+      files: [{ name: "TabsExample.tsx", code: shadcnExampleCode }],
+    },
   },
 };
