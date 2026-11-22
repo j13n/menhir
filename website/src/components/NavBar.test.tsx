@@ -26,6 +26,16 @@ describe("<NavBar />", () => {
     ).toHaveAttribute("href", "/docs/components");
   });
 
+  test("links to the GitHub repository in a new tab", () => {
+    const { getByRole } = render(() => <NavBar />);
+    const github = within(getByRole("banner")).getByRole("link", {
+      name: "GitHub",
+    });
+    expect(github).toHaveAttribute("href", "https://github.com/j13n/menhir");
+    expect(github).toHaveAttribute("target", "_blank");
+    expect(github).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
   test("has the color scheme toggle, which cycles the scheme and saves it", () => {
     const { getByRole } = render(() => <NavBar />);
     flush();
