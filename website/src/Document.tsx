@@ -25,6 +25,16 @@ export default function Document(props: ParentProps) {
             `&&` and `<`. */}
         {/* oxlint-disable-next-line solid/no-innerhtml */}
         <script innerHTML={colorSchemeScript()} />
+        {/* Cloudflare Web Analytics: page views without cookies, counted
+            only by browsers that run the beacon. Production builds only, so
+            the dev server reports nothing. */}
+        {import.meta.env.PROD && (
+          <script
+            type="module"
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "dc4d6dba5e4e439f9877973d3fa3f04f"}'
+          />
+        )}
         <HydrationScript />
       </head>
       <body class="bg-stone-50 font-sans text-stone-900 motion-safe:transition-colors motion-safe:duration-150 dark:bg-stone-950 dark:text-stone-100">
