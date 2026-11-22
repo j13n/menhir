@@ -1,5 +1,13 @@
 {
   "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // `vitest/browser`'s own types declare jest-dom matchers that differ
+    // from @testing-library/jest-dom's, which the tests use, and leave its
+    // CDP session untyped. The tests that drive Chromium use only a little
+    // of it (test/floating/dismissal/input.ts), declared here instead.
+    // Vitest still resolves the real module at run time.
+    "paths": { "vitest/browser": ["./test/vitestBrowser.d.ts"] }
+  },
   "include": ["src", "test"],
   // These run in Node and are typechecked by tsconfig.node.json.
   "exclude": ["test/ssr/renderServer.ts", "test/package", "test/workspace"]

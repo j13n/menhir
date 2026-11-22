@@ -13,7 +13,7 @@ out, the sources and the module's measured size.
 | Folder             | What it does                                                                                     | Ticket |
 | ------------------ | ------------------------------------------------------------------------------------------------ | ------ |
 | `positioning/`     | Places a popup against its anchor, on `@floating-ui/dom`                                         | #25    |
-| `dismissal/`       | Outside press on a dialog's backdrop, Escape for Tooltip, the reason a popup closed              | #26    |
+| `dismissal/`       | Outside press on a dialog's backdrop, Escape for Tooltip, a refused close, why a popup closed    | #26    |
 | `focus/`           | The Tab wrap of a modal dialog, overrides of initial and return focus, finding tabbable elements | #27    |
 | `scroll-lock/`     | Stops the page scrolling behind a modal popup                                                    | #28    |
 | `presence/`        | Keeps a closing popup open until its exit animation has ended                                    | #96    |
