@@ -29,6 +29,8 @@ export const floatingBudgets: Record<string, string> = {
   "focus/initialFocus": "350 B",
   // scroll-lock/README.md records its size.
   "scroll-lock/scrollLock": "950 B",
+  // presence/README.md records its size.
+  "presence/presence": "650 B",
   // hover/README.md records each size. hover counts the safe area it
   // imports.
   "hover/safeArea": "500 B",

@@ -56,6 +56,10 @@ _Avoid_: Hide (for a dismissal), cancel
 A press outside a popup that dismisses it: on a dialog's backdrop, or anywhere outside a popover. It counts on release, and only if the press also started outside.
 _Avoid_: Click outside, interact outside, pointer down outside
 
+**Leaving**:
+Of a popup: closed, but still shown while its exit animations run. It takes no focus and no press, and is hidden once they have ended.
+_Avoid_: Exiting, unmounting, closing (for this phase)
+
 **Hover delay**:
 How long the pointer rests on a trigger before its popup opens (`delay`), or how long after it has left before the popup closes (`closeDelay`).
 _Avoid_: Hover intent (for the delay alone), debounce
