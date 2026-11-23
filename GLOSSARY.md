@@ -164,6 +164,24 @@ _Avoid_: Empty (it says more than that), live region (as the part's name), annou
 The part inside a select's Trigger that shows the selected item's label, or a placeholder while none is selected.
 _Avoid_: Selected value, label, display value
 
+### Forms
+
+**Field**:
+A form control together with its label, description and error message, and its validity (#141). It holds no value.
+_Avoid_: Form control (for the whole), form item, form group
+
+**Control** (the part):
+The element the user fills in or changes inside a Field: an `<input>`, a `<textarea>`, a `<select>` or a Menhir control such as a Switch or a Select's Trigger.
+_Avoid_: Input (for any control), widget
+
+**Touched**:
+A Field the user has been through: focus has left it, its control has changed, or a submission of its form was attempted. A form reset clears it. Its error shows only once it is touched.
+_Avoid_: Visited, blurred, dirty (a changed value, which Field does not track)
+
+**Error from outside**:
+An error message or invalid state the app hands a Field, such as a server's answer or a schema's issue, beside the browser's constraint validation.
+_Avoid_: Server error (for every such error), external validation
+
 ### Styling
 
 **Look**:

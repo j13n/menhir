@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, within } from "@solidjs/testing-library";
 import { captureArtifact, expectNoDiagnostics } from "@solidjs/diagnostics";
-import { flush } from "solid-js";
+import { flush, onFlush } from "solid-js";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { FRAME_MS } from "./components/MenhirScene";
@@ -193,6 +193,24 @@ describe("home page", () => {
     expect(example.getByRole("link", { name: "Switch" })).toHaveAttribute(
       "href",
       "/docs/components/switch",
+    );
+  });
+
+  test("shows a working Field, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const control = example.getByRole("textbox", { name: "Email" });
+    expect(control).toHaveAccessibleDescription(
+      "Leave it empty to see the error.",
+    );
+    expect(control).not.toHaveAttribute("aria-invalid");
+    fireEvent.focusOut(control);
+    // The field's own state lands after the event's flush (`onFlush`).
+    await new Promise<void>((resolve) => onFlush(resolve));
+    expect(control).toHaveAttribute("aria-invalid", "true");
+    expect(example.getByRole("link", { name: "Field" })).toHaveAttribute(
+      "href",
+      "/docs/components/field",
     );
   });
 

@@ -6,6 +6,7 @@ import { collapsibleDoc } from "./collapsible";
 import { comboboxDoc } from "./combobox";
 import { contextMenuDoc } from "./context-menu";
 import { dialogDoc } from "./dialog";
+import { fieldDoc } from "./field";
 import { menuDoc } from "./menu";
 import { menubarDoc } from "./menubar";
 import { meterDoc } from "./meter";
@@ -31,6 +32,7 @@ export const componentDocs: ComponentDoc[] = [
   comboboxDoc,
   contextMenuDoc,
   dialogDoc,
+  fieldDoc,
   menuDoc,
   menubarDoc,
   meterDoc,

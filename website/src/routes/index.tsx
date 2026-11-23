@@ -5,6 +5,7 @@ import { Checkbox } from "menhir/checkbox";
 import { Collapsible } from "menhir/collapsible";
 import { Combobox, includesText } from "menhir/combobox";
 import { Dialog } from "menhir/dialog";
+import { Field } from "menhir/field";
 import { Meter } from "menhir/meter";
 import { NavigationMenu } from "menhir/navigation-menu";
 import { ContextMenu } from "menhir/context-menu";
@@ -164,6 +165,25 @@ export default function Home() {
               </label>
               <figcaption class="text-sm">
                 <a href="/docs/components/checkbox">Checkbox</a>
+              </figcaption>
+            </figure>
+            <figure class={exampleCard}>
+              <Field.Root name="email" class="flex flex-col gap-1">
+                <div class="flex items-center justify-between gap-4">
+                  <Field.Label>Email</Field.Label>
+                  <Field.Control
+                    type="email"
+                    required
+                    class="w-36 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-invalid:border-red-600 dark:border-stone-700 dark:data-invalid:border-red-400"
+                  />
+                </div>
+                <Field.Description class="text-sm opacity-70">
+                  Leave it empty to see the error.
+                </Field.Description>
+                <Field.Error class="text-sm text-red-600 dark:text-red-400" />
+              </Field.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/field">Field</a>
               </figcaption>
             </figure>
             <figure class={exampleCard}>
