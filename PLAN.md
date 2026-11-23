@@ -545,9 +545,21 @@ The component list is the set a modern headless library is expected to have. It 
 - ~~Menu (#99), which settles the list popup conventions.~~ Done: section 8, "API conventions", "List popups". ~~Context Menu (#100).~~ Done: section 8, "API conventions", "Context menus". Menubar (#101), which builds on it; Select (#102); Combobox (#103) and Autocomplete (#104), which builds on it. ~~Navigation Menu (#105).~~ Done first, since it needs neither list navigation nor Menu: section 8, "API conventions", "Site navigation".
 - These tickets were written before the floating layer existed (tracking issue #36). Each has a "Settle after Phase 2" list and is not started until that list is checked off.
 
-**Phase 4: forms and the rest**
+**Phase 4: forms**
 
-- Field, Fieldset, Form, Input, Number Field, Radio, Slider, Scroll Area, Toast, Toolbar, Avatar, Preview Card.
+Narrowed to forms on 2026-11-23, and split into one ticket per item (tracking issue #37). The goal is that an app can move its forms over, and the order was set against one such app's forms: text inputs, textareas, checkboxes and a list of them, selects and one slider, validated by a schema on submit, with its form state in a library of its own.
+
+- Field (#141) first: it settles the form conventions, as Switch settled the first ones and Dialog the popups'. It gives a control its label, description, error and validity, takes errors from outside as well as from the browser's constraint validation, and holds no value.
+- Input (#142); Switch and Checkbox in a Field (#143); Form (#144), which hands errors to its Fields and reports a submission, and is not a form-state library.
+- Fieldset (#145) and Checkbox Group (#146), deferred here from Checkbox (#18).
+- Slider (#148), which waits for nothing and can be built beside Field.
+- Radio (#147) and Number Field (#149) last: the app that set the order uses neither.
+- Select (#102, Phase 3) is the form control such an app needs most. Field does not block it, so it is built before or beside Field, and its Trigger is one of the controls Field must work for.
+- Every ticket but Field and Slider has a "Settle after Field" list and is not started until that list is checked off.
+
+**Phase 5: the rest**
+
+- Scroll Area, Toast, Toolbar, Avatar, Preview Card (tracking issue #150). Split off from Phase 4 on 2026-11-23.
 
 ## 10. Definition of done, per component
 
