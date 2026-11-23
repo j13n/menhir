@@ -24,6 +24,7 @@ describe("<DocsSidebar />", () => {
     expect(links(nav.getAllByRole("list")[0])).toEqual([
       ["Getting started", "/docs/getting-started"],
       ["Styling", "/docs/styling"],
+      ["Solid 2.0", "/docs/solid-2"],
       ["Bundle size", "/docs/bundle-size"],
       ["llms.txt", "/docs/llms-txt"],
     ]);

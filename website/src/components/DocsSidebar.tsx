@@ -18,6 +18,7 @@ export const docsSections: DocsSection[] = [
     links: [
       { href: "/docs/getting-started", title: "Getting started" },
       { href: "/docs/styling", title: "Styling" },
+      { href: "/docs/solid-2", title: "Solid 2.0" },
       { href: "/docs/bundle-size", title: "Bundle size" },
       { href: "/docs/llms-txt", title: "llms.txt" },
     ],
