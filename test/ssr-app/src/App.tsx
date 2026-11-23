@@ -1,4 +1,5 @@
 import { Dialog } from "menhir/dialog";
+import { NavigationMenu } from "menhir/navigation-menu";
 import { Popover } from "menhir/popover";
 import { Switch } from "menhir/switch";
 import { Tooltip } from "menhir/tooltip";
@@ -29,6 +30,16 @@ export function App() {
           Ctrl+B
         </Tooltip.Popup>
       </Tooltip.Root>
+      <NavigationMenu.Root aria-label="Main">
+        <ul>
+          <NavigationMenu.Item>
+            <NavigationMenu.Trigger>Products</NavigationMenu.Trigger>
+            <NavigationMenu.Panel>
+              <NavigationMenu.Link href="/switch">Switch</NavigationMenu.Link>
+            </NavigationMenu.Panel>
+          </NavigationMenu.Item>
+        </ul>
+      </NavigationMenu.Root>
     </>
   );
 }

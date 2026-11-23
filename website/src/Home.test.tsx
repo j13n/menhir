@@ -416,6 +416,43 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Navigation Menu, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const nav = within(example.getByRole("navigation", { name: "Example" }));
+    const components = nav.getByRole("button", { name: "Components" });
+    const docs = nav.getByRole("button", { name: "Docs" });
+    const panel = document.getElementById(
+      components.getAttribute("aria-controls")!,
+    )!;
+    // Its links are in the page while it is closed.
+    expect(panel).toHaveAttribute("hidden");
+    expect(
+      within(panel).getByRole("link", { name: "Switch", hidden: true }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(components);
+    // The menu opens after the click's flush.
+    await Promise.resolve();
+    flush();
+    expect(components).toHaveAttribute("aria-expanded", "true");
+    expect(panel).not.toHaveAttribute("hidden");
+
+    fireEvent.click(docs);
+    await Promise.resolve();
+    flush();
+    expect(docs).toHaveAttribute("aria-expanded", "true");
+    expect(components).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.keyDown(docs, { key: "Escape" });
+    await Promise.resolve();
+    flush();
+    expect(docs).toHaveAttribute("aria-expanded", "false");
+    expect(
+      example.getByRole("link", { name: "Navigation Menu" }),
+    ).toHaveAttribute("href", "/docs/components/navigation-menu");
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
@@ -476,6 +513,8 @@ describe("home page", () => {
         fireEvent.click(getByRole("button", { name: "Delete draft" }));
         flush();
         fireEvent.click(getByRole("button", { name: "Cancel", hidden: true }));
+        flush();
+        fireEvent.click(getByRole("button", { name: "Components" }));
         flush();
         tick();
       },

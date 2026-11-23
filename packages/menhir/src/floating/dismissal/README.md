@@ -5,8 +5,8 @@ and the reason a popup closed (#26). The browser closes the topmost modal
 `<dialog>` and `auto` popover on Escape, a popover on a press outside it (its
 light dismiss), and nests both (PLAN.md section 8, "What the browser does for
 popups"). This folder adds what is left: a press on a dialog's backdrop,
-Escape for Tooltip's `manual` popover, keeping a refused close open, and the
-reason for each close.
+Escape for Tooltip's `manual` popover and Navigation Menu's in-page Panels,
+keeping a refused close open, and the reason for each close.
 
 One file per way of closing, so a popup bundles only those it uses
 (PLAN.md section 6, rule 6): Alert Dialog has no outside press, Tooltip has
@@ -32,13 +32,13 @@ inert content cause the dialog to close"), and #94 decided Dialog has it.
 
 ## Shape
 
-| File              | Exports              | Used by              | What it does                                                                                                     |
-| ----------------- | -------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `reason.ts`       | types only           | every popup          | `OpenChangeReason` and `OpenChangeDetails`, the second argument of `onOpenChange`                                |
-| `dialogClose.ts`  | `createDialogClose`  | Dialog, Alert Dialog | Reports a modal dialog the browser closed (Escape, a close request, a form), once, and opens it again if refused |
-| `outsidePress.ts` | `createOutsidePress` | Dialog               | Reports a press on a dialog's backdrop                                                                           |
-| `popoverClose.ts` | `createPopoverClose` | Popover, the menus   | Reports an `auto` popover the browser closed, with the reason, and shows it again if refused                     |
-| `escape.ts`       | `createEscape`       | Tooltip              | Reports Escape for a `manual` popover, the topmost only, and keeps the popups below it open                      |
+| File              | Exports              | Used by                  | What it does                                                                                                     |
+| ----------------- | -------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `reason.ts`       | types only           | every popup              | `OpenChangeReason` and `OpenChangeDetails`, the second argument of `onOpenChange`                                |
+| `dialogClose.ts`  | `createDialogClose`  | Dialog, Alert Dialog     | Reports a modal dialog the browser closed (Escape, a close request, a form), once, and opens it again if refused |
+| `outsidePress.ts` | `createOutsidePress` | Dialog                   | Reports a press on a dialog's backdrop                                                                           |
+| `popoverClose.ts` | `createPopoverClose` | Popover, the menus       | Reports an `auto` popover the browser closed, with the reason, and shows it again if refused                     |
+| `escape.ts`       | `createEscape`       | Tooltip, Navigation Menu | Reports Escape for a `manual` popover or an in-page Panel, the topmost only, and keeps the popups below it open  |
 
 Each takes its options as getters and an `onDismiss(details)` callback. The
 popup closes through its own setter, so a controlled popup only asks
@@ -85,6 +85,8 @@ reasons; they do not rename these.
 | `trigger-hover` | The pointer rested on the trigger, or left the trigger and the popup (`floating/hover`, #30)                                      |
 | `close-press`   | The popup's own close button was pressed, by pointer or keyboard: Dialog's `Close` (#31)                                          |
 | `trigger-focus` | The trigger received keyboard focus, or lost it: Tooltip's own (#34)                                                              |
+| `focus-out`     | Focus moved to an element outside the component: Navigation Menu's own, out of its `<nav>` (#105)                                 |
+| `link-press`    | A link inside the component was activated, by pointer or keyboard: Navigation Menu's `Link` (#105)                                |
 
 ### Decisions
 
@@ -245,5 +247,5 @@ Measured on 2026-11-22. `reason.ts` holds types only, so it adds nothing.
 
 Dialog uses `dialogClose` and `outsidePress`, Alert Dialog uses
 `dialogClose` alone (#32), Popover and the menus `popoverClose`, and Tooltip
-`escape` (`test/bundle-size/popupModules.ts` checks what each must not
-bundle).
+and Navigation Menu (#105) `escape` (`test/bundle-size/popupModules.ts`
+checks what each must not bundle).

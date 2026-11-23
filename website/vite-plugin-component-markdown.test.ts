@@ -28,9 +28,10 @@ const switchDoc: ComponentDoc = {
 /**
  * A project in a new temporary folder: an entry module for the build, the
  * Switch example with Tailwind and with CSS, and a size-limit report unless
- * `report` is false.
+ * `report` is false. With `section`, the Switch page has a further section,
+ * "In a form", with a file and a test in its folder.
  */
-function project({ report = true } = {}) {
+function project({ report = true, section = false } = {}) {
   const root = mkdtempSync(join(tmpdir(), "menhir-markdown-"));
   writeFileSync(join(root, "main.js"), "export {};\n");
   const examples = join(root, "examples");
@@ -45,6 +46,25 @@ function project({ report = true } = {}) {
     join(examples, "switch", "css", "SwitchExample.tsx"),
     '<Switch.Root class="switch" />\n',
   );
+  const doc: ComponentDoc = section
+    ? {
+        ...switchDoc,
+        sections: [
+          { id: "in-a-form", title: "In a form", text: "Give it a name." },
+        ],
+      }
+    : switchDoc;
+  if (section) {
+    mkdirSync(join(examples, "switch", "in-a-form"));
+    writeFileSync(
+      join(examples, "switch", "in-a-form", "InAForm.tsx"),
+      '<Switch.Root name="wifi" />\n',
+    );
+    writeFileSync(
+      join(examples, "switch", "in-a-form", "InAForm.test.tsx"),
+      'test("a test");\n',
+    );
+  }
   const file = join(root, "sizes.json");
   if (report) {
     writeFileSync(
@@ -56,7 +76,7 @@ function project({ report = true } = {}) {
     configFile: false,
     root,
     logLevel: "silent",
-    plugins: [componentMarkdown({ docs: [switchDoc], examples, report: file })],
+    plugins: [componentMarkdown({ docs: [doc], examples, report: file })],
   };
   return { config, file };
 }
@@ -110,6 +130,15 @@ describe("component Markdown", () => {
     expect(tailwind).toBeGreaterThan(-1);
     expect(cssTsx).toBeGreaterThan(tailwind);
     expect(css).toBeGreaterThan(cssTsx);
+  });
+
+  test("includes a further section's files from its folder, leaving its tests out", async () => {
+    const assets = await buildAssets(project({ section: true }).config);
+    const markdown = assets.get("docs/components/switch.md")!;
+    expect(markdown).toMatch(
+      /## In a form\n\nGive it a name.\n\n`InAForm.tsx`:\n\n```tsx\n<Switch.Root name="wifi" \/>\n```\n$/,
+    );
+    expect(markdown).not.toContain("a test");
   });
 
   test("writes llms.txt into the build, linking each component's Markdown", async () => {

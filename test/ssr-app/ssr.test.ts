@@ -43,7 +43,7 @@ describe("an SSR app that uses menhir", () => {
     expect(server).toContain("ssrHydrationKey");
   });
 
-  it("renders on the server and hydrates on the client, where a Dialog, a Popover and a Tooltip open", async () => {
+  it("renders on the server and hydrates on the client, where a Dialog, a Popover, a Tooltip and a Navigation Menu open", async () => {
     // In a Node process of its own: inside this jsdom test, the bundle's
     // import of Solid would resolve to the browser build.
     const html = execFileSync(
@@ -62,6 +62,11 @@ describe("an SSR app that uses menhir", () => {
     expect(html).toMatch(/<div(?=[^>]*popover="auto")(?=[^>]*data-closed)/);
     expect(html).toMatch(
       /<div(?=[^>]*popover="manual")(?=[^>]*role="tooltip")/,
+    );
+    // A closed Navigation Menu Panel, with its link, is in the server HTML.
+    expect(html).toMatch(/<nav[^>]*aria-label="Main"/);
+    expect(html).toMatch(
+      /<div(?=[^>]*hidden)(?=[^>]*data-closed)[^>]*><a[^>]*href="\/switch"/,
     );
 
     document.body.innerHTML = `<div id="app">${html}</div>`;
@@ -119,5 +124,15 @@ describe("an SSR app that uses menhir", () => {
     tooltipTrigger.focus();
     await new Promise((resolve) => setTimeout(resolve));
     expect(tooltip.hasAttribute("data-open")).toBe(true);
+
+    const navTrigger = document.querySelector<HTMLElement>("nav button")!;
+    const navPanel = document.getElementById(
+      navTrigger.getAttribute("aria-controls")!,
+    )!;
+    expect(navPanel.hidden).toBe(true);
+    navTrigger.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(navTrigger.getAttribute("aria-expanded")).toBe("true");
+    expect(navPanel.hidden).toBe(false);
   });
 });

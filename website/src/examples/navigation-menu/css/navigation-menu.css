@@ -1,0 +1,124 @@
+/* The least CSS that makes the Navigation Menu look like one: a row of
+   buttons, each Panel placed under its Item with position: absolute. The
+   Panels are in the page's flow, hidden by their hidden attribute; an
+   ancestor with overflow: hidden would clip them. They fade in with
+   @starting-style and out with a transition on display, which
+   allow-discrete keeps shown until it ends. Colours are Tailwind's stone
+   palette; light-dark() picks the second one in dark mode
+   (color-scheme: dark). */
+.nav-menu {
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.nav-menu-list {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-menu-item {
+  position: relative;
+}
+
+/* The Triggers, and the top-level link beside them. */
+.nav-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border: 0;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-menu-trigger:hover,
+.nav-menu-trigger[data-open] {
+  background: light-dark(
+    oklch(97% 0.001 106.424) /* stone-100 */,
+    oklch(26.8% 0.007 34.298) /* stone-800 */
+  );
+}
+
+button.nav-menu-trigger::after {
+  content: "▾";
+  transition: rotate 150ms;
+}
+
+.nav-menu-trigger[data-open]::after {
+  rotate: 180deg;
+}
+
+.nav-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 10;
+  width: 16rem;
+  padding: 0.5rem;
+  border: 1px solid
+    light-dark(
+      oklch(92.3% 0.003 48.717) /* stone-200 */,
+      oklch(26.8% 0.007 34.298) /* stone-800 */
+    );
+  border-radius: 0.5rem;
+  background: light-dark(white, oklch(21.6% 0.006 56.043) /* stone-900 */);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  transition:
+    opacity 150ms,
+    translate 150ms,
+    display 150ms allow-discrete;
+}
+
+.nav-menu-panel[hidden] {
+  opacity: 0;
+  translate: 0 -0.25rem;
+}
+
+@starting-style {
+  .nav-menu-panel:not([hidden]) {
+    opacity: 0;
+    translate: 0 -0.25rem;
+  }
+}
+
+.nav-menu-links {
+  display: grid;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-menu-link {
+  display: block;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  color: light-dark(
+    oklch(44.4% 0.011 73.639) /* stone-600 */,
+    oklch(70.9% 0.01 56.259) /* stone-400 */
+  );
+  text-decoration: none;
+}
+
+.nav-menu-link:hover,
+.nav-menu-link[aria-current="page"] {
+  background: light-dark(
+    oklch(97% 0.001 106.424) /* stone-100 */,
+    oklch(26.8% 0.007 34.298) /* stone-800 */
+  );
+}
+
+.nav-menu-link-label {
+  display: block;
+  color: light-dark(oklch(14.7% 0.004 49.25) /* stone-950 */, white);
+  font-weight: 500;
+}

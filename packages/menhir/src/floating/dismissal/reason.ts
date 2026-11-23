@@ -16,6 +16,10 @@
  *   keyboard (Dialog's `Close`).
  * - `trigger-focus`: the trigger received keyboard focus, or lost it
  *   (Tooltip).
+ * - `focus-out`: focus moved to an element outside the component, such as
+ *   Tab out of a Navigation Menu's `<nav>`.
+ * - `link-press`: a link inside the component was activated, by pointer or
+ *   keyboard, such as a Navigation Menu's `Link`.
  */
 export type OpenChangeReason =
   | "escape-key"
@@ -24,7 +28,9 @@ export type OpenChangeReason =
   | "close-request"
   | "trigger-hover"
   | "close-press"
-  | "trigger-focus";
+  | "trigger-focus"
+  | "focus-out"
+  | "link-press";
 
 /**
  * The second argument of `onOpenChange`. `event` is the event that caused

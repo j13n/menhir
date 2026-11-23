@@ -1,5 +1,3 @@
-import { onFlush } from "solid-js";
-
 import { createControllableSignal } from "./createControllableSignal.ts";
 
 /** A value that lists items, in one of its two modes. */
@@ -35,7 +33,7 @@ export function createListValue(options: {
   readonly multiple?: boolean;
   onChange?: (value: string[]) => void;
 }): ListValue {
-  const [value, setValue] = createControllableSignal<string[]>({
+  const [value, setValue, requested] = createControllableSignal<string[]>({
     get value() {
       return options.value;
     },
@@ -44,20 +42,16 @@ export function createListValue(options: {
     },
     onChange: (value) => options.onChange?.(value),
   });
-  // The value asked for in this turn, if any: reads lag writes, so a second
-  // set before the flush builds on this, not on what `value` still reads.
-  let pending: string[] | undefined;
   return {
     has: (item) => value().includes(item),
     set: (item, included) => {
-      const current = pending ?? value();
       let next: string[] = included ? [item] : [];
       if (options.multiple) {
-        next = current.filter((other) => other !== item);
+        // Reads lag writes, so a second set before the flush builds on the
+        // first, not on what `value` still reads.
+        next = requested().filter((other) => other !== item);
         if (included) next.push(item);
       }
-      if (!pending) onFlush(() => (pending = undefined));
-      pending = next;
       setValue(next);
     },
   };
