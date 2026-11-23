@@ -3,6 +3,7 @@ import type { ComponentExampleProps } from "../../components/ComponentExample";
 import CssExample from "./css/CheckboxExample";
 import cssExampleCode from "./css/CheckboxExample.tsx?highlight";
 import cssCode from "./css/checkbox.css?highlight";
+import inAFieldCode from "./in-a-field/CheckboxInField.tsx?highlight";
 import TailwindExample from "./tailwind/CheckboxExample";
 import tailwindExampleCode from "./tailwind/CheckboxExample.tsx?highlight";
 
@@ -19,4 +20,9 @@ export const checkboxExample: ComponentExampleProps = {
     render: TailwindExample,
     files: [{ name: "CheckboxExample.tsx", code: tailwindExampleCode }],
   },
+};
+
+/** The code of the Checkbox page's further sections, by their id. */
+export const checkboxSectionCode = {
+  "in-a-field": inAFieldCode,
 };

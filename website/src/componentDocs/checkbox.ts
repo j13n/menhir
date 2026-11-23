@@ -13,7 +13,7 @@ export const checkboxDoc: ComponentDoc = {
     {
       part: "Root",
       description:
-        'The checkbox: a <button role="checkbox">, followed by a visually hidden <input type="checkbox"> for forms. Label it with a <label> around it or one whose for matches its id. Its render function must render a <button>.',
+        'The checkbox: a <button role="checkbox">, followed by a visually hidden <input type="checkbox"> for forms. Label it with a <label> around it or one whose for matches its id, or put it in a Field (In a Field, below). Its render function must render a <button>.',
       props: [
         {
           name: "checked",
@@ -103,5 +103,12 @@ export const checkboxDoc: ComponentDoc = {
   keyboard: [
     { keys: "Space", action: "Checks or unchecks the checkbox." },
     { keys: "Tab", action: "Moves focus to or away from the checkbox." },
+  ],
+  sections: [
+    {
+      id: "in-a-field",
+      title: "In a Field",
+      text: "A Checkbox joins a Field as Field.Control's render: the Field gives the button its id, label, description and error, and the hidden input its name. The value props are the Checkbox's, so a controlled Checkbox is rendered with a function that puts checked and onCheckedChange on it. A required Checkbox that is unchecked shows its error once the user has left it, unchecked it again or tried to submit the form, and when the browser blocks the submission, focus moves to the checkbox. The Field's data-invalid and data-touched are on the button; style the Indicator through it, as in [data-invalid] .indicator. A Checkbox outside a Field costs nothing more.",
+    },
   ],
 };

@@ -3,6 +3,7 @@ import type { ComponentExampleProps } from "../../components/ComponentExample";
 import CssExample from "./css/SwitchExample";
 import cssExampleCode from "./css/SwitchExample.tsx?highlight";
 import cssCode from "./css/switch.css?highlight";
+import inAFieldCode from "./in-a-field/SwitchInField.tsx?highlight";
 import ShadcnExample from "./shadcn/SwitchExample";
 import shadcnExampleCode from "./shadcn/SwitchExample.tsx?highlight";
 import TailwindExample from "./tailwind/SwitchExample";
@@ -27,4 +28,9 @@ export const switchExample: ComponentExampleProps = {
       files: [{ name: "SwitchExample.tsx", code: shadcnExampleCode }],
     },
   },
+};
+
+/** The code of the Switch page's further sections, by their id. */
+export const switchSectionCode = {
+  "in-a-field": inAFieldCode,
 };

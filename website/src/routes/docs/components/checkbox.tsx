@@ -2,7 +2,10 @@ import checkboxSize from "virtual:menhir-sizes/checkbox";
 
 import { checkboxDoc } from "../../../componentDocs/checkbox";
 import ComponentPage from "../../../components/ComponentPage";
-import { checkboxExample } from "../../../examples/checkbox";
+import {
+  checkboxExample,
+  checkboxSectionCode,
+} from "../../../examples/checkbox";
 
 export default function CheckboxPage() {
   return (
@@ -10,6 +13,7 @@ export default function CheckboxPage() {
       {...checkboxDoc}
       size={checkboxSize}
       example={checkboxExample}
+      sectionCode={checkboxSectionCode}
     />
   );
 }
