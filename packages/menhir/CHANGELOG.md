@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.7
+
+### Patch Changes
+
+- a15c892: Add Autocomplete, menhir/autocomplete: a text input with suggestions, whose value is the text. It builds on Combobox, so an app that uses both pays for the shared parts once.
+
 ## 0.1.6
 
 ### Patch Changes
