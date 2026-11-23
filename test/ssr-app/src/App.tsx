@@ -2,6 +2,7 @@ import { Dialog } from "menhir/dialog";
 import { Menu } from "menhir/menu";
 import { NavigationMenu } from "menhir/navigation-menu";
 import { Popover } from "menhir/popover";
+import { Select } from "menhir/select";
 import { Switch } from "menhir/switch";
 import { Tooltip } from "menhir/tooltip";
 
@@ -53,6 +54,15 @@ export function App() {
           </Menu.Submenu>
         </Menu.Popup>
       </Menu.Root>
+      <Select.Root name="fruit" defaultValue="banana">
+        <Select.Trigger aria-label="Fruit">
+          <Select.Value />
+        </Select.Trigger>
+        <Select.Popup>
+          <Select.Item value="apple">Apple</Select.Item>
+          <Select.Item value="banana">Banana</Select.Item>
+        </Select.Popup>
+      </Select.Root>
     </>
   );
 }

@@ -110,6 +110,18 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "hover/group",
     "list-navigation/activeDescendant",
   ],
+  // A select is non-modal, as a menu is, and the browser closes it. Focus
+  // stays on its Trigger, which names the active item, so it has no roving
+  // list and nothing returns or sets focus; it opens on no hover (#102).
+  "menhir/select": [
+    "focus",
+    "scroll-lock",
+    "hover",
+    "dismissal/outsidePress",
+    "dismissal/dialogClose",
+    "dismissal/escape",
+    "list-navigation/roving",
+  ],
   // A navigation menu's Panels are in the page's flow, not the top layer:
   // nothing positions, shows or hides them but `hidden`, and the Root
   // writes its own outside press and closes the others itself (#105).

@@ -22,6 +22,7 @@ const budgets = {
   "menhir/navigation-menu": "3 kB",
   "menhir/popover": "11.5 kB",
   "menhir/progress": "1.4 kB",
+  "menhir/select": "12.5 kB",
   "menhir/separator": "900 B",
   "menhir/switch": "1.9 kB",
   "menhir/tabs": "2.4 kB",

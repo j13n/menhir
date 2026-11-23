@@ -471,6 +471,36 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Select, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const trigger = example.getByRole("combobox", { name: "Paper" });
+    const list = document.getElementById(
+      trigger.getAttribute("aria-controls")!,
+    )!;
+    expect(trigger).toHaveTextContent("A4");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(trigger);
+    // The list opens after the click's flush.
+    await Promise.resolve();
+    flush();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(list).toHaveAttribute("data-open");
+    fireEvent.click(within(list).getByRole("option", { name: "Letter" }));
+    await Promise.resolve();
+    flush();
+    expect(list).toHaveAttribute("data-closed");
+    expect(trigger).toHaveTextContent("Letter");
+    expect(
+      within(list).getByRole("option", { name: "Letter", hidden: true }),
+    ).toHaveAttribute("aria-selected", "true");
+    expect(example.getByRole("link", { name: "Select" })).toHaveAttribute(
+      "href",
+      "/docs/components/select",
+    );
+  });
+
   test("shows working Tooltips, linked to their page", async () => {
     stubPopover();
     const { getByRole } = setup();

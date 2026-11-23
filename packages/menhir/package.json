@@ -94,6 +94,11 @@
       "solid": "./dist/source/progress/index.js",
       "import": "./dist/progress/index.js"
     },
+    "./select": {
+      "types": "./dist/source/select/index.d.ts",
+      "solid": "./dist/source/select/index.js",
+      "import": "./dist/select/index.js"
+    },
     "./separator": {
       "types": "./dist/source/separator/index.d.ts",
       "solid": "./dist/source/separator/index.js",

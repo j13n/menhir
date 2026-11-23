@@ -43,7 +43,7 @@ describe("an SSR app that uses menhir", () => {
     expect(server).toContain("ssrHydrationKey");
   });
 
-  it("renders on the server and hydrates on the client, where a Dialog, a Popover, a Tooltip, a Navigation Menu and a Menu open", async () => {
+  it("renders on the server and hydrates on the client, where a Dialog, a Popover, a Tooltip, a Navigation Menu, a Menu and a Select open", async () => {
     // In a Node process of its own: inside this jsdom test, the bundle's
     // import of Solid would resolve to the browser build.
     const html = execFileSync(
@@ -70,6 +70,13 @@ describe("an SSR app that uses menhir", () => {
     );
     expect(html).toContain('aria-haspopup="menu"');
     expect(html).toMatch(/<div(?=[^>]*role="menu")(?=[^>]*data-closed)/);
+    // A closed Select's items are in the server HTML, and its hidden
+    // input has the value before any script runs.
+    expect(html).toContain('role="combobox"');
+    expect(html).toMatch(/<input(?=[^>]*name="fruit")(?=[^>]*value="banana")/);
+    expect(html).toMatch(
+      /<div(?=[^>]*role="option")(?=[^>]*aria-selected="true")[^>]*>Banana/,
+    );
 
     document.body.innerHTML = `<div id="app">${html}</div>`;
     for (const script of document.body.querySelectorAll("script")) {
@@ -150,5 +157,21 @@ describe("an SSR app that uses menhir", () => {
         .getElementById(menuTrigger.getAttribute("aria-controls")!)!
         .hasAttribute("data-open"),
     ).toBe(true);
+
+    const selectTrigger =
+      document.querySelector<HTMLElement>("[role=combobox]")!;
+    const options = document.getElementById(
+      selectTrigger.getAttribute("aria-controls")!,
+    )!;
+    selectTrigger.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(selectTrigger.getAttribute("aria-expanded")).toBe("true");
+    options.querySelector<HTMLElement>("[role=option]")!.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(options.hasAttribute("data-closed")).toBe(true);
+    expect(selectTrigger.textContent).toBe("Apple");
+    expect(
+      document.querySelector<HTMLInputElement>("input[name=fruit]")!.value,
+    ).toBe("apple");
   });
 });
