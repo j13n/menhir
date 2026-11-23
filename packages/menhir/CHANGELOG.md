@@ -1,5 +1,12 @@
 # menhir
 
+## 0.1.4
+
+### Patch Changes
+
+- 9b9bceb: Ship a styling skill for coding agents, in the package's `skills/menhir-styling` folder, with the shadcn look: tokens, recipes and worked examples for Switch, Dialog, Tabs and Popover.
+- 0e79a64: Adds Navigation Menu (`menhir/navigation-menu`): a site's navigation, with Root (a `<nav>`), Item, Trigger, Panel and Link parts. A Panel opens on a press and when the pointer rests on its Trigger, moving along the bar opens the next at once, and Escape, focus leaving the `<nav>`, a press outside and a Link close it. Panels are in the page's flow, `hidden` while closed, so their links are in the server HTML. `onValueChange` reports two new reasons, `"focus-out"` and `"link-press"`.
+
 ## 0.1.3
 
 ### Patch Changes
