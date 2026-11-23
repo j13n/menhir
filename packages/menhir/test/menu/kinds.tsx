@@ -1,6 +1,7 @@
-// The menus built from Menu's parts: Menu, which a button opens, and Context
-// Menu, which an area opens with `contextmenu`. Menu's tests of the parts
-// they share run once for each (src/context-menu/README.md, "Test list"):
+// The menus built from Menu's parts: Menu, which a button opens, Context
+// Menu, which an area opens with `contextmenu`, and Menubar, whose bar's
+// items open its menus. Menu's tests of the parts they share run once for
+// each (src/context-menu/README.md and src/menubar/README.md, "Test list"):
 //
 //   describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => { … });
 import type { JSX } from "@solidjs/web";
@@ -9,8 +10,11 @@ import type { UserEvent } from "@testing-library/user-event";
 
 import { ContextMenu } from "../../src/context-menu/index.ts";
 import { Menu } from "../../src/menu/index.ts";
+import { Menubar } from "../../src/menubar/index.ts";
 import { Edit as ContextMenuEdit } from "../context-menu/Edit.tsx";
 import { Share as ContextMenuShare } from "../context-menu/Share.tsx";
+import { Edit as MenubarEdit } from "../menubar/Edit.tsx";
+import { Share as MenubarShare } from "../menubar/Share.tsx";
 import {
   centerOf,
   keyboard,
@@ -49,6 +53,11 @@ export interface MenuKind {
   Share(props: ShareProps): JSX.Element;
   /** What opens the Root's menu, where focus returns once it closes. */
   trigger(): HTMLElement;
+  /**
+   * Where Shift+Tab from the menus sends focus: the Trigger, or for a
+   * Menubar the element before the bar.
+   */
+  shiftTab(): HTMLElement;
   /** The Root's menu. */
   menu(): HTMLElement;
   /** Opens the Root's menu with a press, by Testing Library. */
@@ -63,6 +72,7 @@ export interface MenuKind {
 
 const menuTrigger = () => screen.getByRole("button", { name: "Edit" });
 const area = () => screen.getByTestId("area");
+const barItem = () => screen.getByRole("menuitem", { name: "Edit" });
 
 export const menuKinds: MenuKind[] = [
   {
@@ -71,6 +81,7 @@ export const menuKinds: MenuKind[] = [
     Edit,
     Share,
     trigger: menuTrigger,
+    shiftTab: menuTrigger,
     menu: () =>
       document.getElementById(menuTrigger().getAttribute("aria-controls")!)!,
     open: (user) => user.click(menuTrigger()),
@@ -94,6 +105,7 @@ export const menuKinds: MenuKind[] = [
     Edit: ContextMenuEdit,
     Share: ContextMenuShare,
     trigger: area,
+    shiftTab: area,
     // The first in the document: a submenu's sits inside it.
     menu: () => screen.getAllByRole("menu", { hidden: true })[0]!,
     open: (user) => user.pointer({ keys: "[MouseRight]", target: area() }),
@@ -118,6 +130,30 @@ export const menuKinds: MenuKind[] = [
     keyOpen: async () => {
       area().focus();
       await menuKey();
+      await nextTask();
+    },
+  },
+  {
+    name: "Menubar",
+    M: Menubar,
+    Edit: MenubarEdit,
+    Share: MenubarShare,
+    trigger: barItem,
+    shiftTab: () => screen.getByRole("button", { name: "Before" }),
+    menu: () =>
+      document.getElementById(barItem().getAttribute("aria-controls")!)!,
+    open: (user) => user.click(barItem()),
+    openFromKey: async (user) => {
+      barItem().focus();
+      await user.keyboard("{ArrowDown}");
+    },
+    pressOpen: async () => {
+      await press(centerOf(barItem()));
+      await nextTask();
+    },
+    keyOpen: async () => {
+      barItem().focus();
+      await keyboard("{ArrowDown}");
       await nextTask();
     },
   },

@@ -100,15 +100,17 @@ export function MenuPopup(props: MenuPopupProps) {
   createPopoverClose(options);
   createReturnFocus(options);
   // Focus goes to the first item whenever the Root's menu opens, unless the
-  // Trigger's Up Arrow chose the last. A submenu opened by hover leaves it
-  // on its trigger (README, "Decisions").
+  // Trigger's Up Arrow chose the last, or a menubar keeps it on the bar. A
+  // submenu opened by hover leaves it on its trigger (README, "Decisions").
   if (!menu.parent)
     createEffect(
       // The items register once mounted, after a `defaultOpen` menu opens.
       () => menu.open() && menu.list.items()[0],
       (first) => {
-        if (first && !untrack(menu.list.active))
+        if (!first) return;
+        if (!menu.keepFocus && !untrack(menu.list.active))
           untrack(() => menu.list.move(first));
+        menu.keepFocus = false;
       },
     );
   createPosition({

@@ -5,6 +5,7 @@ import { collapsibleDoc } from "./collapsible";
 import { contextMenuDoc } from "./context-menu";
 import { dialogDoc } from "./dialog";
 import { menuDoc } from "./menu";
+import { menubarDoc } from "./menubar";
 import { meterDoc } from "./meter";
 import { navigationMenuDoc } from "./navigation-menu";
 import { popoverDoc } from "./popover";
@@ -26,6 +27,7 @@ export const componentDocs: ComponentDoc[] = [
   contextMenuDoc,
   dialogDoc,
   menuDoc,
+  menubarDoc,
   meterDoc,
   navigationMenuDoc,
   popoverDoc,

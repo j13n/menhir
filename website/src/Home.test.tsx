@@ -444,6 +444,33 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Menubar, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const bar = example.getByRole("menubar", { name: "Editor" });
+    const file = within(bar).getByRole("menuitem", { name: "File" });
+    const edit = within(bar).getByRole("menuitem", { name: "Edit" });
+    const editMenu = document.getElementById(
+      edit.getAttribute("aria-controls")!,
+    )!;
+    expect(file).toHaveAttribute("tabindex", "0");
+    fireEvent.click(edit);
+    // The menu opens after the event's flush.
+    await Promise.resolve();
+    flush();
+    expect(edit).toHaveAttribute("data-open");
+    expect(editMenu).toHaveAttribute("data-open");
+    fireEvent.click(within(editMenu).getByRole("menuitem", { name: "Undo" }));
+    await Promise.resolve();
+    flush();
+    expect(editMenu).toHaveAttribute("data-closed");
+    expect(example.getByRole("link", { name: "Menubar" })).toHaveAttribute(
+      "href",
+      "/docs/components/menubar",
+    );
+  });
+
   test("shows working Tooltips, linked to their page", async () => {
     stubPopover();
     const { getByRole } = setup();

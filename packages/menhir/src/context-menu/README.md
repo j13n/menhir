@@ -234,13 +234,15 @@ every part, Rolldown, minified, gzipped, Solid left out. Measured on
 
 | Entry point                                      | Size     | Budget |
 | ------------------------------------------------ | -------- | ------ |
-| `menhir/context-menu`                            | 11,925 B | 13 kB  |
-| `menhir/menu` and `menhir/context-menu` together | 12,097 B |        |
+| `menhir/context-menu`                            | 11,986 B | 13 kB  |
+| `menhir/menu` and `menhir/context-menu` together | 12,154 B |        |
 
-An app that already uses Menu pays 274 B for Context Menu: its Root,
+An app that already uses Menu pays 253 B for Context Menu: its Root,
 Trigger and Popup wrapper (`test/package` checks that the shared parts are
-bundled once). Menu's own size did not change (11,823 B): the longer error
-that names both Roots is development-only.
+bundled once). Context Menu did not change Menu's size (11,823 B then):
+the longer error that names both Roots is development-only. Menubar's
+fields in Menu's state added 61 B to Context Menu, from 11,925 B and
+12,097 B together (#101).
 
 The budget was set before the behaviour, at Menu's measured size
 (11,823 B) without its Trigger, plus the Trigger's `contextmenu` handler

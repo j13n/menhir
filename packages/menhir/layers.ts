@@ -25,6 +25,7 @@ export const popupComponents = [
 export const popupBases: Record<string, string> = {
   "alert-dialog": "dialog",
   "context-menu": "menu",
+  menubar: "menu",
 };
 
 // The modules of the `floating` layer (PLAN.md section 6), one folder each

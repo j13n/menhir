@@ -76,6 +76,25 @@ export interface Menu {
    * own `beforetoggle`, which reads it.
    */
   focusWasInside: boolean;
+  /**
+   * Whether the next opening leaves focus where it is, instead of on the
+   * first item: set by a menubar before it opens a menu by moving along
+   * the bar or by hover, and cleared once the menu has opened, or by the
+   * menubar once the opening has been refused.
+   */
+  keepFocus: boolean;
+  /**
+   * Whether hover opened this menu and the pointer is still on its
+   * trigger: a press there then keeps it open and moves focus into it,
+   * where a press on an open menu's trigger closes it. Set by a menubar.
+   */
+  hoverOpened: boolean;
+  /**
+   * Set by a menubar on each of its menus: moves along the bar, `1` to the
+   * next item and `-1` to the previous, from the key that points into an
+   * item with no submenu, or out of the menu.
+   */
+  along?: (step: 1 | -1, event: KeyboardEvent) => void;
   /** The `data-*` attributes of the trigger and the Popup. */
   readonly attributes: MenuStateAttributes;
   /** A submenu's hover delays, from `Menu.Submenu`. */
@@ -126,20 +145,30 @@ export function createMenu(
     // A menu is short: the pattern allows wrapping (README, "Decisions").
     wrap: true,
     onArrowIn: (item, event) => {
-      // Right Arrow on an item with no submenu does nothing in a menu that
-      // a button opened (menu and menubar pattern).
       event.preventDefault();
-      if (!item.disabled)
-        item.submenu?.openFromKey({ reason: "arrow-key", event });
+      if (item.submenu) {
+        if (!item.disabled)
+          item.submenu.openFromKey({ reason: "arrow-key", event });
+        return;
+      }
+      // Right Arrow on an item with no submenu moves along a menubar, from
+      // any depth, and does nothing in a menu that a button opened (menu
+      // and menubar pattern).
+      let root = menu;
+      while (root.parent) root = root.parent;
+      root.along?.(1, event);
     },
-    // Left Arrow closes a submenu; in the Root's menu it does nothing.
-    onArrowOut: parent
-      ? (_item, event) => {
-          event.preventDefault();
-          menu.close({ reason: "arrow-key", event });
-          parent.list.move(menu.triggerItem);
-        }
-      : undefined,
+    // Left Arrow closes a submenu; in a menubar's menu it moves along the
+    // bar, and in a Root's menu it does nothing.
+    onArrowOut: (_item, event) => {
+      if (!parent) {
+        menu.along?.(-1, event);
+        return;
+      }
+      event.preventDefault();
+      menu.close({ reason: "arrow-key", event });
+      parent.list.move(menu.triggerItem);
+    },
   });
   const typeahead = createTypeahead<MenuItemEntry>({
     get open() {
@@ -182,6 +211,8 @@ export function createMenu(
     triggerItem: undefined,
     popup: undefined,
     focusWasInside: false,
+    keepFocus: false,
+    hoverOpened: false,
     delays: props,
     attributes: {
       get "data-open"() {
@@ -207,7 +238,7 @@ export function useMenuContext(): Menu {
   // Production builds drop the check, and its message, with `isDev`.
   if (isDev && !context) {
     throw new Error(
-      "[menhir] Menu parts must be placed within <Menu.Root>, and Context Menu parts within <ContextMenu.Root>.",
+      "[menhir] Menu parts must be placed within <Menu.Root>, Context Menu parts within <ContextMenu.Root>, and Menubar parts within <Menubar.Menu>.",
     );
   }
   return context!;

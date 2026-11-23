@@ -178,7 +178,7 @@ describe("<Menu.Trigger />", () => {
 
     expect(
       screen.getByText(
-        "Error: [menhir] Menu parts must be placed within <Menu.Root>, and Context Menu parts within <ContextMenu.Root>.",
+        "Error: [menhir] Menu parts must be placed within <Menu.Root>, Context Menu parts within <ContextMenu.Root>, and Menubar parts within <Menubar.Menu>.",
       ),
     ).toBeInTheDocument();
   });
