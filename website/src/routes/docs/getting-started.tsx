@@ -35,9 +35,9 @@ export default function GettingStarted() {
       />
       <h1>Getting started</h1>
       <p>
-        Menhir is a set of unstyled, accessible UI primitives for SolidJS 2.0.
-        Each component is its own entry point, so an app ships only what it
-        imports.
+        Menhir is a set of unstyled, accessible UI primitives for SolidJS 2.0,
+        written <a href="/docs/solid-2">the Solid 2.0 way</a>. Each component is
+        its own entry point, so an app ships only what it imports.
       </p>
       <Section id="status" title="Status">
         <p>
