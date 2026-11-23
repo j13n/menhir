@@ -119,6 +119,39 @@ function scrollEnded(timeout: number) {
 }
 
 /**
+ * A touch held at `point` for a second, which Chromium turns into a long
+ * press: a `contextmenu` with the touch's pointer type, then the release.
+ */
+export async function longPress(point: Point) {
+  const cdp = await session();
+  await cdp.send("Input.synthesizeTapGesture", {
+    ...point,
+    duration: 1000,
+    tapCount: 1,
+    gestureSourceType: "touch",
+  });
+}
+
+/**
+ * The Menu key (the context menu key) on the focused element, which fires
+ * a `contextmenu` at it. Chromium on macOS fires none for Shift+F10.
+ */
+export async function menuKey() {
+  const cdp = await session();
+  const key = { key: "ContextMenu", code: "ContextMenu" };
+  await cdp.send("Input.dispatchKeyEvent", {
+    type: "rawKeyDown",
+    ...key,
+    windowsVirtualKeyCode: 93,
+  });
+  await cdp.send("Input.dispatchKeyEvent", {
+    type: "keyUp",
+    ...key,
+    windowsVirtualKeyCode: 93,
+  });
+}
+
+/**
  * A touch that starts at `point` and drags up, which scrolls the page down,
  * and resolves once the scroll has ended, or after `timeout` milliseconds
  * if the page does not scroll: a tap while the page still moves only stops

@@ -25,7 +25,7 @@ Content in the page's flow that a Trigger shows and hides, `hidden` while closed
 _Avoid_: Content, dropdown, popup (for a Panel)
 
 **Trigger**:
-The element a popup or a Panel opens from: the button that opens a dialog or a menu, the item that opens a submenu, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
+The element a popup or a Panel opens from: the button that opens a dialog or a menu, the area a context menu opens from, the item that opens a submenu, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
 _Avoid_: Invoker, activator, toggle, opener
 
 **Anchor**:
@@ -101,7 +101,7 @@ To use an item of a list popup, by a click, Enter or Space: a menu's item calls 
 _Avoid_: Select (a selection is a value), choose, trigger (as a verb)
 
 **Base popup**:
-The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32). The only popup it may import (PLAN.md section 6, rule 4).
+The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), and Menu is Context Menu's (#100). The only popup it may import (PLAN.md section 6, rule 4).
 _Avoid_: Parent popup, super-component
 
 ### Popup parts

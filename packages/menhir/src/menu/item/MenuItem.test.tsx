@@ -15,13 +15,12 @@ import {
   movePointer,
   nextTask,
 } from "../../../test/floating/input.ts";
-import { Edit } from "../../../test/menu/Edit.tsx";
+import { menuKinds } from "../../../test/menu/kinds.tsx";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Menu } from "../index.ts";
 
 const popup = () => screen.getByRole("menu", { hidden: true });
 const shown = () => popup().matches(":popover-open");
-const trigger = () => screen.getByRole("button", { name: "Edit" });
 const item = (name: string) =>
   screen.getByRole("menuitem", { name, hidden: true });
 const active = () => document.activeElement;
@@ -38,7 +37,8 @@ describeConformance(
   { tagName: "DIV" },
 );
 
-describe("<Menu.Item />", () => {
+describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => {
+  const { M, Edit, trigger, open, openFromKey } = kind;
   const { render } = createRenderer();
   stubMenu();
   afterEach(() => vi.restoreAllMocks());
@@ -89,9 +89,9 @@ describe("<Menu.Item />", () => {
   it("moves to the next item that starts with a typed character, matching label over content", async () => {
     const { user } = await render(() => (
       <Edit defaultOpen>
-        <Menu.Item>Copy</Menu.Item>
-        <Menu.Item label="Paste">⌘V Paste</Menu.Item>
-        <Menu.Item>Cut</Menu.Item>
+        <M.Item>Copy</M.Item>
+        <M.Item label="Paste">⌘V Paste</M.Item>
+        <M.Item>Cut</M.Item>
       </Edit>
     ));
     await vi.waitFor(() => expect(active()).toBe(item("Copy")));
@@ -106,10 +106,10 @@ describe("<Menu.Item />", () => {
     const onOpenChange = vi.fn();
     const { user } = await render(() => (
       <Edit onOpenChange={onOpenChange}>
-        <Menu.Item onClick={onClick}>Copy</Menu.Item>
+        <M.Item onClick={onClick}>Copy</M.Item>
       </Edit>
     ));
-    await user.click(trigger());
+    await open(user);
     await afterFlush();
 
     await user.click(item("Copy"));
@@ -131,13 +131,12 @@ describe("<Menu.Item />", () => {
     const onClick = vi.fn();
     const { user } = await render(() => (
       <Edit>
-        <Menu.Item onClick={onClick}>Copy</Menu.Item>
+        <M.Item onClick={onClick}>Copy</M.Item>
       </Edit>
     ));
 
     for (const key of ["{Enter}", " "]) {
-      trigger().focus();
-      await user.keyboard("{ArrowDown}");
+      await openFromKey(user);
       await vi.waitFor(() => expect(active()).toBe(item("Copy")));
       await user.keyboard(key);
       await afterFlush();
@@ -150,10 +149,10 @@ describe("<Menu.Item />", () => {
     const onClick = vi.fn();
     const { user } = await render(() => (
       <Edit defaultOpen>
-        <Menu.Item>Copy</Menu.Item>
-        <Menu.Item disabled onClick={onClick}>
+        <M.Item>Copy</M.Item>
+        <M.Item disabled onClick={onClick}>
           Paste
-        </Menu.Item>
+        </M.Item>
       </Edit>
     ));
     await vi.waitFor(() => expect(active()).toBe(item("Copy")));
@@ -177,12 +176,12 @@ describe("<Menu.Item />", () => {
     try {
       const { user } = await render(() => (
         <Edit defaultOpen>
-          <Menu.Item
+          <M.Item
             disabled
             render={(props) => <a {...props} href="#disabled-docs" />}
           >
             Docs
-          </Menu.Item>
+          </M.Item>
         </Edit>
       ));
       await vi.waitFor(() => expect(active()).toBe(item("Docs")));
@@ -206,12 +205,12 @@ describe("<Menu.Item />", () => {
       const onClick = vi.fn((event: MouseEvent) => event.preventDefault());
       await render(() => (
         <Edit defaultOpen>
-          <Menu.Item
+          <M.Item
             render={(props) => <a {...props} href="#docs" />}
             onClick={onClick}
           >
             Docs
-          </Menu.Item>
+          </M.Item>
         </Edit>
       ));
       await nextTask();

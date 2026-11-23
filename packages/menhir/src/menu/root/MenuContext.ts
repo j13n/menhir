@@ -206,7 +206,9 @@ export function useMenuContext(): Menu {
   const context = useContext(MenuContext);
   // Production builds drop the check, and its message, with `isDev`.
   if (isDev && !context) {
-    throw new Error("[menhir] Menu parts must be placed within <Menu.Root>.");
+    throw new Error(
+      "[menhir] Menu parts must be placed within <Menu.Root>, and Context Menu parts within <ContextMenu.Root>.",
+    );
   }
   return context!;
 }

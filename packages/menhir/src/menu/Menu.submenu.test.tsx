@@ -11,9 +11,8 @@ import {
   nextTask,
   press,
 } from "../../test/floating/input.ts";
-import { Share } from "../../test/menu/Share.tsx";
+import { menuKinds } from "../../test/menu/kinds.tsx";
 
-const trigger = () => screen.getByRole("button", { name: "Edit" });
 const item = (name: string) =>
   screen.getByRole("menuitem", { name, hidden: true });
 /** The Popup that a Trigger or SubmenuTrigger names in `aria-controls`. */
@@ -23,15 +22,15 @@ const shown = (element: HTMLElement) => element.matches(":popover-open");
 const active = () => document.activeElement;
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-describe.skipIf(isJSDOM)("Menu across submenus", () => {
+describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
+  const { Share, trigger, menu, pressOpen, keyOpen } = kind;
   const { render } = createRenderer();
   afterEach(() => vi.restoreAllMocks());
 
   /** Opens the Root's menu with a press, the pointer then off it. */
   async function open() {
-    await press(centerOf(trigger()));
-    await nextTask();
-    expect(shown(menuOf(trigger()))).toBe(true);
+    await pressOpen();
+    expect(shown(menu())).toBe(true);
   }
 
   it("opens a submenu after the pointer rests on its trigger for delay, and closes it when the pointer leaves to a sibling item", async () => {
@@ -89,9 +88,7 @@ describe.skipIf(isJSDOM)("Menu across submenus", () => {
 
   it("opens and closes submenus two levels deep by keyboard", async () => {
     await render(() => <Share />);
-    trigger().focus();
-    await keyboard("{ArrowDown}");
-    await nextTask();
+    await keyOpen();
 
     await keyboard("{ArrowDown}{ArrowRight}");
     await nextTask();
@@ -109,7 +106,7 @@ describe.skipIf(isJSDOM)("Menu across submenus", () => {
     await nextTask();
     expect(active()).toBe(item("Share"));
     expect(shown(menuOf(item("Share")))).toBe(false);
-    expect(shown(menuOf(trigger()))).toBe(true);
+    expect(shown(menu())).toBe(true);
   });
 
   it("opens submenus two levels deep by pointer, and an item in the deepest closes every menu", async () => {
@@ -132,15 +129,13 @@ describe.skipIf(isJSDOM)("Menu across submenus", () => {
     await nextTask();
 
     expect(onPrint).toHaveBeenCalledTimes(1);
-    for (const triggerElement of [trigger(), item("Share"), item("More")])
-      expect(shown(menuOf(triggerElement))).toBe(false);
+    for (const element of [menu(), menuOf(item("Share")), menuOf(item("More"))])
+      expect(shown(element)).toBe(false);
   });
 
   it("closes every menu on Tab from a submenu", async () => {
     await render(() => <Share />);
-    trigger().focus();
-    await keyboard("{ArrowDown}");
-    await nextTask();
+    await keyOpen();
     await keyboard("{ArrowDown}{ArrowRight}");
     await nextTask();
     expect(active()).toBe(item("Email"));
@@ -149,15 +144,13 @@ describe.skipIf(isJSDOM)("Menu across submenus", () => {
     await nextTask();
 
     expect(shown(menuOf(item("Share")))).toBe(false);
-    expect(shown(menuOf(trigger()))).toBe(false);
+    expect(shown(menu())).toBe(false);
     expect(active()).toBe(screen.getByRole("button", { name: "After" }));
   });
 
   it("closes every menu on Shift+Tab from a submenu, with focus on the Trigger", async () => {
     await render(() => <Share />);
-    trigger().focus();
-    await keyboard("{ArrowDown}");
-    await nextTask();
+    await keyOpen();
     await keyboard("{ArrowDown}{ArrowRight}");
     await nextTask();
     expect(active()).toBe(item("Email"));
@@ -166,15 +159,13 @@ describe.skipIf(isJSDOM)("Menu across submenus", () => {
     await nextTask();
 
     expect(shown(menuOf(item("Share")))).toBe(false);
-    expect(shown(menuOf(trigger()))).toBe(false);
+    expect(shown(menu())).toBe(false);
     expect(active()).toBe(trigger());
   });
 
   it("types in a submenu without moving the menu around it", async () => {
     await render(() => <Share />);
-    trigger().focus();
-    await keyboard("{ArrowDown}");
-    await nextTask();
+    await keyOpen();
     await keyboard("{ArrowDown}{ArrowRight}");
     await nextTask();
 

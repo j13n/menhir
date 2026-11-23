@@ -420,6 +420,30 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Context Menu, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const area = example.getByText("Right-click here");
+    // A closed popover is hidden, which has no accessible name to query.
+    const menu = document.querySelector<HTMLElement>('[aria-label="Photo"]')!;
+    expect(area).toHaveAttribute("data-closed");
+    fireEvent.contextMenu(area);
+    // The menu opens after the event's flush.
+    await Promise.resolve();
+    flush();
+    expect(area).toHaveAttribute("data-open");
+    expect(menu).toHaveAttribute("data-open");
+    fireEvent.click(within(menu).getByRole("menuitem", { name: "Rename" }));
+    await Promise.resolve();
+    flush();
+    expect(menu).toHaveAttribute("data-closed");
+    expect(example.getByRole("link", { name: "Context Menu" })).toHaveAttribute(
+      "href",
+      "/docs/components/context-menu",
+    );
+  });
+
   test("shows working Tooltips, linked to their page", async () => {
     stubPopover();
     const { getByRole } = setup();

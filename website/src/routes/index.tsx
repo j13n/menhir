@@ -5,6 +5,7 @@ import { Collapsible } from "menhir/collapsible";
 import { Dialog } from "menhir/dialog";
 import { Meter } from "menhir/meter";
 import { NavigationMenu } from "menhir/navigation-menu";
+import { ContextMenu } from "menhir/context-menu";
 import { Menu } from "menhir/menu";
 import { Popover } from "menhir/popover";
 import { Progress } from "menhir/progress";
@@ -400,6 +401,33 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/menu">Menu</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <ContextMenu.Root>
+                <ContextMenu.Trigger
+                  tabindex="0"
+                  class="grid h-16 place-items-center rounded-lg border border-dashed border-stone-300 text-sm text-stone-500 select-none [-webkit-touch-callout:none] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-open:bg-stone-100 dark:border-stone-700 dark:data-open:bg-stone-800"
+                >
+                  Right-click here
+                </ContextMenu.Trigger>
+                <ContextMenu.Popup
+                  aria-label="Photo"
+                  class="m-0 min-w-36 rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-opacity duration-100 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+                >
+                  <ContextMenu.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                    Open
+                  </ContextMenu.Item>
+                  <ContextMenu.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                    Rename
+                  </ContextMenu.Item>
+                  <ContextMenu.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                    Delete
+                  </ContextMenu.Item>
+                </ContextMenu.Popup>
+              </ContextMenu.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/context-menu">Context Menu</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
