@@ -533,6 +533,39 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Autocomplete, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const input = example.getByRole("combobox", { name: "Search" });
+    const list = document.getElementById(input.getAttribute("aria-controls")!)!;
+    input.focus();
+    fireEvent.input(input, { target: { value: "lith" } });
+    // The list opens after the input's flush.
+    await Promise.resolve();
+    flush();
+    expect(input).toHaveAttribute("aria-expanded", "true");
+    expect(
+      within(list)
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toEqual(["megalith", "monolith"]);
+    fireEvent.click(within(list).getByRole("option", { name: "monolith" }));
+    await Promise.resolve();
+    flush();
+    expect(input).toHaveAttribute("aria-expanded", "false");
+    expect(input).toHaveValue("monolith");
+    // Free text: what matches no suggestion is kept.
+    fireEvent.input(input, { target: { value: "dolmen" } });
+    await Promise.resolve();
+    flush();
+    expect(input).toHaveValue("dolmen");
+    expect(example.getByRole("link", { name: "Autocomplete" })).toHaveAttribute(
+      "href",
+      "/docs/components/autocomplete",
+    );
+  });
+
   test("shows working Tooltips, linked to their page", async () => {
     stubPopover();
     const { getByRole } = setup();

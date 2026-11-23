@@ -34,6 +34,11 @@
       "solid": "./dist/source/alert-dialog/index.js",
       "import": "./dist/alert-dialog/index.js"
     },
+    "./autocomplete": {
+      "types": "./dist/source/autocomplete/index.d.ts",
+      "solid": "./dist/source/autocomplete/index.js",
+      "import": "./dist/autocomplete/index.js"
+    },
     "./checkbox": {
       "types": "./dist/source/checkbox/index.d.ts",
       "solid": "./dist/source/checkbox/index.js",

@@ -134,6 +134,16 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "typeahead",
     "list-navigation/roving",
   ],
+  // An autocomplete is a combobox whose text is its value: Combobox's
+  // parts, so the same modules (#104).
+  "menhir/autocomplete": [
+    "focus",
+    "scroll-lock",
+    "hover",
+    "dismissal",
+    "typeahead",
+    "list-navigation/roving",
+  ],
   // A navigation menu's Panels are in the page's flow, not the top layer:
   // nothing positions, shows or hides them but `hidden`, and the Root
   // writes its own outside press and closes the others itself (#105).

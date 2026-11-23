@@ -113,11 +113,15 @@ The item whose `value` is the select's or the combobox's value. It carries `data
 _Avoid_: Active item (the keys' position), current item, checked item
 
 **Input value**:
-The text in a combobox's input, apart from its value: what the user typed, or the selected item's label. The form receives the value, not the text.
+The text in a combobox's input, apart from its value: what the user typed, or the selected item's label. The form receives the value, not the text. An autocomplete has no input value apart from its value: its value is the text.
 _Avoid_: Query (the app's filter, which follows the text only while the user types), search term, input text
 
+**Accept**:
+To put a suggestion's `value` in an autocomplete's input, by a click or Enter: the list closes. It leaves no selected item, since an autocomplete's value is its text.
+_Avoid_: Select (a combobox's, which sets a value apart from the text), pick, choose
+
 **Base popup**:
-The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), and Menu is Context Menu's (#100) and Menubar's (#101). The only popup it may import (PLAN.md section 6, rule 4).
+The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), Menu is Context Menu's (#100) and Menubar's (#101), and Combobox is Autocomplete's (#104). The only popup it may import (PLAN.md section 6, rule 4).
 _Avoid_: Parent popup, super-component
 
 ### Popup parts
@@ -145,7 +149,7 @@ A button inside a popup that closes it.
 _Avoid_: Dismiss button, cancel (as the part's name)
 
 **Item**:
-An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, or a select's or a combobox's entry, which is selected. A select's or a combobox's Item has the `option` role.
+An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, a select's or a combobox's entry, which is selected, or an autocomplete's suggestion, which is accepted. A select's, a combobox's or an autocomplete's Item has the `option` role.
 _Avoid_: Option (as the part's name), entry, row, menu entry
 
 **List** (the part):

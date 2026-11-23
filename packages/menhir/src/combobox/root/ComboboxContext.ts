@@ -107,35 +107,39 @@ export interface ComboboxStateProps {
   disabled?: boolean;
 }
 
-/** What `Combobox.Root` shares with its parts through context. */
-export interface Combobox {
+/**
+ * What a combobox's shared parts read through context: the Trigger, Clear,
+ * the Popup, the List, the Status, Group and the Input's shared code.
+ * `Combobox.Root` shares a `Combobox`, and `Autocomplete.Root`, which builds
+ * on Combobox, shares its own (`src/autocomplete/README.md`).
+ */
+export interface ComboboxBase {
+  /**
+   * Which Root made it, so that a part only one of them takes can say it
+   * is inside the other.
+   */
+  readonly component: "Combobox" | "Autocomplete";
   /** Whether the list is open. */
   open(): boolean;
   /** Asks to open or close the list, saying why. */
   setOpen(open: boolean, details: OpenChangeDetails): void;
-  /** The selected item's `value`, or `null`. */
-  value(): string | null;
-  /** Asks for a value, as the hidden input's `change` and a reset do. */
-  setValue(value: string | null): void;
   /** The text the input shows. */
   inputValue(): string;
-  /** Asks for a text, saying why. */
-  setInputValue(text: string, details: InputValueChangeDetails): void;
   /**
-   * Selects `item`: its value through the hidden input, which fires
-   * `input` and `change` for the form, and its label as the text. A
-   * disabled item changes nothing. Returns whether it could be selected.
+   * Asks for the text the user typed: the one reason the shared parts
+   * report. Each Root's own parts set it for their own reasons too.
+   */
+  setInputValue(
+    text: string,
+    details: { readonly reason: "input-change"; readonly event: Event },
+  ): void;
+  /**
+   * Selects `item`, or accepts it, as Enter or a click does. A disabled
+   * item changes nothing. Returns whether it could be selected.
    */
   select(item: ComboboxItemEntry | undefined, event: Event): boolean;
-  /** Empties the text and the value. */
-  clear(event: Event, reason: "escape-key" | "clear-press"): void;
-  /**
-   * Puts the text back to the selected item's label as focus leaves, or
-   * clears the value if the user emptied the text.
-   */
-  revert(event: Event): void;
-  /** The label of the item with `value`, if one has mounted. */
-  labelOfValue(value: string | null): string | undefined;
+  /** Empties the text, and the value. Returns whether there was any. */
+  clear(event: Event, reason: "escape-key" | "clear-press"): boolean;
   /** Whether `item` is the active one of an open list, for its `data-active`. */
   isActive(item: ComboboxItemEntry): boolean;
   /** The number of items in the list, for `Combobox.Status`. */
@@ -145,16 +149,67 @@ export interface Combobox {
   readonly listId: string;
   /** The input, once rendered: focused by the Trigger and Clear. */
   input: HTMLInputElement | undefined;
-  /** The hidden input, once rendered: the form's view of the value. */
-  hiddenInput: HTMLInputElement | undefined;
   /** The `data-*` attributes of the Input, the Trigger and the Popup. */
   readonly attributes: ComboboxStateAttributes;
+  /** The Root's props that the shared parts read. */
+  readonly props: { readonly disabled?: boolean; readonly required?: boolean };
+}
+
+/** What `Combobox.Root` shares with its parts through context. */
+export interface Combobox extends ComboboxBase {
+  readonly component: "Combobox";
+  /** The selected item's `value`, or `null`. */
+  value(): string | null;
+  /** Asks for a value, as the hidden input's `change` and a reset do. */
+  setValue(value: string | null): void;
+  /** Asks for a text, saying why. */
+  setInputValue(text: string, details: InputValueChangeDetails): void;
+  /**
+   * Selects `item`: its value through the hidden input, which fires
+   * `input` and `change` for the form, and its label as the text.
+   */
+  select(item: ComboboxItemEntry | undefined, event: Event): boolean;
+  /**
+   * Puts the text back to the selected item's label as focus leaves, or
+   * clears the value if the user emptied the text: the Input's `onFocusOut`.
+   */
+  revert(event: Event): void;
+  /** The label of the item with `value`, if one has mounted. */
+  labelOfValue(value: string | null): string | undefined;
+  /** The hidden input, once rendered: the form's view of the value. */
+  hiddenInput: HTMLInputElement | undefined;
   /** The Root's props, for the parts' elements. */
   readonly props: ComboboxStateProps;
 }
 
-/** Creates a combobox's state and its list navigation. */
-export function createCombobox(props: ComboboxStateProps): Combobox {
+/** The Root's props that every combobox's shared state reads. */
+export type ComboboxBaseProps = Pick<
+  ComboboxStateProps,
+  "open" | "defaultOpen" | "onOpenChange" | "disabled" | "required"
+>;
+
+/** What `createComboboxBase` makes: the state no Root does otherwise. */
+export type ComboboxBaseState = Pick<
+  ComboboxBase,
+  | "open"
+  | "setOpen"
+  | "isActive"
+  | "count"
+  | "list"
+  | "listId"
+  | "input"
+  | "attributes"
+>;
+
+/**
+ * The state `Combobox.Root` and `Autocomplete.Root` share: whether the list
+ * is open, its list navigation, the List's `id` and the `data-*`
+ * attributes. Each Root spreads it into its own combobox, beside its text
+ * and what accepting an item does.
+ */
+export function createComboboxBase(
+  props: ComboboxBaseProps,
+): ComboboxBaseState {
   const [open, setOpen] = createControllableSignal<boolean, OpenChangeDetails>({
     get value() {
       return props.open;
@@ -164,6 +219,44 @@ export function createCombobox(props: ComboboxStateProps): Combobox {
     },
     onChange: (value, details) => props.onOpenChange?.(value, details),
   });
+  // Disabled items stay reachable; Home and End belong to the text, so the
+  // arrow keys wrap, as the list autocomplete example's do (README).
+  const list = createActiveDescendantList<ComboboxItemEntry>({
+    get open() {
+      return open();
+    },
+    wrap: true,
+  });
+  return {
+    open,
+    setOpen,
+    // Only while open, as the input names it.
+    isActive: (item) => open() && list.isActive(item),
+    count: () => list.items().length,
+    list,
+    listId: createUniqueId(),
+    input: undefined,
+    attributes: {
+      get "data-open"() {
+        return open() ? "" : undefined;
+      },
+      get "data-closed"() {
+        return open() ? undefined : "";
+      },
+      get "data-disabled"() {
+        return props.disabled ? "" : undefined;
+      },
+      get "data-required"() {
+        return props.required ? "" : undefined;
+      },
+    },
+  };
+}
+
+/** Creates a combobox's state and its list navigation. */
+export function createCombobox(props: ComboboxStateProps): Combobox {
+  const base = createComboboxBase(props);
+  const { list } = base;
   const [value, setValue, requestedValue] = createControllableSignal<
     string | null
   >({
@@ -189,14 +282,6 @@ export function createCombobox(props: ComboboxStateProps): Combobox {
       return props.defaultInputValue ?? null;
     },
     onChange: (text, details) => props.onInputValueChange?.(text!, details),
-  });
-  // Disabled items stay reachable; Home and End belong to the text, so the
-  // arrow keys wrap, as the list autocomplete example's do (README).
-  const list = createActiveDescendantList<ComboboxItemEntry>({
-    get open() {
-      return open();
-    },
-    wrap: true,
   });
   const labelOfValue = (selected: string | null) => {
     const item = list.items().find((item) => item.value === selected);
@@ -240,8 +325,8 @@ export function createCombobox(props: ComboboxStateProps): Combobox {
     input.dispatchEvent(new Event("change", { bubbles: true }));
   };
   const combobox: Combobox = {
-    open,
-    setOpen,
+    ...base,
+    component: "Combobox",
     value,
     setValue,
     inputValue,
@@ -253,8 +338,10 @@ export function createCombobox(props: ComboboxStateProps): Combobox {
       return true;
     },
     clear: (event, reason) => {
+      if (!requestedInputValue() && requestedValue() === null) return false;
       commit(null);
       setInputValue("", { reason, event });
+      return true;
     },
     revert: (event) => {
       // An untouched Combobox keeps its value, though its text may be
@@ -273,42 +360,39 @@ export function createCombobox(props: ComboboxStateProps): Combobox {
       setInputValue(label, { reason: "focus-out", event });
     },
     labelOfValue,
-    // Only while open, as the input names it.
-    isActive: (item) => open() && list.isActive(item),
-    count: () => list.items().length,
-    list,
-    listId: createUniqueId(),
-    input: undefined,
     hiddenInput: undefined,
-    attributes: {
-      get "data-open"() {
-        return open() ? "" : undefined;
-      },
-      get "data-closed"() {
-        return open() ? undefined : "";
-      },
-      get "data-disabled"() {
-        return props.disabled ? "" : undefined;
-      },
-      get "data-required"() {
-        return props.required ? "" : undefined;
-      },
-    },
     props,
   };
   return combobox;
 }
 
 // `null` outside a Root, so that the part can name what is missing.
-export const ComboboxContext = createContext<Combobox | null>(null);
+export const ComboboxContext = createContext<ComboboxBase | null>(null);
 
-export function useComboboxContext(): Combobox {
+/**
+ * The combobox of the Root around the part. A shared part passes no
+ * `component` and takes either Root's; a part only one Root takes passes
+ * that Root's `component`, and its type, `Combobox` or an Autocomplete's.
+ */
+export function useComboboxContext<T extends ComboboxBase = ComboboxBase>(
+  component?: T["component"],
+): T {
   const context = useContext(ComboboxContext);
-  // Production builds drop the check, and its message, with `isDev`.
-  if (isDev && !context) {
-    throw new Error(
-      "[menhir] Combobox parts must be placed within <Combobox.Root>.",
-    );
+  // Production builds drop the checks, and their messages, with `isDev`.
+  if (isDev) {
+    if (!context) {
+      // A shared part cannot tell which Root was meant, so it names both.
+      throw new Error(
+        component
+          ? `[menhir] ${component} parts must be placed within <${component}.Root>.`
+          : "[menhir] Combobox parts must be placed within <Combobox.Root>, and Autocomplete parts within <Autocomplete.Root>.",
+      );
+    }
+    if (component && context.component !== component) {
+      throw new Error(
+        `[menhir] ${component} parts must be placed within <${component}.Root>, not <${context.component}.Root>.`,
+      );
+    }
   }
-  return context!;
+  return context as T;
 }

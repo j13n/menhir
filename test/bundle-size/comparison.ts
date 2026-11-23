@@ -37,6 +37,7 @@ export const libraries: Library[] = [
     components: {
       accordion: "@base-ui/react/accordion",
       "alert-dialog": "@base-ui/react/alert-dialog",
+      autocomplete: "@base-ui/react/autocomplete",
       checkbox: "@base-ui/react/checkbox",
       collapsible: "@base-ui/react/collapsible",
       combobox: "@base-ui/react/combobox",

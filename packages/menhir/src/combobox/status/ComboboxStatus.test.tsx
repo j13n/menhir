@@ -67,7 +67,7 @@ describe("<Combobox.Status />", () => {
 
     expect(
       screen.getByText(
-        "Error: [menhir] Combobox parts must be placed within <Combobox.Root>.",
+        "Error: [menhir] Combobox parts must be placed within <Combobox.Root>, and Autocomplete parts within <Autocomplete.Root>.",
       ),
     ).toBeInTheDocument();
   });

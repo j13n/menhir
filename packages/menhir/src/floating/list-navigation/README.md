@@ -303,5 +303,5 @@ Measured on 2026-11-23. `roving.ts` and `activeDescendant.ts` include
 | `roving.ts`           | 1,005 B | 1,200 B |
 | `activeDescendant.ts` | 1,010 B | 1,200 B |
 
-Menu uses `roving`, Select and Combobox `activeDescendant`. Dialog, Alert Dialog,
+Menu uses `roving`, Select, Combobox and Autocomplete `activeDescendant`. Dialog, Alert Dialog,
 Popover and Tooltip bundle none of it (`test/bundle-size/popupModules.ts`).
