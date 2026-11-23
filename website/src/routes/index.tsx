@@ -10,6 +10,7 @@ import { Menu } from "menhir/menu";
 import { Menubar } from "menhir/menubar";
 import { Popover } from "menhir/popover";
 import { Progress } from "menhir/progress";
+import { Select } from "menhir/select";
 import { Separator } from "menhir/separator";
 import { Switch } from "menhir/switch";
 import { Tabs } from "menhir/tabs";
@@ -487,6 +488,54 @@ export default function Home() {
               </Menubar.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/menubar">Menubar</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <div class="flex items-center justify-between gap-4">
+                <label for="home-select">Paper</label>
+                <Select.Root name="paper" defaultValue="a4">
+                  <Select.Trigger
+                    id="home-select"
+                    class="flex min-w-28 cursor-pointer items-center justify-between gap-2 rounded-md border border-stone-300 px-3 py-1 text-sm after:content-['▾'] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700"
+                  >
+                    <Select.Value />
+                  </Select.Trigger>
+                  <Select.Popup
+                    class="m-0 max-h-(--available-height) min-w-(--anchor-width) overflow-y-auto rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-opacity duration-100 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+                    sideOffset={4}
+                  >
+                    <Select.Item
+                      value="a4"
+                      class="flex cursor-default items-center gap-2 rounded px-2 py-1.5 select-none data-active:bg-stone-100 dark:data-active:bg-stone-800"
+                    >
+                      <Select.ItemIndicator class="w-3 data-unselected:invisible">
+                        ✓
+                      </Select.ItemIndicator>
+                      A4
+                    </Select.Item>
+                    <Select.Item
+                      value="a5"
+                      class="flex cursor-default items-center gap-2 rounded px-2 py-1.5 select-none data-active:bg-stone-100 dark:data-active:bg-stone-800"
+                    >
+                      <Select.ItemIndicator class="w-3 data-unselected:invisible">
+                        ✓
+                      </Select.ItemIndicator>
+                      A5
+                    </Select.Item>
+                    <Select.Item
+                      value="letter"
+                      class="flex cursor-default items-center gap-2 rounded px-2 py-1.5 select-none data-active:bg-stone-100 dark:data-active:bg-stone-800"
+                    >
+                      <Select.ItemIndicator class="w-3 data-unselected:invisible">
+                        ✓
+                      </Select.ItemIndicator>
+                      Letter
+                    </Select.Item>
+                  </Select.Popup>
+                </Select.Root>
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/select">Select</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

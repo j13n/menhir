@@ -89,7 +89,7 @@ In a modal popup, Tab from the last tab stop moving to the first, and Shift+Tab 
 _Avoid_: Focus trap, focus lock, focus loop
 
 **Active item**:
-The item of a list popup that the keyboard acts on: focused in a menu, or named in `aria-activedescendant` by a combobox's input, which keeps focus. It carries `data-active`, and none is active while the popup is closed.
+The item of a list popup that the keyboard acts on: focused in a menu, or named in `aria-activedescendant` by a select's Trigger or a combobox's input, which keeps focus. It carries `data-active`, and none is active while the popup is closed.
 _Avoid_: Highlighted item, current item, focused item (it may not have focus), selected item (a selection is a value)
 
 **Submenu**:
@@ -101,8 +101,16 @@ A row of menus that stays on screen, one tab stop, whose items each open a menu:
 _Avoid_: Menu bar, toolbar (a toolbar holds buttons, not menus), top menu
 
 **Activate**:
-To use an item of a list popup, by a click, Enter or Space: a menu's item calls its `onClick` and closes every open menu.
+To use an item of a menu, by a click, Enter or Space: it calls its `onClick` and closes every open menu.
 _Avoid_: Select (a selection is a value), choose, trigger (as a verb)
+
+**Select** (the verb):
+To make an item of a select its value, by a click, Enter, Space or Tab: the list closes. Moving the active item selects nothing.
+_Avoid_: Activate (a menu's), pick, choose, check (a checkbox item's)
+
+**Selected item**:
+The item whose `value` is the select's value. It carries `data-selected` and `aria-selected="true"`, and stays selected while the list is closed.
+_Avoid_: Active item (the keys' position), current item, checked item
 
 **Base popup**:
 The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), and Menu is Context Menu's (#100) and Menubar's (#101). The only popup it may import (PLAN.md section 6, rule 4).
@@ -133,8 +141,12 @@ A button inside a popup that closes it.
 _Avoid_: Dismiss button, cancel (as the part's name)
 
 **Item**:
-An entry of a list popup that the keys move through and that does something when activated: a menu's action, checkbox or radio option, or a submenu's trigger.
-_Avoid_: Option (a listbox's), entry, row, menu entry
+An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, or a select's entry, which is selected. A select's Item has the `option` role.
+_Avoid_: Option (as the part's name), entry, row, menu entry
+
+**Value** (the part):
+The part inside a select's Trigger that shows the selected item's label, or a placeholder while none is selected.
+_Avoid_: Selected value, label, display value
 
 ### Styling
 

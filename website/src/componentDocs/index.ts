@@ -10,6 +10,7 @@ import { meterDoc } from "./meter";
 import { navigationMenuDoc } from "./navigation-menu";
 import { popoverDoc } from "./popover";
 import { progressDoc } from "./progress";
+import { selectDoc } from "./select";
 import { separatorDoc } from "./separator";
 import { switchDoc } from "./switch";
 import { tabsDoc } from "./tabs";
@@ -32,6 +33,7 @@ export const componentDocs: ComponentDoc[] = [
   navigationMenuDoc,
   popoverDoc,
   progressDoc,
+  selectDoc,
   separatorDoc,
   switchDoc,
   tabsDoc,

@@ -1,0 +1,116 @@
+/* The least CSS that makes the Select look like one: a button with its
+   value and an arrow, and a card below it, as wide as the button at least
+   (--anchor-width) and no taller than the space left (--available-height).
+   Menhir places the popup; the item the keys or the pointer reached has
+   data-active, a disabled one data-disabled, and the indicator shows by its
+   data-selected. The popup fades in on data-open and out on data-closed,
+   growing from the trigger with --transform-origin. Colours are Tailwind's
+   stone palette; light-dark() picks the second one in dark mode
+   (color-scheme: dark). */
+.select-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.select-trigger {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 10rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid
+    light-dark(
+      oklch(86.9% 0.005 56.366) /* stone-300 */,
+      oklch(44.4% 0.011 73.639) /* stone-600 */
+    );
+  border-radius: 0.375rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.select-trigger::after {
+  content: "▾";
+}
+
+.select-trigger [data-placeholder] {
+  opacity: 0.6;
+}
+
+.select-popup {
+  box-sizing: border-box;
+  min-width: var(--anchor-width);
+  max-height: var(--available-height);
+  margin: 0;
+  padding: 0.25rem;
+  overflow-y: auto;
+  border: 1px solid
+    light-dark(
+      oklch(92.3% 0.003 48.717) /* stone-200 */,
+      oklch(37.4% 0.01 67.558) /* stone-700 */
+    );
+  border-radius: 0.5rem;
+  background: light-dark(white, oklch(21.6% 0.006 56.043) /* stone-900 */);
+  color: inherit;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 10%);
+  transform-origin: var(--transform-origin);
+}
+
+.select-popup[data-open] {
+  animation: select-in 120ms ease-out;
+}
+
+.select-popup[data-closed] {
+  animation: select-in 120ms ease-in reverse;
+}
+
+@keyframes select-in {
+  from {
+    opacity: 0;
+    scale: 0.95;
+  }
+}
+
+.select-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.25rem;
+  cursor: default;
+  user-select: none;
+}
+
+.select-item[data-active] {
+  background: light-dark(
+    oklch(97% 0.001 106.424) /* stone-100 */,
+    oklch(26.8% 0.007 34.298) /* stone-800 */
+  );
+}
+
+.select-item[data-disabled] {
+  opacity: 0.5;
+}
+
+.select-indicator {
+  width: 0.75rem;
+}
+
+.select-indicator[data-unselected] {
+  visibility: hidden;
+}
+
+.select-group-label {
+  padding: 0.375rem 0.5rem 0.25rem 1.75rem;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}

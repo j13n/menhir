@@ -31,11 +31,11 @@ In order of precedence (PLAN.md section 8).
 
 ## Shape
 
-| File                  | Exports                      | Used by                                      | What it does                                                                                |
-| --------------------- | ---------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `listNavigation.ts`   | `createListNavigation`       | the two files below                          | The items in document order, the active item, the keys, the pointer and scrolling into view |
-| `roving.ts`           | `createRovingList`           | Menu, Context Menu, Menubar                  | Focus moves to the active item                                                              |
-| `activeDescendant.ts` | `createActiveDescendantList` | Combobox, Autocomplete; Select, if #102 says | Focus stays where it is; the active item's `id` is for `aria-activedescendant`              |
+| File                  | Exports                      | Used by                        | What it does                                                                                |
+| --------------------- | ---------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------- |
+| `listNavigation.ts`   | `createListNavigation`       | the two files below            | The items in document order, the active item, the keys, the pointer and scrolling into view |
+| `roving.ts`           | `createRovingList`           | Menu, Context Menu, Menubar    | Focus moves to the active item                                                              |
+| `activeDescendant.ts` | `createActiveDescendantList` | Select; Combobox, Autocomplete | Focus stays where it is; the active item's `id` is for `aria-activedescendant`              |
 
 Each `create*` takes its options as getters, as the other modules do, and
 returns handlers the parts call from their own events, as
