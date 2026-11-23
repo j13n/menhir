@@ -5,6 +5,7 @@ import {
   componentBreadcrumbs,
   componentDescription,
   DESCRIPTION_LIMIT,
+  homeStructuredData,
 } from "./pageHead";
 
 describe("componentDescription", () => {
@@ -94,4 +95,20 @@ test("componentBreadcrumbs lists the site, Components and the page", () => {
       },
     ],
   });
+});
+
+test("the home page describes the site and the library's source code", () => {
+  const data = homeStructuredData();
+  expect(data["@context"]).toBe("https://schema.org");
+  expect(data["@graph"]).toEqual([
+    { "@type": "WebSite", name: "Menhir", url: "https://menhir-ui.com/" },
+    expect.objectContaining({
+      "@type": "SoftwareSourceCode",
+      name: "Menhir",
+      url: "https://menhir-ui.com/",
+      codeRepository: "https://github.com/j13n/menhir",
+      programmingLanguage: "TypeScript",
+      license: "https://opensource.org/licenses/MIT",
+    }),
+  ]);
 });

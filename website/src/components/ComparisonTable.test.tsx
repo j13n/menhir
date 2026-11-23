@@ -164,6 +164,33 @@ describe("<ComparisonTable />", () => {
     expect(corvu).toHaveTextContent("None");
   });
 
+  test("numbers a note in its cell, linked to the note under the table", () => {
+    const { getByRole } = render(() => (
+      <ComparisonTable
+        sizes={sizes}
+        libraries={libraries}
+        components={components}
+        notes={[
+          { library: "Kobalte", component: "switch", children: "About it." },
+        ]}
+      />
+    ));
+    const [, , kobalte] = within(
+      getByRole("row", { name: /Switch/ }),
+    ).getAllByRole("cell");
+    const mark = within(kobalte).getByRole("link", { name: "Note 1" });
+    expect(mark.parentElement?.tagName).toBe("SUP");
+    const note = within(getByRole("list", { name: "Notes" })).getByRole(
+      "listitem",
+    );
+    expect(note).toHaveTextContent("1 About it.");
+    expect(mark).toHaveAttribute("href", `#${note.id}`);
+    const [, radix] = within(
+      getByRole("row", { name: /Separator/ }),
+    ).getAllByRole("cell");
+    expect(within(radix).queryByRole("link")).toBeNull();
+  });
+
   test("shows no total row without menhir's total", () => {
     const { queryByRole } = render(() => (
       <ComparisonTable

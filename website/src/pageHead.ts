@@ -1,5 +1,5 @@
 import type { ComponentDoc } from "./componentDocs/types";
-import { siteUrl } from "./site";
+import { repositoryUrl, siteDescription, siteUrl } from "./site";
 
 /** Search results cut descriptions at about this many characters. */
 export const DESCRIPTION_LIMIT = 160;
@@ -48,6 +48,29 @@ export function componentBreadcrumbs(name: string, slug: string) {
       position: index + 1,
       ...crumb,
     })),
+  };
+}
+
+/**
+ * The home page's structured data: the site, for the name search results
+ * show, and the library as source code, with its repository and licence.
+ */
+export function homeStructuredData() {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebSite", name: "Menhir", url: `${siteUrl}/` },
+      {
+        "@type": "SoftwareSourceCode",
+        name: "Menhir",
+        description: siteDescription,
+        url: `${siteUrl}/`,
+        codeRepository: repositoryUrl,
+        programmingLanguage: "TypeScript",
+        runtimePlatform: "SolidJS",
+        license: "https://opensource.org/licenses/MIT",
+      },
+    ],
   };
 }
 

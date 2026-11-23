@@ -1,3 +1,4 @@
+import type { JSX } from "@solidjs/web";
 import { For, Show } from "solid-js";
 import type { EntryPointSize } from "virtual:menhir-sizes";
 import type { ComparedLibrary } from "virtual:size-comparison";
@@ -14,6 +15,9 @@ import TableScroll from "./TableScroll";
  * The last row is of the components imported together. A library's
  * difference there is from the same components of menhir, so a library
  * that lacks some is compared on the ones it has, and says how many.
+ *
+ * A note on one library's size of one component is numbered in its cell, in
+ * superscript, and shown under the table.
  */
 export default function ComparisonTable(props: {
   sizes: readonly EntryPointSize[];
@@ -22,12 +26,19 @@ export default function ComparisonTable(props: {
   menhirTotal?: number;
   /** Display names by slug; a component without one shows its slug. */
   components: readonly { slug: string; name: string }[];
+  notes?: readonly ComparisonNote[];
 }) {
   const rows = () => props.sizes.filter((row) => !isUtility(row.entryPoint));
   const slug = (row: EntryPointSize) => row.entryPoint.slice("menhir/".length);
   const name = (row: EntryPointSize) =>
     props.components.find((component) => component.slug === slug(row))?.name ??
     slug(row);
+  const noteNumber = (library: ComparedLibrary, row: EntryPointSize) => {
+    const i = (props.notes ?? []).findIndex(
+      (note) => note.library === library.name && note.component === slug(row),
+    );
+    return i === -1 ? undefined : i + 1;
+  };
 
   return (
     <Show
@@ -81,6 +92,9 @@ export default function ComparisonTable(props: {
                           {(component) => (
                             <>
                               {formatSize(component().size)}
+                              <Show when={noteNumber(library, row)}>
+                                {(n) => <NoteMark n={n()} />}
+                              </Show>
                               <SizeDifference
                                 size={component().size}
                                 base={row.size}
@@ -141,6 +155,20 @@ export default function ComparisonTable(props: {
           </Show>
         </table>
       </TableScroll>
+      <Show when={props.notes?.length}>
+        <ol
+          aria-label="Notes"
+          class="my-3 list-none space-y-1 text-sm text-stone-500 dark:text-stone-400"
+        >
+          <For each={props.notes}>
+            {(note, i) => (
+              <li id={`comparison-note-${i() + 1}`}>
+                <sup>{i() + 1}</sup> {note.children}
+              </li>
+            )}
+          </For>
+        </ol>
+      </Show>
       <ul
         aria-label="Modules measured"
         class="my-3 list-disc space-y-1 pl-6 text-sm"
@@ -167,6 +195,26 @@ export default function ComparisonTable(props: {
         </For>
       </ul>
     </Show>
+  );
+}
+
+/** A note on one library's size of one component. */
+export type ComparisonNote = {
+  /** The library's name, such as `Base UI`. */
+  library: string;
+  /** The subpath of menhir's entry point, such as `menubar`. */
+  component: string;
+  children: JSX.Element;
+};
+
+/** A note's number, linked to the note under the table. */
+function NoteMark(props: { n: number }) {
+  return (
+    <sup>
+      <a href={`#comparison-note-${props.n}`} aria-label={`Note ${props.n}`}>
+        {props.n}
+      </a>
+    </sup>
   );
 }
 

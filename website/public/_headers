@@ -1,0 +1,11 @@
+# Response headers for the static assets (wrangler.jsonc). Cloudflare reads
+# this file and does not serve it.
+
+# Each component page's Markdown version, for agents: the same text as the
+# HTML page, so search engines leave it out of their results.
+/docs/components/*.md
+  X-Robots-Tag: noindex
+
+# Vite's build output, named by a hash of its contents, so it never changes.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

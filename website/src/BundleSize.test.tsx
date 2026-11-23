@@ -65,6 +65,18 @@ describe("bundle size page", () => {
     );
   });
 
+  test("says Base UI's menubar module has no menu parts", () => {
+    const { getByRole } = render(() => <BundleSize />);
+    expect(
+      within(getByRole("region", { name: "Other libraries" })).getByRole(
+        "list",
+        { name: "Notes" },
+      ),
+    ).toHaveTextContent(
+      "1 Base UI's @base-ui/react/menubar is the bar alone. Its menus are built from the parts of @base-ui/react/menu",
+    );
+  });
+
   test("compares the components imported together", () => {
     const { getByRole } = render(() => <BundleSize />);
     const comparison = within(getByRole("region", { name: "Other libraries" }));

@@ -25,7 +25,8 @@ import { createMemo, createSignal, For } from "solid-js";
 import InstallCommand from "../components/InstallCommand";
 import MenhirScene from "../components/MenhirScene";
 import PageHead from "../components/PageHead";
-import { siteDescription, siteUrl, tagline } from "../site";
+import { homeStructuredData } from "../pageHead";
+import { siteDescription, tagline } from "../site";
 
 // The home page's Tabs example: one tab and one panel per day.
 const forecast = [
@@ -78,12 +79,7 @@ export default function Home() {
       <PageHead
         title={`Menhir · ${tagline}`}
         description={siteDescription}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "Menhir",
-          url: `${siteUrl}/`,
-        }}
+        structuredData={homeStructuredData()}
       />
       <main class="max-w-none">
         <div class="grid items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-10">
