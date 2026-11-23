@@ -17,20 +17,24 @@ export type Forbidden =
  * each popup lands.
  */
 export const forbiddenModules: Record<string, Forbidden[]> = {
-  // A dialog is not positioned and does not open on hover.
-  "menhir/dialog": ["@floating-ui", "positioning", "hover"],
+  // A dialog is not positioned, does not open on hover and has no list
+  // (#97).
+  "menhir/dialog": ["@floating-ui", "positioning", "hover", "list-navigation"],
   // Nor does an alert dialog close on a press outside (#26, #32).
   "menhir/alert-dialog": [
     "@floating-ui",
     "positioning",
     "hover",
+    "list-navigation",
     "dismissal/outsidePress",
   ],
   // A popover is non-modal: it keeps the browser's Tab order (#27, #33) and
   // leaves the page scrolling (#28). It does not open on hover, and the
   // browser closes it, so it needs neither a dialog's dismissal nor
-  // Tooltip's Escape (#26). A modal popup is a Dialog (#33).
+  // Tooltip's Escape (#26). A modal popup is a Dialog (#33). It has no
+  // list (#97).
   "menhir/popover": [
+    "list-navigation",
     "focus/tabWrap",
     "focus/tabbable",
     "scroll-lock",
@@ -39,9 +43,10 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "dismissal/dialogClose",
     "dismissal/escape",
   ],
-  // A tooltip closes on Escape only (#26, #34), takes no focus (#27) and
-  // leaves the page scrolling (#28).
+  // A tooltip closes on Escape only (#26, #34), takes no focus (#27),
+  // leaves the page scrolling (#28) and has no list (#97).
   "menhir/tooltip": [
+    "list-navigation",
     "dismissal/outsidePress",
     "dismissal/dialogClose",
     "dismissal/popoverClose",
