@@ -75,26 +75,50 @@ describe("a floating module alone", () => {
   });
 
   // Menu holds focus on its items, Combobox in its input (#97): each ships
-  // one way, and neither ships typeahead, which Combobox does not use (#98).
-  it("roving list navigation bundles no aria-activedescendant, and no typeahead", async () => {
+  // one way.
+  it("roving list navigation bundles no aria-activedescendant", async () => {
     const file = built("list-navigation/roving");
     expect(
-      await findForbiddenModules(file, [
-        "list-navigation/activeDescendant",
-        "typeahead",
-      ]),
+      await findForbiddenModules(file, ["list-navigation/activeDescendant"]),
     ).toEqual([]);
     const code = await bundledCode(file);
     expect(code).not.toContain("activeId");
   });
 
-  it("aria-activedescendant list navigation bundles no roving focus, and no typeahead", async () => {
+  it("aria-activedescendant list navigation bundles no roving focus", async () => {
     const file = built("list-navigation/activeDescendant");
     expect(
-      await findForbiddenModules(file, ["list-navigation/roving", "typeahead"]),
+      await findForbiddenModules(file, ["list-navigation/roving"]),
     ).toEqual([]);
     const code = await bundledCode(file);
     expect(code).not.toContain("preventScroll");
+  });
+
+  // Combobox uses list navigation and filters instead of typing ahead
+  // (#98): the component hands typeahead its items, and neither folder
+  // imports the other.
+  it.each([
+    "list-navigation/listNavigation",
+    "list-navigation/roving",
+    "list-navigation/activeDescendant",
+  ])("%s bundles no typeahead", async (file) => {
+    expect(await findForbiddenModules(built(file), ["typeahead"])).toEqual([]);
+  });
+
+  it("typeahead bundles no list navigation", async () => {
+    expect(
+      await findForbiddenModules(built("typeahead/typeahead"), [
+        "list-navigation",
+      ]),
+    ).toEqual([]);
+  });
+
+  // Framework-free, as the safe area is: the typed string's timer is the
+  // binding's.
+  it("the typeahead matcher bundles no Solid and no timer", async () => {
+    const code = await bundledCode(built("typeahead/match"));
+    expect(code).toContain("findMatch");
+    expect(code).not.toMatch(/solid-js|@solidjs\/web|setTimeout|setInterval/);
   });
 
   // Solid's store engine costs an app with no store about 8.2 kB gzipped
