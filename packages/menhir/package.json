@@ -54,6 +54,11 @@
       "solid": "./dist/source/color-scheme/local-storage/index.js",
       "import": "./dist/color-scheme/local-storage/index.js"
     },
+    "./combobox": {
+      "types": "./dist/source/combobox/index.d.ts",
+      "solid": "./dist/source/combobox/index.js",
+      "import": "./dist/combobox/index.js"
+    },
     "./context-menu": {
       "types": "./dist/source/context-menu/index.d.ts",
       "solid": "./dist/source/context-menu/index.js",

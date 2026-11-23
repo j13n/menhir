@@ -122,6 +122,18 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "dismissal/escape",
     "list-navigation/roving",
   ],
+  // A combobox's Popup is a manual popover: Escape and focus leaving reach
+  // its input, which closes it, so it needs no dismissal. Focus stays in the
+  // input, which names the active item, and typing filters, so it has no
+  // roving list and no typeahead; it opens on no hover (#103).
+  "menhir/combobox": [
+    "focus",
+    "scroll-lock",
+    "hover",
+    "dismissal",
+    "typeahead",
+    "list-navigation/roving",
+  ],
   // A navigation menu's Panels are in the page's flow, not the top layer:
   // nothing positions, shows or hides them but `hidden`, and the Root
   // writes its own outside press and closes the others itself (#105).

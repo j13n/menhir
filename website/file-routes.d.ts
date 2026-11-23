@@ -77,6 +77,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/combobox";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/combobox"), Extract<"default", keyof typeof import("./src/routes/docs/components/combobox")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/context-menu";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/context-menu"), Extract<"default", keyof typeof import("./src/routes/docs/components/context-menu")>>>;
@@ -369,6 +375,14 @@ declare module "virtual:file-routes" {
           id: "/components/checkbox";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/checkbox"), Extract<"default", keyof typeof import("./src/routes/docs/components/checkbox")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/combobox";
+          id: "/components/combobox";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/combobox"), Extract<"default", keyof typeof import("./src/routes/docs/components/combobox")>>>;
           $$route?: undefined;
           children?: undefined;
         },

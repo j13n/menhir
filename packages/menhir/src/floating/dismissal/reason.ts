@@ -24,7 +24,12 @@
  * - `item-press`: an item of a menu was activated, by pointer or keyboard,
  *   which closes every open menu (Menu).
  * - `arrow-key`: an arrow key opened or closed a submenu, or a key that
- *   moves through a menu closed its open submenu (Menu).
+ *   moves through a menu closed its open submenu (Menu); an arrow key
+ *   opened or closed a combobox's list (Combobox).
+ * - `input-change`: the user typed in a combobox's input, which opened its
+ *   list (Combobox).
+ * - `enter-key`: Enter closed a combobox's list with no item active
+ *   (Combobox).
  */
 export type OpenChangeReason =
   | "escape-key"
@@ -37,7 +42,9 @@ export type OpenChangeReason =
   | "focus-out"
   | "link-press"
   | "item-press"
-  | "arrow-key";
+  | "arrow-key"
+  | "input-change"
+  | "enter-key";
 
 /**
  * The second argument of `onOpenChange`. `event` is the event that caused

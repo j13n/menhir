@@ -1,0 +1,119 @@
+/* The least CSS that makes the Combobox look like one: a box with the input
+   and its two buttons, and a card below it, as wide as the box at least
+   (--anchor-width, the Popup's anchor is the box) and no taller than the
+   space left (--available-height). Menhir places the popup; the item the
+   keys or the pointer reached has data-active, and the indicator shows by
+   its data-selected. The Status is empty unless no fruit matches. The popup
+   fades in on data-open and out on data-closed. Colours are Tailwind's
+   stone palette; light-dark() picks the second one in dark mode
+   (color-scheme: dark). */
+.combobox-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.combobox-box {
+  display: flex;
+  align-items: center;
+  width: 12rem;
+  border: 1px solid
+    light-dark(
+      oklch(86.9% 0.005 56.366) /* stone-300 */,
+      oklch(44.4% 0.011 73.639) /* stone-600 */
+    );
+  border-radius: 0.375rem;
+}
+
+.combobox-box:focus-within {
+  outline: 2px solid oklch(55.3% 0.013 58.071) /* stone-500 */;
+  outline-offset: 2px;
+}
+
+.combobox-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.375rem 0.75rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+
+.combobox-button {
+  padding: 0 0.5rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.combobox-popup {
+  box-sizing: border-box;
+  min-width: var(--anchor-width);
+  max-height: var(--available-height);
+  margin: 0;
+  padding: 0.25rem;
+  overflow-y: auto;
+  border: 1px solid
+    light-dark(
+      oklch(92.3% 0.003 48.717) /* stone-200 */,
+      oklch(37.4% 0.01 67.558) /* stone-700 */
+    );
+  border-radius: 0.5rem;
+  background: light-dark(white, oklch(21.6% 0.006 56.043) /* stone-900 */);
+  color: inherit;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 10%);
+}
+
+.combobox-popup[data-open] {
+  animation: combobox-in 120ms ease-out;
+}
+
+.combobox-popup[data-closed] {
+  animation: combobox-in 120ms ease-in reverse;
+}
+
+@keyframes combobox-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.combobox-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.25rem;
+  cursor: default;
+  user-select: none;
+}
+
+.combobox-item[data-active] {
+  background: light-dark(
+    oklch(97% 0.001 106.424) /* stone-100 */,
+    oklch(26.8% 0.007 34.298) /* stone-800 */
+  );
+}
+
+.combobox-indicator {
+  width: 0.75rem;
+}
+
+.combobox-indicator[data-unselected] {
+  visibility: hidden;
+}
+
+.combobox-status:not(:empty) {
+  padding: 0.375rem 0.5rem;
+  opacity: 0.7;
+}

@@ -501,6 +501,38 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Combobox, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const input = example.getByRole("combobox", { name: "City" });
+    const list = document.getElementById(input.getAttribute("aria-controls")!)!;
+    expect(input).toHaveAttribute("aria-expanded", "false");
+    input.focus();
+    fireEvent.input(input, { target: { value: "lo" } });
+    // The list opens after the input's flush.
+    await Promise.resolve();
+    flush();
+    expect(input).toHaveAttribute("aria-expanded", "true");
+    expect(
+      within(list)
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toEqual(["London", "Oslo"]);
+    fireEvent.click(within(list).getByRole("option", { name: "Oslo" }));
+    await Promise.resolve();
+    flush();
+    expect(input).toHaveAttribute("aria-expanded", "false");
+    expect(input).toHaveValue("Oslo");
+    expect(
+      within(list).getByRole("option", { name: "Oslo", hidden: true }),
+    ).toHaveAttribute("aria-selected", "true");
+    expect(example.getByRole("link", { name: "Combobox" })).toHaveAttribute(
+      "href",
+      "/docs/components/combobox",
+    );
+  });
+
   test("shows working Tooltips, linked to their page", async () => {
     stubPopover();
     const { getByRole } = setup();

@@ -2,6 +2,7 @@ import { accordionDoc } from "./accordion";
 import { alertDialogDoc } from "./alert-dialog";
 import { checkboxDoc } from "./checkbox";
 import { collapsibleDoc } from "./collapsible";
+import { comboboxDoc } from "./combobox";
 import { contextMenuDoc } from "./context-menu";
 import { dialogDoc } from "./dialog";
 import { menuDoc } from "./menu";
@@ -25,6 +26,7 @@ export const componentDocs: ComponentDoc[] = [
   alertDialogDoc,
   checkboxDoc,
   collapsibleDoc,
+  comboboxDoc,
   contextMenuDoc,
   dialogDoc,
   menuDoc,
