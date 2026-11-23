@@ -6,8 +6,10 @@ import {
   omit,
   onFlush,
   onSettled,
+  useContext,
 } from "solid-js";
 
+import { FormContext } from "../../core/formContext.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import type { ElementProps } from "../../core/renderElement.tsx";
 import { renderElement } from "../../core/renderElement.tsx";
@@ -81,9 +83,15 @@ export function FieldRoot(props: FieldRootProps) {
       if (touch !== undefined) setTouched(touch);
     });
 
+  // The error the Form around the Root hands it by `name`, the answer to a
+  // submission, which shows touched or not (src/form/README.md).
+  const form = useContext(FormContext);
+  const formError = () =>
+    props.name === undefined ? undefined : form?.error(props.name);
+
   const invalid = () =>
     !!props.invalid || !!props.error || invalidControl() !== undefined;
-  const showsError = () => touched() && invalid();
+  const showsError = () => (touched() && invalid()) || !!formError();
 
   const attributes: FieldStateAttributes = {
     get "data-invalid"() {
@@ -103,7 +111,11 @@ export function FieldRoot(props: FieldRootProps) {
     name: () => props.name,
     disabled: () => props.disabled,
     showsError,
-    message: () => props.error || invalidControl()?.validationMessage,
+    // The Field's own error shows once touched; before, only the Form's.
+    message: () =>
+      (touched() && props.error) ||
+      formError() ||
+      invalidControl()?.validationMessage,
     validity: () => invalidControl()?.validity,
     describedBy() {
       const ids: string[] = [];

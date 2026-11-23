@@ -19,6 +19,8 @@ const budgets = {
   "menhir/context-menu": "13 kB",
   "menhir/dialog": "4.2 kB",
   "menhir/field": "1.8 kB",
+  "menhir/form": "1.1 kB",
+  "menhir/form/standard-schema": "300 B",
   "menhir/input": "950 B",
   "menhir/menu": "13.5 kB",
   "menhir/menubar": "13.5 kB",

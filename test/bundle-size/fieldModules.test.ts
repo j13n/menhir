@@ -17,9 +17,11 @@ async function findFieldModules(specifier: string): Promise<string[]> {
 
 // A control joins a Field through Field.Control's `render`, and reads no
 // context of Field's, so a control outside a Field pays nothing for it
-// (src/field/README.md, "Decisions"; #141).
+// (src/field/README.md, "Decisions"; #141). Form hands its errors to the
+// Fields through a context in `core`, so it imports none of Field either
+// (src/form/README.md; #144).
 describe("Field", () => {
-  it.each(["menhir/switch", "menhir/checkbox", "menhir/input"])(
+  it.each(["menhir/switch", "menhir/checkbox", "menhir/input", "menhir/form"])(
     "is not in an app that imports %s alone",
     async (entryPoint) => {
       expect(await findFieldModules(entryPoint)).toEqual([]);

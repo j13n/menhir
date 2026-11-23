@@ -94,6 +94,7 @@ export function llmsTxt(docs: ComponentDoc[]): string {
       "- [Getting started](/docs/getting-started): installing Menhir and using a first component.",
       "- [Styling](/docs/styling): styling a component through its data attributes, and the styling skill in `node_modules/menhir/skills/menhir-styling`, which styles components in one look, such as the shadcn look.",
       "- [Solid 2.0](/docs/solid-2): how the components follow Solid 2.0's idioms: props, the `render` prop, controlled state, async data under `<Loading>`, server rendering and popups in the top layer.",
+      "- [Forms without a library](/docs/forms): building forms with Field and Form and no form-state library: a store with nested and array values, a schema run on submit with `issuesToErrors`, errors once touched, a pending submit button, reset, and the uncontrolled form with the router's form action.",
       "- [Bundle size](/docs/bundle-size): each entry point's size, how it compares with other libraries, and how they are measured.",
     ].join("\n"),
   ];

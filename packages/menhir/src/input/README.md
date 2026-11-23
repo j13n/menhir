@@ -126,7 +126,10 @@ attribute of an `<input>`, and:
   before a later listener could cancel the reset. A reset the app cancels
   calls nothing: the reset is the event's default action, so its
   `defaultPrevented` is the app saying no (PLAN.md section 8, "Nothing
-  cancels the part's handler", is about a part's own handler).
+  cancels the part's handler", is about a part's own handler). An Input the
+  reset removes before its task, such as a row of a list the app's
+  `onReset` takes back to one, asks for nothing, so it does not write its
+  row back (found with Form, #144).
 - **A textarea through `render`**, as `Field.Control` does, with
   `render={(p) => <textarea {...p} />}`. Every line of Input works on a
   `<textarea>` unchanged, so a part of its own would only repeat it.
@@ -178,6 +181,7 @@ part conventions. No WAI-ARIA pattern applies, so no case is marked "A".
 - A reset puts an uncontrolled Input back to `defaultValue`, and calls `onValueChange` with it and `reset`; at its default already, a reset calls nothing
 - A reset of a controlled Input calls `onValueChange` with `defaultValue` (`""` without one); taken, the element shows it; declined, the element keeps `value`
 - A reset the app cancels calls nothing
+- An Input removed by the reset's own handler calls nothing
 - By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken shows `defaultValue`, a reset declined keeps `value`, and a reset a later listener cancels calls nothing
 - Autofill: a value the browser fills in, with an `input` event, calls `onValueChange`
 - In a Field, through `Field.Control`'s `render`: labelled by the Label, named by the Field's `name`, described by the Description, and its error shows once touched, while its value is controlled
@@ -222,11 +226,12 @@ every part, Rolldown, minified, gzipped, Solid left out. Measured on
 
 | App                | Size  | Budget |
 | ------------------ | ----- | ------ |
-| `menhir/input`     | 921 B | 950 B  |
+| `menhir/input`     | 934 B | 950 B  |
 | `menhir/separator` | 746 B | 900 B  |
 
 Most of it is what every part has: `mergeElementProps` and `renderElement`
 from `core`, which Separator, a part with nothing to do, is made of. Input's
-own code is the 175 B over Separator: the write back after an edit, the
-`compositionend` listener and the form's `reset` listener. In an app with
+own code is the 188 B over Separator: the write back after an edit, the
+`compositionend` listener and the form's `reset` listener (13 B of it, from
+921 B, the check that an Input the reset removed asks for nothing, #144). In an app with
 any other Menhir component, `core` is there already.

@@ -2,7 +2,7 @@
 // in README.md.
 import { describe, expect, it, vi } from "vitest";
 
-import { createSignal, omit } from "solid-js";
+import { Show, createSignal, omit } from "solid-js";
 
 import {
   afterFlush,
@@ -194,6 +194,30 @@ describe("<Input.Root /> in a form", () => {
       expect(onValueChange).not.toHaveBeenCalled();
       expect(textbox()).toHaveValue("Oslo!");
     });
+    it("calls nothing once the reset's own handler has removed it", async () => {
+      // As a form whose rows go back to one on a reset.
+      const [shown, setShown] = createSignal(true);
+      const onValueChange = vi.fn();
+      const { user } = await render(() => (
+        <form data-testid="form" onReset={() => setShown(false)}>
+          <Show when={shown()}>
+            <Input.Root
+              aria-label="Row"
+              value="Bergen"
+              onValueChange={onValueChange}
+            />
+          </Show>
+          <button type="reset">Reset</button>
+        </form>
+      ));
+
+      await user.click(button("Reset"));
+      await afterReset();
+
+      expect(screen.queryByRole("textbox")).toBeNull();
+      expect(onValueChange).not.toHaveBeenCalled();
+    });
+
     // A press of the user's, not a script's: the browser runs microtasks
     // as each listener of `reset` returns, before it resets the controls.
     describe.skipIf(isJSDOM)("by a real press", () => {

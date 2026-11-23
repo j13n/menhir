@@ -7,6 +7,7 @@ import { comboboxDoc } from "./combobox";
 import { contextMenuDoc } from "./context-menu";
 import { dialogDoc } from "./dialog";
 import { fieldDoc } from "./field";
+import { formDoc } from "./form";
 import { inputDoc } from "./input";
 import { menuDoc } from "./menu";
 import { menubarDoc } from "./menubar";
@@ -34,6 +35,7 @@ export const componentDocs: ComponentDoc[] = [
   contextMenuDoc,
   dialogDoc,
   fieldDoc,
+  formDoc,
   inputDoc,
   menuDoc,
   menubarDoc,

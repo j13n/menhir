@@ -79,6 +79,16 @@
       "solid": "./dist/source/field/index.js",
       "import": "./dist/field/index.js"
     },
+    "./form": {
+      "types": "./dist/source/form/index.d.ts",
+      "solid": "./dist/source/form/index.js",
+      "import": "./dist/form/index.js"
+    },
+    "./form/standard-schema": {
+      "types": "./dist/source/form/standard-schema/index.d.ts",
+      "solid": "./dist/source/form/standard-schema/index.js",
+      "import": "./dist/form/standard-schema/index.js"
+    },
     "./input": {
       "types": "./dist/source/input/index.d.ts",
       "solid": "./dist/source/input/index.js",
@@ -200,7 +210,9 @@
     "publint": "^0.3.25",
     "solid-js": "^2.0.1",
     "typescript": "^7.0.2",
+    "valibot": "^1.5.0",
     "vite": "^8.3.8",
-    "vitest": "5.1.0"
+    "vitest": "5.1.0",
+    "zod": "^4.6.7"
   }
 }

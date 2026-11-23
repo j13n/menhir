@@ -107,6 +107,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/form";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/form"), Extract<"default", keyof typeof import("./src/routes/docs/components/form")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/index"), Extract<"default", keyof typeof import("./src/routes/docs/components/index")>>>;
@@ -197,6 +203,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/forms";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/forms"), Extract<"default", keyof typeof import("./src/routes/docs/forms")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/getting-started";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/getting-started"), Extract<"default", keyof typeof import("./src/routes/docs/getting-started")>>>;
@@ -267,6 +279,14 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
       children: readonly [
         {
+          path: "/forms";
+          id: "/forms";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/forms"), Extract<"default", keyof typeof import("./src/routes/docs/forms")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
           path: "/solid-2";
           id: "/solid-2";
           page: true;
@@ -303,6 +323,14 @@ declare module "virtual:file-routes" {
           id: "/components/";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/index"), Extract<"default", keyof typeof import("./src/routes/docs/components/index")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/form";
+          id: "/components/form";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/form"), Extract<"default", keyof typeof import("./src/routes/docs/components/form")>>>;
           $$route?: undefined;
           children?: undefined;
         },

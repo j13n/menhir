@@ -338,4 +338,22 @@ describe("<ComparisonTable />", () => {
       within(getByRole("table")).queryByRole("row", { name: /color-scheme/ }),
     ).not.toBeInTheDocument();
   });
+
+  test("leaves out a component's further entry point, such as menhir/form/standard-schema", () => {
+    const { getByRole } = render(() => (
+      <ComparisonTable
+        sizes={[
+          ...sizes,
+          { entryPoint: "menhir/form/standard-schema", size: 230 },
+        ]}
+        libraries={libraries}
+        components={components}
+      />
+    ));
+    expect(
+      within(getByRole("table")).queryByRole("row", {
+        name: /standard-schema/,
+      }),
+    ).not.toBeInTheDocument();
+  });
 });

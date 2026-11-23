@@ -4,13 +4,14 @@ import type { EntryPointSize } from "virtual:menhir-sizes";
 import type { ComparedLibrary } from "virtual:size-comparison";
 
 import { formatSize } from "../formatSize";
-import { isUtility } from "../utilities";
 import TableScroll from "./TableScroll";
 
 /**
  * Each component's size in menhir beside its size in other libraries, each
  * with its difference from menhir's, then the module and version measured in
- * each library. Utilities, such as `menhir/color-scheme/cookie`, are left out.
+ * each library. Only a component's own entry point has a row: a utility, such
+ * as `menhir/color-scheme/cookie`, or a further entry point of a component,
+ * such as `menhir/form/standard-schema`, is left out.
  *
  * The last row is of the components imported together. A library's
  * difference there is from the same components of menhir, so a library
@@ -28,7 +29,7 @@ export default function ComparisonTable(props: {
   components: readonly { slug: string; name: string }[];
   notes?: readonly ComparisonNote[];
 }) {
-  const rows = () => props.sizes.filter((row) => !isUtility(row.entryPoint));
+  const rows = () => props.sizes.filter((row) => !slug(row).includes("/"));
   const slug = (row: EntryPointSize) => row.entryPoint.slice("menhir/".length);
   const name = (row: EntryPointSize) =>
     props.components.find((component) => component.slug === slug(row))?.name ??
