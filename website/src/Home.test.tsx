@@ -234,6 +234,35 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Form, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const control = example.getByRole<HTMLInputElement>("textbox", {
+      name: "Username",
+    });
+    const join = example.getByRole("button", { name: "Join" });
+
+    // Empty, the submission is blocked and the control focused.
+    fireEvent.click(join);
+    await new Promise<void>((resolve) => onFlush(resolve));
+    expect(control).toHaveFocus();
+    expect(control).toHaveAttribute("aria-invalid", "true");
+
+    control.value = "menhir";
+    fireEvent.input(control);
+    fireEvent.click(join);
+    await new Promise<void>((resolve) => onFlush(resolve));
+    // The Error registers once mounted, in the next flush.
+    await new Promise<void>((resolve) => onFlush(resolve));
+    expect(control).toHaveAccessibleDescription(
+      "Try “menhir”, or leave it empty. That name is taken.",
+    );
+    expect(example.getByRole("link", { name: "Form" })).toHaveAttribute(
+      "href",
+      "/docs/components/form",
+    );
+  });
+
   test("shows a working Checkbox, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));

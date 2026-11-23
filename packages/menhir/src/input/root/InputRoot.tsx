@@ -55,6 +55,9 @@ export function InputRoot(props: InputRootProps) {
   onSettled(() => {
     const form = element?.form;
     if (!form) return;
+    // An Input the reset removes, such as a row of a list going back to
+    // its default length, asks for nothing.
+    let disposed = false;
     const onReset = (event: Event) => {
       const text = element!.value;
       const defaultText = untrack(() => props.defaultValue) ?? "";
@@ -69,13 +72,16 @@ export function InputRoot(props: InputRootProps) {
       // button, the browser runs microtasks as each listener returns,
       // before later listeners could cancel the reset.
       setTimeout(() => {
-        if (event.defaultPrevented || text === defaultText) return;
+        if (disposed || event.defaultPrevented || text === defaultText) return;
         props.onValueChange?.(defaultText, { reason: "reset", event });
         onFlush(restoreValue);
       });
     };
     form.addEventListener("reset", onReset);
-    return () => form.removeEventListener("reset", onReset);
+    return () => {
+      disposed = true;
+      form.removeEventListener("reset", onReset);
+    };
   });
   const ownProps: ElementProps = {
     onInput: (event: Event) => {

@@ -6,6 +6,8 @@ import { Collapsible } from "menhir/collapsible";
 import { Combobox, includesText } from "menhir/combobox";
 import { Dialog } from "menhir/dialog";
 import { Field } from "menhir/field";
+import { Form } from "menhir/form";
+import type { FormErrors } from "menhir/form";
 import { Input } from "menhir/input";
 import { Meter } from "menhir/meter";
 import { NavigationMenu } from "menhir/navigation-menu";
@@ -77,6 +79,8 @@ export default function Home() {
   );
   // The Input's text: digits only, so a letter typed is undone.
   const [pin, setPin] = createSignal("");
+  // The Form's errors, as a server would answer: one name is taken.
+  const [joinErrors, setJoinErrors] = createSignal<FormErrors>({});
   return (
     <>
       <PageHead
@@ -203,6 +207,44 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/input">Input</a>
+              </figcaption>
+            </figure>
+            <figure class={exampleCard}>
+              <Form
+                class="flex flex-col gap-2"
+                errors={joinErrors()}
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  const data = new FormData(event.currentTarget);
+                  setJoinErrors(
+                    data.get("username") === "menhir"
+                      ? { username: "That name is taken." }
+                      : {},
+                  );
+                }}
+              >
+                <Field.Root name="username" class="flex flex-col gap-1">
+                  <div class="flex items-center justify-between gap-4">
+                    <Field.Label>Username</Field.Label>
+                    <Field.Control
+                      required
+                      class="w-36 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-invalid:border-red-600 dark:border-stone-700 dark:data-invalid:border-red-400"
+                    />
+                  </div>
+                  <Field.Description class="text-sm opacity-70">
+                    Try “menhir”, or leave it empty.
+                  </Field.Description>
+                  <Field.Error class="text-sm text-red-600 dark:text-red-400" />
+                </Field.Root>
+                <button
+                  type="submit"
+                  class="self-end rounded-md bg-stone-800 px-3 py-1 text-sm font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:bg-stone-300 dark:text-stone-900"
+                >
+                  Join
+                </button>
+              </Form>
+              <figcaption class="text-sm">
+                <a href="/docs/components/form">Form</a>
               </figcaption>
             </figure>
             <figure class={exampleCard}>

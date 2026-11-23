@@ -103,6 +103,15 @@ Checked on 2026-11-23, in `web-features` 3.47.0 and the HTML standard.
   and knows more, such as a server's answer. Errors from outside work
   without the browser's validation: an app that keeps its form state in a
   library of its own passes `invalid` and `error` in.
+- **An error from the Form around it** (#144, `src/form/README.md`). The
+  Root reads Form's context, which is in `core/formContext.ts`, and looks
+  up the error under its `name`. It is the answer to a submission, so it
+  shows at once, touched or not, including in the server HTML after a
+  submission made before hydration; Form hides it once the control is
+  edited. Once the Field is touched, its own `error` wins the message over
+  it; before, the Form's shows alone. The browser's `validationMessage`
+  comes last. A Field outside a Form reads
+  `null`, and pays the 33 B of the read (Size).
 - **No `validate` prop.** A validate function is a memo in Solid, and its
   result is an error from outside: `error={passwordsDiffer()}`. An async
   check is an async memo, `createMemo(async () => …)`, whose pending state
@@ -111,8 +120,8 @@ Checked on 2026-11-23, in `web-features` 3.47.0 and the HTML standard.
 - **An error from outside does not block a submission.** Field does not
   pass it to `setCustomValidity()`: an app that validates on submit clears
   its errors on its next submit, and a submission blocked by an error the
-  user has already fixed could never be made. Blocking is the app's, or
-  Form's (#144).
+  user has already fixed could never be made. Form (#144) blocks a
+  submission only while a control is invalid to the browser.
 - **Field holds no value.** The value stays in the control, read from the
   form, or in the app's state. Holding it would make Field a form-state
   library and a second source of the value beside the control, and each
@@ -156,8 +165,9 @@ Checked on 2026-11-23, in `web-features` 3.47.0 and the HTML standard.
   want it announced.
 - **The browser's bubble is kept.** Canceling `invalid` hides the bubble
   but also stops the browser focusing the first invalid control, so the
-  code that hides it must focus. That is Form's (#144), with `novalidate`;
-  Field leaves both to the browser.
+  code that hides it must focus. Form (#144) does both: it sets
+  `novalidate` once hydrated and focuses the first invalid control of a
+  blocked submission. A Field outside a Form leaves both to the browser.
 - **The Description is linked in the server HTML.** The Root generates its
   `id`, and the control names it from the first render, before the
   Description is rendered; once mounted, the control names it only while a
@@ -171,7 +181,7 @@ Checked on 2026-11-23, in `web-features` 3.47.0 and the HTML standard.
   it is kept out of the merge, so a wrapper's `undefined` does not remove
   the Field's.
 - **Root's `name` and `disabled` go to the control.** `name` is on the Root
-  so that Form (#144) can hand the Field its errors by name. The Control's
+  so that Form (#144) hands the Field its errors by name. The Control's
   own `name` or `disabled` wins, as any prop does.
 - **The Field's own state is written after the event's flush** (`onFlush`),
   as an uncontrolled part's is, so a submission that starts async work does
@@ -272,8 +282,8 @@ In a form, with a native control (`Field.form.test.tsx`):
 | Dirty state, `data-dirty`                                                     | Field holds no value, and dirty needs the value and its default (Decisions)                                                                                                                            |
 | `data-valid`, `data-filled`, `data-focused`, `data-required`                  | `[data-touched]:not([data-invalid])`, `:user-valid`, `:placeholder-shown`, `:focus-within` and `:has(:required)` (Decisions)                                                                           |
 | `aria-errormessage`                                                           | Read while the field is valid in several screen readers (The platform first); `aria-describedby` names the error only while it is rendered                                                             |
-| Hiding the browser's bubble                                                   | Whoever hides it must also focus the first invalid control: Form's (#144)                                                                                                                              |
-| Errors rendered by the server, after a submission made before hydration       | No field is touched in the server HTML; showing them is Form's (#144), which knows a submission was made                                                                                               |
+| Hiding the browser's bubble                                                   | Whoever hides it must also focus the first invalid control: Form does both (#144)                                                                                                                      |
+| Errors rendered by the server, after a submission made before hydration       | No field is touched in the server HTML; an error Form hands the Field shows untouched, so Form shows them (#144, tested in `test/form/Form.hydrate.test.tsx`)                                          |
 | Several Descriptions in one Field                                             | The Root generates one Description `id`, linked in the server HTML; one Description holds all the text                                                                                                 |
 | Several error messages as a list                                              | `error` is one message; an app with several renders them as the Error's children                                                                                                                       |
 | Validity changed without an event: a value set by the app, `required` toggled | The browser fires no event; Field reads the validity again on the next `input`, `change`, `focusout` or `invalid` inside it                                                                            |
@@ -300,7 +310,7 @@ every part, Rolldown, minified, gzipped, Solid left out. Measured on
 
 | App               | Size    | Budget |
 | ----------------- | ------- | ------ |
-| `menhir/field`    | 1,727 B | 1.8 kB |
+| `menhir/field`    | 1,760 B | 1.8 kB |
 | `menhir/switch`   | 1,623 B | 1.9 kB |
 | `menhir/checkbox` | 1,677 B | 2 kB   |
 
@@ -309,4 +319,5 @@ Field's context, and neither bundles a module of `src/field`
 (`test/bundle-size/fieldModules.test.ts`). Most of Field is the Root: the
 listeners that read the controls' validity and track touched, and the
 registry of the Description and the Errors that the control's
-`aria-describedby` follows.
+`aria-describedby` follows. Reading Form's context (#144) took Field from
+1,727 B to 1,760 B.

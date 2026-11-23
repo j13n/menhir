@@ -17,7 +17,8 @@ const exportPaths = Object.keys(
 ).filter((path) => path !== "./package.json");
 
 // A component has one entry point, such as `./toggle-group`; a utility has
-// one per storage, such as `./color-scheme/cookie`.
+// one per storage, such as `./color-scheme/cookie`. An entry point under a
+// component's, such as `./form/standard-schema`, is part of that component.
 const components = exportPaths
   .filter((path) => path.split("/").length === 2)
   .map((path) => path.slice(2));
@@ -25,9 +26,9 @@ const utilities = [
   ...new Set(
     exportPaths
       .filter((path) => path.split("/").length > 2)
-      .map((path) => path.split("/")[1]),
+      .map((path) => path.split("/")[1]!),
   ),
-];
+].filter((name) => !components.includes(name));
 
 /** The names in a line such as "- Components: Switch, Toggle and Meter." */
 function listed(readme: string, heading: string): string[] {
