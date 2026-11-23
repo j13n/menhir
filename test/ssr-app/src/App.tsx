@@ -1,3 +1,4 @@
+import { Autocomplete } from "menhir/autocomplete";
 import { Combobox } from "menhir/combobox";
 import { Dialog } from "menhir/dialog";
 import { Menu } from "menhir/menu";
@@ -77,6 +78,15 @@ export function App() {
           </Combobox.List>
         </Combobox.Popup>
       </Combobox.Root>
+      <Autocomplete.Root name="city" defaultValue="Os">
+        <Autocomplete.Input aria-label="City" />
+        <Autocomplete.Popup>
+          <Autocomplete.List aria-label="Cities">
+            <Autocomplete.Item value="Bergen">Bergen</Autocomplete.Item>
+            <Autocomplete.Item value="Oslo">Oslo</Autocomplete.Item>
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
     </>
   );
 }

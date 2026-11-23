@@ -24,6 +24,7 @@ export const popupComponents = [
 // an app that uses both pays for the shared parts once.
 export const popupBases: Record<string, string> = {
   "alert-dialog": "dialog",
+  autocomplete: "combobox",
   "context-menu": "menu",
   menubar: "menu",
 };

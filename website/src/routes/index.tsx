@@ -1,5 +1,6 @@
 import { Accordion } from "menhir/accordion";
 import { AlertDialog } from "menhir/alert-dialog";
+import { Autocomplete } from "menhir/autocomplete";
 import { Checkbox } from "menhir/checkbox";
 import { Collapsible } from "menhir/collapsible";
 import { Combobox, includesText } from "menhir/combobox";
@@ -58,12 +59,18 @@ const exampleCard =
   "m-0 flex flex-col justify-between gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60";
 
 const cities = ["Lisbon", "London", "Madrid", "Oslo", "Paris", "Rome"];
+const searches = ["menhir", "megalith", "monolith", "standing stone"];
 
 export default function Home() {
   // The Combobox's list, filtered by what the user typed.
   const [cityQuery, setCityQuery] = createSignal("");
   const shownCities = createMemo(() =>
     cities.filter((city) => includesText(city, cityQuery())),
+  );
+  // The Autocomplete's suggestions, filtered the same way.
+  const [searchQuery, setSearchQuery] = createSignal("");
+  const shownSearches = createMemo(() =>
+    searches.filter((term) => includesText(term, searchQuery())),
   );
   return (
     <>
@@ -600,6 +607,44 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/combobox">Combobox</a>
+              </figcaption>
+            </figure>
+            <figure class={exampleCard}>
+              <div class="flex items-center justify-between gap-4">
+                <label for="home-autocomplete" id="home-autocomplete-label">
+                  Search
+                </label>
+                <Autocomplete.Root
+                  name="search"
+                  onValueChange={(text, { reason }) =>
+                    setSearchQuery(reason === "input-change" ? text : "")
+                  }
+                >
+                  <Autocomplete.Input
+                    id="home-autocomplete"
+                    class="w-28 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700"
+                  />
+                  <Autocomplete.Popup
+                    class="m-0 max-h-(--available-height) min-w-(--anchor-width) overflow-y-auto rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-opacity duration-100 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+                    sideOffset={4}
+                  >
+                    <Autocomplete.List aria-labelledby="home-autocomplete-label">
+                      <For each={shownSearches()}>
+                        {(term) => (
+                          <Autocomplete.Item
+                            value={term}
+                            class="cursor-default rounded px-2 py-1.5 select-none data-active:bg-stone-100 dark:data-active:bg-stone-800"
+                          >
+                            {term}
+                          </Autocomplete.Item>
+                        )}
+                      </For>
+                    </Autocomplete.List>
+                  </Autocomplete.Popup>
+                </Autocomplete.Root>
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/autocomplete">Autocomplete</a>
               </figcaption>
             </figure>
             <figure class={exampleCard}>

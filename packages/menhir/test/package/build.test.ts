@@ -135,6 +135,32 @@ describe("built package", () => {
     }
   });
 
+  it("bundles the parts Combobox and Autocomplete share once", async () => {
+    const code = await bundle("comboboxAndAutocomplete.js");
+    const count = (name: string) =>
+      code.split(new RegExp(`function ${name}\\b`)).length - 1;
+
+    for (const name of [
+      "createComboboxBase",
+      "createComboboxInput",
+      "createComboboxItem",
+      "ComboboxTrigger",
+      "ComboboxClear",
+      "ComboboxPopup",
+      "ComboboxList",
+      "ComboboxGroup",
+      "ComboboxStatus",
+      "includesText",
+      "createPosition",
+      "createActiveDescendantList",
+      "AutocompleteRoot",
+      "AutocompleteInput",
+      "AutocompleteItem",
+    ]) {
+      expect(count(name)).toBe(1);
+    }
+  });
+
   it("bundles the parts Menu and Context Menu share once", async () => {
     const code = await bundle("menuAndContextMenu.js");
     const count = (name: string) =>

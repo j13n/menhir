@@ -43,7 +43,7 @@ describe("an SSR app that uses menhir", () => {
     expect(server).toContain("ssrHydrationKey");
   });
 
-  it("renders on the server and hydrates on the client, where a Dialog, a Popover, a Tooltip, a Navigation Menu, a Menu, a Select and a Combobox open", async () => {
+  it("renders on the server and hydrates on the client, where a Dialog, a Popover, a Tooltip, a Navigation Menu, a Menu, a Select, a Combobox and an Autocomplete open", async () => {
     // In a Node process of its own: inside this jsdom test, the bundle's
     // import of Solid would resolve to the browser build.
     const html = execFileSync(
@@ -82,6 +82,10 @@ describe("an SSR app that uses menhir", () => {
       /<input(?=[^>]*role="combobox")(?=[^>]*value="Norway")/,
     );
     expect(html).toMatch(/<input(?=[^>]*name="country")(?=[^>]*value="no")/);
+    // An Autocomplete's input is the form's control, with its text.
+    expect(html).toMatch(
+      /<input(?=[^>]*role="combobox")(?=[^>]*name="city")(?=[^>]*value="Os")/,
+    );
 
     document.body.innerHTML = `<div id="app">${html}</div>`;
     for (const script of document.body.querySelectorAll("script")) {
@@ -179,23 +183,35 @@ describe("an SSR app that uses menhir", () => {
       document.querySelector<HTMLInputElement>("input[name=fruit]")!.value,
     ).toBe("apple");
 
-    const comboboxInput = document.querySelector<HTMLInputElement>(
-      "input[role=combobox]",
-    )!;
+    const [comboboxInput, autocompleteInput] =
+      document.querySelectorAll<HTMLInputElement>("input[role=combobox]");
     const countries = document.getElementById(
-      comboboxInput.getAttribute("aria-controls")!,
+      comboboxInput!.getAttribute("aria-controls")!,
     )!;
-    comboboxInput.focus();
-    comboboxInput.value = "new";
-    comboboxInput.dispatchEvent(new Event("input", { bubbles: true }));
+    comboboxInput!.focus();
+    comboboxInput!.value = "new";
+    comboboxInput!.dispatchEvent(new Event("input", { bubbles: true }));
     await new Promise((resolve) => setTimeout(resolve));
-    expect(comboboxInput.getAttribute("aria-expanded")).toBe("true");
+    expect(comboboxInput!.getAttribute("aria-expanded")).toBe("true");
     countries.querySelector<HTMLElement>("[role=option]")!.click();
     await new Promise((resolve) => setTimeout(resolve));
-    expect(comboboxInput.getAttribute("aria-expanded")).toBe("false");
-    expect(comboboxInput.value).toBe("New Zealand");
+    expect(comboboxInput!.getAttribute("aria-expanded")).toBe("false");
+    expect(comboboxInput!.value).toBe("New Zealand");
     expect(
       document.querySelector<HTMLInputElement>("input[name=country]")!.value,
     ).toBe("nz");
+
+    const cities = document.getElementById(
+      autocompleteInput!.getAttribute("aria-controls")!,
+    )!;
+    autocompleteInput!.focus();
+    autocompleteInput!.value = "Osl";
+    autocompleteInput!.dispatchEvent(new Event("input", { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(autocompleteInput!.getAttribute("aria-expanded")).toBe("true");
+    cities.querySelectorAll<HTMLElement>("[role=option]")[1]!.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(autocompleteInput!.getAttribute("aria-expanded")).toBe("false");
+    expect(autocompleteInput!.value).toBe("Oslo");
   });
 });

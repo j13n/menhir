@@ -65,6 +65,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/autocomplete";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/autocomplete"), Extract<"default", keyof typeof import("./src/routes/docs/components/autocomplete")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/checkbox";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/checkbox"), Extract<"default", keyof typeof import("./src/routes/docs/components/checkbox")>>>;
@@ -431,6 +437,14 @@ declare module "virtual:file-routes" {
           id: "/components/alert-dialog";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/alert-dialog"), Extract<"default", keyof typeof import("./src/routes/docs/components/alert-dialog")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/autocomplete";
+          id: "/components/autocomplete";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/autocomplete"), Extract<"default", keyof typeof import("./src/routes/docs/components/autocomplete")>>>;
           $$route?: undefined;
           children?: undefined;
         },

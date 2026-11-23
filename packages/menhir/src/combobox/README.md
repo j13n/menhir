@@ -268,6 +268,16 @@ results())`, then reads it from the start, so `<Loading>` shows its
   `--anchor-width` and `--available-height` for its CSS.
 - **The server renders a `defaultOpen` Combobox closed**, and hydration
   opens it, as Select does.
+- **Autocomplete builds on it** (#104; `src/autocomplete/README.md`): its
+  Root shares a combobox through this context, typed as `ComboboxBase`, so
+  the Trigger, Clear, Popup, List, Group, GroupLabel and Status work inside
+  it unchanged. What the two Roots, Inputs and Items share is here, and
+  each calls it: `createComboboxBase` (the open state, list navigation, the
+  List's `id`, the `data-*` attributes), `input/createComboboxInput.ts` and
+  `item/createComboboxItem.ts`. In development, a shared part outside
+  either Root throws an error that names both components, since it cannot
+  tell which was meant; the Input and the Item take only a Combobox's Root,
+  and throw inside an Autocomplete's, which `Autocomplete.test.tsx` checks.
 
 ## Test list
 
@@ -438,9 +448,10 @@ Measured on 2026-11-23.
 
 | Entry point       | Size     | Budget  |
 | ----------------- | -------- | ------- |
-| `menhir/combobox` | 11,490 B | 12.5 kB |
+| `menhir/combobox` | 11,568 B | 12.5 kB |
 
 The budget was set before the behaviour, at Select's (12.5 kB): Combobox
 has no typeahead, Value or autofill path, and adds the Input's keys, the
 List, Clear, Status and `includesText`. Most of it is `@floating-ui/dom`,
-as for Select.
+as for Select. Sharing its state, Input and item code and the context with
+Autocomplete (#104) added 78 B (11,490 B before).
