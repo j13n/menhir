@@ -309,13 +309,22 @@ and key presses from the Chrome DevTools Protocol and `vitest/browser`
 | `hidden="until-found"`, which lets find-in-page open a Panel    | As on Collapsible: a `beforematch` handler every app would ship. Add it when asked for                                                                                                                                        |
 | An `id` on the Panel                                            | See "Decisions": the Trigger renders first on the server, so it could not name the Panel's own `id`. A consumer who needs an anchor puts the `id` on an element inside the Panel                                              |
 | Scrolling closing it                                            | The Panel is in the page's flow and scrolls with it. A scroll under a still pointer moves the pointer off the Trigger or Panel, which closes one hover opened (#30)                                                           |
-| Tried with screen readers                                       | Not yet. The tests find the landmark, the buttons with their expanded state and the links by role, in jsdom and Chromium; VoiceOver, NVDA and JAWS are still to be tried                                                      |
+| Tried with screen readers                                       | VoiceOver with Safari 26.6.1 on macOS 15.7.9, on 2026-11-23: every check of #129 passed. NVDA and JAWS on Windows are still to be tried (#129)                                                                                |
 | Firefox and WebKit                                              | Tests run in Chromium (PLAN.md section 5). The parts use only a button, `hidden`, pointer, focus and key events                                                                                                               |
 
 ## Browsers and screen readers
 
 Tried on 2026-11-23 in Chromium (Playwright's headless build, through the
-test suite). No screen reader has been tried yet.
+test suite), and on 2026-11-23 with VoiceOver and Safari 26.6.1 on macOS
+15.7.9, on the docs page's examples, the "Without hover" recipe and the home
+page's example. Every check of #129 passed: the navigation landmark and its
+name, a Trigger read as a collapsed or expanded button with no menu
+announced, Enter and Space opening a Panel, Tab into its links, no link of
+a closed Panel read, Escape returning focus to the Trigger, Tab out of the
+navigation and a Link press closing it, `aria-current="page"` read as the
+current page, VoiceOver's own activation toggling a Trigger, and a Panel
+opened by hover and entered with Tab staying open. NVDA with Firefox, and
+NVDA or JAWS with Chrome, are still to be tried (#129).
 
 ## Size
 
