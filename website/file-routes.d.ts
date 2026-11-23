@@ -77,6 +77,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/context-menu";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/context-menu"), Extract<"default", keyof typeof import("./src/routes/docs/components/context-menu")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/dialog";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/dialog"), Extract<"default", keyof typeof import("./src/routes/docs/components/dialog")>>>;
@@ -383,6 +389,14 @@ declare module "virtual:file-routes" {
           id: "/components/alert-dialog";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/alert-dialog"), Extract<"default", keyof typeof import("./src/routes/docs/components/alert-dialog")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/context-menu";
+          id: "/components/context-menu";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/context-menu"), Extract<"default", keyof typeof import("./src/routes/docs/components/context-menu")>>>;
           $$route?: undefined;
           children?: undefined;
         },

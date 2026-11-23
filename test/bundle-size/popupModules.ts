@@ -82,6 +82,19 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "hover/group",
     "list-navigation/activeDescendant",
   ],
+  // A context menu is Menu's, opened by the `contextmenu` event (#100).
+  "menhir/context-menu": [
+    "focus/tabWrap",
+    "focus/tabbable",
+    "focus/initialFocus",
+    "scroll-lock",
+    "dismissal/outsidePress",
+    "dismissal/dialogClose",
+    "dismissal/escape",
+    "hover/hover",
+    "hover/group",
+    "list-navigation/activeDescendant",
+  ],
   // A navigation menu's Panels are in the page's flow, not the top layer:
   // nothing positions, shows or hides them but `hidden`, and the Root
   // writes its own outside press and closes the others itself (#105).

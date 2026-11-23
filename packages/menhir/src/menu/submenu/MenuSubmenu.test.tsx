@@ -15,11 +15,10 @@ import {
   nextTask,
   press,
 } from "../../../test/floating/input.ts";
-import { Share } from "../../../test/menu/Share.tsx";
+import { menuKinds } from "../../../test/menu/kinds.tsx";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Menu } from "../index.ts";
 
-const trigger = () => screen.getByRole("button", { name: "Edit" });
 const item = (name: string) =>
   screen.getByRole("menuitem", { name, hidden: true });
 /** The Popup that a Trigger or SubmenuTrigger names in `aria-controls`. */
@@ -32,15 +31,6 @@ const active = () => document.activeElement;
 async function frames(count = 3) {
   for (let i = 0; i < count; i++)
     await new Promise((resolve) => requestAnimationFrame(resolve));
-}
-
-/** Opens the Root's menu by keyboard and moves to "Share". */
-async function openToShare() {
-  trigger().focus();
-  await keyboard("{ArrowDown}");
-  await nextTask();
-  await keyboard("{ArrowDown}");
-  expect(active()).toBe(item("Share"));
 }
 
 describeConformance(
@@ -57,7 +47,16 @@ describeConformance(
   { tagName: "DIV" },
 );
 
-describe("<Menu.Submenu />", () => {
+describe.each(menuKinds)("<Menu.Submenu /> in a $name", (kind) => {
+  const { Share, trigger, menu, keyOpen } = kind;
+
+  /** Opens the Root's menu by keyboard and moves to "Share". */
+  async function openToShare() {
+    await keyOpen();
+    await keyboard("{ArrowDown}");
+    expect(active()).toBe(item("Share"));
+  }
+
   const { render } = createRenderer();
   stubMenu();
   afterEach(() => vi.restoreAllMocks());
@@ -257,7 +256,7 @@ describe("<Menu.Submenu />", () => {
       await nextTask();
 
       expect(shown(menuOf(item("Share")))).toBe(false);
-      expect(shown(menuOf(trigger()))).toBe(true);
+      expect(shown(menu())).toBe(true);
       expect(active()).toBe(item("Share"));
     },
   );
@@ -315,8 +314,12 @@ describe("<Menu.Submenu />", () => {
       await nextTask();
 
       expect(onPrint).toHaveBeenCalledTimes(1);
-      for (const triggerElement of [trigger(), item("Share"), item("More")])
-        expect(shown(menuOf(triggerElement))).toBe(false);
+      for (const element of [
+        menu(),
+        menuOf(item("Share")),
+        menuOf(item("More")),
+      ])
+        expect(shown(element)).toBe(false);
       expect(onOpenChange).toHaveBeenLastCalledWith(false, {
         reason: "item-press",
         event: expect.any(KeyboardEvent),

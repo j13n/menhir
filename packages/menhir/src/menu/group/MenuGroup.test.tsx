@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { createRenderer, describeConformance, screen } from "#test-utils";
 
-import { Edit } from "../../../test/menu/Edit.tsx";
+import { menuKinds } from "../../../test/menu/kinds.tsx";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Menu } from "../index.ts";
 
@@ -36,7 +36,8 @@ describeConformance(
   { tagName: "DIV" },
 );
 
-describe("<Menu.Group />", () => {
+describe.each(menuKinds)("<Menu.Group /> in a $name", (kind) => {
+  const { M, Edit } = kind;
   const { render } = createRenderer();
   stubMenu();
 
@@ -44,12 +45,12 @@ describe("<Menu.Group />", () => {
     const [label, setLabel] = createSignal(true);
     await render(() => (
       <Edit defaultOpen>
-        <Menu.Group>
+        <M.Group>
           <Show when={label()}>
-            <Menu.GroupLabel>Clipboard</Menu.GroupLabel>
+            <M.GroupLabel>Clipboard</M.GroupLabel>
           </Show>
-          <Menu.Item>Copy</Menu.Item>
-        </Menu.Group>
+          <M.Item>Copy</M.Item>
+        </M.Group>
       </Edit>
     ));
 
@@ -64,12 +65,12 @@ describe("<Menu.Group />", () => {
   it("takes the consumer's aria-labelledby over its GroupLabel's, and a GroupLabel takes the consumer's id", async () => {
     await render(() => (
       <Edit defaultOpen>
-        <Menu.Group aria-labelledby="own">
-          <Menu.GroupLabel id="label">Clipboard</Menu.GroupLabel>
-        </Menu.Group>
-        <Menu.Group data-testid="second">
-          <Menu.GroupLabel id="second-label">View</Menu.GroupLabel>
-        </Menu.Group>
+        <M.Group aria-labelledby="own">
+          <M.GroupLabel id="label">Clipboard</M.GroupLabel>
+        </M.Group>
+        <M.Group data-testid="second">
+          <M.GroupLabel id="second-label">View</M.GroupLabel>
+        </M.Group>
       </Edit>
     ));
 

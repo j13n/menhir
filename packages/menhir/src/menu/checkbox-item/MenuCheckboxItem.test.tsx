@@ -8,7 +8,7 @@ import {
   screen,
 } from "#test-utils";
 
-import { Edit } from "../../../test/menu/Edit.tsx";
+import { menuKinds } from "../../../test/menu/kinds.tsx";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Menu } from "../index.ts";
 import type { MenuCheckboxItemProps } from "./MenuCheckboxItem.tsx";
@@ -17,25 +17,6 @@ const popup = () => screen.getByRole("menu", { hidden: true });
 const shown = () => popup().matches(":popover-open");
 const wrap = () =>
   screen.getByRole("menuitemcheckbox", { name: "Word wrap", hidden: true });
-
-function View(
-  props: Omit<MenuCheckboxItemProps, "children"> & {
-    onOpenChange?: () => void;
-  },
-) {
-  return (
-    <Edit defaultOpen onOpenChange={props.onOpenChange}>
-      <Menu.CheckboxItem
-        checked={props.checked}
-        defaultChecked={props.defaultChecked}
-        onCheckedChange={props.onCheckedChange}
-      >
-        <Menu.ItemIndicator data-testid="indicator">✓</Menu.ItemIndicator>
-        Word wrap
-      </Menu.CheckboxItem>
-    </Edit>
-  );
-}
 
 describeConformance(
   "<Menu.CheckboxItem />",
@@ -63,7 +44,28 @@ describeConformance(
   { tagName: "SPAN" },
 );
 
-describe("<Menu.CheckboxItem />", () => {
+describe.each(menuKinds)("<Menu.CheckboxItem /> in a $name", (kind) => {
+  const { M, Edit } = kind;
+
+  function View(
+    props: Omit<MenuCheckboxItemProps, "children"> & {
+      onOpenChange?: () => void;
+    },
+  ) {
+    return (
+      <Edit defaultOpen onOpenChange={props.onOpenChange}>
+        <M.CheckboxItem
+          checked={props.checked}
+          defaultChecked={props.defaultChecked}
+          onCheckedChange={props.onCheckedChange}
+        >
+          <M.ItemIndicator data-testid="indicator">✓</M.ItemIndicator>
+          Word wrap
+        </M.CheckboxItem>
+      </Edit>
+    );
+  }
+
   const { render } = createRenderer();
   stubMenu();
   afterEach(() => vi.restoreAllMocks());

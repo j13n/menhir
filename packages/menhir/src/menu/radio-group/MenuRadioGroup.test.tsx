@@ -8,7 +8,7 @@ import {
   screen,
 } from "#test-utils";
 
-import { Edit } from "../../../test/menu/Edit.tsx";
+import { menuKinds } from "../../../test/menu/kinds.tsx";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Menu } from "../index.ts";
 import type { MenuRadioGroupProps } from "./MenuRadioGroup.tsx";
@@ -17,25 +17,6 @@ const popup = () => screen.getByRole("menu", { hidden: true });
 const shown = () => popup().matches(":popover-open");
 const radio = (name: string) =>
   screen.getByRole("menuitemradio", { name, hidden: true });
-
-function Sort(props: Omit<MenuRadioGroupProps, "children">) {
-  return (
-    <Edit defaultOpen>
-      <Menu.RadioGroup
-        value={props.value}
-        defaultValue={props.defaultValue}
-        onValueChange={props.onValueChange}
-      >
-        <Menu.GroupLabel>Sort by</Menu.GroupLabel>
-        <Menu.RadioItem value="name">
-          <Menu.ItemIndicator data-testid="name-indicator" />
-          Name
-        </Menu.RadioItem>
-        <Menu.RadioItem value="date">Date</Menu.RadioItem>
-      </Menu.RadioGroup>
-    </Edit>
-  );
-}
 
 describeConformance(
   "<Menu.RadioGroup />",
@@ -63,7 +44,28 @@ describeConformance(
   { tagName: "DIV" },
 );
 
-describe("<Menu.RadioGroup />", () => {
+describe.each(menuKinds)("<Menu.RadioGroup /> in a $name", (kind) => {
+  const { M, Edit } = kind;
+
+  function Sort(props: Omit<MenuRadioGroupProps, "children">) {
+    return (
+      <Edit defaultOpen>
+        <M.RadioGroup
+          value={props.value}
+          defaultValue={props.defaultValue}
+          onValueChange={props.onValueChange}
+        >
+          <M.GroupLabel>Sort by</M.GroupLabel>
+          <M.RadioItem value="name">
+            <M.ItemIndicator data-testid="name-indicator" />
+            Name
+          </M.RadioItem>
+          <M.RadioItem value="date">Date</M.RadioItem>
+        </M.RadioGroup>
+      </Edit>
+    );
+  }
+
   const { render } = createRenderer();
   stubMenu();
   afterEach(() => vi.restoreAllMocks());

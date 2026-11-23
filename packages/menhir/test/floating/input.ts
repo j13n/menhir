@@ -119,6 +119,25 @@ function scrollEnded(timeout: number) {
 }
 
 /**
+ * The Menu key (the context menu key) on the focused element, which fires
+ * a `contextmenu` at it. Chromium on macOS fires none for Shift+F10.
+ */
+export async function menuKey() {
+  const cdp = await session();
+  const key = { key: "ContextMenu", code: "ContextMenu" };
+  await cdp.send("Input.dispatchKeyEvent", {
+    type: "rawKeyDown",
+    ...key,
+    windowsVirtualKeyCode: 93,
+  });
+  await cdp.send("Input.dispatchKeyEvent", {
+    type: "keyUp",
+    ...key,
+    windowsVirtualKeyCode: 93,
+  });
+}
+
+/**
  * A touch that starts at `point` and drags up, which scrolls the page down,
  * and resolves once the scroll has ended, or after `timeout` milliseconds
  * if the page does not scroll: a tap while the page still moves only stops

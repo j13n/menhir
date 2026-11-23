@@ -54,6 +54,11 @@
       "solid": "./dist/source/color-scheme/local-storage/index.js",
       "import": "./dist/color-scheme/local-storage/index.js"
     },
+    "./context-menu": {
+      "types": "./dist/source/context-menu/index.d.ts",
+      "solid": "./dist/source/context-menu/index.js",
+      "import": "./dist/context-menu/index.js"
+    },
     "./dialog": {
       "types": "./dist/source/dialog/index.d.ts",
       "solid": "./dist/source/dialog/index.js",

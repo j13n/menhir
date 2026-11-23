@@ -6,7 +6,8 @@
  * - `escape-key`: Escape.
  * - `outside-press`: a press outside the popup, on a dialog's backdrop or
  *   in a popover's light dismiss.
- * - `trigger-press`: the trigger, pressed by pointer or keyboard.
+ * - `trigger-press`: the trigger, pressed by pointer or keyboard, or a
+ *   Context Menu's area by its `contextmenu` event.
  * - `close-request`: the browser closed the popup for another reason, such
  *   as the back gesture on Android, a `<form method="dialog">` or another
  *   popover opening.
