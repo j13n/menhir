@@ -139,6 +139,9 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+          # The sitemap dates each page by its sources' last commit
+          # (website/sitemap-lastmod.ts), which needs the whole history.
+          fetch-depth: 0
       - uses: ./.github/actions/setup
       # Builds menhir, whose exports the site imports from dist, and writes
       # the size-limit report the site's sizes come from, then the site.

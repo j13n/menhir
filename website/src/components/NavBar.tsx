@@ -1,4 +1,5 @@
 import ColorSchemeToggle from "../examples/color-scheme/tailwind/ColorSchemeToggle";
+import { repositoryUrl } from "../site";
 
 const link =
   "text-sm font-medium text-stone-700 no-underline hover:text-stone-950 dark:text-stone-300 dark:hover:text-white";
@@ -47,7 +48,7 @@ export default function NavBar() {
           </nav>
           <div class="flex items-center gap-1">
             <a
-              href="https://github.com/j13n/menhir"
+              href={repositoryUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"

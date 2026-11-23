@@ -9,6 +9,7 @@ import componentList from "./vite-plugin-component-list.ts";
 import componentMarkdown from "./vite-plugin-component-markdown.ts";
 import highlight from "./vite-plugin-highlight.ts";
 import menhirSizes from "./vite-plugin-sizes.ts";
+import { lastModified } from "./sitemap-lastmod.ts";
 import { siteUrl } from "./src/site.ts";
 
 export default defineConfig({
@@ -36,7 +37,14 @@ export default defineConfig({
       // Links to files, such as each component's Markdown version, are the
       // client build's assets, not pages.
       filter: (path) => !/\.\w+$/.test(path),
-      integrations: [sitemap({ hostname: siteUrl }), notFoundPage()],
+      // Each page's <lastmod> is its sources' last commit.
+      integrations: [
+        sitemap({
+          hostname: siteUrl,
+          entry: (page) => ({ lastmod: lastModified(page.path) }),
+        }),
+        notFoundPage(),
+      ],
     }),
     fileRoutes({ types: true }),
     tailwindcss(),
