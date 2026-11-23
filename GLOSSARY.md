@@ -174,6 +174,10 @@ _Avoid_: Form control (for the whole), form item, form group
 The element the user fills in or changes inside a Field: an `<input>`, a `<textarea>`, a `<select>` or a Menhir control such as a Switch or a Select's Trigger.
 _Avoid_: Input (for any control), widget
 
+**Input** (the component):
+A native text `<input>` whose value can be controlled, `menhir/input` (#142). It joins a Field as a Control, through `Field.Control`'s `render`.
+_Avoid_: Text field (for the component), Input (for any control)
+
 **Touched**:
 A Field the user has been through: focus has left it, its control has changed, or a submission of its form was attempted. A form reset clears it. Its error shows only once it is touched.
 _Avoid_: Visited, blurred, dirty (a changed value, which Field does not track)

@@ -44,6 +44,7 @@ export const libraries: Library[] = [
       "context-menu": "@base-ui/react/context-menu",
       dialog: "@base-ui/react/dialog",
       field: "@base-ui/react/field",
+      input: "@base-ui/react/input",
       meter: "@base-ui/react/meter",
       menu: "@base-ui/react/menu",
       menubar: "@base-ui/react/menubar",

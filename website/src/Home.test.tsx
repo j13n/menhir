@@ -214,6 +214,26 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Input, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const control = example.getByRole<HTMLInputElement>("textbox", {
+      name: "PIN",
+    });
+    control.value = "1";
+    fireEvent.input(control);
+    // The Input puts back a declined edit after the event's flush.
+    await new Promise<void>((resolve) => onFlush(resolve));
+    control.value = "1a";
+    fireEvent.input(control);
+    await new Promise<void>((resolve) => onFlush(resolve));
+    expect(control).toHaveValue("1");
+    expect(example.getByRole("link", { name: "Input" })).toHaveAttribute(
+      "href",
+      "/docs/components/input",
+    );
+  });
+
   test("shows a working Checkbox, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
