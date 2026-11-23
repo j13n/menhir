@@ -4,6 +4,8 @@ import type { ComponentDoc } from "./types";
 export const collapsibleDoc: ComponentDoc = {
   slug: "collapsible",
   name: "Collapsible",
+  summary:
+    "A button that shows and hides a section of content, such as the answer under a question.",
   description:
     "A button that shows and hides a section of content, such as the answer under a question or the details of an order: the WAI-ARIA disclosure pattern. The Trigger is a native button with aria-expanded, and aria-controls naming the Panel. A closed Panel has the hidden attribute, so its content stays in the page, keeping its state, but is not shown or read out; to leave closed content out of the page, wrap it in <Show>.",
   anatomy: tsx`<Collapsible.Root>

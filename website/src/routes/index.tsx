@@ -18,12 +18,12 @@ import { Tabs } from "menhir/tabs";
 import { Toggle } from "menhir/toggle";
 import { ToggleGroup } from "menhir/toggle-group";
 import { Tooltip } from "menhir/tooltip";
-import { Title } from "@solidjs/meta";
 import { createMemo, createSignal, For } from "solid-js";
 
 import InstallCommand from "../components/InstallCommand";
 import MenhirScene from "../components/MenhirScene";
-import { tagline } from "../site";
+import PageHead from "../components/PageHead";
+import { siteDescription, siteUrl, tagline } from "../site";
 
 // The home page's Tabs example: one tab and one panel per day.
 const forecast = [
@@ -67,7 +67,16 @@ export default function Home() {
   );
   return (
     <>
-      <Title>{`Menhir · ${tagline}`}</Title>
+      <PageHead
+        title={`Menhir · ${tagline}`}
+        description={siteDescription}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Menhir",
+          url: `${siteUrl}/`,
+        }}
+      />
       <main class="max-w-none">
         <div class="grid items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-10">
           <h1 class="m-0 text-center text-6xl font-bold tracking-tight md:text-right md:text-7xl">

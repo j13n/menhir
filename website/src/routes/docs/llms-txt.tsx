@@ -1,11 +1,10 @@
-import { Title } from "@solidjs/meta";
-
+import PageHead from "../../components/PageHead";
 import Section from "../../components/Section";
+import { siteUrl } from "../../site";
 
-// The site is rendered in the browser, so the snippets can carry the address
-// it is served from. Without a window, as when prerendering, they fall back
-// to paths.
-const origin = typeof window === "undefined" ? "" : window.location.origin;
+// Full addresses, so a snippet still works pasted into an agent. The pages
+// are prerendered, with no window to read the address from.
+const origin = siteUrl;
 
 const prompt = `Read ${origin}/llms.txt, then the Markdown of each Menhir component you use, before writing code with it.`;
 
@@ -25,7 +24,10 @@ const copy = `curl -o menhir-switch.md ${origin}/docs/components/switch.md`;
 export default function LlmsTxt() {
   return (
     <main>
-      <Title>llms.txt · Menhir</Title>
+      <PageHead
+        title="llms.txt · Menhir for SolidJS"
+        description="Menhir's docs as Markdown for coding agents such as Claude Code, Codex and Cursor: an llms.txt index and a Markdown version of every component page."
+      />
       <h1>llms.txt</h1>
       <p>
         Every page an agent needs is also served as Markdown, so an agent such

@@ -14,6 +14,8 @@ const focusTarget =
 export const popoverDoc: ComponentDoc = {
   slug: "popover",
   name: "Popover",
+  summary:
+    "A popup placed against its trigger that leaves the page usable, such as a few settings or a short form.",
   description:
     'A popup placed against its trigger that leaves the page usable, such as a few settings, a short form or details about an item: the WAI-ARIA dialog pattern, read for a non-modal dialog. The Popup is a popover="auto" element, so the browser puts it in the top layer, above every z-index, and closes it on Escape or a press outside; there is no portal. Menhir places it against the Trigger with Floating UI, flipping it to the other side or shifting it along when it would leave the viewport, and keeps it shown until its exit animation has ended. Render the Popup right after the Trigger: Tab then moves from the Trigger into the Popup and on to what follows, as WCAG\'s focus order asks. The Popup gets data-side and data-align, with the side and alignment it was placed on, and the CSS variables --anchor-width, --anchor-height and --transform-origin (the point nearest the trigger, for an animation that grows from it). For a popup that keeps focus inside until it is closed, use Dialog. A popover open by default is rendered closed on the server and opens once the page has hydrated.',
   anatomy: tsx`<Popover.Root>

@@ -17,6 +17,8 @@ const placedAt = (name: string) =>
 export const contextMenuDoc: ComponentDoc = {
   slug: "context-menu",
   name: "Context Menu",
+  summary:
+    "A menu of actions for an area of the page that opens on a right-click, a long press or Shift+F10.",
   description:
     "A menu of actions for an area of the page, such as a file in a list, that opens at the pointer on a right-click, a Ctrl+click on macOS or, on Android, a long press, and from the keyboard with Shift+F10 or the Menu key: the browser fires the contextmenu event for each, and Menhir cancels it, so the browser's own menu does not show. It is a Menu opened from an area instead of a button, so its items, submenus, keys and typeahead are Menu's, and an app with both components pays for them once. From the keyboard it opens below the focused element. A right-click while it is open moves it, and one inside it shows no browser menu over it. Focus goes to the first item, and returns where it was once the menu closes. The area is a plain <div> with no role, as ARIA gives a context menu none, so keep its actions reachable another way too, such as a Menu button: iOS Safari fires no contextmenu on a long press. Name the Popup with aria-label.",
   anatomy: tsx`<ContextMenu.Root>

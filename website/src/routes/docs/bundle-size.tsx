@@ -1,16 +1,19 @@
-import { Title } from "@solidjs/meta";
 import { components } from "virtual:component-list";
 import { sizes } from "virtual:menhir-sizes";
 import { libraries, menhirTotal } from "virtual:size-comparison";
 
 import ComparisonTable from "../../components/ComparisonTable";
+import PageHead from "../../components/PageHead";
 import Section from "../../components/Section";
 import SizeTable from "../../components/SizeTable";
 
 export default function BundleSize() {
   return (
     <main>
-      <Title>Bundle size · Menhir</Title>
+      <PageHead
+        title="Bundle size · Menhir for SolidJS"
+        description="The minified and gzipped size of every Menhir component, each its own entry point, beside the same components in other UI libraries, measured the same way."
+      />
       <h1>Bundle size</h1>
       <p>
         Each component is its own entry point, so an app pays only for the
