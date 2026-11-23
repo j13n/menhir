@@ -166,7 +166,7 @@ In jsdom an opened popover gets `:popover-open` from a stub
 - A secondary-button press opens the menu with its top-left corner at the pointer, and it stays open once the button is released (C)
 - Near the viewport's bottom edge, the menu flips above the pointer and still stays open on release (C)
 - The Menu key on a focused element inside the area opens the menu below that element, with focus on the first item (A, C)
-- A touch long press opens the menu at the finger (C)
+- A long press's `contextmenu`, as Chromium on macOS sends it (`button` `-1`, `pointerType` `"touch"`), opens the menu at the finger (C)
 - A second secondary-button press while open moves the menu to the new point without closing it, closes its open submenu and focuses the first item (C)
 - `disabled`: a `contextmenu` is not cancelled, the menu does not open, and the Trigger has `data-disabled`
 - Calls the consumer's `onContextMenu`
@@ -219,10 +219,12 @@ Menu's own left-out cases apply too (`src/menu/README.md`, "Left out").
 ## Browsers and screen readers
 
 Tried in Chromium (Playwright's headless build, through the test suite),
-on macOS: a secondary-button press, the Menu key and a touch long press,
+on macOS and on Linux in CI: a secondary-button press and the Menu key,
 sent through the DevTools protocol. Shift+F10 fires no `contextmenu` in
-Chromium on macOS, so it was not tried. No screen reader has been tried
-yet.
+Chromium on macOS, so it was not tried. A long press sent the same way
+fired a `contextmenu` on macOS but none on Linux, so the test dispatches
+the event macOS fired, which is what the Trigger reads. No screen reader
+has been tried yet (#135).
 
 ## Size
 

@@ -13,7 +13,6 @@ import {
 
 import {
   keyboard,
-  longPress,
   menuKey,
   nextTask,
   press,
@@ -166,7 +165,14 @@ describe("<ContextMenu.Trigger />", () => {
   it.skipIf(isJSDOM)("opens at the finger on a touch long press", async () => {
     await render(() => <Edit />);
 
-    await longPress({ x: 60, y: 70 });
+    // As Chromium on macOS sends it for a long press through the DevTools
+    // protocol, with no button like a key's; Chromium on Linux sends none.
+    contextMenu(area(), {
+      button: -1,
+      pointerType: "touch",
+      clientX: 60,
+      clientY: 70,
+    });
     await frames();
 
     expect(shown()).toBe(true);

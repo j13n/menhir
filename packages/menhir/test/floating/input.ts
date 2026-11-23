@@ -119,20 +119,6 @@ function scrollEnded(timeout: number) {
 }
 
 /**
- * A touch held at `point` for a second, which Chromium turns into a long
- * press: a `contextmenu` with the touch's pointer type, then the release.
- */
-export async function longPress(point: Point) {
-  const cdp = await session();
-  await cdp.send("Input.synthesizeTapGesture", {
-    ...point,
-    duration: 1000,
-    tapCount: 1,
-    gestureSourceType: "touch",
-  });
-}
-
-/**
  * The Menu key (the context menu key) on the focused element, which fires
  * a `contextmenu` at it. Chromium on macOS fires none for Shift+F10.
  */
