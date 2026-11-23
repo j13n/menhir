@@ -39,6 +39,12 @@ describe("a floating module alone", () => {
       ),
     );
 
+  // The code of an app that imports the file alone, Solid left out.
+  const bundledCode = async (file: string) =>
+    (await bundleApp(file))
+      .map((chunk) => (chunk.type === "chunk" ? chunk.code : ""))
+      .join("\n");
+
   it.each(["focus/initialFocus", "focus/returnFocus"] as const)(
     "%s bundles no Tab wrap and no tabbable search",
     async (file) => {
@@ -57,9 +63,7 @@ describe("a floating module alone", () => {
     expect(
       await findForbiddenModules(file, ["hover/hover", "hover/group"]),
     ).toEqual([]);
-    const code = (await bundleApp(file))
-      .map((chunk) => (chunk.type === "chunk" ? chunk.code : ""))
-      .join("\n");
+    const code = await bundledCode(file);
     expect(code).toContain("trackSafeArea");
     expect(code).not.toMatch(/setTimeout|setInterval/);
   });
@@ -68,6 +72,42 @@ describe("a floating module alone", () => {
     expect(
       await findForbiddenModules(built("hover/hover"), ["hover/group"]),
     ).toEqual([]);
+  });
+
+  // Menu holds focus on its items, Combobox in its input (#97): each ships
+  // one way, and neither ships typeahead, which Combobox does not use (#98).
+  it("roving list navigation bundles no aria-activedescendant, and no typeahead", async () => {
+    const file = built("list-navigation/roving");
+    expect(
+      await findForbiddenModules(file, [
+        "list-navigation/activeDescendant",
+        "typeahead",
+      ]),
+    ).toEqual([]);
+    const code = await bundledCode(file);
+    expect(code).not.toContain("activeId");
+  });
+
+  it("aria-activedescendant list navigation bundles no roving focus, and no typeahead", async () => {
+    const file = built("list-navigation/activeDescendant");
+    expect(
+      await findForbiddenModules(file, ["list-navigation/roving", "typeahead"]),
+    ).toEqual([]);
+    const code = await bundledCode(file);
+    expect(code).not.toContain("preventScroll");
+  });
+
+  // Solid's store engine costs an app with no store about 8.2 kB gzipped
+  // (list-navigation/README.md, Decisions). Solid is left out of the
+  // bundle, so what the file imports from it shows.
+  it.each([
+    "list-navigation/listNavigation",
+    "list-navigation/roving",
+    "list-navigation/activeDescendant",
+  ])("%s imports none of Solid's store engine", async (file) => {
+    expect(await bundledCode(built(file))).not.toMatch(
+      /\b(createProjection|createStore|createOptimisticStore|snapshot)\b/,
+    );
   });
 
   it("Escape bundles no other way of closing", async () => {

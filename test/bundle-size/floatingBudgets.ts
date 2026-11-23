@@ -36,4 +36,9 @@ export const floatingBudgets: Record<string, string> = {
   "hover/safeArea": "500 B",
   "hover/hover": "1100 B",
   "hover/group": "300 B",
+  // list-navigation/README.md records each size. roving and
+  // activeDescendant count listNavigation, which they import.
+  "list-navigation/listNavigation": "1150 B",
+  "list-navigation/roving": "1200 B",
+  "list-navigation/activeDescendant": "1200 B",
 };
