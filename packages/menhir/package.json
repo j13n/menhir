@@ -74,6 +74,11 @@
       "solid": "./dist/source/dialog/index.js",
       "import": "./dist/dialog/index.js"
     },
+    "./field": {
+      "types": "./dist/source/field/index.d.ts",
+      "solid": "./dist/source/field/index.js",
+      "import": "./dist/field/index.js"
+    },
     "./menu": {
       "types": "./dist/source/menu/index.d.ts",
       "solid": "./dist/source/menu/index.js",

@@ -18,6 +18,7 @@ const budgets = {
   "menhir/combobox": "12.5 kB",
   "menhir/context-menu": "13 kB",
   "menhir/dialog": "4.2 kB",
+  "menhir/field": "1.8 kB",
   "menhir/menu": "13.5 kB",
   "menhir/menubar": "13.5 kB",
   "menhir/meter": "1.3 kB",

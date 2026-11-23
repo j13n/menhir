@@ -1,0 +1,44 @@
+/* The least CSS that shows the Field's state: the label above the input,
+   and the input and the error in red once the field shows an error
+   (data-invalid, which waits until the field was touched). Everything else
+   is the browser's. Colours are Tailwind's stone and red palettes;
+   light-dark() picks the second one in dark mode (color-scheme: dark). */
+.field-example {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  font-family: system-ui, sans-serif;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: light-dark(
+    oklch(55.3% 0.013 58.071) /* stone-500 */,
+    oklch(70.9% 0.01 56.259) /* stone-400 */
+  );
+}
+
+.control[data-invalid] {
+  outline: 2px solid
+    light-dark(
+      oklch(57.7% 0.245 27.325) /* red-600 */,
+      oklch(70.4% 0.191 22.216) /* red-400 */
+    );
+}
+
+.error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: light-dark(
+    oklch(57.7% 0.245 27.325) /* red-600 */,
+    oklch(70.4% 0.191 22.216) /* red-400 */
+  );
+}
