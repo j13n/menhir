@@ -214,7 +214,9 @@ pointer where a case says so; jsdom gets Testing Library's events. The
 fixtures in `test/floating/list-navigation/` wire the module as the
 components will: `Menu.tsx` in the roving form, `Combobox.tsx` with an input
 and `aria-activedescendant`, each with an optional `popover="manual"` popup
-(`TestList.tsx`) and a handle on the list for the tests.
+(`TestList.tsx`) and a handle on the list for the tests. The menu also
+takes a typeahead, disabled items the keys reach and an activation, for
+typeahead's tests (#98).
 
 `listNavigation.test.tsx`, in both forms (`describe.each`)
 
@@ -265,7 +267,8 @@ and `aria-activedescendant`, each with an optional `popover="manual"` popup
 
 `test/bundle-size/popupModules.test.ts`
 
-- The roving file bundles no `activeDescendant` file and no `typeahead`, and the reverse
+- The roving file bundles no `activeDescendant` file, and the reverse
+- No file bundles `typeahead` (#98)
 - No file imports Solid's store engine
 - Dialog, Alert Dialog, Popover and Tooltip bundle no `list-navigation`
 

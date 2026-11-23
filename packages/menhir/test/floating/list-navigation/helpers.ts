@@ -64,17 +64,21 @@ export async function pressOn(
     init[flag as keyof typeof modifiers] ? [name] : [],
   );
   let leftAlone = true;
-  // After every handler: the delegated ones are on the document.
-  window.addEventListener(
-    "keydown",
-    (event) => (leftAlone = !event.defaultPrevented),
-    { once: true },
-  );
-  await keyboard(
-    held.map((name) => `{${name}>}`).join("") +
-      `{${key}}` +
-      held.map((name) => `{/${name}}`).join(""),
-  );
+  // After every handler: the delegated ones are on the document. The key's
+  // own event, not that of a modifier held before it.
+  const record = (event: KeyboardEvent) => {
+    if (event.key === key) leftAlone = !event.defaultPrevented;
+  };
+  window.addEventListener("keydown", record);
+  try {
+    await keyboard(
+      held.map((name) => `{${name}>}`).join("") +
+        `{${key}}` +
+        held.map((name) => `{/${name}}`).join(""),
+    );
+  } finally {
+    window.removeEventListener("keydown", record);
+  }
   return leftAlone;
 }
 

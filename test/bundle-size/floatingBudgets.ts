@@ -41,4 +41,8 @@ export const floatingBudgets: Record<string, string> = {
   "list-navigation/listNavigation": "1150 B",
   "list-navigation/roving": "1200 B",
   "list-navigation/activeDescendant": "1200 B",
+  // typeahead/README.md records each size. typeahead counts the matcher it
+  // imports.
+  "typeahead/match": "400 B",
+  "typeahead/typeahead": "700 B",
 };
