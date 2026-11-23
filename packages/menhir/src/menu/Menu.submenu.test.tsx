@@ -23,7 +23,7 @@ const active = () => document.activeElement;
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
-  const { Share, trigger, menu, pressOpen, keyOpen } = kind;
+  const { Share, shiftTab, menu, pressOpen, keyOpen } = kind;
   const { render } = createRenderer();
   afterEach(() => vi.restoreAllMocks());
 
@@ -148,7 +148,7 @@ describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
     expect(active()).toBe(screen.getByRole("button", { name: "After" }));
   });
 
-  it("closes every menu on Shift+Tab from a submenu, with focus on the Trigger", async () => {
+  it("closes every menu on Shift+Tab from a submenu, with focus on the Trigger, or before a Menubar", async () => {
     await render(() => <Share />);
     await keyOpen();
     await keyboard("{ArrowDown}{ArrowRight}");
@@ -160,7 +160,7 @@ describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
 
     expect(shown(menuOf(item("Share")))).toBe(false);
     expect(shown(menu())).toBe(false);
-    expect(active()).toBe(trigger());
+    expect(active()).toBe(shiftTab());
   });
 
   it("types in a submenu without moving the menu around it", async () => {

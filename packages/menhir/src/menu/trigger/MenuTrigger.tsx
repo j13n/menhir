@@ -47,8 +47,11 @@ export function MenuTrigger(props: MenuTriggerProps) {
       // it: the browser's own toggle would show it a task before.
       event.preventDefault();
       const details = { reason: "trigger-press", event } as const;
-      if (menu.open()) menu.close(details);
-      else menu.setOpen(true, details);
+      const { hoverOpened } = menu;
+      menu.hoverOpened = false;
+      if (!menu.open()) menu.setOpen(true, details);
+      else if (hoverOpened) menu.list.move(menu.list.items()[0]);
+      else menu.close(details);
     },
     onKeyDown: (event: KeyboardEvent) => {
       const { key } = event;
@@ -68,7 +71,12 @@ export function MenuTrigger(props: MenuTriggerProps) {
     ref: (element: HTMLElement) => {
       menu.trigger = element;
       // Production builds drop the check with `isDev`.
-      if (isDev) warnUnlessButton(element, "Menu.Trigger");
+      // Menubar's Trigger is this one, in a menu of the bar.
+      if (isDev)
+        warnUnlessButton(
+          element,
+          menu.along ? "Menubar.Trigger" : "Menu.Trigger",
+        );
     },
   } satisfies ButtonElementProps & { popovertarget: string });
   const elementProps = mergeElementProps(ownProps, omit(props, "render", "id"));

@@ -174,6 +174,13 @@ What the browser does, the `floating` layer adds, and the parts decide:
 - **Shared with Context Menu and Menubar**: they import Menu's parts, as
   Alert Dialog does Dialog's (PLAN.md section 6, rule 4). The Popup takes
   its `anchor` from outside, so a Context Menu places it at the pointer.
+  A Menubar wraps the Trigger and sets three fields of a menu's state that
+  a Menu leaves alone (`src/menubar/README.md`): `keepFocus`, which leaves
+  focus on the bar for the next opening instead of the first item;
+  `along`, which Right Arrow on an item with no submenu and Left Arrow in
+  the Root's menu call to move along the bar, where in a Menu they do
+  nothing; and `hoverOpened`, with which a press on the Trigger of a menu
+  that hover just opened keeps it open and moves focus into it.
 - **The server renders a `defaultOpen` Menu closed**, and hydration opens
   it, as Popover does.
 
@@ -303,7 +310,7 @@ input. In jsdom an opened popover gets `:popover-open` from a stub
 | `size` and `hide` (`--available-height`)                | No part carries them, and a prop would be a flag; `flip` and `shift` keep the menu in view. Add with a long menu that scrolls, such as Select's |
 | A Trigger outside the Root, several Triggers            | As for Popover: control `open` and pass `anchor`                                                                                                |
 | A focus moved out by script closes the menu             | Only Tab closes on focus leaving; a press outside is light dismiss (Decisions)                                                                  |
-| Horizontal menus                                        | No Phase 3 menu is horizontal but Menubar's bar, which is #101's                                                                                |
+| Horizontal menus                                        | No Phase 3 menu is horizontal; Menubar's bar is horizontal, and its menus are Menu's (#101)                                                     |
 | Firefox and WebKit                                      | Tests run in Chromium (PLAN.md section 5)                                                                                                       |
 
 ## Browsers and screen readers
@@ -319,7 +326,11 @@ every part, Rolldown, minified, gzipped, Solid left out. Measured on
 
 | Entry point   | Size     | Budget  |
 | ------------- | -------- | ------- |
-| `menhir/menu` | 11,823 B | 13.5 kB |
+| `menhir/menu` | 11,901 B | 13.5 kB |
+
+Menubar's fields in a menu's state (Decisions, "Shared with Context Menu
+and Menubar") added 78 B, from 11,823 B: the arrow keys' path to the bar,
+the opening that keeps focus, and the Trigger's press after hover (#101).
 
 The budget was set before the behaviour, at about Popover's (9.6 kB)
 without its Title, Description, Close and Arrow, plus `roving` (1,005 B),

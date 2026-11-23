@@ -156,6 +156,28 @@ describe("built package", () => {
       expect(count(name)).toBe(1);
     }
   });
+
+  it("bundles the parts Menu and Menubar share once", async () => {
+    const code = await bundle("menuAndMenubar.js");
+    const count = (name: string) =>
+      code.split(new RegExp(`function ${name}\\b`)).length - 1;
+
+    for (const name of [
+      "createMenu",
+      "MenuPopup",
+      "MenuItem",
+      "MenuSubmenuTrigger",
+      "MenuTrigger",
+      "createRovingList",
+      "createTypeahead",
+      "createPosition",
+      "MenubarRoot",
+      "MenubarMenu",
+      "MenubarTrigger",
+    ]) {
+      expect(count(name)).toBe(1);
+    }
+  });
 });
 
 /** Bundles a fixture app as a bundler would, and returns its code. */

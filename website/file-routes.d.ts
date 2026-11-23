@@ -101,6 +101,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/menubar";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/menubar"), Extract<"default", keyof typeof import("./src/routes/docs/components/menubar")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/meter";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/meter"), Extract<"default", keyof typeof import("./src/routes/docs/components/meter")>>>;
@@ -317,6 +323,14 @@ declare module "virtual:file-routes" {
           id: "/components/toggle";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/toggle"), Extract<"default", keyof typeof import("./src/routes/docs/components/toggle")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/menubar";
+          id: "/components/menubar";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/menubar"), Extract<"default", keyof typeof import("./src/routes/docs/components/menubar")>>>;
           $$route?: undefined;
           children?: undefined;
         },

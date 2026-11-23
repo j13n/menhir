@@ -95,6 +95,21 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "hover/group",
     "list-navigation/activeDescendant",
   ],
+  // A menubar's menus are Menu's, opened from the bar (#101). A menu opens
+  // on hover only while another is open, with no delay, so no `hover.ts`
+  // or group.
+  "menhir/menubar": [
+    "focus/tabWrap",
+    "focus/tabbable",
+    "focus/initialFocus",
+    "scroll-lock",
+    "dismissal/outsidePress",
+    "dismissal/dialogClose",
+    "dismissal/escape",
+    "hover/hover",
+    "hover/group",
+    "list-navigation/activeDescendant",
+  ],
   // A navigation menu's Panels are in the page's flow, not the top layer:
   // nothing positions, shows or hides them but `hidden`, and the Root
   // writes its own outside press and closes the others itself (#105).

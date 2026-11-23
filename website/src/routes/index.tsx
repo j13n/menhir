@@ -7,6 +7,7 @@ import { Meter } from "menhir/meter";
 import { NavigationMenu } from "menhir/navigation-menu";
 import { ContextMenu } from "menhir/context-menu";
 import { Menu } from "menhir/menu";
+import { Menubar } from "menhir/menubar";
 import { Popover } from "menhir/popover";
 import { Progress } from "menhir/progress";
 import { Separator } from "menhir/separator";
@@ -428,6 +429,64 @@ export default function Home() {
               </ContextMenu.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/context-menu">Context Menu</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <Menubar.Root
+                aria-label="Editor"
+                class="flex gap-0.5 self-start rounded-lg border border-stone-200 p-1 dark:border-stone-800"
+              >
+                <Menubar.Menu>
+                  <Menubar.Trigger class="cursor-default rounded px-2.5 py-1 text-sm hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-stone-500 data-open:bg-stone-100 dark:hover:bg-stone-800 dark:data-open:bg-stone-800">
+                    File
+                  </Menubar.Trigger>
+                  <Menubar.Popup
+                    class="m-0 min-w-32 rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-opacity duration-100 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+                    sideOffset={4}
+                  >
+                    <Menubar.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                      New
+                    </Menubar.Item>
+                    <Menubar.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                      Open
+                    </Menubar.Item>
+                  </Menubar.Popup>
+                </Menubar.Menu>
+                <Menubar.Menu>
+                  <Menubar.Trigger class="cursor-default rounded px-2.5 py-1 text-sm hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-stone-500 data-open:bg-stone-100 dark:hover:bg-stone-800 dark:data-open:bg-stone-800">
+                    Edit
+                  </Menubar.Trigger>
+                  <Menubar.Popup
+                    class="m-0 min-w-32 rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-opacity duration-100 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+                    sideOffset={4}
+                  >
+                    <Menubar.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                      Undo
+                    </Menubar.Item>
+                    <Menubar.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                      Redo
+                    </Menubar.Item>
+                  </Menubar.Popup>
+                </Menubar.Menu>
+                <Menubar.Menu>
+                  <Menubar.Trigger class="cursor-default rounded px-2.5 py-1 text-sm hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-stone-500 data-open:bg-stone-100 dark:hover:bg-stone-800 dark:data-open:bg-stone-800">
+                    View
+                  </Menubar.Trigger>
+                  <Menubar.Popup
+                    class="m-0 min-w-32 rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-opacity duration-100 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+                    sideOffset={4}
+                  >
+                    <Menubar.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                      Zoom in
+                    </Menubar.Item>
+                    <Menubar.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                      Zoom out
+                    </Menubar.Item>
+                  </Menubar.Popup>
+                </Menubar.Menu>
+              </Menubar.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/menubar">Menubar</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

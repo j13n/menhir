@@ -25,7 +25,7 @@ Content in the page's flow that a Trigger shows and hides, `hidden` while closed
 _Avoid_: Content, dropdown, popup (for a Panel)
 
 **Trigger**:
-The element a popup or a Panel opens from: the button that opens a dialog or a menu, the area a context menu opens from, the item that opens a submenu, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
+The element a popup or a Panel opens from: the button that opens a dialog or a menu, the area a context menu opens from, the item of a menubar that opens its menu, the item that opens a submenu, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
 _Avoid_: Invoker, activator, toggle, opener
 
 **Anchor**:
@@ -96,12 +96,16 @@ _Avoid_: Highlighted item, current item, focused item (it may not have focus), s
 A menu that an item of another menu opens: its Popup is the sibling right after that item, Escape closes it alone, and activating an item in it closes every menu.
 _Avoid_: Nested menu, child menu, flyout, cascading menu
 
+**Menubar**:
+A row of menus that stays on screen, one tab stop, whose items each open a menu: once one is open, moving to another item opens that one. For an application's commands; links to a site's pages are a Navigation Menu.
+_Avoid_: Menu bar, toolbar (a toolbar holds buttons, not menus), top menu
+
 **Activate**:
 To use an item of a list popup, by a click, Enter or Space: a menu's item calls its `onClick` and closes every open menu.
 _Avoid_: Select (a selection is a value), choose, trigger (as a verb)
 
 **Base popup**:
-The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), and Menu is Context Menu's (#100). The only popup it may import (PLAN.md section 6, rule 4).
+The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), and Menu is Context Menu's (#100) and Menubar's (#101). The only popup it may import (PLAN.md section 6, rule 4).
 _Avoid_: Parent popup, super-component
 
 ### Popup parts

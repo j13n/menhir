@@ -69,6 +69,11 @@
       "solid": "./dist/source/menu/index.js",
       "import": "./dist/menu/index.js"
     },
+    "./menubar": {
+      "types": "./dist/source/menubar/index.d.ts",
+      "solid": "./dist/source/menubar/index.js",
+      "import": "./dist/menubar/index.js"
+    },
     "./meter": {
       "types": "./dist/source/meter/index.d.ts",
       "solid": "./dist/source/meter/index.js",
