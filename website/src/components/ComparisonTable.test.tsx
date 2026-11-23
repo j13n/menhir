@@ -75,7 +75,7 @@ describe("<ComparisonTable />", () => {
         .map((cell) => cell.textContent),
     ).toEqual([
       "Component",
-      "Menhir",
+      "MenhirSolid 2.0",
       "RadixReact",
       "KobalteSolid 1.x",
       "corvuSolid 1.x",
