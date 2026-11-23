@@ -1,5 +1,13 @@
 # menhir
 
+## 0.1.5
+
+### Patch Changes
+
+- e6dc76e: Adds Menu (`menhir/menu`): a list of actions that a button opens, with Root, Trigger, Popup, Item, CheckboxItem, RadioGroup, RadioItem, ItemIndicator, Group, GroupLabel, Submenu and SubmenuTrigger parts. The arrow keys, Home, End and typing move through the items; Enter, Space or a click activates one and closes every menu, except that Space changes a checkbox or radio item and leaves the menu open; submenus open by Right Arrow, Enter, Space or the pointer resting on their trigger, and stay open while the pointer crosses to them. `onOpenChange` reports two new reasons, `"item-press"` and `"arrow-key"`.
+- d1366e9: Adds Context Menu (`menhir/context-menu`): Menu's menu, opened from an area by the `contextmenu` event, with Root, Trigger and Popup parts of its own and Menu's items, groups and submenus. A right-click, a Ctrl+click on macOS or a long press on Android opens it at the pointer; Shift+F10 or the Menu key opens it below the focused element; a right-click while it is open moves it. `disabled` on the Trigger lets the browser's own menu show. An app that uses Menu too pays for the shared parts once.
+- babcfc2: Add Menubar (`menhir/menubar`): a row of menus that is one tab stop, built on Menu's parts, where moving along the bar while one menu is open opens the next.
+
 ## 0.1.4
 
 ### Patch Changes
