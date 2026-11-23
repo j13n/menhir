@@ -59,6 +59,11 @@
       "solid": "./dist/source/dialog/index.js",
       "import": "./dist/dialog/index.js"
     },
+    "./menu": {
+      "types": "./dist/source/menu/index.d.ts",
+      "solid": "./dist/source/menu/index.js",
+      "import": "./dist/menu/index.js"
+    },
     "./meter": {
       "types": "./dist/source/meter/index.d.ts",
       "solid": "./dist/source/meter/index.js",

@@ -5,6 +5,7 @@ import { Collapsible } from "menhir/collapsible";
 import { Dialog } from "menhir/dialog";
 import { Meter } from "menhir/meter";
 import { NavigationMenu } from "menhir/navigation-menu";
+import { Menu } from "menhir/menu";
 import { Popover } from "menhir/popover";
 import { Progress } from "menhir/progress";
 import { Separator } from "menhir/separator";
@@ -362,6 +363,43 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/popover">Popover</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <div class="flex items-center justify-between gap-4">
+                Document
+                <Menu.Root>
+                  <Menu.Trigger class="shrink-0 cursor-pointer rounded-md border border-stone-300 px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700">
+                    Actions
+                  </Menu.Trigger>
+                  <Menu.Popup
+                    sideOffset={4}
+                    class="m-0 min-w-36 origin-(--transform-origin) rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-[opacity,scale] duration-100 data-closed:scale-95 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:scale-95 starting:data-open:opacity-0"
+                  >
+                    <Menu.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                      Rename
+                    </Menu.Item>
+                    <Menu.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                      Duplicate
+                    </Menu.Item>
+                    <Menu.Submenu>
+                      <Menu.SubmenuTrigger class="flex cursor-default rounded px-2 py-1.5 outline-none select-none after:ml-auto after:content-['›'] data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                        Move to
+                      </Menu.SubmenuTrigger>
+                      <Menu.Popup class="m-0 min-w-32 rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg dark:border-stone-800 dark:bg-stone-900">
+                        <Menu.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                          Drafts
+                        </Menu.Item>
+                        <Menu.Item class="cursor-default rounded px-2 py-1.5 outline-none select-none data-active:bg-stone-100 dark:data-active:bg-stone-800">
+                          Archive
+                        </Menu.Item>
+                      </Menu.Popup>
+                    </Menu.Submenu>
+                  </Menu.Popup>
+                </Menu.Root>
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/menu">Menu</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

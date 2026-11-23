@@ -64,6 +64,24 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "focus/tabbable",
     "scroll-lock",
   ],
+  // A menu is non-modal (#33): it keeps the browser's Tab order and leaves
+  // the page scrolling. The browser closes it on Escape and a press
+  // outside, so it needs neither a dialog's dismissal nor Tooltip's
+  // Escape. Focus moves to its items, so no `aria-activedescendant` list,
+  // and a submenu opens on hover with the safe area alone, no delays or
+  // group of `hover.ts` (#99).
+  "menhir/menu": [
+    "focus/tabWrap",
+    "focus/tabbable",
+    "focus/initialFocus",
+    "scroll-lock",
+    "dismissal/outsidePress",
+    "dismissal/dialogClose",
+    "dismissal/escape",
+    "hover/hover",
+    "hover/group",
+    "list-navigation/activeDescendant",
+  ],
   // A navigation menu's Panels are in the page's flow, not the top layer:
   // nothing positions, shows or hides them but `hidden`, and the Root
   // writes its own outside press and closes the others itself (#105).

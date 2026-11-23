@@ -3,10 +3,16 @@ import { merge } from "solid-js";
 
 import type { ElementProps } from "./renderElement.tsx";
 
-type Handler =
+export type Handler =
   ((event: Event) => void) | [(data: unknown, event: Event) => void, unknown];
 
-function callHandler(handler: Handler | undefined, event: Event) {
+/**
+ * Calls a JSX event handler in either of Solid's forms, a function or a
+ * `[handler, data]` pair, for a part that calls the consumer's handler
+ * itself instead of through the merge, such as a menu item that skips it
+ * while disabled.
+ */
+export function callHandler(handler: Handler | undefined, event: Event) {
   if (typeof handler === "function") handler(event);
   else if (handler) handler[0](handler[1], event);
 }

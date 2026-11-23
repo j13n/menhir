@@ -43,7 +43,7 @@ describe("an SSR app that uses menhir", () => {
     expect(server).toContain("ssrHydrationKey");
   });
 
-  it("renders on the server and hydrates on the client, where a Dialog, a Popover, a Tooltip and a Navigation Menu open", async () => {
+  it("renders on the server and hydrates on the client, where a Dialog, a Popover, a Tooltip, a Navigation Menu and a Menu open", async () => {
     // In a Node process of its own: inside this jsdom test, the bundle's
     // import of Solid would resolve to the browser build.
     const html = execFileSync(
@@ -68,6 +68,8 @@ describe("an SSR app that uses menhir", () => {
     expect(html).toMatch(
       /<div(?=[^>]*hidden)(?=[^>]*data-closed)[^>]*><a[^>]*href="\/switch"/,
     );
+    expect(html).toContain('aria-haspopup="menu"');
+    expect(html).toMatch(/<div(?=[^>]*role="menu")(?=[^>]*data-closed)/);
 
     document.body.innerHTML = `<div id="app">${html}</div>`;
     for (const script of document.body.querySelectorAll("script")) {
@@ -80,8 +82,10 @@ describe("an SSR app that uses menhir", () => {
     HTMLDialogElement.prototype.showModal = function () {
       this.setAttribute("open", "");
     };
-    // Nor `popover`, which opening the popover calls.
+    // Nor `popover`, which opening the popover calls, nor `scrollIntoView`,
+    // which a menu's first item gets as it opens.
     HTMLElement.prototype.showPopover = function () {};
+    Element.prototype.scrollIntoView = function () {};
     globalThis.ResizeObserver = class {
       observe() {}
       unobserve() {}
@@ -134,5 +138,17 @@ describe("an SSR app that uses menhir", () => {
     await new Promise((resolve) => setTimeout(resolve));
     expect(navTrigger.getAttribute("aria-expanded")).toBe("true");
     expect(navPanel.hidden).toBe(false);
+
+    const menuTrigger = document.querySelector<HTMLElement>(
+      "[aria-haspopup=menu]",
+    )!;
+    menuTrigger.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(menuTrigger.getAttribute("aria-expanded")).toBe("true");
+    expect(
+      document
+        .getElementById(menuTrigger.getAttribute("aria-controls")!)!
+        .hasAttribute("data-open"),
+    ).toBe(true);
   });
 });

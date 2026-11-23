@@ -85,8 +85,10 @@ reasons; they do not rename these.
 | `trigger-hover` | The pointer rested on the trigger, or left the trigger and the popup (`floating/hover`, #30)                                      |
 | `close-press`   | The popup's own close button was pressed, by pointer or keyboard: Dialog's `Close` (#31)                                          |
 | `trigger-focus` | The trigger received keyboard focus, or lost it: Tooltip's own (#34)                                                              |
-| `focus-out`     | Focus moved to an element outside the component: Navigation Menu's own, out of its `<nav>` (#105)                                 |
+| `focus-out`     | Focus moved to an element outside the component: Navigation Menu's own, out of its `<nav>` (#105); Tab out of a Menu (#99)        |
 | `link-press`    | A link inside the component was activated, by pointer or keyboard: Navigation Menu's `Link` (#105)                                |
+| `item-press`    | An item of a menu was activated, by pointer or keyboard, which closes every open menu: Menu's items (#99)                         |
+| `arrow-key`     | An arrow key opened or closed a submenu, or a key that moves through a menu closed its open submenu: Menu (#99)                   |
 
 ### Decisions
 

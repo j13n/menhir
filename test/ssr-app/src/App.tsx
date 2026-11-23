@@ -1,4 +1,5 @@
 import { Dialog } from "menhir/dialog";
+import { Menu } from "menhir/menu";
 import { NavigationMenu } from "menhir/navigation-menu";
 import { Popover } from "menhir/popover";
 import { Switch } from "menhir/switch";
@@ -40,6 +41,18 @@ export function App() {
           </NavigationMenu.Item>
         </ul>
       </NavigationMenu.Root>
+      <Menu.Root>
+        <Menu.Trigger>Actions</Menu.Trigger>
+        <Menu.Popup>
+          <Menu.Item>Copy</Menu.Item>
+          <Menu.Submenu>
+            <Menu.SubmenuTrigger>Share</Menu.SubmenuTrigger>
+            <Menu.Popup>
+              <Menu.Item>Email</Menu.Item>
+            </Menu.Popup>
+          </Menu.Submenu>
+        </Menu.Popup>
+      </Menu.Root>
     </>
   );
 }
