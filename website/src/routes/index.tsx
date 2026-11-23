@@ -18,10 +18,12 @@ import { Tabs } from "menhir/tabs";
 import { Toggle } from "menhir/toggle";
 import { ToggleGroup } from "menhir/toggle-group";
 import { Tooltip } from "menhir/tooltip";
+import { Title } from "@solidjs/meta";
 import { createMemo, createSignal, For } from "solid-js";
 
 import InstallCommand from "../components/InstallCommand";
 import MenhirScene from "../components/MenhirScene";
+import { tagline } from "../site";
 
 // The home page's Tabs example: one tab and one panel per day.
 const forecast = [
@@ -51,6 +53,9 @@ const siteSections = [
 const approachItem =
   "rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60";
 const approachNumber = "font-mono text-sm text-stone-500";
+// The caption sits at the bottom, so captions line up along each row.
+const exampleCard =
+  "m-0 flex flex-col justify-between gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60";
 
 const cities = ["Lisbon", "London", "Madrid", "Oslo", "Paris", "Rome"];
 
@@ -62,6 +67,7 @@ export default function Home() {
   );
   return (
     <>
+      <Title>{`Menhir · ${tagline}`}</Title>
       <main class="max-w-none">
         <div class="grid items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-10">
           <h1 class="m-0 text-center text-6xl font-bold tracking-tight md:text-right md:text-7xl">
@@ -70,7 +76,7 @@ export default function Home() {
           <MenhirScene />
           <div class="text-center md:text-left">
             <p class="m-0 text-xl text-stone-600 dark:text-stone-400">
-              Unstyled, accessible UI primitives for SolidJS
+              {tagline}
             </p>
             <p class="mt-3 mb-0">
               <a href="/docs/getting-started" class="font-medium">
@@ -80,13 +86,13 @@ export default function Home() {
           </div>
         </div>
 
-        <div class="mt-12 flex justify-center">
+        <div class="mt-14 flex justify-center">
           <InstallCommand command="pnpm add menhir" />
         </div>
 
         <ol
           aria-label="Approach"
-          class="mt-16 grid list-none gap-4 p-0 md:grid-cols-3"
+          class="mt-24 grid list-none gap-6 p-0 md:grid-cols-3"
         >
           <li class={approachItem}>
             <span class={approachNumber}>1</span>
@@ -117,9 +123,9 @@ export default function Home() {
           </li>
         </ol>
 
-        <section aria-label="Examples" class="mt-16">
-          <div class="flex flex-wrap justify-center gap-6">
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+        <section aria-label="Examples" class="mt-24">
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <figure class={exampleCard}>
               <label class="flex items-center justify-between gap-4">
                 Airplane mode
                 <Switch.Root class="inline-flex h-7 w-12 shrink-0 items-center rounded-full bg-stone-300 p-1 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-checked:bg-stone-800 dark:bg-stone-700 dark:data-checked:bg-stone-300">
@@ -130,7 +136,7 @@ export default function Home() {
                 <a href="/docs/components/switch">Switch</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <label class="flex items-center justify-between gap-4">
                 Email updates
                 <Checkbox.Root
@@ -144,7 +150,7 @@ export default function Home() {
                 <a href="/docs/components/checkbox">Checkbox</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center justify-between gap-4">
                 Microphone
                 <Toggle.Root class="shrink-0 cursor-pointer rounded-md border border-stone-300 px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-pressed:border-transparent data-pressed:bg-stone-800 data-pressed:text-white dark:border-stone-700 dark:data-pressed:bg-stone-300 dark:data-pressed:text-stone-900">
@@ -155,7 +161,7 @@ export default function Home() {
                 <a href="/docs/components/toggle">Toggle</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <ToggleGroup.Root
                 aria-label="Text alignment"
                 defaultValue={["left"]}
@@ -176,7 +182,7 @@ export default function Home() {
                 <a href="/docs/components/toggle-group">Toggle Group</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <Progress.Root
                 value={70}
                 aria-labelledby="home-progress-label"
@@ -192,7 +198,7 @@ export default function Home() {
                 <a href="/docs/components/progress">Progress</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <Meter.Root
                 value={80}
                 aria-labelledby="home-meter-label"
@@ -208,7 +214,7 @@ export default function Home() {
                 <a href="/docs/components/meter">Meter</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <Collapsible.Root>
                 <Collapsible.Trigger class="flex cursor-pointer items-center gap-2 before:transition-[rotate] before:content-['▸'] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-open:before:rotate-90">
                   Release notes
@@ -221,7 +227,7 @@ export default function Home() {
                 <a href="/docs/components/collapsible">Collapsible</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <Accordion.Root>
                 <For
                   each={[
@@ -253,7 +259,7 @@ export default function Home() {
                 <a href="/docs/components/accordion">Accordion</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <Tabs.Root>
                 <Tabs.List
                   aria-label="Forecast"
@@ -285,7 +291,7 @@ export default function Home() {
                 <a href="/docs/components/tabs">Tabs</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center justify-between gap-4">
                 Profile
                 <Dialog.Root>
@@ -319,7 +325,7 @@ export default function Home() {
                 <a href="/docs/components/dialog">Dialog</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center justify-between gap-4">
                 Draft
                 <AlertDialog.Root>
@@ -348,7 +354,7 @@ export default function Home() {
                 <a href="/docs/components/alert-dialog">Alert Dialog</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center justify-between gap-4">
                 Inbox
                 <Popover.Root>
@@ -376,7 +382,7 @@ export default function Home() {
                 <a href="/docs/components/popover">Popover</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center justify-between gap-4">
                 Document
                 <Menu.Root>
@@ -413,7 +419,7 @@ export default function Home() {
                 <a href="/docs/components/menu">Menu</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <ContextMenu.Root>
                 <ContextMenu.Trigger
                   tabindex="0"
@@ -440,7 +446,7 @@ export default function Home() {
                 <a href="/docs/components/context-menu">Context Menu</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <Menubar.Root
                 aria-label="Editor"
                 class="flex gap-0.5 self-start rounded-lg border border-stone-200 p-1 dark:border-stone-800"
@@ -498,7 +504,7 @@ export default function Home() {
                 <a href="/docs/components/menubar">Menubar</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center justify-between gap-4">
                 <label for="home-select">Paper</label>
                 <Select.Root name="paper" defaultValue="a4">
@@ -546,7 +552,7 @@ export default function Home() {
                 <a href="/docs/components/select">Select</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center justify-between gap-4">
                 <label for="home-combobox" id="home-combobox-label">
                   City
@@ -587,7 +593,7 @@ export default function Home() {
                 <a href="/docs/components/combobox">Combobox</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center justify-between gap-4">
                 Format
                 <Tooltip.Group>
@@ -629,7 +635,7 @@ export default function Home() {
                 <a href="/docs/components/tooltip">Tooltip</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <NavigationMenu.Root aria-label="Example" class="text-sm">
                 <ul class="m-0 flex list-none gap-1 p-0">
                   <For each={siteSections}>
@@ -663,7 +669,7 @@ export default function Home() {
                 <a href="/docs/components/navigation-menu">Navigation Menu</a>
               </figcaption>
             </figure>
-            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+            <figure class={exampleCard}>
               <div class="flex items-center gap-3">
                 Draft
                 <Separator.Root
@@ -685,7 +691,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer class="mt-16 border-t border-stone-200 pt-6 text-sm text-stone-500 dark:border-stone-800">
+      <footer class="mt-24 border-t border-stone-200 pt-6 text-sm text-stone-500 dark:border-stone-800">
         <p class="m-0">
           Menhir draws inspiration from{" "}
           <a href="https://base-ui.com">Base UI</a>,{" "}

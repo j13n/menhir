@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://menhir-ui.com/sitemap.xml

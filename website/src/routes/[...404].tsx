@@ -1,4 +1,4 @@
-import { Title } from "@solidjs/meta";
+import { Meta, Title } from "@solidjs/meta";
 import type { RouteDefinition } from "@solidjs/router";
 import { httpStatus } from "@solidjs/web";
 import { paths } from "../router";
@@ -14,6 +14,9 @@ export default function NotFound() {
   return (
     <main>
       <Title>Not found - Menhir</Title>
+      {/* The static host answers every path with 200, so this keeps
+          unknown paths out of search results. */}
+      <Meta name="robots" content="noindex" />
       <h1>Page not found</h1>
       <p>
         Go to the <a href={paths()}>home page</a>.

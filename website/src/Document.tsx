@@ -18,7 +18,6 @@ export default function Document(props: ParentProps) {
         <link rel="icon" href="/favicon.ico" sizes="32x32" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <title>Menhir</title>
         {/* Applies the reader's saved color scheme, or the system's, before
             first paint. The script comes from menhir/color-scheme/local-storage, with no
             outside input. As a child it would be HTML-escaped, which breaks
