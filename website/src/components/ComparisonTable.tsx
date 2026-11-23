@@ -29,6 +29,7 @@ export default function ComparisonTable(props: {
   components: readonly { slug: string; name: string }[];
   notes?: readonly ComparisonNote[];
 }) {
+  const sizeColumnWidth = () => `${82 / (props.libraries.length + 1)}%`;
   const rows = () => props.sizes.filter((row) => !slug(row).includes("/"));
   const slug = (row: EntryPointSize) => row.entryPoint.slice("menhir/".length);
   const name = (row: EntryPointSize) =>
@@ -47,14 +48,27 @@ export default function ComparisonTable(props: {
       fallback={<p>Not measured yet</p>}
     >
       <TableScroll>
-        <table>
+        <table class="min-w-xl tabular-nums">
+          {/* The size columns share the width evenly, so a size and its
+              difference sit at the same place in every column. */}
+          <colgroup>
+            <col />
+            <For each={[undefined, ...props.libraries]}>
+              {() => <col style={{ width: sizeColumnWidth() }} />}
+            </For>
+          </colgroup>
           <caption class="mb-2 caption-top text-left text-sm text-stone-500 dark:text-stone-400">
             Minified and gzipped, each library's framework left out
           </caption>
           <thead>
             <tr>
               <th scope="col">Component</th>
-              <th scope="col">Menhir</th>
+              <th scope="col" class={[MENHIR_COLUMN, MENHIR_COLUMN_START]}>
+                Menhir
+                <span class="block text-xs font-normal text-stone-500 dark:text-stone-400">
+                  Solid 2.0
+                </span>
+              </th>
               <For each={props.libraries}>
                 {(library) => (
                   <th scope="col">
@@ -77,12 +91,28 @@ export default function ComparisonTable(props: {
             }}
           >
             <For each={rows()}>
-              {(row) => (
+              {(row, i) => (
                 <tr>
                   <th scope="row">
-                    <a href={`/docs/components/${slug(row)}`}>{name(row)}</a>
+                    <a
+                      href={`/docs/components/${slug(row)}`}
+                      class="whitespace-nowrap"
+                    >
+                      {name(row)}
+                    </a>
                   </th>
-                  <td>{formatSize(row.size)}</td>
+                  <td
+                    class={[
+                      MENHIR_COLUMN,
+                      {
+                        [MENHIR_COLUMN_END]:
+                          props.menhirTotal === undefined &&
+                          i() === rows().length - 1,
+                      },
+                    ]}
+                  >
+                    {formatSize(row.size)}
+                  </td>
                   <For each={props.libraries}>
                     {(library) => (
                       <td>
@@ -120,7 +150,9 @@ export default function ComparisonTable(props: {
                       Shared code counted once
                     </span>
                   </th>
-                  <td>{formatSize(menhirTotal())}</td>
+                  <td class={[MENHIR_COLUMN, MENHIR_COLUMN_END]}>
+                    {formatSize(menhirTotal())}
+                  </td>
                   <For each={props.libraries}>
                     {(library) => (
                       <td>
@@ -199,6 +231,17 @@ export default function ComparisonTable(props: {
   );
 }
 
+/**
+ * Menhir's sizes stand apart from the others: bold, in an outlined column.
+ * The column's header closes the outline at the top, and its last cell at
+ * the bottom; the cells next to it keep their text off the outline.
+ */
+const MENHIR_COLUMN =
+  "border-x border-x-stone-900 px-3 font-semibold dark:border-x-stone-100 [&+*]:pl-3";
+const MENHIR_COLUMN_START =
+  "border-t border-t-stone-900 dark:border-t-stone-100";
+const MENHIR_COLUMN_END = "border-b-stone-900 dark:border-b-stone-100";
+
 /** A note on one library's size of one component. */
 export type ComparisonNote = {
   /** The library's name, such as `Base UI`. */
@@ -231,7 +274,8 @@ function None() {
 
 /**
  * How much larger or smaller `size` is than menhir's `base`, as a percentage
- * of `base`: a triangle up for larger, down for smaller. Screen readers get
+ * of `base`, on its own line under the size: a triangle up for larger, down
+ * for smaller. Screen readers get
  * the difference in words instead of the triangle.
  */
 function SizeDifference(props: { size: number; base: number }) {
@@ -241,7 +285,7 @@ function SizeDifference(props: { size: number; base: number }) {
   return (
     <span
       class={[
-        "ml-1.5 text-xs whitespace-nowrap",
+        "block text-xs whitespace-nowrap",
         percent() > 0
           ? "text-rose-700 dark:text-rose-400"
           : percent() < 0
