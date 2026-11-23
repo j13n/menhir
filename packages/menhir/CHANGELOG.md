@@ -1,5 +1,12 @@
 # menhir
 
+## 0.1.6
+
+### Patch Changes
+
+- f2be058: Add Select, as `menhir/select`: a button that shows one value out of a list and opens the list to change it, with a hidden input for forms.
+- cab274e: Add Combobox (`menhir/combobox`): an input that picks one value out of a list you filter as the user types, with `includesText` for filtering, a hidden input for forms, and a Status for empty lists and screen readers.
+
 ## 0.1.5
 
 ### Patch Changes
