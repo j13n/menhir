@@ -1,3 +1,4 @@
+import { Combobox } from "menhir/combobox";
 import { Dialog } from "menhir/dialog";
 import { Menu } from "menhir/menu";
 import { NavigationMenu } from "menhir/navigation-menu";
@@ -63,6 +64,19 @@ export function App() {
           <Select.Item value="banana">Banana</Select.Item>
         </Select.Popup>
       </Select.Root>
+      <Combobox.Root
+        name="country"
+        defaultValue="no"
+        defaultInputValue="Norway"
+      >
+        <Combobox.Input aria-label="Country" />
+        <Combobox.Popup>
+          <Combobox.List aria-label="Countries">
+            <Combobox.Item value="nz">New Zealand</Combobox.Item>
+            <Combobox.Item value="no">Norway</Combobox.Item>
+          </Combobox.List>
+        </Combobox.Popup>
+      </Combobox.Root>
     </>
   );
 }

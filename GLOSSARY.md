@@ -25,7 +25,7 @@ Content in the page's flow that a Trigger shows and hides, `hidden` while closed
 _Avoid_: Content, dropdown, popup (for a Panel)
 
 **Trigger**:
-The element a popup or a Panel opens from: the button that opens a dialog or a menu, the area a context menu opens from, the item of a menubar that opens its menu, the item that opens a submenu, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
+The element a popup or a Panel opens from: the button that opens a dialog or a menu, the area a context menu opens from, the item of a menubar that opens its menu, the item that opens a submenu, the button beside a combobox's input that opens its list, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
 _Avoid_: Invoker, activator, toggle, opener
 
 **Anchor**:
@@ -105,12 +105,16 @@ To use an item of a menu, by a click, Enter or Space: it calls its `onClick` and
 _Avoid_: Select (a selection is a value), choose, trigger (as a verb)
 
 **Select** (the verb):
-To make an item of a select its value, by a click, Enter, Space or Tab: the list closes. Moving the active item selects nothing.
+To make an item of a select or a combobox its value, by a click, Enter, Space or Tab on a select, a click or Enter on a combobox: the list closes. Moving the active item selects nothing.
 _Avoid_: Activate (a menu's), pick, choose, check (a checkbox item's)
 
 **Selected item**:
-The item whose `value` is the select's value. It carries `data-selected` and `aria-selected="true"`, and stays selected while the list is closed.
+The item whose `value` is the select's or the combobox's value. It carries `data-selected` and `aria-selected="true"`, and stays selected while the list is closed.
 _Avoid_: Active item (the keys' position), current item, checked item
+
+**Input value**:
+The text in a combobox's input, apart from its value: what the user typed, or the selected item's label. The form receives the value, not the text.
+_Avoid_: Query (the app's filter, which follows the text only while the user types), search term, input text
 
 **Base popup**:
 The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), and Menu is Context Menu's (#100) and Menubar's (#101). The only popup it may import (PLAN.md section 6, rule 4).
@@ -141,8 +145,16 @@ A button inside a popup that closes it.
 _Avoid_: Dismiss button, cancel (as the part's name)
 
 **Item**:
-An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, or a select's entry, which is selected. A select's Item has the `option` role.
+An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, or a select's or a combobox's entry, which is selected. A select's or a combobox's Item has the `option` role.
 _Avoid_: Option (as the part's name), entry, row, menu entry
+
+**List** (the part):
+The `listbox` inside a combobox's Popup, which holds its items; the Popup around it also holds a Status or a loading message.
+_Avoid_: Listbox (as the part's name), options, menu
+
+**Status** (the part):
+A combobox's live region, which says the number of items in the app's words while the list is open: a message for an empty list, or a count for a screen reader.
+_Avoid_: Empty (it says more than that), live region (as the part's name), announcer
 
 **Value** (the part):
 The part inside a select's Trigger that shows the selected item's label, or a placeholder while none is selected.

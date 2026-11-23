@@ -2,6 +2,7 @@ import { Accordion } from "menhir/accordion";
 import { AlertDialog } from "menhir/alert-dialog";
 import { Checkbox } from "menhir/checkbox";
 import { Collapsible } from "menhir/collapsible";
+import { Combobox, includesText } from "menhir/combobox";
 import { Dialog } from "menhir/dialog";
 import { Meter } from "menhir/meter";
 import { NavigationMenu } from "menhir/navigation-menu";
@@ -17,7 +18,7 @@ import { Tabs } from "menhir/tabs";
 import { Toggle } from "menhir/toggle";
 import { ToggleGroup } from "menhir/toggle-group";
 import { Tooltip } from "menhir/tooltip";
-import { For } from "solid-js";
+import { createMemo, createSignal, For } from "solid-js";
 
 import InstallCommand from "../components/InstallCommand";
 import MenhirScene from "../components/MenhirScene";
@@ -51,7 +52,14 @@ const approachItem =
   "rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60";
 const approachNumber = "font-mono text-sm text-stone-500";
 
+const cities = ["Lisbon", "London", "Madrid", "Oslo", "Paris", "Rome"];
+
 export default function Home() {
+  // The Combobox's list, filtered by what the user typed.
+  const [cityQuery, setCityQuery] = createSignal("");
+  const shownCities = createMemo(() =>
+    cities.filter((city) => includesText(city, cityQuery())),
+  );
   return (
     <>
       <main class="max-w-none">
@@ -536,6 +544,47 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/select">Select</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <div class="flex items-center justify-between gap-4">
+                <label for="home-combobox" id="home-combobox-label">
+                  City
+                </label>
+                <Combobox.Root
+                  name="city"
+                  onInputValueChange={(text, { reason }) =>
+                    setCityQuery(reason === "input-change" ? text : "")
+                  }
+                >
+                  <Combobox.Input
+                    id="home-combobox"
+                    class="w-28 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700"
+                  />
+                  <Combobox.Popup
+                    class="m-0 max-h-(--available-height) min-w-(--anchor-width) overflow-y-auto rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-opacity duration-100 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+                    sideOffset={4}
+                  >
+                    <Combobox.List aria-labelledby="home-combobox-label">
+                      <For each={shownCities()}>
+                        {(city) => (
+                          <Combobox.Item
+                            value={city.toLowerCase()}
+                            class="cursor-default rounded px-2 py-1.5 select-none data-active:bg-stone-100 dark:data-active:bg-stone-800"
+                          >
+                            {city}
+                          </Combobox.Item>
+                        )}
+                      </For>
+                    </Combobox.List>
+                    <Combobox.Status class="px-2 py-1.5 opacity-70 empty:hidden">
+                      {(count) => count === 0 && "No city found"}
+                    </Combobox.Status>
+                  </Combobox.Popup>
+                </Combobox.Root>
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/combobox">Combobox</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
