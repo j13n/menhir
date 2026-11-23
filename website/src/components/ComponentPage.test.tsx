@@ -222,6 +222,22 @@ describe("<ComponentPage />", () => {
     );
   });
 
+  test("ends with its further sections, each with its text and code", () => {
+    const { getAllByRole, getByRole } = render(() => (
+      <ComponentPage
+        {...switchPage}
+        sections={[
+          { id: "in-a-form", title: "In a form", text: "Give it a name." },
+        ]}
+        sectionCode={{ "in-a-form": tsx`<Switch.Root name="wifi" />` }}
+      />
+    ));
+    const section = getByRole("region", { name: "In a form" });
+    expect(section).toHaveTextContent("Give it a name.");
+    expect(section).toHaveTextContent('<Switch.Root name="wifi" />');
+    expect(getAllByRole("region").at(-1)).toBe(section);
+  });
+
   test("shows the measured size", () => {
     const { getByText } = render(() => (
       <ComponentPage {...switchPage} size={1234} />

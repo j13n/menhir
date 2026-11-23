@@ -137,6 +137,28 @@ describe("componentMarkdown", () => {
       /## Keyboard\n\n\| Keys \| Action \|\n\| --- \| --- \|\n\| `Space` \| Turns the switch on or off. \|\n$/,
     );
   });
+
+  test("ends with the page's further sections, each with its files", () => {
+    const markdown = componentMarkdown(
+      {
+        ...doc,
+        sections: [
+          { id: "in-a-form", title: "In a form", text: "Give it a name." },
+        ],
+      },
+      {
+        example,
+        sections: {
+          "in-a-form": [
+            { name: "InAForm.tsx", code: '<Switch.Root name="wifi" />\n' },
+          ],
+        },
+      },
+    );
+    expect(markdown).toMatch(
+      /\| `Space` \| Turns the switch on or off. \|\n\n## In a form\n\nGive it a name.\n\n`InAForm.tsx`:\n\n```tsx\n<Switch.Root name="wifi" \/>\n```\n$/,
+    );
+  });
 });
 
 describe("llmsTxt", () => {

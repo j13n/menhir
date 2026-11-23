@@ -20,8 +20,12 @@ _Avoid_: Palette, skin, color scheme
 Content shown above the page while it is open, and gone again when it closes: a dialog, a popover, a tooltip or a menu.
 _Avoid_: Overlay, floating element, layer, portal
 
+**Panel**:
+Content in the page's flow that a Trigger shows and hides, `hidden` while closed: a Collapsible's, an Accordion's, a Navigation Menu's. Unlike a Popup, it is not in the top layer; the consumer's CSS places it.
+_Avoid_: Content, dropdown, popup (for a Panel)
+
 **Trigger**:
-The element a popup opens from: the button that opens a dialog, or the element a tooltip describes.
+The element a popup or a Panel opens from: the button that opens a dialog, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
 _Avoid_: Invoker, activator, toggle, opener
 
 **Anchor**:
@@ -93,7 +97,7 @@ _Avoid_: Parent popup, super-component
 The parts every popup is built from, as `Dialog.Root`, `Dialog.Trigger` and so on (#31).
 
 **Root**:
-The part that holds a component's state and shares it with the other parts. A popup's Root holds whether it is open and renders no element.
+The part that holds a component's state and shares it with the other parts. A popup's Root holds whether it is open and renders no element. Navigation Menu's Root renders a `<nav>`: it is the landmark, and the boundary that focus leaving and a press outside are measured against.
 _Avoid_: Provider, container, wrapper
 
 **Popup** (the part):

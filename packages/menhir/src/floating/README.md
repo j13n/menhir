@@ -10,16 +10,16 @@ top layer, Escape, light dismiss, initial and return focus, and an inert page
 One folder per module, each with its own README: the test list, the cases left
 out, the sources and the module's measured size.
 
-| Folder             | What it does                                                                                     | Ticket |
-| ------------------ | ------------------------------------------------------------------------------------------------ | ------ |
-| `positioning/`     | Places a popup against its anchor, on `@floating-ui/dom`                                         | #25    |
-| `dismissal/`       | Outside press on a dialog's backdrop, Escape for Tooltip, a refused close, why a popup closed    | #26    |
-| `focus/`           | The Tab wrap of a modal dialog, overrides of initial and return focus, finding tabbable elements | #27    |
-| `scroll-lock/`     | Stops the page scrolling behind a modal popup                                                    | #28    |
-| `presence/`        | Keeps a closing popup open until its exit animation has ended                                    | #96    |
-| `hover/`           | Opens and closes a popup on hover, with delays, a safe area to the popup and delay groups        | #30    |
-| `list-navigation/` | Arrow keys between the items of a list popup                                                     | #97    |
-| `typeahead/`       | Moves to the item whose text the user types                                                      | #98    |
+| Folder             | What it does                                                                                                               | Ticket |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------- | ------ |
+| `positioning/`     | Places a popup against its anchor, on `@floating-ui/dom`                                                                   | #25    |
+| `dismissal/`       | Outside press on a dialog's backdrop, Escape for Tooltip and Navigation Menu's Panels, a refused close, why a popup closed | #26    |
+| `focus/`           | The Tab wrap of a modal dialog, overrides of initial and return focus, finding tabbable elements                           | #27    |
+| `scroll-lock/`     | Stops the page scrolling behind a modal popup                                                                              | #28    |
+| `presence/`        | Keeps a closing popup open until its exit animation has ended                                                              | #96    |
+| `hover/`           | Opens and closes a popup on hover, with delays, a safe area to the popup and delay groups                                  | #30    |
+| `list-navigation/` | Arrow keys between the items of a list popup                                                                               | #97    |
+| `typeahead/`       | Moves to the item whose text the user types                                                                                | #98    |
 
 `floatingModules` in `packages/menhir/layers.ts` lists the same folders, for the
 size and bundle checks in `test/bundle-size`.

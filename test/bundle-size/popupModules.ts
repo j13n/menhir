@@ -49,6 +49,22 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "focus/tabbable",
     "scroll-lock",
   ],
+  // A navigation menu's Panels are in the page's flow, not the top layer:
+  // nothing positions, shows or hides them but `hidden`, and the Root
+  // writes its own outside press and closes the others itself (#105).
+  "menhir/navigation-menu": [
+    "@floating-ui",
+    "positioning",
+    "presence",
+    "focus",
+    "scroll-lock",
+    "list-navigation",
+    "typeahead",
+    "hover/group",
+    "dismissal/outsidePress",
+    "dismissal/dialogClose",
+    "dismissal/popoverClose",
+  ],
 };
 
 /**

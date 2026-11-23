@@ -7,7 +7,8 @@ type ClaimedEvent = KeyboardEvent & { menhirEscapeClaim?: unknown };
 
 /**
  * Escape for a popup the browser does not close on Escape, a `manual`
- * popover such as Tooltip's. While `open`, an Escape key calls `onDismiss`
+ * popover such as Tooltip's, or for content in the page's flow, such as
+ * Navigation Menu's Panels. While `open`, an Escape key calls `onDismiss`
  * with the reason `escape-key`:
  *
  * ```ts

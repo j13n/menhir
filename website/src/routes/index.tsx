@@ -4,6 +4,7 @@ import { Checkbox } from "menhir/checkbox";
 import { Collapsible } from "menhir/collapsible";
 import { Dialog } from "menhir/dialog";
 import { Meter } from "menhir/meter";
+import { NavigationMenu } from "menhir/navigation-menu";
 import { Popover } from "menhir/popover";
 import { Progress } from "menhir/progress";
 import { Separator } from "menhir/separator";
@@ -22,6 +23,24 @@ const forecast = [
   { name: "Mon", weather: "Sunny, 18°" },
   { name: "Tue", weather: "Cloudy, 15°" },
   { name: "Wed", weather: "Rain, 12°" },
+];
+
+// The home page's Navigation Menu example: one Item per section.
+const siteSections = [
+  {
+    name: "Components",
+    links: [
+      { label: "Switch", href: "/docs/components/switch" },
+      { label: "Dialog", href: "/docs/components/dialog" },
+    ],
+  },
+  {
+    name: "Docs",
+    links: [
+      { label: "Getting started", href: "/docs/getting-started" },
+      { label: "Styling", href: "/docs/styling" },
+    ],
+  },
 ];
 
 const approachItem =
@@ -385,6 +404,40 @@ export default function Home() {
               </div>
               <figcaption class="text-sm">
                 <a href="/docs/components/tooltip">Tooltip</a>
+              </figcaption>
+            </figure>
+            <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">
+              <NavigationMenu.Root aria-label="Example" class="text-sm">
+                <ul class="m-0 flex list-none gap-1 p-0">
+                  <For each={siteSections}>
+                    {(section) => (
+                      <NavigationMenu.Item class="relative m-0">
+                        <NavigationMenu.Trigger class="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 font-medium after:transition-[rotate] after:content-['▾'] hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-open:bg-stone-100 data-open:after:rotate-180 dark:hover:bg-stone-800 dark:data-open:bg-stone-800">
+                          {section.name}
+                        </NavigationMenu.Trigger>
+                        <NavigationMenu.Panel class="absolute top-[calc(100%+0.5rem)] left-0 z-10 w-48 rounded-lg border border-stone-200 bg-white p-1 shadow-lg transition-[opacity,translate] duration-150 dark:border-stone-800 dark:bg-stone-900 starting:-translate-y-1 starting:opacity-0">
+                          <ul class="m-0 grid list-none gap-0.5 p-0">
+                            <For each={section.links}>
+                              {(link) => (
+                                <li class="m-0">
+                                  <NavigationMenu.Link
+                                    href={link.href}
+                                    class="block rounded-md px-2 py-1.5 text-inherit no-underline hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-stone-500 dark:hover:bg-stone-800"
+                                  >
+                                    {link.label}
+                                  </NavigationMenu.Link>
+                                </li>
+                              )}
+                            </For>
+                          </ul>
+                        </NavigationMenu.Panel>
+                      </NavigationMenu.Item>
+                    )}
+                  </For>
+                </ul>
+              </NavigationMenu.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/navigation-menu">Navigation Menu</a>
               </figcaption>
             </figure>
             <figure class="m-0 flex w-64 flex-col gap-6 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/60">

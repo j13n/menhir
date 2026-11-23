@@ -1,9 +1,10 @@
 import { Link } from "@solidjs/meta";
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 
 import type { ComponentDoc } from "../componentDocs/types";
 import { markdownPath } from "../componentMarkdown";
 import { formatSize } from "../formatSize";
+import type { Highlighted } from "../highlight";
 import CodeBlock from "./CodeBlock";
 import CopyButton from "./CopyButton";
 import ComponentExample, {
@@ -24,6 +25,8 @@ export type ComponentPageProps = ComponentDoc & {
   size?: number;
   /** The live example, styled with Tailwind CSS and with plain CSS, and in each look that has one. */
   example: ComponentExampleProps;
+  /** Each further section's code, by the section's id: a `?highlight` import of `src/examples/<slug>/<id>/`. */
+  sectionCode?: Record<string, Highlighted>;
 };
 
 /** The look of the page's links for agents, beside the heading. */
@@ -142,6 +145,16 @@ export default function ComponentPage(props: ComponentPageProps) {
           </table>
         </TableScroll>
       </Section>
+      <For each={props.sections}>
+        {(section) => (
+          <Section id={section.id} title={section.title}>
+            <p>{section.text}</p>
+            <Show when={props.sectionCode?.[section.id]}>
+              {(code) => <CodeBlock code={code()} />}
+            </Show>
+          </Section>
+        )}
+      </For>
     </main>
   );
 }

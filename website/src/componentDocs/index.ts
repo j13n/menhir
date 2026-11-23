@@ -4,6 +4,7 @@ import { checkboxDoc } from "./checkbox";
 import { collapsibleDoc } from "./collapsible";
 import { dialogDoc } from "./dialog";
 import { meterDoc } from "./meter";
+import { navigationMenuDoc } from "./navigation-menu";
 import { popoverDoc } from "./popover";
 import { progressDoc } from "./progress";
 import { separatorDoc } from "./separator";
@@ -22,6 +23,7 @@ export const componentDocs: ComponentDoc[] = [
   collapsibleDoc,
   dialogDoc,
   meterDoc,
+  navigationMenuDoc,
   popoverDoc,
   progressDoc,
   separatorDoc,

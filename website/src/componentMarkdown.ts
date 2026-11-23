@@ -10,6 +10,8 @@ export type MarkdownExtras = {
   size?: number;
   /** The example's source files, styled with Tailwind CSS and with plain CSS. */
   example: { tailwind: CodeFile[]; css: CodeFile[] };
+  /** Each further section's source files, by the section's id. */
+  sections?: Record<string, CodeFile[]>;
 };
 
 /**
@@ -58,6 +60,11 @@ export function componentMarkdown(
       ["Keys", "Action"],
       doc.keyboard.map((row) => [code(row.keys), row.action]),
     ),
+    ...(doc.sections ?? []).flatMap((section) => [
+      `## ${section.title}`,
+      section.text,
+      ...(extras.sections?.[section.id] ?? []).flatMap(codeFile),
+    ]),
   ];
   return `${blocks.join("\n\n")}\n`;
 }

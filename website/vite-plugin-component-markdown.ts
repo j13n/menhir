@@ -22,7 +22,8 @@ const markdownFile = (slug: string) => markdownPath(slug).slice(1);
  * an index of them at `/llms.txt`, for agents to read: from the dev server,
  * and as files in the build. It is made
  * from the same data as the page (`src/componentDocs/`), the example's files
- * in `src/examples/<slug>/tailwind/` and `css/`, and the size-limit report.
+ * in `src/examples/<slug>/tailwind/` and `css/`, a further section's in
+ * `src/examples/<slug>/<section id>/`, and the size-limit report.
  *
  * `vite build` fails when the report is missing or lacks a component's entry
  * point, as vite-plugin-sizes.ts does; the dev server warns and leaves the
@@ -59,6 +60,12 @@ export default function componentMarkdownPlugin(
         tailwind: readExample(join(examples, doc.slug, "tailwind")),
         css: readExample(join(examples, doc.slug, "css")),
       },
+      sections: Object.fromEntries(
+        (doc.sections ?? []).map((section) => [
+          section.id,
+          readExample(join(examples, doc.slug, section.id)),
+        ]),
+      ),
     });
   }
 
@@ -102,10 +109,11 @@ export default function componentMarkdownPlugin(
   };
 }
 
-/** An example's files, TSX first, then the rest by name. */
+/** An example's files, tests left out, TSX first, then the rest by name. */
 function readExample(dir: string): CodeFile[] {
   const isTsx = (name: string) => name.endsWith(".tsx");
   return readdirSync(dir)
+    .filter((name) => !name.includes(".test."))
     .toSorted(
       (a, b) => Number(isTsx(b)) - Number(isTsx(a)) || a.localeCompare(b),
     )

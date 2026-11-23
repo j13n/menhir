@@ -16,6 +16,7 @@ const budgets = {
   "menhir/color-scheme/local-storage": "1.4 kB",
   "menhir/dialog": "4.2 kB",
   "menhir/meter": "1.3 kB",
+  "menhir/navigation-menu": "3 kB",
   "menhir/popover": "11.5 kB",
   "menhir/progress": "1.4 kB",
   "menhir/separator": "900 B",
