@@ -79,6 +79,11 @@
       "solid": "./dist/source/field/index.js",
       "import": "./dist/field/index.js"
     },
+    "./input": {
+      "types": "./dist/source/input/index.d.ts",
+      "solid": "./dist/source/input/index.js",
+      "import": "./dist/input/index.js"
+    },
     "./menu": {
       "types": "./dist/source/menu/index.d.ts",
       "solid": "./dist/source/menu/index.js",

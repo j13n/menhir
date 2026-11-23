@@ -6,6 +6,7 @@ import { Collapsible } from "menhir/collapsible";
 import { Combobox, includesText } from "menhir/combobox";
 import { Dialog } from "menhir/dialog";
 import { Field } from "menhir/field";
+import { Input } from "menhir/input";
 import { Meter } from "menhir/meter";
 import { NavigationMenu } from "menhir/navigation-menu";
 import { ContextMenu } from "menhir/context-menu";
@@ -74,6 +75,8 @@ export default function Home() {
   const shownSearches = createMemo(() =>
     searches.filter((term) => includesText(term, searchQuery())),
   );
+  // The Input's text: digits only, so a letter typed is undone.
+  const [pin, setPin] = createSignal("");
   return (
     <>
       <PageHead
@@ -180,6 +183,26 @@ export default function Home() {
               </Field.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/field">Field</a>
+              </figcaption>
+            </figure>
+            <figure class={exampleCard}>
+              <div class="flex flex-col gap-1">
+                <label class="flex items-center justify-between gap-4">
+                  PIN
+                  <Input.Root
+                    inputmode="numeric"
+                    maxlength={4}
+                    value={pin()}
+                    onValueChange={(value) => {
+                      if (/^\d*$/.test(value)) setPin(value);
+                    }}
+                    class="w-36 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700"
+                  />
+                </label>
+                <p class="text-sm opacity-70">Digits only: try a letter.</p>
+              </div>
+              <figcaption class="text-sm">
+                <a href="/docs/components/input">Input</a>
               </figcaption>
             </figure>
             <figure class={exampleCard}>

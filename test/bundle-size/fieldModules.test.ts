@@ -19,7 +19,7 @@ async function findFieldModules(specifier: string): Promise<string[]> {
 // context of Field's, so a control outside a Field pays nothing for it
 // (src/field/README.md, "Decisions"; #141).
 describe("Field", () => {
-  it.each(["menhir/switch", "menhir/checkbox"])(
+  it.each(["menhir/switch", "menhir/checkbox", "menhir/input"])(
     "is not in an app that imports %s alone",
     async (entryPoint) => {
       expect(await findFieldModules(entryPoint)).toEqual([]);
