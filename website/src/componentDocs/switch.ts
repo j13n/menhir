@@ -13,7 +13,7 @@ export const switchDoc: ComponentDoc = {
     {
       part: "Root",
       description:
-        'The switch: a <button role="switch">, followed by a visually hidden <input type="checkbox"> for forms. Label it with a <label> around it or one whose for matches its id. Its render function must render a <button>.',
+        'The switch: a <button role="switch">, followed by a visually hidden <input type="checkbox"> for forms. Label it with a <label> around it or one whose for matches its id, or put it in a Field (In a Field, below). Its render function must render a <button>.',
       props: [
         {
           name: "checked",
@@ -97,5 +97,12 @@ export const switchDoc: ComponentDoc = {
     { keys: "Space", action: "Turns the switch on or off." },
     { keys: "Enter", action: "Turns the switch on or off." },
     { keys: "Tab", action: "Moves focus to or away from the switch." },
+  ],
+  sections: [
+    {
+      id: "in-a-field",
+      title: "In a Field",
+      text: "A Switch joins a Field as Field.Control's render: the Field gives the button its id, label, description and error, and the hidden input its name. A required Switch that is off shows its error once the user has left it, turned it off again or tried to submit the form, and when the browser blocks the submission, focus moves to the switch. The Field's data-invalid and data-touched are on the button; style the Thumb through it, as in [data-invalid] .thumb. For a controlled Switch, render it with a function and put checked and onCheckedChange on it, as the Checkbox page shows. A Switch outside a Field costs nothing more.",
+    },
   ],
 };

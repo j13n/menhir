@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createRenderer, renderOnServer, screen } from "#test-utils";
 
+import SwitchFieldFixture from "./SwitchFieldFixture.tsx";
 import SwitchFixture from "./SwitchFixture.tsx";
 
 describe("<Switch.Root /> hydration", () => {
@@ -49,5 +50,68 @@ describe("<Switch.Root /> hydration", () => {
 
     await user.keyboard("[Enter]");
     expect(switchEl).toHaveAttribute("aria-checked", "true");
+  });
+});
+
+describe("<Switch.Root /> in a Field, hydration", () => {
+  const { render } = createRenderer();
+  afterEach(() => vi.restoreAllMocks());
+  const control = () => screen.getByRole("switch", { name: "Accept terms" });
+  const hiddenInput = () =>
+    document.querySelector<HTMLInputElement>("input[name=terms]")!;
+
+  it("is labelled and described by the Field in the server HTML, with no error", async () => {
+    const container = await renderOnServer(
+      "/test/switch/SwitchFieldFixture.tsx",
+    );
+
+    expect(control().tagName).toBe("BUTTON");
+    expect(control().id).not.toBe("");
+    expect(screen.getByText("Accept terms")).toHaveAttribute(
+      "for",
+      control().id,
+    );
+    expect(control()).toHaveAccessibleDescription("Read them first.");
+    expect(hiddenInput()).toHaveAttribute("required");
+    expect(control()).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByTestId("root")).not.toHaveAttribute("data-invalid");
+    expect(screen.queryByTestId("error")).toBeNull();
+    // Nothing hydrates it, so cleanup would not remove it.
+    container.remove();
+  });
+
+  it("adopts the server's elements; a blocked submission shows the error, and a label click turns it on", async () => {
+    const container = await renderOnServer(
+      "/test/switch/SwitchFieldFixture.tsx",
+    );
+    const serverControl = container.querySelector("[role=switch]");
+    const serverInput = container.querySelector("input[name=terms]");
+
+    // A hydration mismatch is reported on the console, not thrown.
+    const warn = vi.spyOn(console, "warn");
+    const error = vi.spyOn(console, "error");
+    const { user } = await render(() => <SwitchFieldFixture />, {
+      hydrate: container,
+    });
+    expect(warn).not.toHaveBeenCalled();
+    expect(error).not.toHaveBeenCalled();
+    expect(control()).toBe(serverControl);
+    expect(hiddenInput()).toBe(serverInput);
+
+    await user.click(screen.getByRole("button", { name: "Send" }));
+
+    expect(control()).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByTestId("error")).toHaveTextContent(
+      hiddenInput().validationMessage,
+    );
+    expect(screen.getByTestId("thumb").closest("[data-invalid]")).toBe(
+      control(),
+    );
+
+    await user.click(screen.getByText("Accept terms"));
+
+    expect(control()).toHaveAttribute("aria-checked", "true");
+    expect(control()).not.toHaveAttribute("aria-invalid");
+    expect(screen.queryByTestId("error")).toBeNull();
   });
 });
