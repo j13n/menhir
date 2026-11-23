@@ -38,6 +38,20 @@ export default function BundleSize() {
           libraries={libraries}
           menhirTotal={menhirTotal}
           components={components}
+          notes={[
+            {
+              library: "Base UI",
+              component: "menubar",
+              children: (
+                <>
+                  Base UI's <code>@base-ui/react/menubar</code> is the bar
+                  alone. Its menus are built from the parts of{" "}
+                  <code>@base-ui/react/menu</code>, measured in the Menu row, so
+                  an app with a Base UI menubar imports both.
+                </>
+              ),
+            },
+          ]}
         />
       </Section>
       <Section id="measured" title="How it is measured">
