@@ -1,4 +1,4 @@
-import { Link } from "@solidjs/meta";
+import { Link, Meta } from "@solidjs/meta";
 import { For, Show } from "solid-js";
 
 import type { ComponentDoc } from "../componentDocs/types";
@@ -36,6 +36,7 @@ const agentLinkClass =
 export default function ComponentPage(props: ComponentPageProps) {
   return (
     <main>
+      <Meta name="description" content={firstSentence(props.description)} />
       <Link
         rel="alternate"
         type="text/markdown"
@@ -157,4 +158,9 @@ export default function ComponentPage(props: ComponentPageProps) {
       </For>
     </main>
   );
+}
+
+/** The first sentence of a description, short enough for search results. */
+function firstSentence(text: string) {
+  return text.match(/^.*?[.!?](?=\s|$)/s)?.[0] ?? text;
 }
