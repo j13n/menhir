@@ -81,7 +81,9 @@ export default [
       },
       menhirTogether(
         totalChecks.menhirFor(library),
-        Object.keys(library.components),
+        // In the order of `comparedComponents`, so that the same components
+        // make the same bundle: gzip differs with the order of the code.
+        Object.keys(library.components).sort(),
       ),
     ]),
 ];

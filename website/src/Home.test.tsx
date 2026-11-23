@@ -55,6 +55,8 @@ function stubPopover() {
     this.style.removeProperty("display");
   };
   Element.prototype.getAnimations = () => [];
+  // Nor `scrollIntoView`, which a menu's first item gets as it opens.
+  Element.prototype.scrollIntoView = () => {};
 }
 
 function setup() {
@@ -86,6 +88,7 @@ describe("home page", () => {
     Reflect.deleteProperty(HTMLElement.prototype, "showPopover");
     Reflect.deleteProperty(HTMLElement.prototype, "hidePopover");
     Reflect.deleteProperty(Element.prototype, "getAnimations");
+    Reflect.deleteProperty(Element.prototype, "scrollIntoView");
     Reflect.deleteProperty(navigator, "clipboard");
   });
 
@@ -387,6 +390,33 @@ describe("home page", () => {
     expect(example.getByRole("link", { name: "Popover" })).toHaveAttribute(
       "href",
       "/docs/components/popover",
+    );
+  });
+
+  test("shows a working Menu, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const trigger = example.getByRole("button", { name: "Actions" });
+    expect(trigger).toHaveAttribute("aria-haspopup", "menu");
+    fireEvent.click(trigger);
+    // The menu opens after the click's flush.
+    await Promise.resolve();
+    flush();
+    const menu = document.getElementById(
+      trigger.getAttribute("aria-controls")!,
+    )!;
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(menu).toHaveAttribute("data-open");
+    expect(menu).toHaveAccessibleName("Actions");
+    fireEvent.click(within(menu).getByRole("menuitem", { name: "Rename" }));
+    await Promise.resolve();
+    flush();
+    expect(menu).toHaveAttribute("data-closed");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(example.getByRole("link", { name: "Menu" })).toHaveAttribute(
+      "href",
+      "/docs/components/menu",
     );
   });
 

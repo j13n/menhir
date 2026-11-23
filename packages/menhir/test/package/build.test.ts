@@ -94,6 +94,18 @@ describe("built package", () => {
     expect(code).not.toMatch(middleware);
   });
 
+  it("leaves out the submenus, and the safe area, when the app renders no Submenu", async () => {
+    // The safe area follows the pointer on the document, which nothing
+    // else in Menu does.
+    const safeArea = /"pointerout"/;
+    expect(await bundle("menu.js")).toMatch(safeArea);
+
+    const code = await bundle("menuWithoutSubmenu.js");
+    expect(code).toContain("function MenuPopup");
+    expect(code).not.toContain("MenuSubmenuTrigger");
+    expect(code).not.toMatch(safeArea);
+  });
+
   it("leaves out the Group, and the delay group, when the app renders no Group", async () => {
     // The group keeps the time of the last closing, which nothing else in
     // Tooltip reads.

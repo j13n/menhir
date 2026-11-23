@@ -20,6 +20,10 @@
  *   Tab out of a Navigation Menu's `<nav>`.
  * - `link-press`: a link inside the component was activated, by pointer or
  *   keyboard, such as a Navigation Menu's `Link`.
+ * - `item-press`: an item of a menu was activated, by pointer or keyboard,
+ *   which closes every open menu (Menu).
+ * - `arrow-key`: an arrow key opened or closed a submenu, or a key that
+ *   moves through a menu closed its open submenu (Menu).
  */
 export type OpenChangeReason =
   | "escape-key"
@@ -30,7 +34,9 @@ export type OpenChangeReason =
   | "close-press"
   | "trigger-focus"
   | "focus-out"
-  | "link-press";
+  | "link-press"
+  | "item-press"
+  | "arrow-key";
 
 /**
  * The second argument of `onOpenChange`. `event` is the event that caused

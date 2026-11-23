@@ -15,6 +15,7 @@ const budgets = {
   "menhir/color-scheme/cookie": "1.7 kB",
   "menhir/color-scheme/local-storage": "1.4 kB",
   "menhir/dialog": "4.2 kB",
+  "menhir/menu": "13.5 kB",
   "menhir/meter": "1.3 kB",
   "menhir/navigation-menu": "3 kB",
   "menhir/popover": "11.5 kB",

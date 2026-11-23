@@ -25,7 +25,7 @@ Content in the page's flow that a Trigger shows and hides, `hidden` while closed
 _Avoid_: Content, dropdown, popup (for a Panel)
 
 **Trigger**:
-The element a popup or a Panel opens from: the button that opens a dialog, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
+The element a popup or a Panel opens from: the button that opens a dialog or a menu, the item that opens a submenu, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
 _Avoid_: Invoker, activator, toggle, opener
 
 **Anchor**:
@@ -92,6 +92,14 @@ _Avoid_: Focus trap, focus lock, focus loop
 The item of a list popup that the keyboard acts on: focused in a menu, or named in `aria-activedescendant` by a combobox's input, which keeps focus. It carries `data-active`, and none is active while the popup is closed.
 _Avoid_: Highlighted item, current item, focused item (it may not have focus), selected item (a selection is a value)
 
+**Submenu**:
+A menu that an item of another menu opens: its Popup is the sibling right after that item, Escape closes it alone, and activating an item in it closes every menu.
+_Avoid_: Nested menu, child menu, flyout, cascading menu
+
+**Activate**:
+To use an item of a list popup, by a click, Enter or Space: a menu's item calls its `onClick` and closes every open menu.
+_Avoid_: Select (a selection is a value), choose, trigger (as a verb)
+
 **Base popup**:
 The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32). The only popup it may import (PLAN.md section 6, rule 4).
 _Avoid_: Parent popup, super-component
@@ -119,6 +127,10 @@ _Avoid_: Body, subtitle
 **Close**:
 A button inside a popup that closes it.
 _Avoid_: Dismiss button, cancel (as the part's name)
+
+**Item**:
+An entry of a list popup that the keys move through and that does something when activated: a menu's action, checkbox or radio option, or a submenu's trigger.
+_Avoid_: Option (a listbox's), entry, row, menu entry
 
 ### Styling
 
