@@ -18,7 +18,7 @@ out, the sources and the module's measured size.
 | `scroll-lock/`     | Stops the page scrolling behind a modal popup                                                                              | #28    |
 | `presence/`        | Keeps a closing popup open until its exit animation has ended                                                              | #96    |
 | `hover/`           | Opens and closes a popup on hover, with delays, a safe area to the popup and delay groups                                  | #30    |
-| `list-navigation/` | Arrow keys between the items of a list popup                                                                               | #97    |
+| `list-navigation/` | Arrow keys and the pointer between the items of a list popup, with focus or `aria-activedescendant`                        | #97    |
 | `typeahead/`       | Moves to the item whose text the user types                                                                                | #98    |
 
 `floatingModules` in `packages/menhir/layers.ts` lists the same folders, for the

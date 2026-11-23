@@ -88,6 +88,10 @@ _Avoid_: Tabbable (as a noun), focus stop
 In a modal popup, Tab from the last tab stop moving to the first, and Shift+Tab from the first to the last, so focus stays inside.
 _Avoid_: Focus trap, focus lock, focus loop
 
+**Active item**:
+The item of a list popup that the keyboard acts on: focused in a menu, or named in `aria-activedescendant` by a combobox's input, which keeps focus. It carries `data-active`, and none is active while the popup is closed.
+_Avoid_: Highlighted item, current item, focused item (it may not have focus), selected item (a selection is a value)
+
 **Base popup**:
 The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32). The only popup it may import (PLAN.md section 6, rule 4).
 _Avoid_: Parent popup, super-component
