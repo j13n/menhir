@@ -45,6 +45,12 @@ export type ComponentDoc = {
   /** Display name, such as "Switch". */
   name: string;
   description: string;
+  /**
+   * What search results show for the page, when the description's first
+   * sentence is too long for that even without its WAI-ARIA pattern. See
+   * src/pageHead.ts.
+   */
+  summary?: string;
   /** The parts as TSX, from the tsx tag of src/highlight.ts. */
   anatomy: Highlighted;
   api: PartApi[];

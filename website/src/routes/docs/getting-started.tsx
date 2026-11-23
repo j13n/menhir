@@ -1,6 +1,5 @@
-import { Title } from "@solidjs/meta";
-
 import CodeBlock from "../../components/CodeBlock";
+import PageHead from "../../components/PageHead";
 import Section from "../../components/Section";
 import { css, shell, tsx } from "../../highlight";
 
@@ -30,7 +29,10 @@ const styles = css`.switch[data-checked] {
 export default function GettingStarted() {
   return (
     <main>
-      <Title>Getting started · Menhir</Title>
+      <PageHead
+        title="Getting started · Menhir for SolidJS"
+        description="Install Menhir, unstyled and accessible UI primitives for SolidJS 2.0, and build your first component: a Switch styled with your own CSS."
+      />
       <h1>Getting started</h1>
       <p>
         Menhir is a set of unstyled, accessible UI primitives for SolidJS 2.0.

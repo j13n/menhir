@@ -11,6 +11,8 @@ const render = (what: string) => ({
 export const tooltipDoc: ComponentDoc = {
   slug: "tooltip",
   name: "Tooltip",
+  summary:
+    "A short text that describes an element, such as what an icon button does, shown on hover or keyboard focus.",
   description:
     'A short text that describes an element, such as what an icon button does or its shortcut, shown when the pointer rests on the element or when it receives keyboard focus: the WAI-ARIA tooltip pattern. The Popup is a popover="manual" element, so the browser puts it in the top layer, above every z-index, with no portal, and no Popover or menu closes it. It opens after a delay on hover, at once on keyboard focus, and not on a press or a touch; it closes on Escape, on blur, when the pointer leaves the Trigger and the Popup, and when the Trigger is pressed. It stays open while the Trigger is hovered or focused, and the pointer can move onto it, as WCAG 1.4.13 asks. Menhir places it against the Trigger with Floating UI, above it by default, and keeps it shown until its exit animation has ended. A tooltip is not a name: the Trigger always names the Popup in aria-describedby, so its text is read after the Trigger\'s name, open or closed, and an icon button still needs an aria-label. The Popup never takes focus, so put only text in it; a link or a button belongs in a Popover. A disabled button cannot be focused, so its tooltip never opens: use aria-disabled="true" instead, and ignore its presses. Wrap a toolbar\'s tooltips in a Group, so that once one is open the next opens at once.',
   anatomy: tsx`<Tooltip.Group>

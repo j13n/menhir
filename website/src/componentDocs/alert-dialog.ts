@@ -11,6 +11,8 @@ const render = (what: string) => ({
 export const alertDialogDoc: ComponentDoc = {
   slug: "alert-dialog",
   name: "Alert Dialog",
+  summary:
+    "A dialog that asks for an answer to an important message, such as confirming an action that cannot be undone.",
   description:
     "A dialog that interrupts the user to ask for an answer to an important message, such as confirming an action that cannot be undone: the WAI-ARIA alert dialog pattern. It is a Dialog with the alertdialog role, which a press on the backdrop does not close, so a click that missed it is not taken as an answer; Escape still closes it, as Cancel does. Use Dialog for anything else on top of the page, such as a form. Focus goes to the first focusable element, so place the least destructive action, such as Cancel, first, or give it autofocus. Every action is an AlertDialog.Close; give the confirming one an onClick. Root, Trigger, Title, Description and Close are Dialog's parts, so an app with both components pays for them once.",
   anatomy: tsx`<AlertDialog.Root>

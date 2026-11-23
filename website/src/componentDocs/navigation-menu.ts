@@ -11,6 +11,8 @@ const render = (what: string) => ({
 export const navigationMenuDoc: ComponentDoc = {
   slug: "navigation-menu",
   name: "Navigation Menu",
+  summary:
+    "A site's navigation, with buttons that show more links on a press or when the pointer rests on them.",
   description:
     "A site's navigation: links, and buttons that show more links, opening on a press and when the pointer rests on them. It is the WAI-ARIA disclosure pattern as its navigation example applies it, not a menu: a <nav> landmark with a list, links, and buttons with aria-expanded and aria-controls, which is what WAI-ARIA asks of site navigation. One Item is open at a time. Hovering a Trigger opens its Panel after a delay; once one is open, moving along the bar opens the next at once. The pointer can cross the gap onto the Panel, and a Panel opened by a press, or holding focus, stays open when the pointer leaves, as WCAG 1.4.13 asks. Escape closes it, and puts focus back on the Trigger if it was inside; focus moving out of the <nav>, a press outside it and a Link all close it. A Panel is in the page's flow, not the top layer: it is hidden while closed, so its links are in the server HTML, and your CSS places it under its Item with position: absolute, so an ancestor with overflow: hidden would clip it. Opening on focus, arrow keys and an animated shared area are left out.",
   anatomy: tsx`<NavigationMenu.Root>

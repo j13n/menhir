@@ -1,13 +1,16 @@
-import { Title } from "@solidjs/meta";
 import { sizes } from "virtual:menhir-sizes";
 
+import PageHead from "../../../components/PageHead";
 import SizeTable from "../../../components/SizeTable";
 import { isUtility } from "../../../utilities";
 
 export default function Components() {
   return (
     <main>
-      <Title>Components · Menhir</Title>
+      <PageHead
+        title="Components · Menhir for SolidJS"
+        description="Every Menhir component for SolidJS, such as Dialog, Menu, Select, Combobox, Tabs and Tooltip: unstyled, accessible, each its own entry point, with its size."
+      />
       <h1>Components</h1>
       <p>
         Each component is its own entry point. Its size is what it adds to an

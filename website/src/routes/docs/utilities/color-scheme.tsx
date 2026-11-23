@@ -1,4 +1,3 @@
-import { Title } from "@solidjs/meta";
 import cookieSize from "virtual:menhir-sizes/color-scheme/cookie";
 import localStorageSize from "virtual:menhir-sizes/color-scheme/local-storage";
 
@@ -6,6 +5,7 @@ import ApiTable from "../../../components/ApiTable";
 import type { ApiRow } from "../../../components/ApiTable";
 import CodeBlock from "../../../components/CodeBlock";
 import ComponentExample from "../../../components/ComponentExample";
+import PageHead from "../../../components/PageHead";
 import TableScroll from "../../../components/TableScroll";
 import Section from "../../../components/Section";
 import { colorSchemeExample } from "../../../examples/color-scheme";
@@ -146,7 +146,10 @@ const functions: ApiRow[] = [
 export default function ColorSchemePage() {
   return (
     <main>
-      <Title>Color Scheme · Menhir</Title>
+      <PageHead
+        title="Color Scheme utility for SolidJS · Menhir"
+        description="A SolidJS utility for the reader's light, dark or system color scheme, saved in localStorage or a cookie, applied to <html> and kept in step across tabs."
+      />
       <h1>Color Scheme</h1>
       <p>
         The reader's choice of light, dark or system, saved in{" "}

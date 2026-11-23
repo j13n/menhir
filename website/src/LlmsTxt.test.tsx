@@ -3,8 +3,7 @@ import { describe, expect, test } from "vitest";
 
 // Kept outside src/routes so the file-system router never sees it as a page.
 import LlmsTxt from "./routes/docs/llms-txt";
-
-const origin = window.location.origin;
+import { siteUrl as origin } from "./site";
 
 describe("llms.txt page", () => {
   test("links the index and a component's Markdown, outside the router", () => {
@@ -21,7 +20,7 @@ describe("llms.txt page", () => {
     }
   });
 
-  test("gives a prompt and project instructions with this site's address", () => {
+  test("gives a prompt and project instructions with the site's full address", () => {
     const { getByRole } = render(() => <LlmsTxt />);
     expect(
       getByRole("region", { name: "Point an agent at it" }).querySelector(

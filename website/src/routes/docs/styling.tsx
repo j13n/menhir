@@ -1,6 +1,5 @@
-import { Title } from "@solidjs/meta";
-
 import CodeBlock from "../../components/CodeBlock";
+import PageHead from "../../components/PageHead";
 import Section from "../../components/Section";
 import { css, shell } from "../../highlight";
 
@@ -48,7 +47,10 @@ const ownLook = `Style our Menhir components to match this screenshot. Write the
 export default function Styling() {
   return (
     <main>
-      <Title>Styling · Menhir</Title>
+      <PageHead
+        title="Styling · Menhir for SolidJS"
+        description="Style Menhir's SolidJS components through their data attributes, with Tailwind CSS or plain CSS, or have a coding agent apply one look with the styling skill."
+      />
       <h1>Styling</h1>
       <p>
         Menhir ships no styles. You can write each component's CSS yourself, or

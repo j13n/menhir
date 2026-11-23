@@ -1,4 +1,3 @@
-import { Title } from "@solidjs/meta";
 import cookieSize from "virtual:menhir-sizes/theme/cookie";
 import localStorageSize from "virtual:menhir-sizes/theme/local-storage";
 
@@ -6,6 +5,7 @@ import ApiTable from "../../../components/ApiTable";
 import type { ApiRow } from "../../../components/ApiTable";
 import CodeBlock from "../../../components/CodeBlock";
 import ComponentExample from "../../../components/ComponentExample";
+import PageHead from "../../../components/PageHead";
 import Section from "../../../components/Section";
 import { themeExample } from "../../../examples/theme";
 import { formatMeasuredSize } from "../../../formatSize";
@@ -173,7 +173,10 @@ const functions: ApiRow[] = [
 export default function ThemePage() {
   return (
     <main>
-      <Title>Theme · Menhir</Title>
+      <PageHead
+        title="Theme utility for SolidJS · Menhir"
+        description="A SolidJS utility for the reader's choice out of the themes you list, saved in localStorage or a cookie, applied to <html> and kept in step across tabs."
+      />
       <h1>Theme</h1>
       <p>
         The reader's choice of theme, out of the themes you list, saved in{" "}

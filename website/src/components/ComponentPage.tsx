@@ -1,12 +1,18 @@
-import { Link, Meta } from "@solidjs/meta";
+import { Link } from "@solidjs/meta";
 import { For, Show } from "solid-js";
 
 import type { ComponentDoc } from "../componentDocs/types";
 import { markdownPath } from "../componentMarkdown";
 import { formatSize } from "../formatSize";
+import {
+  componentBreadcrumbs,
+  componentDescription,
+  componentTitle,
+} from "../pageHead";
 import type { Highlighted } from "../highlight";
 import CodeBlock from "./CodeBlock";
 import CopyButton from "./CopyButton";
+import PageHead from "./PageHead";
 import ComponentExample, {
   type ComponentExampleProps,
 } from "./ComponentExample";
@@ -36,7 +42,11 @@ const agentLinkClass =
 export default function ComponentPage(props: ComponentPageProps) {
   return (
     <main>
-      <Meta name="description" content={firstSentence(props.description)} />
+      <PageHead
+        title={componentTitle(props.name)}
+        description={componentDescription(props)}
+        structuredData={componentBreadcrumbs(props.name, props.slug)}
+      />
       <Link
         rel="alternate"
         type="text/markdown"
@@ -158,9 +168,4 @@ export default function ComponentPage(props: ComponentPageProps) {
       </For>
     </main>
   );
-}
-
-/** The first sentence of a description, short enough for search results. */
-function firstSentence(text: string) {
-  return text.match(/^.*?[.!?](?=\s|$)/s)?.[0] ?? text;
 }

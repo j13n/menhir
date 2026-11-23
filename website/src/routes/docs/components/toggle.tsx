@@ -1,4 +1,3 @@
-import { Title } from "@solidjs/meta";
 import toggleSize from "virtual:menhir-sizes/toggle";
 
 import { toggleDoc } from "../../../componentDocs/toggle";
@@ -7,9 +6,6 @@ import { toggleExample } from "../../../examples/toggle";
 
 export default function TogglePage() {
   return (
-    <>
-      <Title>Toggle · Menhir</Title>
-      <ComponentPage {...toggleDoc} size={toggleSize} example={toggleExample} />
-    </>
+    <ComponentPage {...toggleDoc} size={toggleSize} example={toggleExample} />
   );
 }

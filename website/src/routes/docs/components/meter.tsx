@@ -1,4 +1,3 @@
-import { Title } from "@solidjs/meta";
 import meterSize from "virtual:menhir-sizes/meter";
 
 import { meterDoc } from "../../../componentDocs/meter";
@@ -7,9 +6,6 @@ import { meterExample } from "../../../examples/meter";
 
 export default function MeterPage() {
   return (
-    <>
-      <Title>Meter · Menhir</Title>
-      <ComponentPage {...meterDoc} size={meterSize} example={meterExample} />
-    </>
+    <ComponentPage {...meterDoc} size={meterSize} example={meterExample} />
   );
 }
