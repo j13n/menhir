@@ -1,10 +1,12 @@
 // The test list and the cases left out are in README.md: Field in a form,
 // with a native <input>, <textarea> and <select> as controls.
+import { createEffect } from "solid-js";
 import { describe, expect, it, vi } from "vitest";
 
 import { afterFlush, createRenderer, isJSDOM, screen } from "#test-utils";
 
 import { Field } from "./index.ts";
+import { useFieldRootContext } from "./root/FieldRootContext.ts";
 
 function ContactForm(props: {
   onSubmit?: (data: FormData) => void;
@@ -164,6 +166,50 @@ describe("Field in a form", () => {
 
     expect(screen.getByTestId("email")).toHaveAttribute("data-touched", "");
     expect(errorOf("email")).toBeInTheDocument();
+  });
+
+  it("wakes no reader of a Field's state when a submission leaves its validity as it was", async () => {
+    const runs = vi.fn();
+    // Reads what an Error reads, and counts each time it is woken.
+    function Reader() {
+      const root = useFieldRootContext();
+      createEffect(
+        () => {
+          runs();
+          return [
+            root.showsError(),
+            root.message(),
+            root.validity()?.valueMissing,
+          ];
+        },
+        () => {},
+      );
+      return null;
+    }
+    const { user } = await render(() => (
+      <form onSubmit={(event) => event.preventDefault()}>
+        <Field.Root>
+          <Field.Control required />
+          <Reader />
+        </Field.Root>
+        <Field.Root>
+          <Field.Control required />
+        </Field.Root>
+        <button type="submit">Send</button>
+      </form>
+    ));
+    const send = screen.getByRole("button", { name: "Send" });
+    await user.click(send);
+    await afterFlush();
+    const woken = runs.mock.calls.length;
+
+    // Each blocked submission fires `invalid` at both controls, which the
+    // Field hears on the form, and its own control's on the Root.
+    await user.click(send);
+    await user.click(send);
+    await afterFlush();
+
+    expect(runs).toHaveBeenCalledTimes(woken);
   });
 
   // jsdom focuses nothing when it blocks a submission.
