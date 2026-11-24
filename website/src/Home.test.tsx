@@ -168,7 +168,7 @@ describe("home page", () => {
     expect(queryByText(/the earlier one wins/)).not.toBeInTheDocument();
     expect(
       within(list)
-        .getAllByRole("heading", { level: 3 })
+        .getAllByRole("heading", { level: 2 })
         .map((heading) => heading.textContent),
     ).toEqual(["Solid 2.0 idioms", "WAI-ARIA", "Size"]);
     expect(

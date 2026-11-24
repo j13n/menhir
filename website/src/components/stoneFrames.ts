@@ -26,22 +26,49 @@ const LIGHT = normalize([-0.55, 0.45, 0.7]);
 const LEAN = 0.35;
 const LEAN_ANGLE = 0.5;
 
+/** The parts of the stone's shape that depend only on the angle `phi`. */
+type Around = {
+  phi: number;
+  top: number;
+  slab: number;
+  cos: number;
+  sin: number;
+};
+
+function around(phi: number): Around {
+  // A superellipse: flatter faces than an oval.
+  const n = 3;
+  return {
+    phi,
+    top: 1 - 0.2 * (1 + Math.cos(phi - 0.9)) * 0.5,
+    slab:
+      (Math.abs(Math.cos(phi) / 1.2) ** n +
+        Math.abs(Math.sin(phi) / 0.65) ** n) **
+      (-1 / n),
+    cos: Math.cos(phi),
+    sin: Math.sin(phi),
+  };
+}
+
+/** The parts of the stone's shape that depend only on the height `h`. */
+type Up = { h: number; profile: number; lean: number };
+
+function up(h: number): Up {
+  return {
+    h,
+    profile: (1 - 0.3 * h) * (1 + 0.1 * Math.sin(Math.PI * h)),
+    lean: LEAN * h ** 1.5,
+  };
+}
+
 /**
  * The stone's radius at angle `phi` around its centre line and height `h`
  * (0 at the ground, 1 at the highest point of the top). A slab with flat
  * faces and rounded edges that bulges a little and tapers to a slanting,
  * rounded crown, so each side looks different as it turns.
  */
-function radius(phi: number, h: number) {
-  const top = 1 - 0.2 * (1 + Math.cos(phi - 0.9)) * 0.5;
+function radius({ phi, top, slab }: Around, { h, profile }: Up) {
   if (h >= top) return 0;
-  // A superellipse: flatter faces than an oval.
-  const n = 3;
-  const slab =
-    (Math.abs(Math.cos(phi) / 1.2) ** n +
-      Math.abs(Math.sin(phi) / 0.65) ** n) **
-    (-1 / n);
-  const profile = (1 - 0.3 * h) * (1 + 0.1 * Math.sin(Math.PI * h));
   const lumps =
     1 +
     0.05 * Math.sin(2 * phi + 1 + 3 * h) +
@@ -55,17 +82,71 @@ function radius(phi: number, h: number) {
   return slab * profile * lumps * crown;
 }
 
-/** A point on the surface, with the stone turned by `turn` radians. */
-function surface(phi: number, h: number, turn: number): Vec {
-  const r = radius(phi, h);
-  const lean = LEAN * h ** 1.5;
-  const x = lean * Math.cos(LEAN_ANGLE) + r * Math.cos(phi);
-  const z = lean * Math.sin(LEAN_ANGLE) + r * Math.sin(phi);
+const LEAN_X = Math.cos(LEAN_ANGLE);
+const LEAN_Z = Math.sin(LEAN_ANGLE);
+
+/** A point on the surface of the unturned stone. */
+function surface(a: Around, u: Up): Vec {
+  const r = radius(a, u);
   return [
-    x * Math.cos(turn) - z * Math.sin(turn),
-    h * STONE_UNITS,
-    x * Math.sin(turn) + z * Math.cos(turn),
+    u.lean * LEAN_X + r * a.cos,
+    u.h * STONE_UNITS,
+    u.lean * LEAN_Z + r * a.sin,
   ];
+}
+
+/**
+ * Every sampled point of the unturned stone, row by row: its position across
+ * (x) and in depth (z), and its unit normal. Turning the stone turns its
+ * points and normals and changes nothing else, so they are worked out once
+ * and each frame only turns them. A sample off the stone has NaN for x.
+ */
+type Samples = {
+  x: Float64Array;
+  z: Float64Array;
+  nx: Float64Array;
+  ny: Float64Array;
+  nz: Float64Array;
+};
+let samples: Samples | undefined;
+
+function stoneSamples(): Samples {
+  if (samples) return samples;
+  const count = STONE_HEIGHT * SAMPLES;
+  const s: Samples = {
+    x: new Float64Array(count).fill(NaN),
+    z: new Float64Array(count),
+    nx: new Float64Array(count),
+    ny: new Float64Array(count),
+    nz: new Float64Array(count),
+  };
+  // Normals come from points a small step `d` either side of each sample.
+  const d = 1e-3;
+  const arounds = Array.from({ length: SAMPLES }, (_, i) => {
+    const phi = (2 * Math.PI * i) / SAMPLES;
+    return [around(phi - d), around(phi), around(phi + d)] as const;
+  });
+  for (let row = 0; row < STONE_HEIGHT; row++) {
+    const h = (STONE_HEIGHT - row - 0.5) / STONE_HEIGHT;
+    const below = up(h - d);
+    const at = up(h);
+    const above = up(h + d);
+    for (let i = 0; i < SAMPLES; i++) {
+      const [before, a, after] = arounds[i];
+      if (radius(a, at) <= 0) continue;
+      const k = row * SAMPLES + i;
+      const point = surface(a, at);
+      const alongH = sub(surface(a, above), surface(a, below));
+      const alongPhi = sub(surface(after, at), surface(before, at));
+      const normal = normalize(cross(alongH, alongPhi));
+      s.x[k] = point[0];
+      s.z[k] = point[2];
+      s.nx[k] = normal[0];
+      s.ny[k] = normal[1];
+      s.nz[k] = normal[2];
+    }
+  }
+  return (samples = s);
 }
 
 /** The character for a surface with `brightness` from 0 to 1. */
@@ -82,33 +163,33 @@ export function stoneFrame(step: number): string {
   const turn =
     (2 * Math.PI * (((step % TURN_FRAMES) + TURN_FRAMES) % TURN_FRAMES)) /
     TURN_FRAMES;
+  const cos = Math.cos(turn);
+  const sin = Math.sin(turn);
+  const { x, z, nx, ny, nz } = stoneSamples();
   const lines: string[] = [];
 
   for (let row = 0; row < STONE_HEIGHT; row++) {
-    const h = (STONE_HEIGHT - row - 0.5) / STONE_HEIGHT;
     // The nearest surface in each column, and its character.
     const nearest = Array.from({ length: STONE_WIDTH }, () => -Infinity);
     const line = Array.from({ length: STONE_WIDTH }, () => " ");
 
-    for (let i = 0; i < SAMPLES; i++) {
-      const phi = (2 * Math.PI * i) / SAMPLES;
-      if (radius(phi, h) <= 0) continue;
-      const point = surface(phi, h, turn);
+    for (let k = row * SAMPLES, end = k + SAMPLES; k < end; k++) {
+      if (Number.isNaN(x[k])) continue;
+      const turnedX = x[k] * cos - z[k] * sin;
+      const turnedZ = x[k] * sin + z[k] * cos;
       const column = Math.round(
-        STONE_WIDTH / 2 - 0.5 + point[0] * COLUMNS_PER_UNIT,
+        STONE_WIDTH / 2 - 0.5 + turnedX * COLUMNS_PER_UNIT,
       );
-      if (column < 0 || column >= STONE_WIDTH || point[2] <= nearest[column]) {
+      if (column < 0 || column >= STONE_WIDTH || turnedZ <= nearest[column]) {
         continue;
       }
-      nearest[column] = point[2];
+      nearest[column] = turnedZ;
 
-      const d = 1e-3;
-      const alongH = sub(surface(phi, h + d, turn), surface(phi, h - d, turn));
-      const alongPhi = sub(
-        surface(phi + d, h, turn),
-        surface(phi - d, h, turn),
-      );
-      const normal = normalize(cross(alongH, alongPhi));
+      const normal: Vec = [
+        nx[k] * cos - nz[k] * sin,
+        ny[k],
+        nx[k] * sin + nz[k] * cos,
+      ];
       line[column] = shade(Math.max(0, dot(normal, LIGHT)) * 0.9 + 0.08);
     }
     lines.push(line.join(""));
