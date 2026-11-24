@@ -95,7 +95,11 @@ Checked on 2026-11-23, in `web-features` 3.47.0 and the HTML standard.
   inside it, the Root reads the `validity` of each `input`, `select` and
   `textarea` the browser validates (`willValidate`), and the first invalid
   one is the field's. `invalid` does not bubble, so the Root listens for it
-  in the capture phase.
+  in the capture phase. The Root keeps a copy of that control's flags and
+  message, compared by value: an element's `validity` is live, the same
+  object as its flags change, so keeping the element meant waking every
+  reader on each event, such as each `invalid` of a submission, which fires
+  at every control of the form.
 - **Three sources of validity, one rule.** The field is invalid when the
   browser's constraint validation says so, or when the app passes
   `invalid`, or an `error` message. The message shown is the app's `error`,
@@ -264,6 +268,7 @@ In a form, with a native control (`Field.form.test.tsx`):
 - A reset empties the controls and hides the errors
 - When the browser blocks a submission, it focuses the first invalid control, whose accessible description has the error; Chromium only, since jsdom focuses nothing
 - An error from outside does not block a submission
+- A submission that leaves a Field's validity as it was wakes no reader of its state
 
 `test/field/Field.hydrate.test.tsx`
 
@@ -306,11 +311,11 @@ heard in VoiceOver, NVDA and JAWS (the definition of done in #141).
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-23.
+2026-11-24.
 
 | App               | Size    | Budget |
 | ----------------- | ------- | ------ |
-| `menhir/field`    | 1,760 B | 1.8 kB |
+| `menhir/field`    | 1,799 B | 1.8 kB |
 | `menhir/switch`   | 1,623 B | 1.9 kB |
 | `menhir/checkbox` | 1,677 B | 2 kB   |
 
@@ -320,4 +325,5 @@ Field's context, and neither bundles a module of `src/field`
 listeners that read the controls' validity and track touched, and the
 registry of the Description and the Errors that the control's
 `aria-describedby` follows. Reading Form's context (#144) took Field from
-1,727 B to 1,760 B.
+1,727 B to 1,760 B, and copying the invalid control's validity, so that an
+event that changes nothing wakes no reader (Decisions), to 1,799 B.

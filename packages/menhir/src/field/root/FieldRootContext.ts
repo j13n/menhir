@@ -34,8 +34,8 @@ export interface FieldRootContextValue {
   showsError(): boolean;
   /** The message an Error without children shows. */
   message(): string | undefined;
-  /** The browser's validity of the first invalid control, if any. */
-  validity(): ValidityState | undefined;
+  /** The browser's validity of the first invalid control, if any, copied. */
+  validity(): Partial<ValidityState> | undefined;
   /** The `id`s the control names in `aria-describedby`, if any. */
   describedBy(): string | undefined;
   /**

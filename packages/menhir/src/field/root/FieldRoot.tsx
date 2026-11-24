@@ -45,6 +45,14 @@ type Validatable = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 const controlSelector = "input,select,textarea";
 
 /**
+ * What the Root reads of its first invalid control: its validity's flags
+ * and its message.
+ */
+type InvalidControl = Partial<Record<keyof ValidityState, boolean>> & {
+  validationMessage?: string;
+};
+
+/**
  * The field: a `<div>` that holds a control's label, description and error,
  * and its validity. It generates the control's `id` and the Description's,
  * and tracks whether the field was touched.
@@ -53,12 +61,14 @@ export function FieldRoot(props: FieldRootProps) {
   const controlId = createUniqueId();
   const descriptionId = createUniqueId();
   const [touched, setTouched] = createSignal(false);
-  // The first control inside the Root that the browser finds invalid. Set
-  // again on each event, even to the same element, whose message may have
-  // changed.
+  // The first control inside the Root that the browser finds invalid, as
+  // its message and its validity's flags, copied: the element's own
+  // `validity` is live, the same object as its flags change. Compared by
+  // value, so an event that changes neither, such as each `invalid` of a
+  // submission, wakes no reader.
   const [invalidControl, setInvalidControl] = createSignal<
-    Validatable | undefined
-  >(undefined, { equals: false });
+    InvalidControl | undefined
+  >(undefined, { equals: (a, b) => JSON.stringify(a) === JSON.stringify(b) });
   // False in the server HTML and the first render, when the control names
   // the Description before it is rendered (README, "Decisions").
   const [settled, setSettled] = createSignal(false);
@@ -66,10 +76,20 @@ export function FieldRoot(props: FieldRootProps) {
   const [errors, setErrors] = createSignal<FieldErrorEntry[]>([]);
   let root: HTMLElement | undefined;
 
-  const readValidity = () => {
+  const readValidity = (): InvalidControl | undefined => {
     if (!root) return undefined;
     for (const control of root.querySelectorAll<Validatable>(controlSelector)) {
-      if (control.willValidate && !control.validity.valid) return control;
+      const { validity } = control;
+      if (control.willValidate && !validity.valid) {
+        const copy: InvalidControl = {
+          validationMessage: control.validationMessage,
+        };
+        for (const flag in validity) {
+          copy[flag as keyof ValidityState] =
+            validity[flag as keyof ValidityState];
+        }
+        return copy;
+      }
     }
     return undefined;
   };
@@ -116,7 +136,7 @@ export function FieldRoot(props: FieldRootProps) {
       (touched() && props.error) ||
       formError() ||
       invalidControl()?.validationMessage,
-    validity: () => invalidControl()?.validity,
+    validity: invalidControl,
     describedBy() {
       const ids: string[] = [];
       if (!settled() || descriptions() > 0) ids.push(descriptionId);

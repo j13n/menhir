@@ -233,13 +233,13 @@ JAWS (the definition of done in #144).
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 all of it, Rolldown, minified, gzipped, Solid left out.
-Measured on 2026-11-23.
+Measured on 2026-11-24.
 
 | App                           | Size    | Budget |
 | ----------------------------- | ------- | ------ |
 | `menhir/form`                 | 1,003 B | 1.1 kB |
 | `menhir/form/standard-schema` | 230 B   | 300 B  |
-| `menhir/field`                | 1,760 B | 1.8 kB |
+| `menhir/field`                | 1,799 B | 1.8 kB |
 
 Most of Form is what every part pays, `core`'s merging and `render`
 (Separator, which is all of that, is 746 B). Its own are the submit check
