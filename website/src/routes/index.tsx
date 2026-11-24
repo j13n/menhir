@@ -81,6 +81,8 @@ export default function Home() {
   const [pin, setPin] = createSignal("");
   // The Form's errors, as a server would answer: one name is taken.
   const [joinErrors, setJoinErrors] = createSignal<FormErrors>({});
+  // The Fieldset's topics: at least one, an error from outside.
+  const [chosenTopics, setChosenTopics] = createSignal(["Releases"]);
   return (
     <>
       <PageHead
@@ -187,6 +189,53 @@ export default function Home() {
               </Field.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/field">Field</a>
+              </figcaption>
+            </figure>
+            <figure class={exampleCard}>
+              <Field.Root
+                name="topics"
+                error={
+                  chosenTopics().length === 0
+                    ? "Choose at least one."
+                    : undefined
+                }
+              >
+                <Field.Control
+                  render={(props) => (
+                    <fieldset {...props} class="flex flex-col gap-2" />
+                  )}
+                >
+                  <legend class="mb-1">Email me about</legend>
+                  <For each={["Releases", "Events"]}>
+                    {(topic) => (
+                      <label class="flex items-center justify-between gap-4">
+                        {topic}
+                        <Checkbox.Root
+                          name="topics"
+                          value={topic}
+                          checked={chosenTopics().includes(topic)}
+                          onCheckedChange={(on) =>
+                            setChosenTopics((list) =>
+                              on
+                                ? [...list, topic]
+                                : list.filter((t) => t !== topic),
+                            )
+                          }
+                          class="inline-flex size-6 shrink-0 items-center justify-center rounded-md border border-stone-400 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-checked:border-transparent data-checked:bg-stone-800 dark:border-stone-500 dark:text-stone-900 dark:data-checked:bg-stone-300"
+                        >
+                          <Checkbox.Indicator class="hidden h-3 w-1.5 -translate-y-px rotate-45 border-r-2 border-b-2 border-current data-checked:block" />
+                        </Checkbox.Root>
+                      </label>
+                    )}
+                  </For>
+                  <Field.Description class="text-sm opacity-70">
+                    Uncheck both to see the error.
+                  </Field.Description>
+                  <Field.Error class="text-sm text-red-600 dark:text-red-400" />
+                </Field.Control>
+              </Field.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/field#fieldset">Fieldset</a>
               </figcaption>
             </figure>
             <figure class={exampleCard}>

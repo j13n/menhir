@@ -214,6 +214,26 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Fieldset, linked to its recipe on the Field page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const group = example.getByRole("group", { name: "Email me about" });
+    expect(group.tagName).toBe("FIELDSET");
+    expect(group).toHaveAccessibleDescription("Uncheck both to see the error.");
+    fireEvent.click(within(group).getByRole("checkbox", { name: "Releases" }));
+    // The checked state and the field's own state land after the event's
+    // flush (`onFlush`).
+    await new Promise<void>((resolve) => onFlush(resolve));
+    expect(group).toHaveAttribute("aria-invalid", "true");
+    expect(group).toHaveAccessibleDescription(
+      "Uncheck both to see the error. Choose at least one.",
+    );
+    expect(example.getByRole("link", { name: "Fieldset" })).toHaveAttribute(
+      "href",
+      "/docs/components/field#fieldset",
+    );
+  });
+
   test("shows a working Input, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
