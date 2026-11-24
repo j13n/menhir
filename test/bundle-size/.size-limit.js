@@ -27,6 +27,7 @@ const budgets = {
   "menhir/menubar": "13.5 kB",
   "menhir/meter": "1.3 kB",
   "menhir/navigation-menu": "3 kB",
+  "menhir/number-field": "3.3 kB",
   "menhir/popover": "11.5 kB",
   "menhir/progress": "1.4 kB",
   "menhir/radio": "2.6 kB",

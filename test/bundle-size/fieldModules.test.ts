@@ -27,6 +27,7 @@ describe("Field", () => {
     "menhir/checkbox-group",
     "menhir/input",
     "menhir/radio",
+    "menhir/number-field",
     "menhir/form",
   ])("is not in an app that imports %s alone", async (entryPoint) => {
     expect(await findFieldModules(entryPoint)).toEqual([]);

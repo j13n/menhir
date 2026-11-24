@@ -155,6 +155,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/number-field";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/number-field"), Extract<"default", keyof typeof import("./src/routes/docs/components/number-field")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/popover";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/popover"), Extract<"default", keyof typeof import("./src/routes/docs/components/popover")>>>;
@@ -543,6 +549,14 @@ declare module "virtual:file-routes" {
           id: "/components/context-menu";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/context-menu"), Extract<"default", keyof typeof import("./src/routes/docs/components/context-menu")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/number-field";
+          id: "/components/number-field";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/number-field"), Extract<"default", keyof typeof import("./src/routes/docs/components/number-field")>>>;
           $$route?: undefined;
           children?: undefined;
         },

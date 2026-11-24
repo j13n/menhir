@@ -70,6 +70,7 @@ export const libraries: Library[] = [
       menu: "@base-ui/react/menu",
       menubar: "@base-ui/react/menubar",
       "navigation-menu": "@base-ui/react/navigation-menu",
+      "number-field": "@base-ui/react/number-field",
       popover: "@base-ui/react/popover",
       progress: "@base-ui/react/progress",
       // Its Radio is one radio, and its RadioGroup the group around them.
@@ -127,6 +128,7 @@ export const libraries: Library[] = [
       menu: "@kobalte/core/dropdown-menu",
       menubar: "@kobalte/core/menubar",
       "navigation-menu": "@kobalte/core/navigation-menu",
+      "number-field": "@kobalte/core/number-field",
       popover: "@kobalte/core/popover",
       progress: "@kobalte/core/progress",
       radio: "@kobalte/core/radio-group",
