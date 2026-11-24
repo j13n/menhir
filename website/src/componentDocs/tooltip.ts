@@ -11,6 +11,7 @@ const render = (what: string) => ({
 export const tooltipDoc: ComponentDoc = {
   slug: "tooltip",
   name: "Tooltip",
+  category: "Overlays",
   summary:
     "A short text that describes an element, such as what an icon button does, shown on hover or keyboard focus.",
   description:

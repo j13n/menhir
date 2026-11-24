@@ -11,6 +11,7 @@ const render = (what: string) => ({
 export const comboboxDoc: ComponentDoc = {
   slug: "combobox",
   name: "Combobox",
+  category: "Pickers",
   description:
     'An input that picks one value out of a list: the WAI-ARIA combobox pattern, with list autocomplete and manual selection. Typing opens the list and you filter it: render the items that match the text, with includesText, a separate import that ignores case and accents, or your own search, on the server too. Focus stays in the input, which names the active item in aria-activedescendant: Down and Up move through the items, Enter selects the active one and puts its label in the input, Escape closes the list and, once it is closed, empties the input. When focus leaves, the text goes back to the selected item\'s label. A form control: a visually hidden input beside the Input submits the selected value under name, not the text, blocks a submission while required and empty, and follows a form reset. The Popup is a popover="manual" element, so the browser puts it in the top layer, above every z-index; there is no portal. Menhir places it with Floating UI, below the Input and aligned to its start, and keeps it shown until its exit animation has ended. It writes --anchor-width and --available-height on the Popup: use them for its min-width and max-height. Name the Combobox with a <label> for the Input, and the List with aria-labelledby.',
   anatomy: tsx`<label for="fruit" id="fruit-label" />

@@ -11,6 +11,7 @@ const render = (what: string) => ({
 export const alertDialogDoc: ComponentDoc = {
   slug: "alert-dialog",
   name: "Alert Dialog",
+  category: "Overlays",
   summary:
     "A dialog that asks for an answer to an important message, such as confirming an action that cannot be undone.",
   description:

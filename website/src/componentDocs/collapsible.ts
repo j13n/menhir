@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const collapsibleDoc: ComponentDoc = {
   slug: "collapsible",
   name: "Collapsible",
+  category: "Disclosure",
   summary:
     "A button that shows and hides a section of content, such as the answer under a question.",
   description:

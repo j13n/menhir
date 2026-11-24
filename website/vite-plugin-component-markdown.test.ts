@@ -19,6 +19,7 @@ import componentMarkdown from "./vite-plugin-component-markdown.ts";
 const switchDoc: ComponentDoc = {
   slug: "switch",
   name: "Switch",
+  category: "Inputs",
   description: "A control that turns a setting on or off.",
   anatomy: tsx`<Switch.Root />`,
   api: [],

@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const fieldDoc: ComponentDoc = {
   slug: "field",
   name: "Field",
+  category: "Forms",
   description:
     "A form field: the label, description and error message of a form control, and its validation state. It reads the browser's constraint validation and takes errors from outside, such as a server's or a schema's, and shows an error only once the field was touched. It holds no value: the value stays in the control or in your app.",
   anatomy: tsx`<Field.Root>

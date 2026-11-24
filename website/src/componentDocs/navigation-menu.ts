@@ -11,6 +11,7 @@ const render = (what: string) => ({
 export const navigationMenuDoc: ComponentDoc = {
   slug: "navigation-menu",
   name: "Navigation Menu",
+  category: "Menus & navigation",
   summary:
     "A site's navigation, with buttons that show more links on a press or when the pointer rests on them.",
   description:

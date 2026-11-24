@@ -7,6 +7,7 @@ import { tsx } from "./highlight";
 const doc: ComponentDoc = {
   slug: "switch",
   name: "Switch",
+  category: "Inputs",
   description: "A control that turns a setting on or off.",
   anatomy: tsx`<Switch.Root>
   <Switch.Thumb />

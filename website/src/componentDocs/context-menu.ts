@@ -17,6 +17,7 @@ const placedAt = (name: string) =>
 export const contextMenuDoc: ComponentDoc = {
   slug: "context-menu",
   name: "Context Menu",
+  category: "Menus & navigation",
   summary:
     "A menu of actions for an area of the page that opens on a right-click, a long press or Shift+F10.",
   description:

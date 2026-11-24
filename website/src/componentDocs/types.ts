@@ -3,6 +3,7 @@
 // Markdown version.
 
 import type { Highlighted } from "../highlight";
+import type { ComponentCategory } from "./categories";
 
 export type PropRow = {
   name: string;
@@ -44,6 +45,8 @@ export type ComponentDoc = {
   slug: string;
   /** Display name, such as "Switch". */
   name: string;
+  /** The group the component is listed in. See ./categories.ts. */
+  category: ComponentCategory;
   description: string;
   /**
    * What search results show for the page, when the description's first

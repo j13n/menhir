@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const tabsDoc: ComponentDoc = {
   slug: "tabs",
   name: "Tabs",
+  category: "Disclosure",
   description:
     "Layered sections of content, one shown at a time, each chosen by its tab: the WAI-ARIA tabs pattern. The List is one tab stop, and arrow keys move between the tabs. By default a tab is selected as it receives focus; with manual activation, by click, Enter or Space. A Panel that is not selected has the hidden attribute, so its content stays in the page, keeping its state, but is not shown or read out.",
   anatomy: tsx`<Tabs.Root>

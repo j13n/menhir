@@ -3,6 +3,8 @@ import { captureArtifact, expectNoDiagnostics } from "@solidjs/diagnostics";
 import { flush, onFlush } from "solid-js";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
+import { componentCategories } from "./componentDocs/categories";
+import { componentDocs } from "./componentDocs/index";
 import { FRAME_MS } from "./components/MenhirScene";
 // Kept outside src/routes so the file-system router never sees it as a page.
 import Home from "./routes/index";
@@ -174,6 +176,31 @@ describe("home page", () => {
     expect(
       within(list).getByRole("link", { name: /WAI-ARIA/ }),
     ).toHaveAttribute("href", "https://www.w3.org/WAI/ARIA/apg/patterns/");
+  });
+
+  test("groups the examples by category, each card under its component's category", () => {
+    const { getByRole } = setup();
+    const examples = within(getByRole("region", { name: "Examples" }));
+    const headings = examples
+      .getAllByRole("heading", { level: 2 })
+      .map((heading) => heading.textContent);
+    expect(headings).toEqual([...componentCategories]);
+
+    const shown = new Set<string>();
+    for (const category of componentCategories) {
+      const group = within(examples.getByRole("region", { name: category }));
+      for (const caption of group.getAllByRole("figure")) {
+        const href = within(caption).getByRole("link").getAttribute("href")!;
+        const slug = href.match(/^\/docs\/components\/([^#]+)/)![1];
+        const doc = componentDocs.find((doc) => doc.slug === slug);
+        expect(doc?.category, href).toBe(category);
+        shown.add(slug);
+      }
+    }
+    // Every component has a card.
+    expect([...shown].sort()).toEqual(
+      componentDocs.map((doc) => doc.slug).sort(),
+    );
   });
 
   test("shows a working Switch, linked to its page", async () => {

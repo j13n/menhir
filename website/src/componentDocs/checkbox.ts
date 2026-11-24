@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const checkboxDoc: ComponentDoc = {
   slug: "checkbox",
   name: "Checkbox",
+  category: "Inputs",
   description:
     "A control that the user checks or unchecks, with an optional partly checked state. It renders a native button with the checkbox role, and a hidden checkbox beside it so that forms submit its value.",
   anatomy: tsx`<Checkbox.Root>

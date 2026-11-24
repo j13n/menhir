@@ -14,6 +14,7 @@ const focusTarget =
 export const popoverDoc: ComponentDoc = {
   slug: "popover",
   name: "Popover",
+  category: "Overlays",
   summary:
     "A popup placed against its trigger that leaves the page usable, such as a few settings or a short form.",
   description:
