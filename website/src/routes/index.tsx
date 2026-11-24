@@ -126,7 +126,7 @@ export default function Home() {
         >
           <li class={approachItem}>
             <span class={approachNumber}>1</span>
-            <h3 class="mt-1">Solid 2.0 idioms</h3>
+            <h2 class="mt-1 mb-2 text-lg">Solid 2.0 idioms</h2>
             <p class="m-0">
               Written for Solid 2.0, not translated from React or Solid 1.x.
               Solid decides the API and the internals.
@@ -134,7 +134,7 @@ export default function Home() {
           </li>
           <li class={approachItem}>
             <span class={approachNumber}>2</span>
-            <h3 class="mt-1">WAI-ARIA</h3>
+            <h2 class="mt-1 mb-2 text-lg">WAI-ARIA</h2>
             <p class="m-0">
               Each component follows its{" "}
               <a href="https://www.w3.org/WAI/ARIA/apg/patterns/">
@@ -145,7 +145,7 @@ export default function Home() {
           </li>
           <li class={approachItem}>
             <span class={approachNumber}>3</span>
-            <h3 class="mt-1">Size</h3>
+            <h2 class="mt-1 mb-2 text-lg">Size</h2>
             <p class="m-0">
               A component costs only what it uses. Every component's{" "}
               <a href="/docs/bundle-size">size</a> is published.
