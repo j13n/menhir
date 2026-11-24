@@ -25,8 +25,9 @@ checkbox, so a mixed checkbox whose `checked` is false asks to be checked.
 Only Space toggles it. The pattern names no other key, and a native checkbox
 does not toggle on Enter, so the button cancels Enter.
 
-Root's form behaviour is a copy of Switch's: Switch does not import
-Checkbox, and the shared part moves to `core` once Radio shows its shape.
+Root's form behaviour is Switch's and a Radio Item's: the hidden input,
+its events, its focus and its form reset are `core/hiddenInput.tsx`,
+moved there with Radio (#147; `src/radio/README.md`, "Size").
 Checkbox Group builds on Checkbox (`simpleBases` in
 `packages/menhir/layers.ts`, #146): its Item and Parent render
 `Checkbox.Root`, which reads nothing of the group, so this entry point
@@ -176,11 +177,16 @@ part conventions. "A" marks a case the WAI-ARIA pattern requires.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-23, after #143.
+2026-11-24, after #147.
 
 | App               | Size    | Budget |
 | ----------------- | ------- | ------ |
-| `menhir/checkbox` | 1,677 B | 2 kB   |
+| `menhir/checkbox` | 1,708 B | 2 kB   |
+
+1,677 B before #147, which moved the hidden input to `core`
+(`core/hiddenInput.tsx`), shared with Radio: Checkbox alone pays about 30 B
+for the call, and an app with Radio pays for the input once
+(`src/radio/README.md`, "Size").
 
 No growth from #143: Checkbox joins a Field with no change to its code,
 and the size is the one measured before and after Field (#141).

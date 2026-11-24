@@ -120,7 +120,9 @@ legend names the group.
   and `disabled` the same way. Whether that root is a `<fieldset>` by
   default, a `<div role="group">`, or a `role="radiogroup"`, is theirs to
   decide against their WAI-ARIA pattern; through `render` it can be the
-  fieldset of this recipe.
+  fieldset of this recipe. Checkbox Group's is a `<fieldset>` and Radio's a
+  `<fieldset role="radiogroup">`, each named by its `<legend>`
+  (`src/checkbox-group/README.md`, `src/radio/README.md`).
 
 ## Test list
 
@@ -170,7 +172,7 @@ The group's error:
 | A Field around a group of Fields, such as an address                                                         | The outer Field would read the first invalid control of every inner Field as its own; a group of Fields is a plain `<fieldset>`, each Field with its own error (Shape)           |
 | `Field.Label` as the legend                                                                                  | A `<label for>` cannot name a fieldset; the legend must be the fieldset's first child to name it (Decisions)                                                                     |
 | `aria-errormessage` on the fieldset                                                                          | As on Field: read while valid in several screen readers; `aria-describedby` names the Error only while it is rendered                                                            |
-| `role="radiogroup"` on the fieldset                                                                          | Native radios in a fieldset are a group by the WAI tutorial; a `radiogroup` with Menhir's radio buttons is Radio's (#147)                                                        |
+| `role="radiogroup"` on the fieldset                                                                          | Native radios in a fieldset are a group by the WAI tutorial; a `radiogroup` with Menhir's radio buttons is Radio's root, a `<fieldset role="radiogroup">` (#147)                 |
 | A control associated with the form by its `form` attribute, outside the fieldset; `fieldset.elements` itself | The browser's: `disabled` reaches only the fieldset's descendants, as the standard says, and Field reads only the controls inside its Root                                       |
 | Nested fieldsets                                                                                             | The browser's: a fieldset inside a disabled one is disabled, except in the first legend, which the first-legend case covers                                                      |
 | A legend hidden from sight, or a group named by `aria-label`                                                 | The consumer's: a visually hidden legend still names the group; `aria-label` on the fieldset works through `Field.Control` as any attribute does                                 |

@@ -1,10 +1,11 @@
 import { isDev } from "@solidjs/web";
 import type { JSX } from "@solidjs/web";
-import { merge, omit, onFlush, onSettled, untrack } from "solid-js";
+import { merge, omit } from "solid-js";
 
 import { warnUnlessButton } from "../../core/button.ts";
 import type { ButtonElementProps } from "../../core/button.ts";
 import { createControllableSignal } from "../../core/createControllableSignal.ts";
+import { createHiddenInput } from "../../core/hiddenInput.tsx";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { RenderProp } from "../../core/renderElement.tsx";
@@ -85,7 +86,7 @@ export function SwitchRoot(props: SwitchRootProps) {
     },
     // The change goes through the hidden input, so that the form sees the
     // native `input` and `change` events a checkbox fires.
-    onClick: () => input?.click(),
+    onClick: () => input.click(),
     ref: (element) => {
       button = element;
       // Production builds drop the check with `isDev`.
@@ -93,45 +94,14 @@ export function SwitchRoot(props: SwitchRootProps) {
     },
   };
   let button: HTMLElement | undefined;
-  let input: HTMLInputElement | undefined;
-  // Puts the input back to the switch's value, once that has settled. The
-  // `checked` binding writes the DOM only when the value changes, so it
-  // does not undo a change of the input that the switch did not take.
-  const syncInput = () => {
-    if (input) input.checked = untrack(checked);
-  };
-  const onInputChange = () => {
-    if (!input) return;
-    setChecked(input.checked);
-    // The browser has already changed the input, so the form's own
-    // listeners, which run after this one, see the new value. The two
-    // differ afterwards only when a controlled switch's consumer declined
-    // the change.
-    onFlush(syncInput);
-  };
-  const onInputClick = (event: MouseEvent) => {
-    // The click the button sends the input is an implementation detail:
-    // ancestors already received the user's click.
-    event.stopPropagation();
-    // Canceling the click keeps the checkbox as it was and fires no
-    // `input` or `change` event, whoever clicked it.
-    if (props.readOnly) event.preventDefault();
-  };
-  // A form reset puts a checkbox back to its default, and so it does the
-  // switch: through the setter, so that a controlled switch asks.
-  onSettled(() => {
-    const form = input?.form;
-    if (!form) return;
-    const onReset = () => {
-      setChecked(props.defaultChecked ?? false);
-      // The browser resets the input after this event, to its `checked`
-      // attribute, which the binding does not set. `onFlush` runs after
-      // that, as the event has finished by then.
-      onFlush(syncInput);
-    };
-    form.addEventListener("reset", onReset);
-    return () => form.removeEventListener("reset", onReset);
-  });
+  const input = createHiddenInput(
+    "checkbox",
+    props,
+    checked,
+    setChecked,
+    () => button,
+    () => setChecked(props.defaultChecked ?? false),
+  );
   const elementProps = mergeElementProps(
     merge(stateAttributes, buttonProps),
     omit(
@@ -153,33 +123,7 @@ export function SwitchRoot(props: SwitchRootProps) {
       {renderElement(props, elementProps, (p) => (
         <button {...p} />
       ))}
-      <input
-        type="checkbox"
-        aria-hidden="true"
-        tabindex={-1}
-        style={visuallyHidden}
-        name={props.name}
-        value={props.value}
-        disabled={props.disabled}
-        required={props.required}
-        form={props.form}
-        checked={checked()}
-        onChange={onInputChange}
-        // The browser focuses an invalid input when it blocks a submission.
-        // The user knows the switch, not the hidden input.
-        onFocus={() => button?.focus()}
-        ref={(element) => {
-          input = element;
-          // Solid delegates click handlers to the document, so this one is
-          // a native listener, to act before the click bubbles.
-          element.addEventListener("click", onInputClick);
-        }}
-      />
+      {input}
     </SwitchRootContext>
   );
 }
-
-// Hidden from sight but not from the form. Not `display: none`, so the
-// browser can still anchor a validation message to it.
-const visuallyHidden =
-  "position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;pointer-events:none";

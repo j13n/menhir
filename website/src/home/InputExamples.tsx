@@ -1,6 +1,7 @@
 import { Checkbox } from "menhir/checkbox";
 import { CheckboxGroup } from "menhir/checkbox-group";
 import { Input } from "menhir/input";
+import { Radio } from "menhir/radio";
 import { Switch } from "menhir/switch";
 import { Toggle } from "menhir/toggle";
 import { ToggleGroup } from "menhir/toggle-group";
@@ -15,6 +16,13 @@ const checkboxBox =
   "inline-flex size-6 shrink-0 items-center justify-center rounded-md border border-stone-400 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-checked:border-transparent data-checked:bg-stone-800 data-indeterminate:border-transparent data-indeterminate:bg-stone-800 dark:border-stone-500 dark:text-stone-900 dark:data-checked:bg-stone-300 dark:data-indeterminate:bg-stone-300";
 const checkboxMark =
   "hidden border-0 border-current data-checked:block data-checked:h-3 data-checked:w-1.5 data-checked:-translate-y-px data-checked:rotate-45 data-checked:border-r-2 data-checked:border-b-2 data-indeterminate:block data-indeterminate:w-2.5 data-indeterminate:border-b-2";
+const deliveries = ["Standard", "Express"];
+// The Radio's radios: circles the size of the Checkbox Group's boxes, with
+// a dot while checked.
+const radioCircle =
+  "inline-flex size-6 shrink-0 items-center justify-center rounded-full border border-stone-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-checked:border-stone-800 dark:border-stone-500 dark:data-checked:border-stone-300";
+const radioDot =
+  "hidden size-3 rounded-full bg-stone-800 data-checked:block dark:bg-stone-300";
 
 export default function InputExamples() {
   // The Input's text: digits only, so a letter typed is undone.
@@ -63,6 +71,21 @@ export default function InputExamples() {
             )}
           </For>
         </CheckboxGroup.Root>
+      </ExampleCard>
+      <ExampleCard name="Radio" href="/docs/components/radio">
+        <Radio.Root defaultValue="Standard" class="flex flex-col gap-2">
+          <legend class="mb-1">Delivery</legend>
+          <For each={deliveries}>
+            {(delivery) => (
+              <label class="flex items-center justify-between gap-4">
+                {delivery}
+                <Radio.Item value={delivery} class={radioCircle}>
+                  <Radio.Indicator class={radioDot} />
+                </Radio.Item>
+              </label>
+            )}
+          </For>
+        </Radio.Root>
       </ExampleCard>
       <ExampleCard name="Input" href="/docs/components/input">
         <div class="flex flex-col gap-1">

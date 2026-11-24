@@ -167,6 +167,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/radio";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/radio"), Extract<"default", keyof typeof import("./src/routes/docs/components/radio")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/select";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/select"), Extract<"default", keyof typeof import("./src/routes/docs/components/select")>>>;
@@ -393,6 +399,14 @@ declare module "virtual:file-routes" {
           id: "/components/meter";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/meter"), Extract<"default", keyof typeof import("./src/routes/docs/components/meter")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/radio";
+          id: "/components/radio";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/radio"), Extract<"default", keyof typeof import("./src/routes/docs/components/radio")>>>;
           $$route?: undefined;
           children?: undefined;
         },

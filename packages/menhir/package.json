@@ -129,6 +129,11 @@
       "solid": "./dist/source/progress/index.js",
       "import": "./dist/progress/index.js"
     },
+    "./radio": {
+      "types": "./dist/source/radio/index.d.ts",
+      "solid": "./dist/source/radio/index.js",
+      "import": "./dist/radio/index.js"
+    },
     "./select": {
       "types": "./dist/source/select/index.d.ts",
       "solid": "./dist/source/select/index.js",

@@ -12,9 +12,12 @@
 //   `aria-pressed` or `aria-expanded`, shared by Toggle, Toggle Group and
 //   Collapsible.
 // - rovingFocus.ts: one tab stop among a group's items, with arrow keys
-//   between them, shared by Toggle Group and Tabs.
+//   between them, shared by Toggle Group, Tabs and Radio.
 // - range.ts: the value, attributes and text of a part along a range,
 //   shared by Progress and Meter.
+// - hiddenInput.tsx: the visually hidden checkbox or radio input that is
+//   the form's view of a control whose element is a button, shared by
+//   Switch, Checkbox and Radio.
 // - toggleButton.ts: the own props of a part that is a toggle button
 //   (`aria-pressed` and `data-pressed`), shared by Toggle and Toggle Group.
 // - slot.ts: a value one part registers once mounted, for another part to

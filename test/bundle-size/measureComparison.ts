@@ -6,7 +6,12 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { libraries, totalChecks } from "./comparison.ts";
+import {
+  firstModule,
+  libraries,
+  moduleName,
+  totalChecks,
+} from "./comparison.ts";
 
 const root = import.meta.dirname;
 
@@ -41,7 +46,10 @@ export type ComparedTotal = {
 };
 
 export type ComparedComponent = {
-  /** Such as `@radix-ui/react-switch`. */
+  /**
+   * Such as `@radix-ui/react-switch`, or several modules of one package
+   * joined by " + ", measured together.
+   */
   module: string;
   /** The version of the module's package that was measured. */
   version: string;
@@ -79,9 +87,13 @@ export function measureComparison(): Comparison {
       name: library.name,
       framework: library.framework,
       components: Object.fromEntries(
-        Object.entries(library.components).map(([component, module]) => [
+        Object.entries(library.components).map(([component, modules]) => [
           component,
-          { module, version: packageVersion(module), size: sizeOf(module) },
+          {
+            module: moduleName(modules),
+            version: packageVersion(firstModule(modules)),
+            size: sizeOf(moduleName(modules)),
+          },
         ]),
       ),
       ...(Object.keys(library.components).length > 0 && {

@@ -345,6 +345,29 @@ describe("home page", () => {
     ).toHaveAttribute("href", "/docs/components/checkbox-group");
   });
 
+  test("shows a working Radio, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const group = within(example.getByRole("radiogroup", { name: "Delivery" }));
+    const express = group.getByRole("radio", { name: "Express" });
+    expect(group.getByRole("radio", { name: "Standard" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+    fireEvent.click(express);
+    // The group changes once the click has gone through the hidden input.
+    await new Promise<void>((resolve) => onFlush(resolve));
+    expect(express).toHaveAttribute("aria-checked", "true");
+    expect(group.getByRole("radio", { name: "Standard" })).toHaveAttribute(
+      "aria-checked",
+      "false",
+    );
+    expect(example.getByRole("link", { name: "Radio" })).toHaveAttribute(
+      "href",
+      "/docs/components/radio",
+    );
+  });
+
   test("shows a working Toggle, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
