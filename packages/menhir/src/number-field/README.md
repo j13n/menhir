@@ -224,6 +224,12 @@ type="button" tabindex="-1">` each.
 - **`data-*` attributes**: `data-disabled`, `data-readonly` and
   `data-required` on every part (PLAN.md section 8). A button at its limit
   has none of its own: `:disabled` matches it.
+- **The Input element and the `edited` flag are plain fields of the Root's
+  context**, set by the Input from its ref and on each edit, and read by
+  the Root and the buttons only in event handlers and `onFlush` callbacks,
+  as Select's context holds its Trigger, input and Popup. Not a slot
+  (`core/slot.ts`): a slot makes a mounted part's value reactive for
+  something that renders from it, and nothing renders from these.
 - **A part used outside its Root throws** a descriptive error in
   development builds.
 
@@ -347,6 +353,7 @@ Outside `src`:
 | Switching between controlled and uncontrolled                                   | Warned of by `createControllableSignal` in development, as for every control                                                                                                                                                                                                                                                                                                                            |
 | A form the field joins after it has settled, or a `form` attribute that changes | The `reset` listener goes on the form the hidden input belongs to once it has settled, as Input's and Switch's do                                                                                                                                                                                                                                                                                       |
 | Implicit submission of a form whose only field is a Number Field                | The hidden number input counts as a second field, which blocks it, as in a browser; a submit button submits (Decisions)                                                                                                                                                                                                                                                                                 |
+| An app's value that changes while an input method composes in the Input         | The new value's text is written at once, over the text being composed, which ends the composition. Rare in a field of digits, and the app's value is what it asked for; Input waits for `compositionend` (about 30 B here), if anyone reports it                                                                                                                                                        |
 | Composition in the browser's input methods, in the tests                        | No test runner drives an input method; the tests fire `keydown` with `isComposing` as an input method does                                                                                                                                                                                                                                                                                              |
 
 ## Browsers and screen readers

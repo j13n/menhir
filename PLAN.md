@@ -499,6 +499,7 @@ Decided on 2026-11-20 (#12), worked out on Switch (#15), the first component. Ge
   - **The buttons never take focus:** they cancel `pointerdown`, a mouse press focuses the Input and a touch focuses nothing. A pointer press steps, then repeats after 400 ms every 60 ms until released or at the limit; a click with `detail` 0, from a screen reader or voice control, steps once.
   - **It joins a Field with the Root as `Field.Control`'s `render`**, as a Radio does: the Root hands the Field's `id`, `aria-describedby` and `aria-invalid` to the Input, generates the Input's `id` otherwise, so the Input takes none ("Generated ids belong to the root"), and its `disabled` reaches every part.
   - **The Input's text is the `value` attribute**, bound as `defaultValue`, and written as a property only when the value changes: a bound `value` is written again whenever another attribute of the element changes, such as a Field's `aria-invalid`, which threw away what the user had typed (Solid's `UNCOMMITTED_INPUT_OVERWRITTEN`, found with this component).
+  - **Elements a part needs only in its handlers are plain fields of the Root's context**, as Select's Trigger, input and Popup are: the Input sets `input` from its ref and an `edited` flag on each edit, and the Root and the buttons read them in event handlers and `onFlush` callbacks. Not a slot (`core/slot.ts`), which makes a mounted part's value reactive for something that renders from it; nothing renders from these (decided on review, #149).
 
 The helper, built in #13: `core/renderElement.tsx`.
 
