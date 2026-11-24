@@ -9,6 +9,7 @@ import ComponentPage, { type ComponentPageProps } from "./ComponentPage";
 const switchPage: ComponentPageProps = {
   slug: "switch",
   name: "Switch",
+  category: "Inputs",
   description: "A control that turns a setting on or off.",
   example: {
     css: {

@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const formDoc: ComponentDoc = {
   slug: "form",
   name: "Form",
+  category: "Forms",
   description:
     "A form that shows errors in its Fields and blocks a submission while a control is invalid. It renders a native <form>, so a router's form action and a submission made before the page hydrates work as on any form. Errors from a server or a schema go in as errors, keyed by each Field's name, and show at once. A blocked submission focuses the first invalid control and shows every Field's error in place of the browser's bubble. Form holds no values: they stay in the controls, read with FormData, or in your own state.",
   anatomy: tsx`<Form>

@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const progressDoc: ComponentDoc = {
   slug: "progress",
   name: "Progress",
+  category: "Display",
   description:
     'Shows how far a task that takes a while has got, such as an upload. It renders a div with role="progressbar" and the value in aria-valuenow, aria-valuetext and the CSS custom property --progress, and draws nothing: size the indicator with --progress. A value of null is indeterminate, for a task whose progress is unknown. The role requires a name: give it aria-label, or aria-labelledby naming an element. When it shows a region loading, set aria-busy="true" on that region until it has loaded, and point the region\'s aria-describedby at the progress bar.',
   anatomy: tsx`<Progress.Root>

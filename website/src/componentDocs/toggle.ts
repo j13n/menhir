@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const toggleDoc: ComponentDoc = {
   slug: "toggle",
   name: "Toggle",
+  category: "Inputs",
   description:
     "A button that stays pressed until it is pressed again, such as Bold in a text editor. It renders a native button with aria-pressed. Keep its label the same in both states: a Mute toggle stays Mute while pressed, and screen readers announce it as pressed.",
   anatomy: tsx`<Toggle.Root />`,

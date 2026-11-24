@@ -2,4 +2,14 @@
 declare module "virtual:component-list" {
   /** Every component with a page, in alphabetical order by name. */
   export const components: readonly { slug: string; name: string }[];
+
+  /**
+   * Every component with a page, grouped by category in the order of
+   * src/componentDocs/categories.ts, in alphabetical order by name within
+   * each. A category with no component is left out.
+   */
+  export const componentGroups: readonly {
+    category: import("./componentDocs/categories").ComponentCategory;
+    components: readonly { slug: string; name: string }[];
+  }[];
 }

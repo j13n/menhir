@@ -1,6 +1,8 @@
 import { render, within } from "@solidjs/testing-library";
 import { describe, expect, test } from "vitest";
 
+import { componentCategories } from "../componentDocs/categories";
+import { componentDocs } from "../componentDocs/index";
 import DocsSidebar from "./DocsSidebar";
 
 const links = (list: HTMLElement) =>
@@ -31,22 +33,41 @@ describe("<DocsSidebar />", () => {
     ]);
   });
 
-  test("links to the components overview, then every component page in alphabetical order, under its own heading", () => {
+  test("links to the components overview, then every component page by category, in alphabetical order within each", () => {
     const { getByRole } = render(() => <DocsSidebar />);
     const nav = within(getByRole("navigation", { name: "Docs" }));
-    const heading = nav.getByRole("heading", { name: "Components" });
+    const heading = nav.getByRole("heading", { level: 2, name: "Components" });
     expect(within(heading).queryByRole("link")).toBeNull();
+    expect(links(nav.getByRole("list", { name: "Components" }))).toEqual([
+      ["Overview", "/docs/components"],
+    ]);
 
-    const [overview, ...components] = links(
-      nav.getByRole("list", { name: "Components" }),
+    const categories = nav
+      .getAllByRole("heading", { level: 3 })
+      .map((heading) => heading.textContent!);
+    expect(categories).toEqual(
+      componentCategories.filter((category) =>
+        componentDocs.some((doc) => doc.category === category),
+      ),
     );
-    expect(overview).toEqual(["Overview", "/docs/components"]);
-    expect(components.map(([, href]) => href).sort()).toEqual(
-      componentPages.sort(),
-    );
-    const names = components.map(([name]) => name!);
-    expect(names).toEqual(names.toSorted());
-    expect(components).toContainEqual(["Switch", "/docs/components/switch"]);
+
+    const linked: string[] = [];
+    for (const category of categories) {
+      const group = links(nav.getByRole("list", { name: category }));
+      const names = group.map(([name]) => name!);
+      expect(names).toEqual(names.toSorted());
+      for (const [name, href] of group) {
+        const doc = componentDocs.find((doc) => doc.name === name)!;
+        expect(doc.category).toBe(category);
+        expect(href).toBe(`/docs/components/${doc.slug}`);
+        linked.push(href!);
+      }
+    }
+    expect(linked.sort()).toEqual(componentPages.sort());
+    expect(links(nav.getByRole("list", { name: "Inputs" }))).toContainEqual([
+      "Switch",
+      "/docs/components/switch",
+    ]);
   });
 
   test("links to every utility page under its own heading", () => {

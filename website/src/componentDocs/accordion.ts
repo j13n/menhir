@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const accordionDoc: ComponentDoc = {
   slug: "accordion",
   name: "Accordion",
+  category: "Disclosure",
   description:
     "A stack of headings, each a button that shows and hides its own section, such as the questions of an FAQ: the WAI-ARIA accordion pattern. Each Trigger is a native button with aria-expanded, inside a heading, and each Panel is a region named by its Trigger. By default one section is open at a time; with multiple, each opens on its own. A closed Panel has the hidden attribute, so its content stays in the page, keeping its state, but is not shown or read out.",
   anatomy: tsx`<Accordion.Root>

@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const toggleGroupDoc: ComponentDoc = {
   slug: "toggle-group",
   name: "Toggle Group",
+  category: "Inputs",
   description:
     'A set of toggle buttons that share one value, such as the text alignment buttons of an editor. By default one item is pressed at a time; with multiple, each item presses on its own. The group is one tab stop: arrow keys move focus between its items, and Enter or Space presses one. It renders role="group"; name it with aria-label or aria-labelledby. A group that is a whole toolbar, of three controls or more, passes role="toolbar", and then also gets aria-orientation when vertical.',
   anatomy: tsx`<ToggleGroup.Root>

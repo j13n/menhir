@@ -11,6 +11,7 @@ const render = (what: string) => ({
 export const selectDoc: ComponentDoc = {
   slug: "select",
   name: "Select",
+  category: "Pickers",
   description:
     'A button that shows one value out of a list and opens the list to change it: the WAI-ARIA select-only combobox with a listbox. A form control: a visually hidden input beside the Trigger submits the value under name, blocks a submission while required and empty, follows a form reset, and takes a value the browser fills in. The Popup is a popover="auto" element, so the browser puts it in the top layer, above every z-index, and closes it on Escape or a press outside; there is no portal. Focus stays on the Trigger, which names the active item in aria-activedescendant: the arrow keys, Home, End, Page Up and Page Down move through the items, and typing moves to the next item that starts with what was typed, on a closed Select too, which opens. Enter, Space, Tab or a click selects an item and closes the list; Escape closes it and keeps the value. The active item has data-active and the selected one data-selected. Menhir places the Popup with Floating UI, below the Trigger and aligned to its start, flipping it when it would leave the viewport, and keeps it shown until its exit animation has ended. It writes --anchor-width and --available-height on the Popup: use them for its min-width and max-height. Name the Select with a <label> for the Trigger.',
   anatomy: tsx`<label for="fruit" />

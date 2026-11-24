@@ -11,6 +11,7 @@ const render = (what: string) => ({
 export const dialogDoc: ComponentDoc = {
   slug: "dialog",
   name: "Dialog",
+  category: "Overlays",
   description:
     "A window over the page that the user deals with before going back to it, such as a form or a confirmation: the WAI-ARIA modal dialog pattern. The Popup is a native <dialog> opened with showModal(), so the browser puts it in the top layer, above every z-index, makes the rest of the page inert and closes it on Escape; there is no portal. Menhir adds what the browser leaves out: Tab and Shift+Tab stay inside, a press on the backdrop closes it, the page behind stops scrolling, and it stays shown until its exit animation has ended. Style the backdrop with ::backdrop, such as a blur with backdrop-filter, or Tailwind's backdrop: variant (backdrop:backdrop-blur-xs). A dialog open by default is rendered closed on the server and opens once the page has hydrated, since server HTML cannot open a modal dialog.",
   anatomy: tsx`<Dialog.Root>

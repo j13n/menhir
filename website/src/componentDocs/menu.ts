@@ -43,6 +43,7 @@ const itemProps = [
 export const menuDoc: ComponentDoc = {
   slug: "menu",
   name: "Menu",
+  category: "Menus & navigation",
   description:
     'A list of actions or options that a button opens, with submenus: the WAI-ARIA menu button and menu patterns. The Popup is a popover="auto" element, so the browser puts it in the top layer, above every z-index, and closes it on Escape or a press outside; there is no portal. Focus goes to the first item when it opens; the arrow keys, Home and End move through the items, wrapping at the ends, and typing a character moves to the next item that starts with it. Activating an item calls its onClick and closes every open menu, and focus returns to the Trigger. A submenu opens when the pointer rests on its trigger, or by Right Arrow, Enter or Space, and it stays open while the pointer crosses to it diagonally, over the items in between. The active item has data-active. Menhir places each Popup with Floating UI, below the Trigger and aligned to its start, or at the inline end of a submenu\'s trigger, flipping it when it would leave the viewport, and keeps it shown until its exit animation has ended. Use an <hr> as a separator. For site navigation, use Navigation Menu: a menu is for actions in an application.',
   anatomy: tsx`<Menu.Root>

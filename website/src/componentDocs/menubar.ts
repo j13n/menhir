@@ -14,6 +14,7 @@ const menuRoot = menuDoc.api.find((part) => part.part === "Root")!;
 export const menubarDoc: ComponentDoc = {
   slug: "menubar",
   name: "Menubar",
+  category: "Menus & navigation",
   description:
     "A row of menus that stays on screen, such as File, Edit and View across the top of an editor: the WAI-ARIA menubar pattern. A menubar is for an application's commands; for links to a site's pages, use Navigation Menu, as WAI-ARIA advises. The bar is one tab stop, and the arrow keys, Home, End and typed characters move along it, wrapping at the ends. Each menu is a Menu, opened from an item of the bar, so its items, submenus, keys and typeahead are Menu's, and an app with both components pays for them once. A press, Down Arrow, Enter or Space opens a menu with focus on its first item. Once one menu is open, moving along the bar, by a key or the pointer, opens the next one with focus left on its item in the bar, and Right or Left Arrow inside a menu does the same. Escape closes the open menu and returns focus to its item in the bar; Tab and Shift+Tab close it and leave the bar. Name the bar with aria-label.",
   anatomy: tsx`<Menubar.Root>

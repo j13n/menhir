@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const switchDoc: ComponentDoc = {
   slug: "switch",
   name: "Switch",
+  category: "Inputs",
   description:
     "A control that turns a setting on or off. It renders a native button with the switch role, and a hidden checkbox beside it so that forms submit its value.",
   anatomy: tsx`<Switch.Root>

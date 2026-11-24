@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const checkboxGroupDoc: ComponentDoc = {
   slug: "checkbox-group",
   name: "Checkbox Group",
+  category: "Inputs",
   description:
     "Checkboxes that hold one list of values, with an optional parent checkbox that checks all or none. The parent is mixed while some are checked. It renders a native <fieldset>, named by its <legend>, and each box is a Checkbox: the form receives one entry per checked box under the group's name. Tab moves between the boxes, and Space checks one, as on a Checkbox.",
   anatomy: tsx`<CheckboxGroup.Root>

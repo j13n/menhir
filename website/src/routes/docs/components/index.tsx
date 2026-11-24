@@ -1,8 +1,10 @@
+import { For } from "solid-js";
+import { componentGroups } from "virtual:component-list";
 import { sizes } from "virtual:menhir-sizes";
 
+import { categoryId } from "../../../componentDocs/categories";
 import PageHead from "../../../components/PageHead";
 import SizeTable from "../../../components/SizeTable";
-import { isUtility } from "../../../utilities";
 
 export default function Components() {
   return (
@@ -17,7 +19,25 @@ export default function Components() {
         app that uses every part of it, minified and gzipped, with Solid left
         out.
       </p>
-      <SizeTable sizes={sizes.filter((row) => !isUtility(row.entryPoint))} />
+      <For each={componentGroups}>
+        {(group) => {
+          const id = categoryId(group.category);
+          const entryPoints = group.components.map(
+            ({ slug }) => `menhir/${slug}`,
+          );
+          return (
+            <section aria-labelledby={id}>
+              <h2 id={id}>{group.category}</h2>
+              <SizeTable
+                labelledBy={id}
+                sizes={sizes.filter((row) =>
+                  entryPoints.includes(row.entryPoint),
+                )}
+              />
+            </section>
+          );
+        }}
+      </For>
     </main>
   );
 }

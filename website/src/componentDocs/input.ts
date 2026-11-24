@@ -4,6 +4,7 @@ import type { ComponentDoc } from "./types";
 export const inputDoc: ComponentDoc = {
   slug: "input",
   name: "Input",
+  category: "Inputs",
   description:
     "A text input whose value you can control: a native <input> with value, defaultValue and onValueChange. Controlled, it shows your value and nothing else: an edit you decline is undone, a form reset asks you, and nothing is written while an input method composes. Uncontrolled, the value stays in the input, and a reset puts defaultValue back. In a form it submits its text under its name, and the browser validates it.",
   anatomy: tsx`<Input.Root />`,
