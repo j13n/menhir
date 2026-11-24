@@ -25,8 +25,12 @@ checkbox, so a mixed checkbox whose `checked` is false asks to be checked.
 Only Space toggles it. The pattern names no other key, and a native checkbox
 does not toggle on Enter, so the button cancels Enter.
 
-Root's form behaviour is a copy of Switch's: components do not import each
-other, and the shared part moves to `core` once Radio shows its shape.
+Root's form behaviour is a copy of Switch's: Switch does not import
+Checkbox, and the shared part moves to `core` once Radio shows its shape.
+Checkbox Group builds on Checkbox (`simpleBases` in
+`packages/menhir/layers.ts`, #146): its Item and Parent render
+`Checkbox.Root`, which reads nothing of the group, so this entry point
+bundles none of it.
 
 ## In a Field
 
@@ -154,9 +158,9 @@ part conventions. "A" marks a case the WAI-ARIA pattern requires.
 
 | Case                                                                            | Reason                                                                                                                                                                       |
 | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Cycling a mixed checkbox through a remembered combination of its group          | The group's state is the consumer's; the checkbox reports the requested `checked` value. Checkbox Group, which could own it, is tracked with the Phase 4 form components     |
+| Cycling a mixed checkbox through a remembered combination of its group          | The group's state is the consumer's; the checkbox reports the requested `checked` value. Checkbox Group's Parent owns it (`src/checkbox-group/README.md`, #146)              |
 | `aria-controls` from a parent checkbox to its group                             | The consumer passes it through; the checkbox does not know its group                                                                                                         |
-| The `group` role and its label around a set of checkboxes                       | A `<fieldset>` and `<legend>` give both natively; Checkbox Group is Phase 4                                                                                                  |
+| The `group` role and its label around a set of checkboxes                       | A `<fieldset>` and `<legend>` give both natively; Checkbox Group renders them around a list of values (#146)                                                                 |
 | `indeterminate` on the hidden input                                             | The input is hidden from sight and from assistive technology, and a form submits by `checked` alone                                                                          |
 | Implicit form submission on Enter, as some browsers do for a native checkbox    | Not in the pattern; Enter does nothing                                                                                                                                       |
 | Generated ids for the root and for ids derived from it                          | No generated ids: the button takes the consumer's `id`, or a Field's, and no part links to another                                                                           |

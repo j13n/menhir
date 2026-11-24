@@ -299,6 +299,25 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Checkbox Group, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const group = within(example.getByRole("group", { name: "Toppings" }));
+    const parent = group.getByRole("checkbox", { name: "All toppings" });
+    expect(parent).toHaveAttribute("aria-checked", "mixed");
+    fireEvent.click(parent);
+    // The group changes once the click has gone through the hidden input.
+    await new Promise<void>((resolve) => onFlush(resolve));
+    expect(parent).toHaveAttribute("aria-checked", "true");
+    expect(group.getByRole("checkbox", { name: "Mushrooms" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+    expect(
+      example.getByRole("link", { name: "Checkbox Group" }),
+    ).toHaveAttribute("href", "/docs/components/checkbox-group");
+  });
+
   test("shows a working Toggle, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));

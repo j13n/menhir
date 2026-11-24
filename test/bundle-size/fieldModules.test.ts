@@ -21,12 +21,15 @@ async function findFieldModules(specifier: string): Promise<string[]> {
 // Fields through a context in `core`, so it imports none of Field either
 // (src/form/README.md; #144).
 describe("Field", () => {
-  it.each(["menhir/switch", "menhir/checkbox", "menhir/input", "menhir/form"])(
-    "is not in an app that imports %s alone",
-    async (entryPoint) => {
-      expect(await findFieldModules(entryPoint)).toEqual([]);
-    },
-  );
+  it.each([
+    "menhir/switch",
+    "menhir/checkbox",
+    "menhir/checkbox-group",
+    "menhir/input",
+    "menhir/form",
+  ])("is not in an app that imports %s alone", async (entryPoint) => {
+    expect(await findFieldModules(entryPoint)).toEqual([]);
+  });
 
   it("is found in an app that imports menhir/field, so the check can fail", async () => {
     expect(await findFieldModules("menhir/field")).not.toEqual([]);

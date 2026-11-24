@@ -29,6 +29,16 @@ export const popupBases: Record<string, string> = {
   menubar: "menu",
 };
 
+// The simple component each simple component builds on, by folder in src:
+// the one simple component it may import besides `core` (PLAN.md section 6,
+// rule 4). Checkbox Group renders Checkbox's Root and re-exports its
+// Indicator (#146). oxlint.config.ts allows these imports and no others
+// between simple components, and the base reads nothing of the component
+// built on it, so an app with the base alone bundles none of it.
+export const simpleBases: Record<string, string> = {
+  "checkbox-group": "checkbox",
+};
+
 // The modules of the `floating` layer (PLAN.md section 6), one folder each
 // in src/floating, as src/floating/README.md lists them. A popup imports a
 // module from its folder directly. test/bundle-size/popupModules.ts names

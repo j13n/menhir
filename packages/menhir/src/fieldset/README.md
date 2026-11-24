@@ -111,9 +111,9 @@ legend names the group.
 - **Which control is invalid:** the first `input`, `select` or `textarea`
   in the group that the browser finds invalid, as for any Field. For radios
   with `required`, every radio of the name is invalid until one is chosen.
-  A rule the browser has no constraint for, such as "at least one" of a set
+  A rule the browser has no constraint for, such as "at most two" of a set
   of checkboxes, is an error from outside: a memo the app passes as the
-  Field's `error`.
+  Field's `error`. "At least one" is Checkbox Group's `required` (#146).
 - **Checkbox Group (#146) and Radio (#147) render their own root**, not a
   Fieldset part, since there is none. Each joins a Field as its Control, as
   the fieldset does here, so its root gets the group's description, error

@@ -2,6 +2,7 @@ import { Accordion } from "menhir/accordion";
 import { AlertDialog } from "menhir/alert-dialog";
 import { Autocomplete } from "menhir/autocomplete";
 import { Checkbox } from "menhir/checkbox";
+import { CheckboxGroup } from "menhir/checkbox-group";
 import { Collapsible } from "menhir/collapsible";
 import { Combobox, includesText } from "menhir/combobox";
 import { Dialog } from "menhir/dialog";
@@ -65,6 +66,13 @@ const exampleCard =
 
 const cities = ["Lisbon", "London", "Madrid", "Oslo", "Paris", "Rome"];
 const searches = ["menhir", "megalith", "monolith", "standing stone"];
+const toppings = ["Mushrooms", "Olives"];
+// The Checkbox Group's boxes, styled as the Checkbox above, with a dash
+// while partly checked.
+const checkboxBox =
+  "inline-flex size-6 shrink-0 items-center justify-center rounded-md border border-stone-400 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-checked:border-transparent data-checked:bg-stone-800 data-indeterminate:border-transparent data-indeterminate:bg-stone-800 dark:border-stone-500 dark:text-stone-900 dark:data-checked:bg-stone-300 dark:data-indeterminate:bg-stone-300";
+const checkboxMark =
+  "hidden border-0 border-current data-checked:block data-checked:h-3 data-checked:w-1.5 data-checked:-translate-y-px data-checked:rotate-45 data-checked:border-r-2 data-checked:border-b-2 data-indeterminate:block data-indeterminate:w-2.5 data-indeterminate:border-b-2";
 
 export default function Home() {
   // The Combobox's list, filtered by what the user typed.
@@ -236,6 +244,33 @@ export default function Home() {
               </Field.Root>
               <figcaption class="text-sm">
                 <a href="/docs/components/field#fieldset">Fieldset</a>
+              </figcaption>
+            </figure>
+            <figure class={exampleCard}>
+              <CheckboxGroup.Root
+                defaultValue={["Olives"]}
+                class="flex flex-col gap-2"
+              >
+                <legend class="mb-1">Toppings</legend>
+                <label class="flex items-center justify-between gap-4">
+                  All toppings
+                  <CheckboxGroup.Parent values={toppings} class={checkboxBox}>
+                    <CheckboxGroup.Indicator class={checkboxMark} />
+                  </CheckboxGroup.Parent>
+                </label>
+                <For each={toppings}>
+                  {(topping) => (
+                    <label class="flex items-center justify-between gap-4 pl-4">
+                      {topping}
+                      <CheckboxGroup.Item value={topping} class={checkboxBox}>
+                        <CheckboxGroup.Indicator class={checkboxMark} />
+                      </CheckboxGroup.Item>
+                    </label>
+                  )}
+                </For>
+              </CheckboxGroup.Root>
+              <figcaption class="text-sm">
+                <a href="/docs/components/checkbox-group">Checkbox Group</a>
               </figcaption>
             </figure>
             <figure class={exampleCard}>
