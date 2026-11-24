@@ -149,7 +149,7 @@ A button inside a popup that closes it.
 _Avoid_: Dismiss button, cancel (as the part's name)
 
 **Item**:
-An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, a select's or a combobox's entry, which is selected, or an autocomplete's suggestion, which is accepted. A select's, a combobox's or an autocomplete's Item has the `option` role. Outside popups, one control of a group that holds one value: a Toggle Group's toggle button, a Checkbox Group's checkbox.
+An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, a select's or a combobox's entry, which is selected, or an autocomplete's suggestion, which is accepted. A select's, a combobox's or an autocomplete's Item has the `option` role. Outside popups, one control of a group that holds one value: a Toggle Group's toggle button, a Checkbox Group's checkbox, a Radio's radio button.
 _Avoid_: Option (as the part's name), entry, row, menu entry
 
 **List** (the part):
@@ -185,6 +185,10 @@ _Avoid_: Checkbox list, multi-checkbox, checkboxes (for the component)
 **Parent checkbox**:
 A checkbox over some of a Checkbox Group's boxes, its `Parent` part: checked while all of them are, mixed while some are. A click checks all, unchecks all, or brings back the combination checked when it was last mixed.
 _Avoid_: Select all, master checkbox, tri-state checkbox (for the part)
+
+**Radio**:
+A group of radio buttons that holds one value, `menhir/radio` (#147): a `<fieldset role="radiogroup">` around Items, each a radio button with a `value`, checked while the group's value is its own. The form receives the checked value under the group's name.
+_Avoid_: Radio group (as the component's name), RadioGroup, radio button (for the whole)
 
 **Touched**:
 A Field the user has been through: focus has left it, its control has changed, or a submission of its form was attempted. A form reset clears it. Its error shows only once it is touched.

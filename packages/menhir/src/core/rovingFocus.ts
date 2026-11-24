@@ -29,7 +29,7 @@ const byPosition = (a: RovingItem, b: RovingItem) =>
 /**
  * One tab stop among a group's items, with arrow keys between them (roving
  * tabindex, PLAN.md section 8, "A group of items is one tab stop"): Toggle
- * Group's items, Tabs' tabs. Pass the options as getters and functions, so
+ * Group's items, Tabs' tabs, a Radio's radios. Pass the options as getters and functions, so
  * they are read where they are used:
  *
  * ```ts

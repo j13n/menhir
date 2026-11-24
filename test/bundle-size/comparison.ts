@@ -6,8 +6,9 @@ import {
 /**
  * Other component libraries, for the comparison on the docs site's
  * bundle-size page. Each maps a component of menhir, by the subpath of its
- * entry point, to the module of the library's own version of it. A component
- * the library does not have is left out.
+ * entry point, to the module of the library's own version of it, or to the
+ * modules it is split into. A component the library does not have is left
+ * out.
  */
 export type Library = {
   name: string;
@@ -25,9 +26,27 @@ export type Library = {
    * `process.env.NODE_ENV`, which Rolldown sets to `"production"` itself.
    */
   production?: ProductionConstants;
-  /** Such as `{ switch: "@radix-ui/react-switch" }`. */
-  components: Record<string, string>;
+  /**
+   * Such as `{ switch: "@radix-ui/react-switch" }`. A component the library
+   * splits into several modules of one package maps to all of them, which
+   * are measured together, such as Base UI's Radio and RadioGroup.
+   */
+  components: Record<string, string | string[]>;
 };
+
+/**
+ * The name of a component's size check, and of what the docs site shows
+ * as its module: the module, or its modules joined by " + ".
+ */
+export const moduleName = (modules: string | string[]): string =>
+  typeof modules === "string" ? modules : modules.join(" + ");
+
+/**
+ * The package of a component's module, or of its modules, which are of one
+ * package: its first module, for the version measured.
+ */
+export const firstModule = (modules: string | string[]): string =>
+  typeof modules === "string" ? modules : modules[0]!;
 
 export const libraries: Library[] = [
   {
@@ -53,6 +72,8 @@ export const libraries: Library[] = [
       "navigation-menu": "@base-ui/react/navigation-menu",
       popover: "@base-ui/react/popover",
       progress: "@base-ui/react/progress",
+      // Its Radio is one radio, and its RadioGroup the group around them.
+      radio: ["@base-ui/react/radio-group", "@base-ui/react/radio"],
       select: "@base-ui/react/select",
       separator: "@base-ui/react/separator",
       switch: "@base-ui/react/switch",
@@ -79,6 +100,7 @@ export const libraries: Library[] = [
       "navigation-menu": "@radix-ui/react-navigation-menu",
       popover: "@radix-ui/react-popover",
       progress: "@radix-ui/react-progress",
+      radio: "@radix-ui/react-radio-group",
       select: "@radix-ui/react-select",
       separator: "@radix-ui/react-separator",
       switch: "@radix-ui/react-switch",
@@ -107,6 +129,7 @@ export const libraries: Library[] = [
       "navigation-menu": "@kobalte/core/navigation-menu",
       popover: "@kobalte/core/popover",
       progress: "@kobalte/core/progress",
+      radio: "@kobalte/core/radio-group",
       select: "@kobalte/core/select",
       separator: "@kobalte/core/separator",
       switch: "@kobalte/core/switch",

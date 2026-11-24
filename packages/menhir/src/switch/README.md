@@ -149,11 +149,16 @@ part conventions. "A" marks a case the WAI-ARIA pattern requires.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-23, after #143.
+2026-11-24, after #147.
 
 | App             | Size    | Budget |
 | --------------- | ------- | ------ |
-| `menhir/switch` | 1,623 B | 1.9 kB |
+| `menhir/switch` | 1,651 B | 1.9 kB |
+
+1,623 B before #147, which moved the hidden input to `core`
+(`core/hiddenInput.tsx`), shared with Radio: Switch alone pays about 30 B
+for the call, and an app with Radio pays for the input once
+(`src/radio/README.md`, "Size").
 
 No growth from #143: Switch joins a Field with no change to its code, and
 the size is the one measured before and after Field (#141).

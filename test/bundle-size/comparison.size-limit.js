@@ -2,7 +2,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { comparedComponents, libraries, totalChecks } from "./comparison.ts";
+import {
+  comparedComponents,
+  libraries,
+  moduleName,
+  totalChecks,
+} from "./comparison.ts";
 import { inProduction, solidProduction } from "./productionConstants.ts";
 
 const file = (module) => fileURLToPath(import.meta.resolve(module));
@@ -50,16 +55,20 @@ const menhirTogether = (name, components) => ({
 // measured as .size-limit.js measures menhir's entry points, with the
 // library's framework left out instead of Solid, and as its production
 // build too (`library.production`). No budgets: these sizes are
-// shown, not enforced. The name of a check is the module it measures.
+// shown, not enforced. The name of a check is the module it measures, or
+// the modules it imports together, joined by " + " (`moduleName`).
 //
 // Then the totals (`totalChecks`): each library's components imported
 // together, and the same components of menhir, so that code the components
 // share is counted once.
 export default [
   ...libraries.flatMap((library) =>
-    Object.values(library.components).map((module) => ({
-      name: module,
-      import: { [file(module)]: "*" },
+    Object.values(library.components).map((modules) => ({
+      name: moduleName(modules),
+      import:
+        typeof modules === "string"
+          ? { [file(modules)]: "*" }
+          : together(moduleName(modules), modules),
       gzip: true,
       ignore: library.ignore,
       ...production(library),
@@ -73,7 +82,7 @@ export default [
         name: totalChecks.library(library),
         import: together(
           totalChecks.library(library),
-          Object.values(library.components),
+          Object.values(library.components).flat(),
         ),
         gzip: true,
         ignore: library.ignore,

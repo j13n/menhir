@@ -267,15 +267,17 @@ be heard in VoiceOver, NVDA and JAWS.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-24.
+2026-11-24, after #147.
 
 | App                     | Size    | Budget |
 | ----------------------- | ------- | ------ |
-| `menhir/checkbox-group` | 2,338 B | 2.4 kB |
-| `menhir/checkbox`       | 1,677 B | 2 kB   |
+| `menhir/checkbox-group` | 2,391 B | 2.4 kB |
+| `menhir/checkbox`       | 1,708 B | 2 kB   |
 
-The group is 661 B over Checkbox, whose Root and Indicator it bundles, so
-an app with both pays for Checkbox once. An app that renders no Parent
+The group is 683 B over Checkbox, whose Root and Indicator it bundles, so
+an app with both pays for Checkbox once. Both grew with #147, which moved
+Checkbox's hidden input to `core` (2,338 B and 1,677 B before;
+`src/radio/README.md`, "Size"). An app that renders no Parent
 bundles about 180 B less: 2,071 B for Root, Item and Indicator against
 2,252 B with the Parent, each measured from an app that uses those parts
 alone.

@@ -69,7 +69,9 @@ The docs site's bundle-size page shows each component's size beside the same
 component in other libraries. `comparison.ts` lists the libraries: for each,
 its framework, the framework's packages, and the module of its version of each
 menhir component, by the subpath of menhir's entry point. A component the
-library does not have is left out.
+library does not have is left out. A component the library splits into
+several modules of one package maps to all of them, measured together and
+shown joined by " + ": Base UI's Radio is its `radio-group` and `radio`.
 
 `comparison.size-limit.js` measures each of those modules as `.size-limit.js`
 measures menhir: an app that imports it and uses every part of it, bundled
