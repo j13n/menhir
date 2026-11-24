@@ -1,5 +1,13 @@
 # menhir
 
+## 0.1.10
+
+### Patch Changes
+
+- f45abd9: Field: a submission or an event that leaves a field's validity as it was no longer re-runs its Errors and the control's aria-invalid.
+- e96895c: Input: an Input that a form reset removes, such as a list row the app's onReset drops, no longer calls onValueChange and writes its row back.
+- e96895c: Add Form, in menhir/form: a form that shows errors from a server or a schema in its Fields by name, blocks a submission while a control is invalid and focuses it, and holds no values. issuesToErrors, in menhir/form/standard-schema, turns a schema's issues into its errors.
+
 ## 0.1.9
 
 ### Patch Changes
