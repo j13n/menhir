@@ -50,12 +50,25 @@ export const docsSections: DocsSection[] = [
 const link =
   "block rounded px-3 py-1.5 text-stone-600 no-underline hover:bg-stone-200/60 hover:text-stone-950 aria-[current=page]:bg-stone-200/60 aria-[current=page]:font-medium aria-[current=page]:text-stone-950 dark:text-stone-400 dark:hover:bg-stone-900 dark:hover:text-white dark:aria-[current=page]:bg-stone-900 dark:aria-[current=page]:text-white";
 
-/** A list of links, named by the heading `labelledBy` points at, if any. */
-function LinkList(props: { links: DocsLink[]; labelledBy?: string }) {
+/**
+ * A list of links, named by the heading `labelledBy` points at, if any. A
+ * nested list, a group's, is indented behind a rule, so that its links read
+ * as under its heading.
+ */
+function LinkList(props: {
+  links: DocsLink[];
+  labelledBy?: string;
+  nested?: boolean;
+}) {
   return (
     <ul
       aria-labelledby={props.labelledBy}
-      class="m-0 flex list-none flex-col gap-1 p-0"
+      class={[
+        "m-0 flex list-none flex-col gap-1",
+        props.nested
+          ? "ml-3 border-l border-stone-200 py-0 pr-0 pl-2 dark:border-stone-800"
+          : "p-0",
+      ]}
     >
       <For each={props.links}>
         {(page) => (
@@ -103,11 +116,15 @@ export default function DocsSidebar() {
                     <>
                       <h3
                         id={groupId}
-                        class="m-0 mt-4 mb-1 px-3 text-xs font-medium text-stone-500 dark:text-stone-400"
+                        class="m-0 mt-5 mb-1.5 px-3 text-xs font-semibold text-stone-900 dark:text-stone-100"
                       >
                         {group.title}
                       </h3>
-                      <LinkList links={group.links} labelledBy={groupId} />
+                      <LinkList
+                        links={group.links}
+                        labelledBy={groupId}
+                        nested
+                      />
                     </>
                   );
                 }}
