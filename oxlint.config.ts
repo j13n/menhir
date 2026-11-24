@@ -9,6 +9,7 @@ import solidV2 from "eslint-plugin-solid/configs/v2";
 import {
   popupBases,
   popupComponents as popups,
+  simpleBases,
 } from "./packages/menhir/layers.ts";
 
 const library = "packages/menhir/src/**";
@@ -41,7 +42,7 @@ export default defineConfig({
         pattern: `src/{${popups.join(",")}}`,
         capture: ["name"],
       },
-      { type: "simple", pattern: "src/*" },
+      { type: "simple", pattern: "src/*", capture: ["name"] },
     ],
     "boundaries/files": [{ category: "test", pattern: "**/*.test.{ts,tsx}" }],
   },
@@ -88,6 +89,16 @@ export default defineConfig({
                 from: { element: { type: "simple" } },
                 allow: { to: { element: { type: "core" } } },
               },
+              // A simple component that builds on another imports that one
+              // too, as Checkbox Group imports Checkbox's parts (simpleBases).
+              ...Object.entries(simpleBases).map(([component, base]) => ({
+                from: {
+                  element: { type: "simple", captured: { name: component } },
+                },
+                allow: {
+                  to: { element: { type: "simple", captured: { name: base } } },
+                },
+              })),
               {
                 from: { element: { type: "popup" } },
                 allow: { to: { element: { types: ["core", "floating"] } } },

@@ -57,6 +57,11 @@ describe("lint", () => {
       "switch/importsFloatingUi.ts": ["boundaries(dependencies)"],
       "switch/importsToggle.ts": ["boundaries(dependencies)"],
       "switch/importsRootModule.ts": ["boundaries(dependencies)"],
+      // A simple component imports the one it builds on, and no other:
+      // Checkbox Group imports Checkbox, not Switch, and Checkbox does not
+      // import it back.
+      "checkbox-group/importsSwitch.ts": ["boundaries(dependencies)"],
+      "checkbox/importsCheckboxGroup.ts": ["boundaries(dependencies)"],
       // A popup component imports core and floating, not @floating-ui/dom.
       "dialog/importsFloatingUi.ts": ["boundaries(dependencies)"],
       "dialog/importsSwitch.ts": ["boundaries(dependencies)"],

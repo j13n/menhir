@@ -44,6 +44,11 @@
       "solid": "./dist/source/checkbox/index.js",
       "import": "./dist/checkbox/index.js"
     },
+    "./checkbox-group": {
+      "types": "./dist/source/checkbox-group/index.d.ts",
+      "solid": "./dist/source/checkbox-group/index.js",
+      "import": "./dist/checkbox-group/index.js"
+    },
     "./collapsible": {
       "types": "./dist/source/collapsible/index.d.ts",
       "solid": "./dist/source/collapsible/index.js",

@@ -149,7 +149,7 @@ A button inside a popup that closes it.
 _Avoid_: Dismiss button, cancel (as the part's name)
 
 **Item**:
-An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, a select's or a combobox's entry, which is selected, or an autocomplete's suggestion, which is accepted. A select's, a combobox's or an autocomplete's Item has the `option` role.
+An entry of a list popup that the keys move through: a menu's action, checkbox or radio option, or a submenu's trigger, which does something when activated, a select's or a combobox's entry, which is selected, or an autocomplete's suggestion, which is accepted. A select's, a combobox's or an autocomplete's Item has the `option` role. Outside popups, one control of a group that holds one value: a Toggle Group's toggle button, a Checkbox Group's checkbox.
 _Avoid_: Option (as the part's name), entry, row, menu entry
 
 **List** (the part):
@@ -177,6 +177,14 @@ _Avoid_: Input (for any control), widget
 **Input** (the component):
 A native text `<input>` whose value can be controlled, `menhir/input` (#142). It joins a Field as a Control, through `Field.Control`'s `render`.
 _Avoid_: Text field (for the component), Input (for any control)
+
+**Checkbox Group**:
+Several checkboxes that hold one list of values, `menhir/checkbox-group` (#146): a `<fieldset>` around Items, each a Checkbox with a `value`, checked while the list has it. The form receives one entry per checked box under the group's name.
+_Avoid_: Checkbox list, multi-checkbox, checkboxes (for the component)
+
+**Parent checkbox**:
+A checkbox over some of a Checkbox Group's boxes, its `Parent` part: checked while all of them are, mixed while some are. A click checks all, unchecks all, or brings back the combination checked when it was last mixed.
+_Avoid_: Select all, master checkbox, tri-state checkbox (for the part)
 
 **Touched**:
 A Field the user has been through: focus has left it, its control has changed, or a submission of its form was attempted. A form reset clears it. Its error shows only once it is touched.
