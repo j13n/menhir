@@ -119,6 +119,11 @@
       "solid": "./dist/source/navigation-menu/index.js",
       "import": "./dist/navigation-menu/index.js"
     },
+    "./number-field": {
+      "types": "./dist/source/number-field/index.d.ts",
+      "solid": "./dist/source/number-field/index.js",
+      "import": "./dist/number-field/index.js"
+    },
     "./popover": {
       "types": "./dist/source/popover/index.d.ts",
       "solid": "./dist/source/popover/index.js",

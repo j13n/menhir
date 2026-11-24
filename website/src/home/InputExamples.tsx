@@ -1,6 +1,7 @@
 import { Checkbox } from "menhir/checkbox";
 import { CheckboxGroup } from "menhir/checkbox-group";
 import { Input } from "menhir/input";
+import { NumberField } from "menhir/number-field";
 import { Radio } from "menhir/radio";
 import { Switch } from "menhir/switch";
 import { Toggle } from "menhir/toggle";
@@ -23,6 +24,9 @@ const radioCircle =
   "inline-flex size-6 shrink-0 items-center justify-center rounded-full border border-stone-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-checked:border-stone-800 dark:border-stone-500 dark:data-checked:border-stone-300";
 const radioDot =
   "hidden size-3 rounded-full bg-stone-800 data-checked:block dark:bg-stone-300";
+// The Number Field's buttons, either side of its input in one box.
+const stepButton =
+  "w-7 cursor-pointer disabled:cursor-default disabled:opacity-40";
 
 export default function InputExamples() {
   // The Input's text: digits only, so a letter typed is undone.
@@ -102,6 +106,26 @@ export default function InputExamples() {
             />
           </label>
           <p class="text-sm opacity-70">Digits only: try a letter.</p>
+        </div>
+      </ExampleCard>
+      <ExampleCard name="Number Field" href="/docs/components/number-field">
+        <div class="flex items-center justify-between gap-4">
+          <label for="home-guests">Guests</label>
+          <NumberField.Root
+            id="home-guests"
+            defaultValue={2}
+            min={1}
+            max={8}
+            class="inline-flex shrink-0 rounded-md border border-stone-300 text-sm focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-stone-500 dark:border-stone-700"
+          >
+            <NumberField.Decrement aria-label="Fewer guests" class={stepButton}>
+              −
+            </NumberField.Decrement>
+            <NumberField.Input class="w-10 bg-transparent py-1 text-center outline-none" />
+            <NumberField.Increment aria-label="More guests" class={stepButton}>
+              +
+            </NumberField.Increment>
+          </NumberField.Root>
         </div>
       </ExampleCard>
       <ExampleCard name="Toggle" href="/docs/components/toggle">

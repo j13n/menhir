@@ -190,6 +190,14 @@ _Avoid_: Select all, master checkbox, tri-state checkbox (for the part)
 A group of radio buttons that holds one value, `menhir/radio` (#147): a `<fieldset role="radiogroup">` around Items, each a radio button with a `value`, checked while the group's value is its own. The form receives the checked value under the group's name.
 _Avoid_: Radio group (as the component's name), RadioGroup, radio button (for the whole)
 
+**Number Field**:
+A text input for a number with buttons that step it, `menhir/number-field` (#149): the WAI-ARIA spinbutton, whose `Input` shows the number formatted for a locale and reads typed text back on blur and Enter, with `Increment` and `Decrement` buttons. The form receives the plain number from a hidden number input.
+_Avoid_: Number input, spinner, stepper (for the component); spin button (for a part)
+
+**Commit** (typed text):
+Reading what the user typed into a Number Field's Input as its value, on blur or Enter; until then the text is kept as typed and the value as it was. Not each key.
+_Avoid_: Parse (for the moment it happens), submit
+
 **Touched**:
 A Field the user has been through: focus has left it, its control has changed, or a submission of its form was attempted. A form reset clears it. Its error shows only once it is touched.
 _Avoid_: Visited, blurred, dirty (a changed value, which Field does not track)

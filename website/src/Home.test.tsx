@@ -368,6 +368,25 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Number Field, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const guests = example.getByRole("spinbutton", { name: "Guests" });
+    expect(guests).toHaveValue("2");
+
+    fireEvent.click(example.getByRole("button", { name: "More guests" }));
+    // The value lands after the click's flush (`onFlush`).
+    await new Promise<void>((resolve) => onFlush(resolve));
+    await new Promise<void>((resolve) => onFlush(resolve));
+
+    expect(guests).toHaveValue("3");
+    expect(guests).toHaveAttribute("aria-valuenow", "3");
+    expect(example.getByRole("link", { name: "Number Field" })).toHaveAttribute(
+      "href",
+      "/docs/components/number-field",
+    );
+  });
+
   test("shows a working Toggle, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
