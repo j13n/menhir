@@ -199,6 +199,11 @@
       "solid": "./dist/source/tabs/index.js",
       "import": "./dist/tabs/index.js"
     },
+    "./toast": {
+      "types": "./dist/source/toast/index.d.ts",
+      "solid": "./dist/source/toast/index.js",
+      "import": "./dist/toast/index.js"
+    },
     "./toggle": {
       "types": "./dist/source/toggle/index.d.ts",
       "solid": "./dist/source/toggle/index.js",

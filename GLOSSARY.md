@@ -104,6 +104,18 @@ _Avoid_: Menu bar, toolbar (a toolbar's items are controls, a menu button among 
 A row of controls, such as the buttons above a text editor, that is one tab stop, with arrow keys between them, `menhir/toolbar` (#209). Its items are buttons, links and text fields; a control of another component, such as a Toggle Group's item or a Menu's Trigger, joins as an item's `render`.
 _Avoid_: Button bar, action bar, menubar (a menubar's items each open a menu)
 
+**Toast**:
+A short message that appears at an edge of the screen, stacks with the others and leaves by itself, `menhir/toast` (#207). Code adds one to the app's list of toasts; nothing on the page opens it, so it is not a popup.
+_Avoid_ as its name: Notification, snackbar (words a description may use, since people search for them), alert (an alert is a toast of high priority), banner
+
+**Toast manager**:
+The list of toasts an app makes with `createToastManager()` and hands to `Toast.Provider`: code anywhere adds, updates and removes toasts through it.
+_Avoid_: Toaster, toast store, toast queue
+
+**Region** (of toasts):
+The element the toasts are in: a landmark, a polite live region and a `manual` popover in the top layer, which moves into an open modal dialog.
+_Avoid_: Viewport, container, toaster
+
 **Activate**:
 To use an item of a menu, by a click, Enter or Space: it calls its `onClick` and closes every open menu.
 _Avoid_: Select (a selection is a value), choose, trigger (as a verb)

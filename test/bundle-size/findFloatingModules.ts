@@ -14,7 +14,11 @@ const floatingUiImport = /^@floating-ui\//;
  * Bundles an app that imports `specifier` alone and uses all of it, with
  * Rolldown, unminified, and returns its chunks.
  */
-export async function bundleApp(specifier: string) {
+export async function bundleApp(
+  specifier: string,
+  // By default, an app that uses everything the entry point exports.
+  code = `import * as entry from ${JSON.stringify(specifier)};\nconsole.log(entry);\n`,
+) {
   const { output } = await build({
     input: appId,
     cwd: import.meta.dirname,
@@ -30,10 +34,7 @@ export async function bundleApp(specifier: string) {
       {
         name: "app",
         resolveId: (id) => (id === appId ? id : undefined),
-        load: (id) =>
-          id === appId
-            ? `import * as entry from ${JSON.stringify(specifier)};\nconsole.log(entry);\n`
-            : undefined,
+        load: (id) => (id === appId ? code : undefined),
       },
     ],
   });

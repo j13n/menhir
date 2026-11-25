@@ -239,6 +239,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/toast";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/toast"), Extract<"default", keyof typeof import("./src/routes/docs/components/toast")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/toggle-group";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/toggle-group"), Extract<"default", keyof typeof import("./src/routes/docs/components/toggle-group")>>>;
@@ -455,6 +461,14 @@ declare module "virtual:file-routes" {
           id: "/components/radio";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/radio"), Extract<"default", keyof typeof import("./src/routes/docs/components/radio")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/toast";
+          id: "/components/toast";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/toast"), Extract<"default", keyof typeof import("./src/routes/docs/components/toast")>>>;
           $$route?: undefined;
           children?: undefined;
         },

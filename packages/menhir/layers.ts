@@ -17,6 +17,9 @@ export const popupComponents = [
   "combobox",
   "autocomplete",
   "multi-combobox",
+  // No popup of its own to open, but its Region is in the top layer and a
+  // closed toast waits for its exit with `floating/presence` (#207).
+  "toast",
 ];
 
 // The popup each popup builds on, by folder in src: the one popup it may
