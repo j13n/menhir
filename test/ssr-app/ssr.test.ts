@@ -6,6 +6,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
+import { userEvent } from "@testing-library/user-event";
 import { build } from "vite";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -114,11 +115,22 @@ describe("an SSR app that uses menhir", () => {
     const switchEl = document.querySelector<HTMLElement>("[role=switch]")!;
     expect(switchEl).toBe(serverElement);
 
-    // A native button turns Enter and Space into a click, but not a
-    // dispatched key event, so click it.
     switchEl.click();
     await new Promise((resolve) => setTimeout(resolve));
     expect(switchEl.getAttribute("aria-checked")).toBe("true");
+
+    // A native button turns Enter and Space into a click only for trusted
+    // input, not a dispatched key event. user-event simulates that, and its
+    // default `delay: 0` waits a macrotask after each key, so Solid's update
+    // has applied before the assertion.
+    const user = userEvent.setup();
+    switchEl.focus();
+    for (const key of ["[Enter]", "[Space]"]) {
+      await user.keyboard(key);
+      expect(switchEl.getAttribute("aria-checked")).toBe("false");
+      await user.keyboard(key);
+      expect(switchEl.getAttribute("aria-checked")).toBe("true");
+    }
 
     const dialog = document.querySelector("dialog")!;
     expect(dialog).toBe(serverDialog);
