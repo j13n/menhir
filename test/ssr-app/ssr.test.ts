@@ -29,10 +29,50 @@ async function buildEntry(name: string, ssr: boolean) {
   });
 }
 
+// The tests share one document, hydrated once: the server's HTML, and every
+// element in it before the client bundle runs.
+let html: string;
+let serverElements: Set<Element>;
+
 describe("an SSR app that uses menhir", () => {
   beforeAll(async () => {
     await buildEntry("entry-server", true);
     await buildEntry("entry-client", false);
+
+    // In a Node process of its own: inside this jsdom test, the bundle's
+    // import of Solid would resolve to the browser build.
+    html = execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "--eval",
+        `import { render } from ${JSON.stringify(bundle("entry-server"))};
+         process.stdout.write(render());`,
+      ],
+      { encoding: "utf8" },
+    );
+
+    document.body.innerHTML = `<div id="app">${html}</div>`;
+    for (const script of document.body.querySelectorAll("script")) {
+      (0, eval)(script.textContent);
+    }
+    serverElements = new Set(document.querySelectorAll("#app *"));
+    // jsdom has no showModal(), which opening the dialog calls, nor the
+    // ResizeObserver its scroll lock uses.
+    HTMLDialogElement.prototype.showModal = function () {
+      this.setAttribute("open", "");
+    };
+    // Nor `popover`, which opening the popover calls, nor `scrollIntoView`,
+    // which a menu's first item gets as it opens.
+    HTMLElement.prototype.showPopover = function () {};
+    Element.prototype.scrollIntoView = function () {};
+    globalThis.ResizeObserver = class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
+
+    await import(/* @vite-ignore */ bundle("entry-client"));
   });
 
   it("compiles the JSX source from the `solid` condition for the server", () => {
@@ -45,18 +85,6 @@ describe("an SSR app that uses menhir", () => {
   });
 
   it("renders on the server and hydrates on the client, where a Dialog, a Popover, a Tooltip, a Navigation Menu, a Menu, a Select, a Combobox and an Autocomplete open", async () => {
-    // In a Node process of its own: inside this jsdom test, the bundle's
-    // import of Solid would resolve to the browser build.
-    const html = execFileSync(
-      process.execPath,
-      [
-        "--input-type=module",
-        "--eval",
-        `import { render } from ${JSON.stringify(bundle("entry-server"))};
-         process.stdout.write(render());`,
-      ],
-      { encoding: "utf8" },
-    );
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-haspopup="dialog"');
     expect(html).toMatch(/<dialog[^>]*data-closed/);
@@ -88,32 +116,9 @@ describe("an SSR app that uses menhir", () => {
       /<input(?=[^>]*role="combobox")(?=[^>]*name="city")(?=[^>]*value="Os")/,
     );
 
-    document.body.innerHTML = `<div id="app">${html}</div>`;
-    for (const script of document.body.querySelectorAll("script")) {
-      (0, eval)(script.textContent);
-    }
-    const serverElement = document.querySelector<HTMLElement>("[role=switch]")!;
-    const serverDialog = document.querySelector("dialog")!;
-    // jsdom has no showModal(), which opening the dialog calls, nor the
-    // ResizeObserver its scroll lock uses.
-    HTMLDialogElement.prototype.showModal = function () {
-      this.setAttribute("open", "");
-    };
-    // Nor `popover`, which opening the popover calls, nor `scrollIntoView`,
-    // which a menu's first item gets as it opens.
-    HTMLElement.prototype.showPopover = function () {};
-    Element.prototype.scrollIntoView = function () {};
-    globalThis.ResizeObserver = class {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-    };
-
-    await import(/* @vite-ignore */ bundle("entry-client"));
-
     // Hydration adopts the server's element. A client render would replace it.
     const switchEl = document.querySelector<HTMLElement>("[role=switch]")!;
-    expect(switchEl).toBe(serverElement);
+    expect(serverElements.has(switchEl)).toBe(true);
 
     switchEl.click();
     await new Promise((resolve) => setTimeout(resolve));
@@ -133,7 +138,7 @@ describe("an SSR app that uses menhir", () => {
     }
 
     const dialog = document.querySelector("dialog")!;
-    expect(dialog).toBe(serverDialog);
+    expect(serverElements.has(dialog)).toBe(true);
     document.querySelector<HTMLElement>("[aria-haspopup=dialog]")!.click();
     await new Promise((resolve) => setTimeout(resolve));
     expect(dialog.open).toBe(true);
@@ -225,5 +230,48 @@ describe("an SSR app that uses menhir", () => {
     await new Promise((resolve) => setTimeout(resolve));
     expect(autocompleteInput!.getAttribute("aria-expanded")).toBe("false");
     expect(autocompleteInput!.value).toBe("Oslo");
+  });
+
+  // TSRX is Solid 2.0's experimental second syntax. The app's compiler lowers its
+  // own .tsrx files, through the plugin with no configuration, and compiles
+  // menhir's JSX source from the `solid` condition, so menhir needs nothing.
+  it("renders a Switch from a .tsrx component on the server and hydrates it on the client", async () => {
+    // The server renders the Switch unchecked, without the `@if` branch.
+    expect(html).toMatch(
+      /<div(?=[^>]*id="tsrx")[^>]*><button(?=[^>]*role="switch")(?=[^>]*aria-checked="false")/,
+    );
+    // The part is the app's last.
+    expect(html.slice(html.search(/<div[^>]*id="tsrx"/))).not.toContain("<p");
+
+    const root = document.getElementById("tsrx")!;
+    const switchEl = root.querySelector<HTMLElement>(
+      "[role=switch]:not([data-styled])",
+    )!;
+    expect(serverElements.has(switchEl)).toBe(true);
+
+    switchEl.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(switchEl.getAttribute("aria-checked")).toBe("true");
+    expect(root.querySelector("p")?.textContent).toBe("on");
+
+    switchEl.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(switchEl.getAttribute("aria-checked")).toBe("false");
+    expect(root.querySelector("p")).toBeNull();
+  });
+
+  it("renders a Switch through a `render` component written in TSRX, which spreads the Switch's props onto its button", async () => {
+    expect(html).toMatch(
+      /<button(?=[^>]*data-styled)(?=[^>]*role="switch")(?=[^>]*aria-checked="false")/,
+    );
+
+    const switchEl = document.querySelector<HTMLElement>(
+      "#tsrx [role=switch][data-styled]",
+    )!;
+    expect(serverElements.has(switchEl)).toBe(true);
+
+    switchEl.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(switchEl.getAttribute("aria-checked")).toBe("true");
   });
 });

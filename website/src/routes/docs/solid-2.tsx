@@ -92,6 +92,11 @@ export default function Solid2() {
           app. The same components then render on the server and hydrate in the
           browser.
         </p>
+        <p>
+          Components written in TSRX, Solid's experimental <code>.tsrx</code>{" "}
+          syntax, use Menhir unchanged: the plugin compiles your{" "}
+          <code>.tsrx</code> files and Menhir's source in the same build.
+        </p>
       </Section>
       <Section id="props" title="Props are read where they are used">
         <p>

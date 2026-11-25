@@ -20,7 +20,7 @@ Each has its own entry point, such as `menhir/switch`, and a page on the website
 | `packages/menhir`  | The library, one subpath export per component                              |
 | `website`          | The docs site, a Solid 2.0 app                                             |
 | `test/bundle-size` | Size budgets, the comparison with other libraries, the floating-leak check |
-| `test/ssr-app`     | Server rendering and hydration of the built package                        |
+| `test/ssr-app`     | Server rendering and hydration of the built package, from JSX and TSRX     |
 | `docs/adr`         | Architecture decision records                                              |
 
 ## Development
