@@ -43,6 +43,7 @@ const budgets = {
   "menhir/tabs": "2.4 kB",
   "menhir/theme/cookie": "1.4 kB",
   "menhir/theme/local-storage": "1.2 kB",
+  "menhir/toast": "4 kB",
   "menhir/toggle": "1.2 kB",
   "menhir/toggle-group": "2.3 kB",
   "menhir/toolbar": "2.3 kB",

@@ -12,7 +12,8 @@ section 8, "What the browser does for popups"). So the popup stays shown,
 a `<dialog>` still modal, while it animates, and this module calls
 `close()` or `hidePopover()` once it has finished.
 
-One file. It imports nothing else from the layer, so a popup that does not
+Two files since Toast (#207): `presence.ts`, and `exit.ts`, the wait for
+the animations to settle, which `presence.ts` imports. Neither imports anything else from the layer, so a popup that does not
 use it does not bundle it.
 
 ## Sources
@@ -30,9 +31,10 @@ In order of precedence (PLAN.md section 8).
 
 ## Shape
 
-| File          | Exports          | Used by     | What it does                                                                         |
-| ------------- | ---------------- | ----------- | ------------------------------------------------------------------------------------ |
-| `presence.ts` | `createPresence` | every popup | Shows the popup on opening; on closing, hides it once its exit animations have ended |
+| File          | Exports          | Used by              | What it does                                                                                                                                                                                 |
+| ------------- | ---------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `presence.ts` | `createPresence` | every popup          | Shows the popup on opening; on closing, hides it once its exit animations have ended                                                                                                         |
+| `exit.ts`     | `afterExit`      | `presence.ts`, Toast | The wait itself: calls back once the animations running in an element have settled, and returns what cancels it. A toast is no popup to show or hide, so its Root uses the wait alone (#207) |
 
 The options are getters, as in the other modules:
 
@@ -197,6 +199,9 @@ Measured on 2026-11-22.
 
 | File          | Size  | Budget |
 | ------------- | ----- | ------ |
-| `presence.ts` | 499 B | 650 B  |
+| `presence.ts` | 525 B | 650 B  |
+| `exit.ts`     | 290 B | 350 B  |
 
-Every popup will import it.
+Every popup imports `presence.ts`, which counts `exit.ts`. Measured again on
+2026-11-25, when the wait moved to `exit.ts` for Toast (#207): `presence.ts`
+was 499 B before.

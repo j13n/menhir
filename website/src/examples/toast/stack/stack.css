@@ -1,0 +1,32 @@
+/* A stack that shows the newest toast with the edges of two more behind
+   it, and opens into a column while the pointer is on it or focus is
+   inside it (data-expanded). Toast.measure, passed as the Region's ref,
+   gives each toast --toast-height and --toast-offset, the heights of the
+   newer toasts added up; Menhir gives --toast-index, 0 for the newest. */
+.toast-region:popover-open {
+  display: grid;
+}
+
+.toast {
+  grid-area: 1 / 1;
+  align-self: end;
+  z-index: calc(100 - var(--toast-index));
+  transition:
+    translate 200ms,
+    scale 200ms,
+    opacity 200ms;
+  /* Collapsed: each one a little higher and smaller than the one before. */
+  translate: 0 calc(var(--toast-index) * -0.5rem);
+  scale: calc(1 - var(--toast-index) * 0.05);
+}
+
+.toast:not([data-front]) {
+  /* Behind the newest one, only its top edge shows. */
+  opacity: calc(1 - (var(--toast-index) - 2));
+}
+
+.toast-region[data-expanded] .toast {
+  translate: 0 calc((var(--toast-offset) + var(--toast-index) * 0.5rem) * -1);
+  scale: 1;
+  opacity: 1;
+}

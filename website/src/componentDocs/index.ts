@@ -28,6 +28,7 @@ import { separatorDoc } from "./separator";
 import { sliderDoc } from "./slider";
 import { switchDoc } from "./switch";
 import { tabsDoc } from "./tabs";
+import { toastDoc } from "./toast";
 import { toggleDoc } from "./toggle";
 import { toggleGroupDoc } from "./toggle-group";
 import { toolbarDoc } from "./toolbar";
@@ -66,6 +67,7 @@ export const componentDocs: ComponentDoc[] = [
   sliderDoc,
   switchDoc,
   tabsDoc,
+  toastDoc,
   toggleDoc,
   toggleGroupDoc,
   toolbarDoc,

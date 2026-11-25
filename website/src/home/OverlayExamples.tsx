@@ -2,9 +2,14 @@ import { AlertDialog } from "menhir/alert-dialog";
 import { Dialog } from "menhir/dialog";
 import { Popover } from "menhir/popover";
 import { PreviewCard } from "menhir/preview-card";
+import { createToastManager, Toast } from "menhir/toast";
 import { Tooltip } from "menhir/tooltip";
 
 import { ExampleCard, ExampleGroup } from "./ExampleGroup";
+
+// The home page's toasts. Made by the module, so nothing is added on the
+// server, where the list would be shared between requests.
+const toasts = createToastManager();
 
 // A paragraph holds no <div>: the card's parts are <span>s.
 const span = (props: object) => <span {...props} />;
@@ -159,6 +164,47 @@ export default function OverlayExamples() {
               </Tooltip.Root>
             </div>
           </Tooltip.Group>
+        </div>
+      </ExampleCard>
+      <ExampleCard name="Toast" href="/docs/components/toast">
+        <div class="flex items-center justify-between gap-4">
+          Draft
+          <Toast.Provider manager={toasts}>
+            <button
+              type="button"
+              class="shrink-0 cursor-pointer rounded-md border border-stone-300 px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700"
+              onClick={() =>
+                toasts.add({
+                  title: "Draft saved",
+                  description: "It leaves by itself, or press F6 to reach it.",
+                })
+              }
+            >
+              Save
+            </button>
+            {/* A popover lays out only once shown: `open:` is :popover-open. */}
+            <Toast.Region
+              aria-label="Notifications"
+              class="fixed inset-auto right-4 bottom-4 m-0 w-[min(20rem,calc(100vw-2rem))] flex-col gap-2 overflow-visible border-0 bg-transparent p-0 text-inherit open:flex focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-500"
+            >
+              {(toast) => (
+                <Toast.Root
+                  toast={toast}
+                  ref={Toast.swipe({ direction: "right" })}
+                  class="relative translate-x-(--toast-swipe-x,0) rounded-lg border border-stone-200 bg-white py-3 pr-10 pl-4 text-sm shadow-lg transition-opacity duration-150 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+                >
+                  <Toast.Title class="font-semibold" />
+                  <Toast.Description class="mt-0.5 text-stone-500 dark:text-stone-400" />
+                  <Toast.Close
+                    aria-label="Close"
+                    class="absolute top-2 right-2 size-6 cursor-pointer rounded border-0 bg-transparent focus-visible:outline-2 focus-visible:outline-stone-500"
+                  >
+                    ×
+                  </Toast.Close>
+                </Toast.Root>
+              )}
+            </Toast.Region>
+          </Toast.Provider>
         </div>
       </ExampleCard>
     </ExampleGroup>

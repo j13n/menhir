@@ -1,5 +1,7 @@
 import { createEffect } from "solid-js";
 
+import { afterExit } from "./exit.ts";
+
 /**
  * Shows a popup when `open` turns true, and hides it once its exit
  * animations have ended after `open` turns false:
@@ -44,33 +46,19 @@ export function createPresence(options: {
       if (!popup.matches("[open], :popover-open")) return;
       const inert = popup.inert;
       if (dialog || !popup.contains(document.activeElement)) popup.inert = true;
+      let cancel: (() => void) | undefined;
       const stop = (stopLeaving = () => {
         stopLeaving = undefined;
+        cancel?.();
         popup.inert = inert;
       });
-      // Asks again once they have settled, for one that started meanwhile.
       // A cancelled animation settles too, as do those of a popup the
       // browser hid or that left the document.
-      const wait = () => {
-        if (stopLeaving !== stop) return;
-        const running = popup
-          .getAnimations({ subtree: true })
-          .filter(
-            (animation) =>
-              animation.playState === "running" &&
-              animation.effect?.getComputedTiming().endTime !== Infinity,
-          );
-        if (running.length) {
-          void Promise.allSettled(
-            running.map((animation) => animation.finished),
-          ).then(wait);
-          return;
-        }
+      cancel = afterExit(popup, () => {
         stop();
         if (dialog) dialog.close();
         else if (popup.matches(":popover-open")) popup.hidePopover();
-      };
-      wait();
+      });
     },
   );
 }

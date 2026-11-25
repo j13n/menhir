@@ -1,0 +1,145 @@
+/* The least CSS that makes toasts look like toasts: cards in a column at
+   the bottom right corner, the newest last. The Region is a popover in the
+   top layer, shown from the start, so it needs a place and none of the
+   browser's own popover styles; it lays out only once shown, since
+   `display` on a popover would show it before Menhir does. A toast slides
+   in on data-open and fades out on data-closed, and Menhir keeps it until
+   that has ended. While it is swiped it follows the pointer by
+   --toast-swipe-x, and leaves from where it was let go. Colours are
+   Tailwind's stone palette; light-dark() picks the second one in dark mode
+   (color-scheme: dark). */
+.toast-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.toast-button {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid
+    light-dark(
+      oklch(86.9% 0.005 56.366) /* stone-300 */,
+      oklch(44.4% 0.011 73.639) /* stone-600 */
+    );
+  border-radius: 0.375rem;
+  background: transparent;
+  color: inherit;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.toast-region {
+  position: fixed;
+  inset: auto 1rem 1rem auto;
+  width: min(20rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.toast-region:popover-open {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toast-region:focus-visible {
+  outline: 2px solid oklch(55.3% 0.013 58.071) /* stone-500 */;
+  outline-offset: 4px;
+}
+
+.toast {
+  position: relative;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid
+    light-dark(
+      oklch(92.3% 0.003 48.717) /* stone-200 */,
+      oklch(26.8% 0.007 34.298) /* stone-800 */
+    );
+  border-radius: 0.5rem;
+  background: light-dark(white, oklch(21.6% 0.006 56.043) /* stone-900 */);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  font:
+    0.875rem system-ui,
+    sans-serif;
+  translate: var(--toast-swipe-x, 0);
+}
+
+.toast[data-priority="high"] {
+  border-color: oklch(57.7% 0.245 27.325) /* red-600 */;
+}
+
+.toast[data-open] {
+  animation: toast-in 150ms ease-out;
+}
+
+.toast[data-closed] {
+  animation: toast-out 150ms ease-in forwards;
+}
+
+/* Let go past the threshold: it goes on to the right. */
+.toast[data-swipe="end"] {
+  animation-name: toast-swipe-out;
+}
+
+.toast[data-swipe="move"] {
+  cursor: grabbing;
+  user-select: none;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes toast-swipe-out {
+  to {
+    opacity: 0;
+    translate: calc(var(--toast-swipe-x) + 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast[data-open],
+  .toast[data-closed] {
+    animation-duration: 1ms;
+  }
+}
+
+.toast-title {
+  font-weight: 600;
+}
+
+.toast-description {
+  margin-top: 0.125rem;
+  color: light-dark(
+    oklch(55.3% 0.013 58.071) /* stone-500 */,
+    oklch(70.9% 0.01 56.259) /* stone-400 */
+  );
+}
+
+.toast-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}

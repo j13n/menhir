@@ -167,6 +167,20 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "typeahead",
     "list-navigation/roving",
   ],
+  // A toast's Region is a manual popover shown once and never placed, and
+  // a toast is no popup: it only waits for its exit, with `presence/exit`,
+  // and closes on Escape from its own key handler (#207).
+  "menhir/toast": [
+    "@floating-ui",
+    "positioning",
+    "presence/presence",
+    "dismissal",
+    "focus",
+    "scroll-lock",
+    "hover",
+    "list-navigation",
+    "typeahead",
+  ],
   // A navigation menu's Panels are in the page's flow, not the top layer:
   // nothing positions, shows or hides them but `hidden`, and the Root
   // writes its own outside press and closes the others itself (#105).

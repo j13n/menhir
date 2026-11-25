@@ -78,6 +78,8 @@ describe("home page", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     preferReducedMotion(false);
+    // The Toast example's Region is a popover shown from mount.
+    stubPopover();
   });
 
   afterEach(() => {
@@ -880,6 +882,36 @@ describe("home page", () => {
     expect(example.getByRole("link", { name: "Tooltip" })).toHaveAttribute(
       "href",
       "/docs/components/tooltip",
+    );
+  });
+
+  test("shows a working Toast, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const notifications = getByRole("region", { name: "Notifications" });
+    expect(notifications).toHaveAttribute("aria-live", "polite");
+    expect(notifications).toBeEmptyDOMElement();
+
+    fireEvent.click(example.getByRole("button", { name: "Save" }));
+    flush();
+    expect(notifications).toHaveTextContent("Draft saved");
+    // It leaves by itself.
+    vi.advanceTimersByTime(5000);
+    await Promise.resolve();
+    flush();
+    expect(notifications).toBeEmptyDOMElement();
+
+    fireEvent.click(example.getByRole("button", { name: "Save" }));
+    flush();
+    fireEvent.click(
+      within(notifications).getByRole("button", { name: "Close" }),
+    );
+    await Promise.resolve();
+    flush();
+    expect(notifications).toBeEmptyDOMElement();
+    expect(example.getByRole("link", { name: "Toast" })).toHaveAttribute(
+      "href",
+      "/docs/components/toast",
     );
   });
 
