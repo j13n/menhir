@@ -6,7 +6,7 @@ The size checks of PLAN.md section 6, "Enforcement". This package depends on
 
 | Command          | What it does                                                                                                                                         |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm test`      | Builds menhir, then runs both checks below. Fails if an entry point is over budget or has none.                                                      |
+| `pnpm test`      | Builds menhir, then runs the checks below, and fails if one does.                                                                                    |
 | `pnpm size`      | Builds menhir and prints each entry point's size against its budget.                                                                                 |
 | `pnpm size:json` | Builds menhir and writes the same results to `dist/sizes.json`, for the docs site's sizes (#38), and the comparison below to `dist/comparison.json`. |
 | `pnpm compare`   | Builds menhir and prints the sizes of the comparison below.                                                                                          |
@@ -123,6 +123,21 @@ is measured.
 
 To compare a component, add the library's package to `devDependencies` here
 and its module to the library's `components` in `comparison.ts`.
+
+## A component with the one it builds on
+
+A component that builds on another imports it (`popupBases` and
+`simpleBases` in `packages/menhir/layers.ts`), so an app with both pays for
+the shared code once. `pairs.size-limit.js` measures, for each pair, the base
+and the component imported together, and the base alone, both through
+`together.ts` as the totals above are. `pairSize.test.ts` fails if the two
+together cost more than the base alone plus the pair's margin, in bytes
+gzipped, from `popupBaseMargins` or `simpleBaseMargins` beside the bases, or
+if a pair has no margin. A new pair is measured without editing the config.
+
+To add a pair's margin: build menhir, run `pnpm exec size-limit --config
+pairs.size-limit.js` here to see both sizes, then set the margin to the
+difference plus about 20%, rounded up to 50 B.
 
 ## The floating-leak check
 
