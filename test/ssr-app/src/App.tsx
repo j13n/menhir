@@ -8,6 +8,8 @@ import { Select } from "menhir/select";
 import { Switch } from "menhir/switch";
 import { Tooltip } from "menhir/tooltip";
 
+import TsrxSwitch from "./TsrxSwitch.tsrx";
+
 export function App() {
   return (
     <>
@@ -87,6 +89,10 @@ export function App() {
           </Autocomplete.List>
         </Autocomplete.Popup>
       </Autocomplete.Root>
+      {/* Last, so ssr.test.ts's first-match queries find the parts above. */}
+      <div id="tsrx">
+        <TsrxSwitch />
+      </div>
     </>
   );
 }
