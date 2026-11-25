@@ -20,7 +20,7 @@ export default function FormExamples() {
             <Field.Control
               type="email"
               required
-              class="w-36 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-invalid:border-red-600 dark:border-stone-700 dark:data-invalid:border-red-400"
+              class="w-36 min-w-0 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-invalid:border-red-600 dark:border-stone-700 dark:data-invalid:border-red-400"
             />
           </div>
           <Field.Description class="text-sm opacity-70">
@@ -88,7 +88,7 @@ export default function FormExamples() {
               <Field.Label>Username</Field.Label>
               <Field.Control
                 required
-                class="w-36 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-invalid:border-red-600 dark:border-stone-700 dark:data-invalid:border-red-400"
+                class="w-36 min-w-0 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-invalid:border-red-600 dark:border-stone-700 dark:data-invalid:border-red-400"
               />
             </div>
             <Field.Description class="text-sm opacity-70">
