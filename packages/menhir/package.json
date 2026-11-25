@@ -1,6 +1,6 @@
 {
   "name": "menhir",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "description": "Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles",
   "keywords": [
     "solid",

@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.20
+
+### Patch Changes
+
+- 7f1a4ee: Add Preview Card (menhir/preview-card): a card that previews where a link leads, opened by hovering the link or by keyboard focus on it after a delay.
+
 ## 0.1.19
 
 ### Patch Changes
