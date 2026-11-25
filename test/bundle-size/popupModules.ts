@@ -64,6 +64,19 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "focus/tabbable",
     "scroll-lock",
   ],
+  // A preview card closes on Escape, as a tooltip does, and focus leaving
+  // it is its own; it moves no focus of its own and wraps none, leaves the
+  // page scrolling, has no list, and no delay group (#205).
+  "menhir/preview-card": [
+    "list-navigation",
+    "typeahead",
+    "dismissal/outsidePress",
+    "dismissal/dialogClose",
+    "dismissal/popoverClose",
+    "focus",
+    "scroll-lock",
+    "hover/group",
+  ],
   // A menu is non-modal (#33): it keeps the browser's Tab order and leaves
   // the page scrolling. The browser closes it on Escape and a press
   // outside, so it needs neither a dialog's dismissal nor Tooltip's

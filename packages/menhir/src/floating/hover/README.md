@@ -1,10 +1,10 @@
 # `floating/hover`
 
 Opens a popup when the pointer rests on its trigger, and closes it when the
-pointer leaves both the trigger and the popup (#30). Tooltip (#34) and
-Navigation Menu (#105) use it; Preview Card and Menu's submenus later. The
-browser has no Baseline way to do it: `interestfor` is Chromium only
-(PLAN.md section 8, "What the browser does for popups").
+pointer leaves both the trigger and the popup (#30). Tooltip (#34),
+Navigation Menu (#105) and Preview Card (#205) use it; Menu's submenus
+later. The browser has no Baseline way to do it: `interestfor` is Chromium
+only (PLAN.md section 8, "What the browser does for popups").
 
 Three files, so a popup bundles only what it uses (PLAN.md section 6,
 rule 6). A submenu needs the safe area without the delays, and a bundle of
@@ -238,6 +238,7 @@ Measured on 2026-11-22. `hover.ts` includes `safeArea.ts`.
 
 Tooltip uses `hover` and, through `Tooltip.Group`, `group` (#34);
 Navigation Menu uses `hover` without `group`, since its Root holds the one
-open Item and works out the delay itself (#105); a submenu will use
+open Item and works out the delay itself (#105); Preview Card uses `hover`
+without `group`, with delays of 700 ms and 300 ms (#205); a submenu will use
 `safeArea` alone. Dialog and Alert Dialog bundle none
 of it (`test/bundle-size/popupModules.ts`).

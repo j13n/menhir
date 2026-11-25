@@ -18,6 +18,7 @@ import { navigationMenuDoc } from "./navigation-menu";
 import { numberFieldDoc } from "./number-field";
 import { otpFieldDoc } from "./otp-field";
 import { popoverDoc } from "./popover";
+import { previewCardDoc } from "./preview-card";
 import { progressDoc } from "./progress";
 import { radioDoc } from "./radio";
 import { selectDoc } from "./select";
@@ -52,6 +53,7 @@ export const componentDocs: ComponentDoc[] = [
   numberFieldDoc,
   otpFieldDoc,
   popoverDoc,
+  previewCardDoc,
   progressDoc,
   radioDoc,
   selectDoc,

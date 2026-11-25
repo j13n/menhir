@@ -189,7 +189,9 @@ describe("home page", () => {
     const shown = new Set<string>();
     for (const category of componentCategories) {
       const group = within(examples.getByRole("region", { name: category }));
-      for (const caption of group.getAllByRole("figure")) {
+      for (const figure of group.getAllByRole("figure")) {
+        // The card's name, in its caption: an example may hold links too.
+        const caption = figure.querySelector("figcaption")!;
         const href = within(caption).getByRole("link").getAttribute("href")!;
         const slug = href.match(/^\/docs\/components\/([^#]+)/)![1];
         const doc = componentDocs.find((doc) => doc.slug === slug);
@@ -811,6 +813,32 @@ describe("home page", () => {
     expect(example.getByRole("link", { name: "Tooltip" })).toHaveAttribute(
       "href",
       "/docs/components/tooltip",
+    );
+  });
+
+  test("shows a working Preview Card, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const link = example.getByRole("link", { name: "Getting started" });
+    const card = link.nextElementSibling!;
+    expect(link).toHaveAttribute("href", "/docs/getting-started");
+    expect(card).toHaveAttribute("popover", "manual");
+    expect(card).toHaveAttribute("data-closed");
+    // Keyboard focus opens it after the delay; jsdom matches :focus-visible
+    // on any focus.
+    link.focus();
+    vi.advanceTimersByTime(700);
+    await Promise.resolve();
+    flush();
+    expect(card).toHaveAttribute("data-open");
+    fireEvent.keyDown(link, { key: "Escape" });
+    await Promise.resolve();
+    flush();
+    expect(card).toHaveAttribute("data-closed");
+    expect(example.getByRole("link", { name: "Preview Card" })).toHaveAttribute(
+      "href",
+      "/docs/components/preview-card",
     );
   });
 
