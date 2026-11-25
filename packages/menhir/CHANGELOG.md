@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.22
+
+### Patch Changes
+
+- b0a9904: Add Scroll Area (`menhir/scroll-area`): a native scroller with scrollbars of your own, which you style, while wheel, touch and keyboard scrolling stay the browser's.
+
 ## 0.1.21
 
 ### Patch Changes
