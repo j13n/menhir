@@ -35,6 +35,10 @@ Each component's `README.md` (`packages/menhir/src/<component>/README.md`) has a
 
 Policy: [PLAN.md section 8](PLAN.md#8-sources-and-approach), "Licences".
 
+## The wiring skill
+
+The package also ships `packages/menhir/skills/menhir`, which tells a coding agent how to wire components into an app. It states only what holds for every component, such as the entry points, the state props, `render` and Field, and sends the agent to each component's Markdown page for the rest. So nothing in it is generated, and a new component needs no change to it; a change to a convention every component shares changes it in the same pull request. `packages/menhir/test/workspace/skills.test.ts` checks that each skill's frontmatter names its folder, and that every entry point the wiring skill names is in `exports`. Why it is hand-written: `docs/adr/0008-wiring-skill.md`.
+
 ## Looks of the styling skill
 
 The package ships a skill for coding agents, `packages/menhir/skills/menhir-styling`, that styles components in a look. Each look's sources live on the website, so that its worked examples are the ones the component pages render:

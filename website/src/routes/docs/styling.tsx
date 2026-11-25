@@ -121,6 +121,12 @@ export default function Styling() {
           <code>menhir</code>.
         </p>
         <CodeBlock code={copySkill} />
+        <p>
+          The package's other skill, <code>menhir</code>, wires components into
+          an app:{" "}
+          <a href="/docs/getting-started#install-the-skills">Getting started</a>{" "}
+          gives your agent both.
+        </p>
       </Section>
       <Section id="use-the-skill" title="Ask for a look">
         <p>Name the look and the components in your request:</p>

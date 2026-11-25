@@ -1,4 +1,4 @@
-import { render } from "@solidjs/testing-library";
+import { render, within } from "@solidjs/testing-library";
 import { describe, expect, test } from "vitest";
 
 // Kept outside src/routes so the file-system router never sees it as a page.
@@ -34,6 +34,23 @@ describe("getting started page", () => {
     expect(usage.querySelector("pre code")).toHaveTextContent(
       'import { Switch } from "menhir/switch";',
     );
+  });
+
+  test("says how to give an agent both skills", () => {
+    const { getByRole } = render(() => <GettingStarted />);
+    const install = getByRole("region", { name: "Give your agent the skills" });
+    const [instructions, copy] = [...install.querySelectorAll("pre code")].map(
+      (code) => code.textContent,
+    );
+    expect(instructions).toBe(
+      "To wire up Menhir components, follow node_modules/menhir/skills/menhir/SKILL.md.\nTo style Menhir components, follow node_modules/menhir/skills/menhir-styling/SKILL.md.",
+    );
+    expect(copy).toBe(
+      "cp -r node_modules/menhir/skills/menhir node_modules/menhir/skills/menhir-styling .claude/skills/",
+    );
+    expect(
+      within(install).getByRole("link", { name: "Styling" }),
+    ).toHaveAttribute("href", "/docs/styling");
   });
 
   test("links on to the components", () => {
