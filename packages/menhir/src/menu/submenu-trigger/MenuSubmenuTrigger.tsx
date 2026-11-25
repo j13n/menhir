@@ -35,7 +35,7 @@ export function MenuSubmenuTrigger(props: MenuSubmenuTriggerProps) {
     onActivate: (event, key) => {
       const details = { reason: "trigger-press", event: key ?? event } as const;
       // A key moves focus into the submenu; a click leaves it here.
-      if (key) submenu.openFromKey(details);
+      if (key) submenu.openAtFirst(details);
       else submenu.setOpen(true, details);
     },
     submenu,

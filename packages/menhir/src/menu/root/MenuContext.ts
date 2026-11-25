@@ -46,8 +46,11 @@ export interface Menu {
   closeSubmenus(details: OpenChangeDetails): void;
   /** Closes every menu, from the Root's down, as an activated item does. */
   closeAll(details: OpenChangeDetails): void;
-  /** Opens the menu by a key, with focus on its first item. */
-  openFromKey(details: OpenChangeDetails): void;
+  /**
+   * Opens the menu with focus on its first item: from a key, or from a
+   * Context Menu's `contextmenu`, which a pointer fires too.
+   */
+  openAtFirst(details: OpenChangeDetails): void;
   /** The menu around a submenu; `undefined` for the Root's. */
   readonly parent: Menu | undefined;
   /**
@@ -148,7 +151,7 @@ export function createMenu(
       event.preventDefault();
       if (item.submenu) {
         if (!item.disabled)
-          item.submenu.openFromKey({ reason: "arrow-key", event });
+          item.submenu.openAtFirst({ reason: "arrow-key", event });
         return;
       }
       // Right Arrow on an item with no submenu moves along a menubar, from
@@ -196,7 +199,7 @@ export function createMenu(
     },
     closeAll: (details) =>
       parent ? parent.closeAll(details) : menu.close(details),
-    openFromKey: (details) => {
+    openAtFirst: (details) => {
       setOpen(true, details);
       // While closed, the move waits for the menu to open (list navigation).
       list.move(list.items()[0]);

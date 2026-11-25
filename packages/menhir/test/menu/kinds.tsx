@@ -5,12 +5,13 @@
 //
 //   describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => { … });
 import type { JSX } from "@solidjs/web";
-import { fireEvent, screen } from "@solidjs/testing-library";
+import { screen } from "@solidjs/testing-library";
 import type { UserEvent } from "@testing-library/user-event";
 
 import { ContextMenu } from "../../src/context-menu/index.ts";
 import { Menu } from "../../src/menu/index.ts";
 import { Menubar } from "../../src/menubar/index.ts";
+import { fireContextMenu, fromKey } from "../context-menu/contextMenu.ts";
 import { Edit as ContextMenuEdit } from "../context-menu/Edit.tsx";
 import { Share as ContextMenuShare } from "../context-menu/Share.tsx";
 import { Edit as MenubarEdit } from "../menubar/Edit.tsx";
@@ -46,7 +47,7 @@ export interface MenuKind {
   /** As the tests' names show it. */
   name: string;
   /** The parts, from this menu's namespace. */
-  M: MenuParts;
+  parts: MenuParts;
   /** `test/menu/Edit.tsx`, or its Context Menu version. */
   Edit(props: EditProps): JSX.Element;
   /** `test/menu/Share.tsx`, or its Context Menu version. */
@@ -61,13 +62,13 @@ export interface MenuKind {
   /** The Root's menu. */
   menu(): HTMLElement;
   /** Opens the Root's menu with a press, by Testing Library. */
-  open(user: UserEvent): Promise<void>;
+  openByPress(user: UserEvent): Promise<void>;
   /** Opens the Root's menu from the keyboard, by Testing Library. */
-  openFromKey(user: UserEvent): Promise<void>;
+  openByKey(user: UserEvent): Promise<void>;
   /** Opens the Root's menu with a real press, off it after (Chromium). */
-  pressOpen(): Promise<void>;
+  openByRealPress(): Promise<void>;
   /** Opens the Root's menu from the keyboard with real input (Chromium). */
-  keyOpen(): Promise<void>;
+  openByRealKey(): Promise<void>;
 }
 
 const menuTrigger = () => screen.getByRole("button", { name: "Edit" });
@@ -77,23 +78,23 @@ const barItem = () => screen.getByRole("menuitem", { name: "Edit" });
 export const menuKinds: MenuKind[] = [
   {
     name: "Menu",
-    M: Menu,
+    parts: Menu,
     Edit,
     Share,
     trigger: menuTrigger,
     shiftTab: menuTrigger,
     menu: () =>
       document.getElementById(menuTrigger().getAttribute("aria-controls")!)!,
-    open: (user) => user.click(menuTrigger()),
-    openFromKey: async (user) => {
+    openByPress: (user) => user.click(menuTrigger()),
+    openByKey: async (user) => {
       menuTrigger().focus();
       await user.keyboard("{ArrowDown}");
     },
-    pressOpen: async () => {
+    openByRealPress: async () => {
       await press(centerOf(menuTrigger()));
       await nextTask();
     },
-    keyOpen: async () => {
+    openByRealKey: async () => {
       menuTrigger().focus();
       await keyboard("{ArrowDown}");
       await nextTask();
@@ -101,33 +102,25 @@ export const menuKinds: MenuKind[] = [
   },
   {
     name: "Context Menu",
-    M: ContextMenu,
+    parts: ContextMenu,
     Edit: ContextMenuEdit,
     Share: ContextMenuShare,
     trigger: area,
     shiftTab: area,
     // The first in the document: a submenu's sits inside it.
     menu: () => screen.getAllByRole("menu", { hidden: true })[0]!,
-    open: (user) => user.pointer({ keys: "[MouseRight]", target: area() }),
-    openFromKey: async () => {
+    openByPress: (user) =>
+      user.pointer({ keys: "[MouseRight]", target: area() }),
+    openByKey: async () => {
       area().focus();
-      // A key's `contextmenu`, as the Pointer Events spec sends it.
-      fireEvent(
-        area(),
-        new PointerEvent("contextmenu", {
-          bubbles: true,
-          cancelable: true,
-          button: -1,
-          pointerType: "",
-        }),
-      );
+      fireContextMenu(area(), fromKey);
     },
-    pressOpen: async () => {
+    openByRealPress: async () => {
       const point = centerOf(area());
       await press(point, point, "right");
       await nextTask();
     },
-    keyOpen: async () => {
+    openByRealKey: async () => {
       area().focus();
       await menuKey();
       await nextTask();
@@ -135,23 +128,23 @@ export const menuKinds: MenuKind[] = [
   },
   {
     name: "Menubar",
-    M: Menubar,
+    parts: Menubar,
     Edit: MenubarEdit,
     Share: MenubarShare,
     trigger: barItem,
     shiftTab: () => screen.getByRole("button", { name: "Before" }),
     menu: () =>
       document.getElementById(barItem().getAttribute("aria-controls")!)!,
-    open: (user) => user.click(barItem()),
-    openFromKey: async (user) => {
+    openByPress: (user) => user.click(barItem()),
+    openByKey: async (user) => {
       barItem().focus();
       await user.keyboard("{ArrowDown}");
     },
-    pressOpen: async () => {
+    openByRealPress: async () => {
       await press(centerOf(barItem()));
       await nextTask();
     },
-    keyOpen: async () => {
+    openByRealKey: async () => {
       barItem().focus();
       await keyboard("{ArrowDown}");
       await nextTask();

@@ -45,7 +45,7 @@ describeConformance(
 );
 
 describe.each(menuKinds)("<Menu.CheckboxItem /> in a $name", (kind) => {
-  const { M, Edit } = kind;
+  const { parts, Edit } = kind;
 
   function View(
     props: Omit<MenuCheckboxItemProps, "children"> & {
@@ -54,14 +54,14 @@ describe.each(menuKinds)("<Menu.CheckboxItem /> in a $name", (kind) => {
   ) {
     return (
       <Edit defaultOpen onOpenChange={props.onOpenChange}>
-        <M.CheckboxItem
+        <parts.CheckboxItem
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           onCheckedChange={props.onCheckedChange}
         >
-          <M.ItemIndicator data-testid="indicator">✓</M.ItemIndicator>
+          <parts.ItemIndicator data-testid="indicator">✓</parts.ItemIndicator>
           Word wrap
-        </M.CheckboxItem>
+        </parts.CheckboxItem>
       </Edit>
     );
   }

@@ -46,7 +46,7 @@ export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
       const details = { reason: "trigger-press", event } as const;
       // A second one while open moves the menu and starts it over.
       menu.closeSubmenus(details);
-      menu.openFromKey(details);
+      menu.openAtFirst(details);
     },
     ref: (element: HTMLElement) => {
       menu.area = element;

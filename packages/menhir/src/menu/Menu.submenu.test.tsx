@@ -23,13 +23,13 @@ const active = () => document.activeElement;
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
-  const { Share, shiftTab, menu, pressOpen, keyOpen } = kind;
+  const { Share, shiftTab, menu, openByRealPress, openByRealKey } = kind;
   const { render } = createRenderer();
   afterEach(() => vi.restoreAllMocks());
 
   /** Opens the Root's menu with a press, the pointer then off it. */
   async function open() {
-    await pressOpen();
+    await openByRealPress();
     expect(shown(menu())).toBe(true);
   }
 
@@ -88,7 +88,7 @@ describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
 
   it("opens and closes submenus two levels deep by keyboard", async () => {
     await render(() => <Share />);
-    await keyOpen();
+    await openByRealKey();
 
     await keyboard("{ArrowDown}{ArrowRight}");
     await nextTask();
@@ -135,7 +135,7 @@ describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
 
   it("closes every menu on Tab from a submenu", async () => {
     await render(() => <Share />);
-    await keyOpen();
+    await openByRealKey();
     await keyboard("{ArrowDown}{ArrowRight}");
     await nextTask();
     expect(active()).toBe(item("Email"));
@@ -150,7 +150,7 @@ describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
 
   it("closes every menu on Shift+Tab from a submenu, with focus on the Trigger, or before a Menubar", async () => {
     await render(() => <Share />);
-    await keyOpen();
+    await openByRealKey();
     await keyboard("{ArrowDown}{ArrowRight}");
     await nextTask();
     expect(active()).toBe(item("Email"));
@@ -165,7 +165,7 @@ describe.skipIf(isJSDOM).each(menuKinds)("$name across submenus", (kind) => {
 
   it("types in a submenu without moving the menu around it", async () => {
     await render(() => <Share />);
-    await keyOpen();
+    await openByRealKey();
     await keyboard("{ArrowDown}{ArrowRight}");
     await nextTask();
 

@@ -2,14 +2,9 @@
 import { createSignal } from "solid-js";
 import { describe, expect, it, vi } from "vitest";
 
-import {
-  afterFlush,
-  createRenderer,
-  fireEvent,
-  isJSDOM,
-  screen,
-} from "#test-utils";
+import { afterFlush, createRenderer, isJSDOM, screen } from "#test-utils";
 
+import { fireContextMenu } from "../../../test/context-menu/contextMenu.ts";
 import { Edit } from "../../../test/context-menu/Edit.tsx";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { ContextMenu } from "../index.ts";
@@ -20,17 +15,6 @@ const area = () => screen.getByTestId("area");
 const item = (name: string) =>
   screen.getByRole("menuitem", { name, hidden: true });
 const active = () => document.activeElement;
-
-const contextMenu = () =>
-  fireEvent(
-    area(),
-    new PointerEvent("contextmenu", {
-      bubbles: true,
-      cancelable: true,
-      button: 2,
-      pointerType: "mouse",
-    }),
-  );
 
 /** Waits for the frames in which observers report and placements land. */
 async function frames(count = 3) {
@@ -86,7 +70,7 @@ describe("<ContextMenu.Root />", () => {
     const onOpenChange = vi.fn();
     await render(() => <Edit onOpenChange={onOpenChange} />);
 
-    contextMenu();
+    fireContextMenu(area());
     await afterFlush();
 
     expect(shown()).toBe(true);
@@ -100,7 +84,7 @@ describe("<ContextMenu.Root />", () => {
     const onOpenChange = vi.fn();
     await render(() => <Edit open={false} onOpenChange={onOpenChange} />);
 
-    contextMenu();
+    fireContextMenu(area());
     await afterFlush();
 
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());

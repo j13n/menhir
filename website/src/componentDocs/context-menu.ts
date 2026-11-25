@@ -9,9 +9,9 @@ const render = (what: string) => ({
   description: `Renders the ${what}. Read once.`,
 });
 
-// The Popup's props are Menu's, but where it is placed.
+// The Popup's props are Menu's, with some described for a context menu.
 const menuPopup = menuDoc.api.find((part) => part.part === "Popup")!;
-const placedAt = (name: string) =>
+const menuPopupProp = (name: string) =>
   menuPopup.props.find((prop) => prop.name === name)!;
 
 export const contextMenuDoc: ComponentDoc = {
@@ -91,21 +91,21 @@ export const contextMenuDoc: ComponentDoc = {
         '<div popover="auto" role="menu">, Menu\'s Popup, placed at the pointer, or below the element a key opened it from: its top-left corner at the pointer, its bottom-left near the bottom of the viewport. Name it with aria-label. Render it right after the Trigger, or right after a submenu\'s SubmenuTrigger, where it is placed as in Menu.',
       props: [
         {
-          ...placedAt("side"),
+          ...menuPopupProp("side"),
           description:
             "The side of the pointer it is placed against. It moves to the other side when it does not fit, and data-side says where it went.",
         },
-        placedAt("align"),
-        placedAt("sideOffset"),
-        placedAt("alignOffset"),
-        placedAt("collisionPadding"),
+        menuPopupProp("align"),
+        menuPopupProp("sideOffset"),
+        menuPopupProp("alignOffset"),
+        menuPopupProp("collisionPadding"),
         {
-          ...placedAt("anchor"),
+          ...menuPopupProp("anchor"),
           description:
             "What it is placed against instead of the pointer: an element, a virtual element with a getBoundingClientRect(), or a function returning one.",
         },
         {
-          ...placedAt("returnFocus"),
+          ...menuPopupProp("returnFocus"),
           description:
             "Where focus goes once it has closed with focus inside, instead of the element it opened from. A function gets the element the browser focused, or null.",
         },
