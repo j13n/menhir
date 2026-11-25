@@ -15,3 +15,13 @@ if (typeof window !== "undefined" && !window.matchMedia) {
       removeEventListener() {},
     }) as unknown as MediaQueryList;
 }
+
+// jsdom has no ResizeObserver, which menhir/scroll-area watches its
+// viewport with once mounted, and no layout for one to observe.
+if (typeof window !== "undefined" && !window.ResizeObserver) {
+  window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}

@@ -203,6 +203,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/scroll-area";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/scroll-area"), Extract<"default", keyof typeof import("./src/routes/docs/components/scroll-area")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/select";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/select"), Extract<"default", keyof typeof import("./src/routes/docs/components/select")>>>;
@@ -571,6 +577,14 @@ declare module "virtual:file-routes" {
           id: "/components/collapsible";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/collapsible"), Extract<"default", keyof typeof import("./src/routes/docs/components/collapsible")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/scroll-area";
+          id: "/components/scroll-area";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/scroll-area"), Extract<"default", keyof typeof import("./src/routes/docs/components/scroll-area")>>>;
           $$route?: undefined;
           children?: undefined;
         },

@@ -1,3 +1,4 @@
+import { tryFirstSection } from "./componentDocs/tryFirst";
 import type { CodeFile, ComponentDoc } from "./componentDocs/types";
 import { formatSize } from "./formatSize";
 import { codeOf } from "./highlight";
@@ -34,6 +35,11 @@ export function componentMarkdown(
   const blocks = [
     `# ${doc.name}`,
     doc.description,
+    ...(doc.tryFirst
+      ? [
+          `> Try first: "${tryFirstSection(doc)!.title}", below. ${doc.tryFirst.text}`,
+        ]
+      : []),
     [`- Entry point: \`menhir/${doc.slug}\``, `- Size: ${size}`].join("\n"),
     `> To add ${doc.name} to a project, install the packages below with the project's package manager, then copy the example that matches how the project is styled, Tailwind CSS or plain CSS, and adapt its markup and class names to the project.\n>\n> What every Menhir component shares, such as controlled state and forms, is in the skill that comes with the package: follow \`${wiringSkill}\` once it is installed.`,
     "## Install",

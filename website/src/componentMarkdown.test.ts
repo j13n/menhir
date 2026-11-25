@@ -167,6 +167,31 @@ describe("componentMarkdown", () => {
       /\| `Space` \| Turns the switch on or off. \|\n\n## In a form\n\nGive it a name.\n\n`InAForm.tsx`:\n\n```tsx\n<Switch.Root name="wifi" \/>\n```\n$/,
     );
   });
+
+  test("names the section to try first right after the description", () => {
+    const markdown = componentMarkdown(
+      {
+        ...doc,
+        tryFirst: { section: "native", text: "It needs no JavaScript." },
+        sections: [{ id: "native", title: "A native checkbox", text: "…" }],
+      },
+      { example },
+    );
+    expect(markdown).toContain(
+      `${doc.description}\n\n> Try first: "A native checkbox", below. It needs no JavaScript.\n\n- Entry point`,
+    );
+  });
+
+  test("fails for a section to try first that the page does not have", () => {
+    expect(() =>
+      componentMarkdown(
+        { ...doc, tryFirst: { section: "missing", text: "…" } },
+        { example },
+      ),
+    ).toThrow(
+      'Switch\'s tryFirst names "missing", which is not one of its sections.',
+    );
+  });
 });
 
 describe("llmsTxt", () => {

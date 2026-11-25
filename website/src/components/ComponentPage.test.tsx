@@ -239,6 +239,42 @@ describe("<ComponentPage />", () => {
     expect(getAllByRole("region").at(-1)).toBe(section);
   });
 
+  test("shows each file of a section with several, in order", () => {
+    const { getByRole } = render(() => (
+      <ComponentPage
+        {...switchPage}
+        sections={[{ id: "native", title: "Native", text: "No script." }]}
+        sectionCode={{
+          native: [tsx`<input type="checkbox" />`, css`input { color: red; }`],
+        }}
+      />
+    ));
+    const section = getByRole("region", { name: "Native" });
+    expect(section.querySelectorAll("pre")).toHaveLength(2);
+    expect(section.textContent).toMatch(
+      /<input type="checkbox" \/>.*input \{ color: red; \}/s,
+    );
+  });
+
+  test("links the section to try first right after the description", () => {
+    const { getByRole } = render(() => (
+      <ComponentPage
+        {...switchPage}
+        tryFirst={{ section: "native", text: "It needs no JavaScript." }}
+        sections={[{ id: "native", title: "A native checkbox", text: "…" }]}
+      />
+    ));
+    const link = getByRole("link", { name: "A native checkbox" });
+    expect(link).toHaveAttribute("href", "#native");
+    const paragraph = link.closest("p")!;
+    expect(paragraph).toHaveTextContent(
+      "Try first: A native checkbox. It needs no JavaScript.",
+    );
+    expect(paragraph.previousElementSibling).toHaveTextContent(
+      "A control that turns a setting on or off.",
+    );
+  });
+
   test("shows the measured size", () => {
     const { getByText } = render(() => (
       <ComponentPage {...switchPage} size={1234} />

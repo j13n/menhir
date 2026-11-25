@@ -22,6 +22,7 @@ import { popoverDoc } from "./popover";
 import { previewCardDoc } from "./preview-card";
 import { progressDoc } from "./progress";
 import { radioDoc } from "./radio";
+import { scrollAreaDoc } from "./scroll-area";
 import { selectDoc } from "./select";
 import { separatorDoc } from "./separator";
 import { sliderDoc } from "./slider";
@@ -58,6 +59,7 @@ export const componentDocs: ComponentDoc[] = [
   previewCardDoc,
   progressDoc,
   radioDoc,
+  scrollAreaDoc,
   selectDoc,
   separatorDoc,
   sliderDoc,

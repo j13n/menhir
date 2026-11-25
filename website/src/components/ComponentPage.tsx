@@ -1,6 +1,7 @@
 import { Link } from "@solidjs/meta";
 import { For, Show } from "solid-js";
 
+import { tryFirstSection } from "../componentDocs/tryFirst";
 import type { ComponentDoc } from "../componentDocs/types";
 import { markdownPath } from "../componentMarkdown";
 import { formatSize } from "../formatSize";
@@ -31,8 +32,8 @@ export type ComponentPageProps = ComponentDoc & {
   size?: number;
   /** The live example, styled with Tailwind CSS and with plain CSS, and in each look that has one. */
   example: ComponentExampleProps;
-  /** Each further section's code, by the section's id: a `?highlight` import of `src/examples/<slug>/<id>/`. */
-  sectionCode?: Record<string, Highlighted>;
+  /** Each further section's code, by the section's id: a `?highlight` import of each file of `src/examples/<slug>/<id>/`, in order. */
+  sectionCode?: Record<string, Highlighted | Highlighted[]>;
 };
 
 /** The look of the page's links for agents, beside the heading. */
@@ -75,6 +76,17 @@ export default function ComponentPage(props: ComponentPageProps) {
         </div>
       </div>
       <p>{props.description}</p>
+      <Show when={props.tryFirst}>
+        {(tryFirst) => (
+          <p>
+            Try first:{" "}
+            <a href={`#${tryFirst().section}`}>
+              {tryFirstSection(props)?.title}
+            </a>
+            . {tryFirst().text}
+          </p>
+        )}
+      </Show>
       <dl>
         <dt>Size</dt>
         <dd>
@@ -160,9 +172,9 @@ export default function ComponentPage(props: ComponentPageProps) {
         {(section) => (
           <Section id={section.id} title={section.title}>
             <p>{section.text}</p>
-            <Show when={props.sectionCode?.[section.id]}>
-              {(code) => <CodeBlock code={code()} />}
-            </Show>
+            <For each={[props.sectionCode?.[section.id] ?? []].flat()}>
+              {(code) => <CodeBlock code={code} />}
+            </For>
           </Section>
         )}
       </For>

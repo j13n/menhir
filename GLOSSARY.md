@@ -244,6 +244,20 @@ _Avoid_: State, load state
 What an Avatar shows in place of its picture, such as initials, until the picture has loaded. Named as the picture is, with `role="img"` and `aria-label`.
 _Avoid_: Placeholder, initials (for the part)
 
+### Scroll areas
+
+**Scroll Area**:
+A native scroller whose scrollbars are the page's own, `menhir/scroll-area` (#208). Scrolling stays the browser's; the component hides the system's scrollbars and draws a Scrollbar and Thumb for each axis.
+_Avoid_: Scroll view, custom scrollbar (for the component), scroller (for the component)
+
+**Viewport** (of a Scroll Area):
+The element that scrolls: a plain scroller with `role="region"`, named by the consumer, and the tab stop while it overflows.
+_Avoid_: Container, scroll container (for the part)
+
+**Native scroller**:
+An element that scrolls with `overflow: auto`, styled only by CSS such as `scrollbar-width` and `scrollbar-color`: the recipe to try before a Scroll Area.
+_Avoid_: Plain scroll area, CSS scroll area
+
 ### Styling
 
 **Look**:

@@ -80,6 +80,7 @@ export const libraries: Library[] = [
       progress: "@base-ui/react/progress",
       // Its Radio is one radio, and its RadioGroup the group around them.
       radio: ["@base-ui/react/radio-group", "@base-ui/react/radio"],
+      "scroll-area": "@base-ui/react/scroll-area",
       select: "@base-ui/react/select",
       separator: "@base-ui/react/separator",
       slider: "@base-ui/react/slider",
@@ -112,6 +113,7 @@ export const libraries: Library[] = [
       "preview-card": "@radix-ui/react-hover-card",
       progress: "@radix-ui/react-progress",
       radio: "@radix-ui/react-radio-group",
+      "scroll-area": "@radix-ui/react-scroll-area",
       select: "@radix-ui/react-select",
       separator: "@radix-ui/react-separator",
       slider: "@radix-ui/react-slider",
