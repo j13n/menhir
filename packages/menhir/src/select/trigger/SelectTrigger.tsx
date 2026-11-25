@@ -1,16 +1,10 @@
 import { isDev } from "@solidjs/web";
 import type { JSX } from "@solidjs/web";
-import {
-  createUniqueId,
-  merge,
-  omit,
-  onFlush,
-  onSettled,
-  untrack,
-} from "solid-js";
+import { createUniqueId, merge, omit, onFlush, untrack } from "solid-js";
 
 import { warnUnlessButton } from "../../core/button.ts";
 import type { ButtonElementProps } from "../../core/button.ts";
+import { onFormReset } from "../../core/formReset.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { RenderProp } from "../../core/renderElement.tsx";
@@ -158,18 +152,17 @@ export function SelectTrigger(props: SelectTriggerProps) {
   };
   // A form reset puts a control back to its default, and so it does the
   // Select: through the setter, so that a controlled Select asks.
-  onSettled(() => {
-    const form = input?.form;
-    if (!form) return;
-    const onReset = () => {
+  onFormReset(
+    () => input?.form,
+    () => {
       select.setValue(select.props.defaultValue ?? null);
-      // The browser resets the input after this event, to its `value`
-      // attribute; `onFlush` runs after that.
       onFlush(syncInput);
-    };
-    form.addEventListener("reset", onReset);
-    return () => form.removeEventListener("reset", onReset);
-  });
+    },
+    // Held through the browser's reset (`onFormReset`).
+    () => {
+      input!.defaultValue = input!.value;
+    },
+  );
 
   const elementProps = mergeElementProps(ownProps, omit(props, "render", "id"));
   return (

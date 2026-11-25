@@ -5,11 +5,15 @@ import { createSignal, flush } from "solid-js";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   describeConformance,
   fireEvent,
+  isJSDOM,
   screen,
 } from "#test-utils";
+
+import { centerOf, press } from "../../test/floating/input.ts";
 
 import { Checkbox } from "../checkbox/index.ts";
 import type { FormErrors } from "../core/formContext.ts";
@@ -23,12 +27,6 @@ const form = () => screen.getByTestId<HTMLFormElement>("form");
 const textbox = (name: string) => screen.getByRole("textbox", { name });
 const button = (name: string) => screen.getByRole("button", { name });
 const errorOf = (name: string) => screen.queryByTestId(`error-${name}`);
-
-/** Resolves once Field and Form have handled a reset, in a task after it. */
-async function afterReset() {
-  await new Promise((resolve) => setTimeout(resolve));
-  await afterFlush();
-}
 
 /** A text Field with a Label, a Control and an Error. */
 function TextField(props: {
@@ -413,6 +411,62 @@ describe("<Form />", () => {
       await afterReset();
 
       expect(errorOf("city")).toHaveTextContent("Unknown");
+    });
+
+    it("shows a new errors object passed by the reset's own handler", async () => {
+      const [errors, setErrors] = createSignal<FormErrors>({ city: "Unknown" });
+      const { user } = await render(() => (
+        <Form
+          data-testid="form"
+          errors={errors()}
+          onReset={() => setErrors({ city: "Closed" })}
+        >
+          <TextField name="city" label="City" />
+          <button type="reset">Reset</button>
+        </Form>
+      ));
+
+      await user.click(button("Reset"));
+      await afterReset();
+
+      expect(errorOf("city")).toHaveTextContent("Closed");
+    });
+
+    // A press of the user's, not a script's: the browser runs microtasks
+    // as each listener of `reset` returns, before it resets the controls.
+    describe.skipIf(isJSDOM)("by a real press", () => {
+      const pressReset = () => press(centerOf(button("Reset")));
+
+      it("hides the errors", async () => {
+        await render(() => (
+          <Form data-testid="form" errors={{ city: "Unknown" }}>
+            <TextField name="city" label="City" />
+            <button type="reset">Reset</button>
+          </Form>
+        ));
+        expect(errorOf("city")).toBeInTheDocument();
+
+        await pressReset();
+        await afterReset();
+
+        expect(errorOf("city")).not.toBeInTheDocument();
+      });
+
+      it("keeps the errors for a reset a later listener cancels", async () => {
+        await render(() => (
+          <Form data-testid="form" errors={{ city: "Unknown" }}>
+            <TextField name="city" label="City" />
+            <button type="reset">Reset</button>
+          </Form>
+        ));
+        // Added after Form's own listener.
+        form().addEventListener("reset", (event) => event.preventDefault());
+
+        await pressReset();
+        await afterReset();
+
+        expect(errorOf("city")).toHaveTextContent("Unknown");
+      });
     });
   });
 });

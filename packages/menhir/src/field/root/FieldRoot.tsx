@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 
 import { FormContext } from "../../core/formContext.ts";
+import { onFormReset } from "../../core/formReset.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import type { ElementProps } from "../../core/renderElement.tsx";
 import { renderElement } from "../../core/renderElement.tsx";
@@ -96,7 +97,6 @@ export function FieldRoot(props: FieldRootProps) {
   // Reads the controls' validity again, and sets touched if given. The
   // Field's own state is written after the event's flush, so async work the
   // event starts does not hold it (PLAN.md section 8, "API conventions").
-  // By then a form reset has reset the controls too.
   const update = (touch?: boolean) =>
     onFlush(() => {
       setInvalidControl(readValidity());
@@ -161,29 +161,27 @@ export function FieldRoot(props: FieldRootProps) {
   // bubble, so the Root and the form listen in the capture phase.
   const touch = () => update(true);
 
+  const findForm = () =>
+    root?.querySelector<Validatable>(controlSelector)?.form ??
+    root?.closest("form");
   onSettled(() => {
     setSettled(true);
     // A submission attempt touches every Field of the form, by its submit
-    // event or an `invalid` event of any control in it, and a reset clears
-    // it.
-    const form =
-      root?.querySelector<Validatable>(controlSelector)?.form ??
-      root?.closest("form");
+    // event or an `invalid` event of any control in it.
+    const form = findForm();
     if (!form) return;
-    // A reset the app cancels, after this listener, keeps it touched.
-    const onReset = (event: Event) =>
-      onFlush(() => {
-        if (!event.defaultPrevented) update(false);
-      });
     form.addEventListener("submit", touch);
     form.addEventListener("invalid", touch, true);
-    form.addEventListener("reset", onReset);
     return () => {
       form.removeEventListener("submit", touch);
       form.removeEventListener("invalid", touch, true);
-      form.removeEventListener("reset", onReset);
     };
   });
+  // A form reset clears touched, unless the app cancels it, and the Root
+  // reads the validity of the reset controls once they have put their
+  // inputs back: the Root listens before the controls inside it, so its
+  // `onFlush` comes after theirs only from inside one (`onFormReset`).
+  onFormReset(findForm, () => onFlush(() => update(false)));
 
   const ownProps: ElementProps = merge(attributes, {
     onFocusOut: (event: FocusEvent) => {

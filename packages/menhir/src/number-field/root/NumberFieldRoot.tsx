@@ -1,14 +1,8 @@
 import type { JSX } from "@solidjs/web";
-import {
-  createMemo,
-  createUniqueId,
-  omit,
-  onFlush,
-  onSettled,
-  untrack,
-} from "solid-js";
+import { createMemo, createUniqueId, omit, onFlush, untrack } from "solid-js";
 
 import { createControllableSignal } from "../../core/createControllableSignal.ts";
+import { onFormReset } from "../../core/formReset.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { RenderProp } from "../../core/renderElement.tsx";
@@ -200,29 +194,18 @@ export function NumberFieldRoot(props: NumberFieldRootProps) {
 
   // A form reset puts a control back to its default, and so it does this
   // one: through the setter, so that a controlled field asks.
-  onSettled(() => {
-    const form = hidden?.form;
-    if (!form) return;
-    // A field the reset removes, such as a row of a list going back to its
-    // default length, asks for nothing.
-    let disposed = false;
-    const onReset = (event: Event) => {
-      // In a task of its own, not `onFlush`: when the user presses a reset
-      // button, the browser runs microtasks as each listener returns,
-      // before it resets the controls and before later listeners could
-      // cancel the reset (src/input/README.md).
-      setTimeout(() => {
-        if (disposed || event.defaultPrevented) return;
-        setValue(props.defaultValue ?? null);
-        onFlush(sync);
-      });
-    };
-    form.addEventListener("reset", onReset);
-    return () => {
-      disposed = true;
-      form.removeEventListener("reset", onReset);
-    };
-  });
+  // The Input's text is bound as its `defaultValue`, which the browser
+  // resets it to, so only the hidden input is held.
+  onFormReset(
+    () => hidden?.form,
+    () => {
+      setValue(props.defaultValue ?? null);
+      onFlush(sync);
+    },
+    () => {
+      hidden!.defaultValue = hidden!.value;
+    },
+  );
 
   const elementProps = mergeElementProps(
     context.attributes,

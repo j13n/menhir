@@ -4,7 +4,13 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createSignal } from "solid-js";
 
-import { afterFlush, createRenderer, isJSDOM, screen } from "#test-utils";
+import {
+  afterFlush,
+  afterReset,
+  createRenderer,
+  isJSDOM,
+  screen,
+} from "#test-utils";
 
 import { Field } from "../field/index.ts";
 import { Checkbox } from "./index.ts";
@@ -209,7 +215,7 @@ describe("<Checkbox.Root /> in a Field", () => {
       expect(error()).toBeInTheDocument();
 
       await user.click(button("Reset"));
-      await afterFlush();
+      await afterReset();
 
       expect(checkbox()).toHaveAttribute("aria-checked", "true");
       expect(hiddenInput().checked).toBe(true);
@@ -224,7 +230,7 @@ describe("<Checkbox.Root /> in a Field", () => {
       await user.click(button("Send"));
 
       await user.click(button("Reset"));
-      await afterFlush();
+      await afterReset();
 
       expect(checkbox()).toHaveAttribute("aria-checked", "false");
       expect(hiddenInput().validity.valueMissing).toBe(true);
@@ -248,7 +254,7 @@ describe("<Checkbox.Root /> in a Field", () => {
       expect(error()).toBeInTheDocument();
 
       await user.click(button("Reset"));
-      await afterFlush();
+      await afterReset();
 
       expect(onCheckedChange).toHaveBeenLastCalledWith(true);
       expect(checkbox()).toHaveAttribute("aria-checked", "true");

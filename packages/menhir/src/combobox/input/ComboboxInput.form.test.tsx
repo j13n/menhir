@@ -2,8 +2,15 @@
 // cases left out are in ../README.md.
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { afterFlush, createRenderer, isJSDOM, screen } from "#test-utils";
+import {
+  afterFlush,
+  afterReset,
+  createRenderer,
+  isJSDOM,
+  screen,
+} from "#test-utils";
 
+import { centerOf, press } from "../../../test/floating/input.ts";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Fruit } from "../../../test/combobox/Fruit.tsx";
 import type { FruitProps } from "../../../test/combobox/Fruit.tsx";
@@ -155,7 +162,7 @@ describe("<Combobox.Input /> in a form", () => {
     expect(input()).toHaveValue("Cherry");
 
     await user.click(screen.getByRole("button", { name: "Reset" }));
-    await afterFlush();
+    await afterReset();
 
     expect(onValueChange).toHaveBeenLastCalledWith("apple");
     expect(onInputValueChange).toHaveBeenLastCalledWith("Apple", {
@@ -176,7 +183,7 @@ describe("<Combobox.Input /> in a form", () => {
     await afterFlush();
 
     await user.click(screen.getByRole("button", { name: "Reset" }));
-    await afterFlush();
+    await afterReset();
 
     expect(selected()).toEqual([]);
     expect(input()).toHaveValue("Ch");
@@ -196,11 +203,74 @@ describe("<Combobox.Input /> in a form", () => {
     await afterFlush();
 
     await user.click(screen.getByRole("button", { name: "Reset" }));
-    await afterFlush();
+    await afterReset();
 
     expect(onValueChange).toHaveBeenCalledWith("apple");
     expect(selected()).toEqual(["Cherry"]);
     expect(hiddenInput().value).toBe("cherry");
     expect(input()).toHaveValue("Cherry");
+  });
+
+  // A press of the user's, not a script's: the browser runs microtasks as
+  // each listener of `reset` returns, before it resets the controls.
+  describe.skipIf(isJSDOM)("a form reset by a real press", () => {
+    const pressReset = () =>
+      press(centerOf(screen.getByRole("button", { name: "Reset" })));
+
+    it("puts back defaultValue and its label, and the form submits it", async () => {
+      const { user } = await render(() => (
+        <FruitForm defaultValue="apple" defaultOpen />
+      ));
+      await afterFlush();
+      await user.click(item("Cherry"));
+      await afterFlush();
+
+      await pressReset();
+      await afterReset();
+
+      expect(selected()).toEqual(["Apple"]);
+      expect(input()).toHaveValue("Apple");
+      expect(submitted()).toEqual({ fruit: "apple" });
+    });
+
+    it("keeps value and inputValue when its consumer declines the reset", async () => {
+      await render(() => (
+        <FruitForm value="cherry" inputValue="Cherry" defaultValue="apple" />
+      ));
+      await afterFlush();
+
+      await pressReset();
+      await afterReset();
+
+      expect(selected()).toEqual(["Cherry"]);
+      expect(input()).toHaveValue("Cherry");
+      expect(submitted()).toEqual({ fruit: "cherry" });
+    });
+
+    it("asks for nothing for a reset a later listener cancels", async () => {
+      const onValueChange = vi.fn();
+      const onInputValueChange = vi.fn();
+      await render(() => (
+        <FruitForm
+          value="cherry"
+          inputValue="Cherry"
+          defaultValue="apple"
+          onValueChange={onValueChange}
+          onInputValueChange={onInputValueChange}
+        />
+      ));
+      await afterFlush();
+      // Added after the Combobox's own listener, which is added once it
+      // has settled.
+      form().addEventListener("reset", (event) => event.preventDefault());
+
+      await pressReset();
+      await afterReset();
+
+      expect(onValueChange).not.toHaveBeenCalled();
+      expect(onInputValueChange).not.toHaveBeenCalled();
+      expect(input()).toHaveValue("Cherry");
+      expect(submitted()).toEqual({ fruit: "cherry" });
+    });
   });
 });

@@ -127,11 +127,12 @@ dismissal, focus, scroll lock or hover (`test/bundle-size/popupModules.ts`).
 - **The Input is the form's control.** It takes `name`, `form`, `required`
   and `disabled` from the Root, so the form receives the text, the browser
   validates it and focuses it when it blocks a submission, and no hidden
-  input is rendered. `required` is the native attribute: any text
-  satisfies it. A form reset puts the text back to `defaultValue`, through
-  the setter, so a controlled Autocomplete asks. `autocomplete="off"` keeps
-  the browser's own suggestions from covering the list, as on Combobox;
-  the consumer's wins.
+  input is rendered. `required` is the native attribute: any text satisfies
+  it. A form reset puts the text back to `defaultValue`, through the setter,
+  so a controlled Autocomplete asks, in a task after the `reset` event, as
+  Combobox's does (`core/formReset.ts`, #165). `autocomplete="off"` keeps
+  the browser's own suggestions from covering the list, as on Combobox; the
+  consumer's wins.
 - **Accepting a suggestion fills the input**: a click on an item, or Enter
   while it is active, sets the text to the item's `value` and closes the
   list (`item-press`). The caret goes to the end, where the browser puts it
@@ -202,6 +203,7 @@ Autocomplete.
 - Submits the text under `name`, typed or accepted; nothing while disabled
 - `required` blocks submission while the text is empty, and not once any text is typed
 - A form reset puts back `defaultValue`; when controlled, it asks
+- By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken puts back `defaultValue`, which the form submits; a reset declined keeps `value`; a reset a later listener cancels asks for nothing
 
 `item/AutocompleteItem.test.tsx`
 
@@ -260,13 +262,13 @@ of the Status is unverified, as for Combobox.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part and `includesText`, Rolldown, minified, gzipped, Solid left out.
-Measured on 2026-11-23.
+Measured on 2026-11-25, after #165.
 
 | App                                         | Size     | Budget  |
 | ------------------------------------------- | -------- | ------- |
-| `menhir/autocomplete`                       | 10,766 B | 11.5 kB |
-| `menhir/combobox`                           | 11,568 B | 12.5 kB |
-| `menhir/combobox` and `menhir/autocomplete` | 11,801 B |         |
+| `menhir/autocomplete`                       | 10,843 B | 11.5 kB |
+| `menhir/combobox`                           | 11,655 B | 12.5 kB |
+| `menhir/combobox` and `menhir/autocomplete` | 11,895 B |         |
 
 The budget was set before the behaviour, at Combobox's less its hidden
 input, value, labels and ItemIndicator. An app with both pays 233 B over
@@ -279,3 +281,7 @@ checks it on the built package). Sharing that code cost Combobox 78 B
 The two together were measured as `test/bundle-size/comparison.size-limit.js`
 measures components together: an app that imports both entry points and
 uses every part of each.
+
+10,766 B before #165, which moved the form reset to `core/formReset.ts`.
+The two together were 11,801 B. A control alone pays for the helper; an app
+with several pays for it once (`src/input/README.md`, "Size").

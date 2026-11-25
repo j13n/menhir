@@ -151,7 +151,9 @@ In order of precedence (PLAN.md section 8).
   telling its own changes by the list it set; the Root and Item pay
   nothing.
 - **A form reset** puts the list back to `defaultValue` through the setter,
-  once, so a controlled group asks with one `onValueChange`. The Items do
+  once, so a controlled group asks with one `onValueChange`, in a task
+  after the `reset` event, unless the app cancels it (`core/formReset.ts`,
+  #165). The Items do
   not ask on their own: each passes its Checkbox a `defaultChecked` equal to
   its current state, so Checkbox's own reset asks for nothing, and puts the
   hidden input back to the box's state.
@@ -177,6 +179,7 @@ pattern or its mixed-state example requires.
 - Form: submits one entry per checked box under the group's `name`, in the document's order, and nothing when none is checked
 - Form: submits to the form named by `form`
 - Form: a form reset goes back to `defaultValue`, and the boxes' hidden inputs with it; when controlled, it asks once with `defaultValue`
+- Form: By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken goes back to `defaultValue`, which the form submits; a reset declined asks once and keeps `value`; a reset a later listener cancels asks for nothing
 - Form: the form's `change` listener and `FormData` see the new value
 - `disabled`: disables the fieldset, every box and its hidden input, with `data-disabled` on the Root, each box and its Indicator; no box changes; the form submits nothing; follows changes while rendered
 - `required`: blocks a submission while no box is checked; one box checked lets it submit; `data-required` on the Root, and no box is `required` or `aria-required`
@@ -237,18 +240,17 @@ Outside `src`:
 
 ## Left out
 
-| Case                                                                         | Reason                                                                                                                                                                                                           |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `aria-controls` from the Parent to its boxes                                 | The consumer passes it through, as on Checkbox: the Parent knows values, not ids, and generating every Item's id for it would cost every group; screen readers do little with it                                 |
-| One tab stop and arrow keys among the boxes                                  | The checkbox pattern names Space only, and Tab moves between checkboxes, as in the mixed-state example                                                                                                           |
-| `aria-required` on the group or the boxes                                    | The `group` role takes none, and on each box it would say each one is required (Decisions)                                                                                                                       |
-| `data-required` on the boxes                                                 | The group is required, not a box; `[data-required]` on the Root, or `:has()`, reaches them                                                                                                                       |
-| A minimum or maximum number of boxes other than "at least one"               | An error from outside: a memo the app passes as the Field's `error`, as the Fieldset recipe does                                                                                                                 |
-| `readOnly` on the group                                                      | Each Item takes Checkbox's `readOnly`; the ticket names none for the group                                                                                                                                       |
-| The Parent registering the Items instead of taking `values`                  | Wrong in the server HTML until hydration, and a cost to every Item (Decisions)                                                                                                                                   |
-| `Field.Label` as the group's name                                            | A `<label for>` cannot name a fieldset; the legend does (Decisions)                                                                                                                                              |
-| A Checkbox that reads the group's context, so `Checkbox.Root` joins directly | Every Checkbox would pay the read and bundle the group's context, which the ticket rules out (`menhir/checkbox` bundles nothing of the group)                                                                    |
-| A form reset by a real press of a reset button                               | The same timing as Checkbox's own, tracked in #165: a reset dispatched from script, as the tests do, is followed; a real press runs microtasks before the browser resets the controls, which #165 fixes for both |
+| Case                                                                         | Reason                                                                                                                                                                           |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `aria-controls` from the Parent to its boxes                                 | The consumer passes it through, as on Checkbox: the Parent knows values, not ids, and generating every Item's id for it would cost every group; screen readers do little with it |
+| One tab stop and arrow keys among the boxes                                  | The checkbox pattern names Space only, and Tab moves between checkboxes, as in the mixed-state example                                                                           |
+| `aria-required` on the group or the boxes                                    | The `group` role takes none, and on each box it would say each one is required (Decisions)                                                                                       |
+| `data-required` on the boxes                                                 | The group is required, not a box; `[data-required]` on the Root, or `:has()`, reaches them                                                                                       |
+| A minimum or maximum number of boxes other than "at least one"               | An error from outside: a memo the app passes as the Field's `error`, as the Fieldset recipe does                                                                                 |
+| `readOnly` on the group                                                      | Each Item takes Checkbox's `readOnly`; the ticket names none for the group                                                                                                       |
+| The Parent registering the Items instead of taking `values`                  | Wrong in the server HTML until hydration, and a cost to every Item (Decisions)                                                                                                   |
+| `Field.Label` as the group's name                                            | A `<label for>` cannot name a fieldset; the legend does (Decisions)                                                                                                              |
+| A Checkbox that reads the group's context, so `Checkbox.Root` joins directly | Every Checkbox would pay the read and bundle the group's context, which the ticket rules out (`menhir/checkbox` bundles nothing of the group)                                    |
 
 ## Browsers and screen readers
 
@@ -267,17 +269,21 @@ be heard in VoiceOver, NVDA and JAWS.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-24, after #147.
+2026-11-25, after #165.
 
 | App                     | Size    | Budget |
 | ----------------------- | ------- | ------ |
-| `menhir/checkbox-group` | 2,391 B | 2.4 kB |
-| `menhir/checkbox`       | 1,708 B | 2 kB   |
+| `menhir/checkbox-group` | 2,472 B | 2.5 kB |
+| `menhir/checkbox`       | 1,799 B | 2 kB   |
 
-The group is 683 B over Checkbox, whose Root and Indicator it bundles, so
+The group is 673 B over Checkbox, whose Root and Indicator it bundles, so
 an app with both pays for Checkbox once. Both grew with #147, which moved
 Checkbox's hidden input to `core` (2,338 B and 1,677 B before;
 `src/radio/README.md`, "Size"). An app that renders no Parent
 bundles about 180 B less: 2,071 B for Root, Item and Indicator against
 2,252 B with the Parent, each measured from an app that uses those parts
 alone.
+
+2,391 B before #165, which moved the form reset to `core/formReset.ts`. The
+budget was 2.4 kB. A control alone pays for the helper; an app with several
+pays for it once (`src/input/README.md`, "Size").

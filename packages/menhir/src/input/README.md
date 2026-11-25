@@ -117,7 +117,7 @@ attribute of an `<input>`, and:
   its attribute is `defaultValue`. A controlled one keeps its text through
   the reset, by making its text its `value` attribute during the event, so
   the element never shows a text its consumer does not hold, such as the
-  server's first text after hydration. Then, in a task of its own, an Input
+  server's first text after hydration. Then, in a task after the event, an Input
   whose text was not `defaultValue` (`""` without one) calls `onValueChange`
   with `defaultValue` and the reason `reset`, controlled or not; a
   controlled one shows the new text if its consumer takes it. A task, not
@@ -129,7 +129,8 @@ attribute of an `<input>`, and:
   cancels the part's handler", is about a part's own handler). An Input the
   reset removes before its task, such as a row of a list the app's
   `onReset` takes back to one, asks for nothing, so it does not write its
-  row back (found with Form, #144).
+  row back (found with Form, #144). Every Menhir control listens this way,
+  through `core/formReset.ts` (#165).
 - **A textarea through `render`**, as `Field.Control` does, with
   `render={(p) => <textarea {...p} />}`. Every line of Input works on a
   `<textarea>` unchanged, so a part of its own would only repeat it.
@@ -186,6 +187,7 @@ part conventions. No WAI-ARIA pattern applies, so no case is marked "A".
 - Autofill: a value the browser fills in, with an `input` event, calls `onValueChange`
 - In a Field, through `Field.Control`'s `render`: labelled by the Label, named by the Field's `name`, described by the Description, and its error shows once touched, while its value is controlled
 - A `<textarea>` in a Field, through both `render`s
+- In a Field, a reset its consumer declines, by a real press (Chromium only): the element keeps its text, and the Field's touched state clears without Solid writing the bound text back over the reset element
 
 `test/input/Input.hydrate.test.tsx`
 
@@ -222,11 +224,11 @@ description; no screen reader has been tried with Input yet.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-23.
+2026-11-25, after #165.
 
 | App                | Size  | Budget |
 | ------------------ | ----- | ------ |
-| `menhir/input`     | 934 B | 950 B  |
+| `menhir/input`     | 993 B | 1 kB   |
 | `menhir/separator` | 746 B | 900 B  |
 
 Most of it is what every part has: `mergeElementProps` and `renderElement`
@@ -235,3 +237,11 @@ own code is the 188 B over Separator: the write back after an edit, the
 `compositionend` listener and the form's `reset` listener (13 B of it, from
 921 B, the check that an Input the reset removed asks for nothing, #144). In an app with
 any other Menhir component, `core` is there already.
+
+934 B before #165, which moved the form reset to `core/formReset.ts`. The
+budget was 950 B. Input's own code is now 247 B over Separator. The helper
+holds the task after the `reset` event, the app's cancel and the check that
+the reset removed the part, so a control alone pays for it, and an app with
+several pays for it once: every form control together went from 19,811 B to
+19,775 B, and Field, Input, Switch and Checkbox together from 3,042 B to
+3,087 B, each set imported from its entry points.

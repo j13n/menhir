@@ -51,6 +51,14 @@ export default defineConfig({
     {
       files: [library, fixtures],
       rules: {
+        // `onFormReset` (core/formReset.ts) calls its callbacks from the
+        // form's `reset` event and a task after it, never in a tracked
+        // scope; named here, the rule does not ask for their reads of props
+        // and signals to be tracked.
+        "solid/reactivity": [
+          "warn",
+          { customReactiveFunctions: ["onFormReset"] },
+        ],
         // A file outside the layer folders, such as a root barrel `src/index.ts`
         // (section 6, rule 1).
         "boundaries/no-unknown-files": "error",

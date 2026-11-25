@@ -127,9 +127,11 @@ In order of precedence (PLAN.md section 8).
   form does not submit it.
 - **A form reset** sets the value back to `defaultValue` once, through the
   setter, so a controlled group asks once: every Item's input asks the
-  group, and a set equal to the last one in the turn does nothing
-  (`createControllableSignal`). Each Item then puts its input back to its
-  own state, which the browser reset to its `checked` attribute.
+  group, all in one task after the `reset` event (`core/formReset.ts`,
+  #165), and a set equal to the last one in the task does nothing
+  (`createControllableSignal`). Each Item holds its input through the
+  browser's reset, then puts it back to its own state. A reset the app
+  cancels asks for nothing.
 - **The group's error is a Field's**, with the group as its Control
   (`<Field.Control render={Radio.Root}>`), as for Checkbox Group: the
   fieldset gets the Field's `id`, `aria-describedby`, `aria-invalid`,
@@ -177,6 +179,7 @@ pattern requires.
 - Form: `form.elements[name]` is a radio group whose `value` is the checked value
 - Form: submits to the form named by `form`
 - Form: a form reset goes back to `defaultValue`, and the hidden inputs with it; when controlled, it asks once
+- Form: By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken goes back to `defaultValue`, which the form submits; a reset declined asks once and keeps `value`; a reset a later listener cancels asks for nothing
 - Form: the form's `change` listener and `FormData` see the new value
 - `disabled`: disables the fieldset, every radio and its hidden input, with `data-disabled` on the Root, each radio and its Indicator; no radio changes; the form submits nothing; follows changes while rendered
 - `required`: `aria-required` and `data-required` on the Root, `required` on every hidden radio while none is checked, and neither on an Item; absent when not set
@@ -260,22 +263,21 @@ Outside `src`:
 
 ## Left out
 
-| Case                                                                                         | Reason                                                                                                                                                                                                                                        |
-| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Radios in a toolbar, where arrow keys move focus without checking                            | The pattern's second keyboard model, for radios styled as toggle buttons: a Toggle Group in a `toolbar` is that, and a Toolbar (#150) would decide how a group inside it takes the keys                                                       |
-| Enter checking a radio                                                                       | Only the toolbar model names it, as optional                                                                                                                                                                                                  |
-| Home and End                                                                                 | Neither the pattern nor native radios have them (Decisions)                                                                                                                                                                                   |
-| Shift+Tab into a group with none checked focusing the last radio                             | The pattern notes some browsers do this with native radios, and asks for the first                                                                                                                                                            |
-| `orientation` and `aria-orientation`                                                         | Every arrow key works whatever the layout, as the pattern says, so the group needs no orientation                                                                                                                                             |
-| The tab stop in the server HTML when the checked radio is disabled, or the value has no Item | The server renders each radio before it knows the others; the first enabled radio gets the tab stop once the radios are mounted                                                                                                               |
-| `readOnly` on the group                                                                      | The ticket names none, and native radios have none                                                                                                                                                                                            |
-| A radio unchecked by a click, or by Ctrl+Space                                               | A radio cannot be unchecked by the user; a choice that can be none is a Toggle Group, or a "None" radio                                                                                                                                       |
-| `aria-required` and `data-required` on each radio                                            | The `radio` role takes no `aria-required`, and the group is required, not a radio (Decisions)                                                                                                                                                 |
-| `aria-posinset` and `aria-setsize`                                                           | Browsers count the radios of a `radiogroup` themselves                                                                                                                                                                                        |
-| `Field.Label` as the group's name                                                            | A `<label for>` cannot name a fieldset; the legend does, as for Checkbox Group                                                                                                                                                                |
-| Label, Description and ErrorMessage parts                                                    | Field's: the group joins a Field as its Control (Decisions)                                                                                                                                                                                   |
-| Keyboard modifiers in the change callback, and canceling a change                            | `onValueChange` receives the value only, and nothing cancels a part's handler (PLAN.md section 8)                                                                                                                                             |
-| A form reset by a real press of a reset button                                               | The same timing as Checkbox's own, tracked in #165: a reset dispatched from script, as the tests do, is followed; a real press runs microtasks before the browser resets the controls, which #165 fixes for every control with a hidden input |
+| Case                                                                                         | Reason                                                                                                                                                                                  |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Radios in a toolbar, where arrow keys move focus without checking                            | The pattern's second keyboard model, for radios styled as toggle buttons: a Toggle Group in a `toolbar` is that, and a Toolbar (#150) would decide how a group inside it takes the keys |
+| Enter checking a radio                                                                       | Only the toolbar model names it, as optional                                                                                                                                            |
+| Home and End                                                                                 | Neither the pattern nor native radios have them (Decisions)                                                                                                                             |
+| Shift+Tab into a group with none checked focusing the last radio                             | The pattern notes some browsers do this with native radios, and asks for the first                                                                                                      |
+| `orientation` and `aria-orientation`                                                         | Every arrow key works whatever the layout, as the pattern says, so the group needs no orientation                                                                                       |
+| The tab stop in the server HTML when the checked radio is disabled, or the value has no Item | The server renders each radio before it knows the others; the first enabled radio gets the tab stop once the radios are mounted                                                         |
+| `readOnly` on the group                                                                      | The ticket names none, and native radios have none                                                                                                                                      |
+| A radio unchecked by a click, or by Ctrl+Space                                               | A radio cannot be unchecked by the user; a choice that can be none is a Toggle Group, or a "None" radio                                                                                 |
+| `aria-required` and `data-required` on each radio                                            | The `radio` role takes no `aria-required`, and the group is required, not a radio (Decisions)                                                                                           |
+| `aria-posinset` and `aria-setsize`                                                           | Browsers count the radios of a `radiogroup` themselves                                                                                                                                  |
+| `Field.Label` as the group's name                                                            | A `<label for>` cannot name a fieldset; the legend does, as for Checkbox Group                                                                                                          |
+| Label, Description and ErrorMessage parts                                                    | Field's: the group joins a Field as its Control (Decisions)                                                                                                                             |
+| Keyboard modifiers in the change callback, and canceling a change                            | `onValueChange` receives the value only, and nothing cancels a part's handler (PLAN.md section 8)                                                                                       |
 
 ## Browsers and screen readers
 
@@ -289,14 +291,14 @@ description are still to be heard in VoiceOver, NVDA and JAWS.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-24.
+2026-11-25, after #165.
 
 | App                   | Size    | Budget |
 | --------------------- | ------- | ------ |
-| `menhir/radio`        | 2,507 B | 2.6 kB |
+| `menhir/radio`        | 2,597 B | 2.6 kB |
 | `menhir/toggle-group` | 1,902 B | 2.3 kB |
 
-Radio is 605 B over Toggle Group, which has the same roving focus and
+Radio is 695 B over Toggle Group, which has the same roving focus and
 controllable value: the hidden input, the button's own props and the
 Indicator.
 
@@ -325,3 +327,7 @@ together they are 4 B larger. An app with Radio and Checkbox saves 217 B,
 and one with all three 237 B: a third copy would not have compressed away,
 since Radio's input is a radio with a group's `name`. A fix to the hidden
 input, such as the reset timing of #165, is now made once.
+
+2,507 B before #165, which moved the form reset to `core/formReset.ts`. A
+control alone pays for the helper; an app with several pays for it once
+(`src/input/README.md`, "Size").

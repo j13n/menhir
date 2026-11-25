@@ -2,8 +2,15 @@
 // in ../README.md.
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { afterFlush, createRenderer, screen } from "#test-utils";
+import {
+  afterFlush,
+  afterReset,
+  createRenderer,
+  isJSDOM,
+  screen,
+} from "#test-utils";
 
+import { centerOf, press } from "../../../test/floating/input.ts";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { City } from "../../../test/autocomplete/City.tsx";
 import { input, item } from "../../../test/autocomplete/queries.ts";
@@ -97,7 +104,7 @@ describe("<Autocomplete.Input /> in a form", () => {
     await afterFlush();
 
     await user.click(button("Reset"));
-    await afterFlush();
+    await afterReset();
 
     expect(onValueChange).toHaveBeenLastCalledWith("Oslo", {
       reason: "reset",
@@ -118,12 +125,61 @@ describe("<Autocomplete.Input /> in a form", () => {
     ));
 
     await user.click(button("Reset"));
-    await afterFlush();
+    await afterReset();
 
     expect(onValueChange).toHaveBeenCalledWith("Oslo", {
       reason: "reset",
       event: expect.any(Event),
     });
     expect(input()).toHaveValue("Bergen");
+  });
+
+  // A press of the user's, not a script's: the browser runs microtasks as
+  // each listener of `reset` returns, before it resets the controls.
+  describe.skipIf(isJSDOM)("a form reset by a real press", () => {
+    const pressReset = () => press(centerOf(button("Reset")));
+
+    it("puts back defaultValue, and the form submits it", async () => {
+      const { user } = await render(() => <CityForm defaultValue="Oslo" />);
+      await user.clear(input());
+      await user.type(input(), "Tromsø");
+      await afterFlush();
+
+      await pressReset();
+      await afterReset();
+
+      expect(input()).toHaveValue("Oslo");
+      expect(submitted()).toEqual({ city: "Oslo" });
+    });
+
+    it("keeps value when its consumer declines the reset", async () => {
+      await render(() => <CityForm value="Bergen" defaultValue="Oslo" />);
+
+      await pressReset();
+      await afterReset();
+
+      expect(input()).toHaveValue("Bergen");
+      expect(submitted()).toEqual({ city: "Bergen" });
+    });
+
+    it("asks for nothing for a reset a later listener cancels", async () => {
+      const onValueChange = vi.fn();
+      await render(() => (
+        <CityForm
+          value="Bergen"
+          defaultValue="Oslo"
+          onValueChange={onValueChange}
+        />
+      ));
+      // Added after the Autocomplete's own listener, which is added once it
+      // has settled.
+      form().addEventListener("reset", (event) => event.preventDefault());
+
+      await pressReset();
+      await afterReset();
+
+      expect(onValueChange).not.toHaveBeenCalled();
+      expect(input()).toHaveValue("Bergen");
+    });
   });
 });

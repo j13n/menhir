@@ -10,6 +10,7 @@ import {
 
 import { FormContext } from "../core/formContext.ts";
 import type { FormContextValue, FormErrors } from "../core/formContext.ts";
+import { onFormReset } from "../core/formReset.ts";
 import { callHandler, mergeElementProps } from "../core/mergeElementProps.ts";
 import type { Handler } from "../core/mergeElementProps.ts";
 import { renderElement } from "../core/renderElement.tsx";
@@ -65,14 +66,13 @@ export function Form(props: FormProps) {
   // same update is the answer to a later submission.
   const hide = (
     update: (names: ReadonlySet<string>) => ReadonlySet<string> | true,
-  ) => {
-    const met = untrack(errors);
+    met = untrack(errors),
+  ) =>
     onFlush(() => {
       if (untrack(errors) === met) {
         setHidden((names) => (names === true ? names : update(names)));
       }
     });
-  };
   // An edit makes the error of that control's name stale.
   const hideError = (event: Event) => {
     const name = (event.target as Partial<Validatable>).name;
@@ -85,13 +85,17 @@ export function Form(props: FormProps) {
   onSettled(() => {
     if (form) form.noValidate = true;
   });
+  // A reset hides every error, unless the app cancels it: in a task after
+  // the event, with the errors the event met (`onFormReset`).
+  onFormReset(
+    () => form,
+    (_, met) => hide(() => true, met),
+    () => untrack(errors),
+  );
 
   const ownProps = {
     onInput: hideError,
     onChange: hideError,
-    // A reset the app cancels, by its own handler, keeps the errors.
-    onReset: (event: Event) =>
-      hide((names) => (event.defaultPrevented ? names : true)),
     onSubmit: (event: SubmitEvent) => {
       const submitter = event.submitter as HTMLButtonElement | null;
       // `checkValidity()` fires `invalid` at each invalid control, which

@@ -3,10 +3,31 @@
 import { createEffect } from "solid-js";
 import { describe, expect, it, vi } from "vitest";
 
-import { afterFlush, createRenderer, isJSDOM, screen } from "#test-utils";
+import {
+  afterFlush,
+  afterReset,
+  createRenderer,
+  isJSDOM,
+  screen,
+} from "#test-utils";
+
+import { centerOf, press } from "../../test/floating/input.ts";
 
 import { Field } from "./index.ts";
 import { useFieldRootContext } from "./root/FieldRootContext.ts";
+
+/** The flags of the validity the Field last read, as `valueMissing`. */
+function ValidityFlags(props: { "data-testid": string }) {
+  const root = useFieldRootContext();
+  return (
+    <output data-testid={props["data-testid"]}>
+      {Object.entries(root.validity() ?? {})
+        .filter(([flag, set]) => set === true && flag !== "valid")
+        .map(([flag]) => flag)
+        .join(" ")}
+    </output>
+  );
+}
 
 function ContactForm(props: {
   onSubmit?: (data: FormData) => void;
@@ -30,6 +51,7 @@ function ContactForm(props: {
         <Field.Label>Email</Field.Label>
         <Field.Control type="email" required />
         <Field.Error data-testid="email-error" />
+        <ValidityFlags data-testid="email-validity" />
       </Field.Root>
       <Field.Root name="message" data-testid="message">
         <Field.Label>Message</Field.Label>
@@ -143,7 +165,7 @@ describe("Field in a form", () => {
     expect(errorOf("email")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Reset" }));
-    await afterFlush();
+    await afterReset();
 
     expect(screen.getByRole("textbox", { name: "Email" })).toHaveValue("");
     for (const field of ["name", "email", "message", "topic"]) {
@@ -162,10 +184,52 @@ describe("Field in a form", () => {
     expect(errorOf("email")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Reset" }));
-    await afterFlush();
+    await afterReset();
 
     expect(screen.getByTestId("email")).toHaveAttribute("data-touched", "");
     expect(errorOf("email")).toBeInTheDocument();
+  });
+
+  // A press of the user's, not a script's: the browser runs microtasks as
+  // each listener of `reset` returns, before it resets the controls.
+  describe.skipIf(isJSDOM)("a reset by a real press", () => {
+    const pressReset = () =>
+      press(centerOf(screen.getByRole("button", { name: "Reset" })));
+
+    it("clears touched and reads the validity of the reset controls", async () => {
+      const { user } = await render(() => <ContactForm />);
+      await user.type(screen.getByRole("textbox", { name: "Email" }), "nope");
+      await user.click(screen.getByRole("button", { name: "Send" }));
+      expect(screen.getByTestId("email-validity")).toHaveTextContent(
+        "typeMismatch",
+      );
+
+      await pressReset();
+      await afterReset();
+
+      expect(screen.getByRole("textbox", { name: "Email" })).toHaveValue("");
+      expect(screen.getByTestId("email")).not.toHaveAttribute("data-touched");
+      expect(errorOf("email")).toBeNull();
+      expect(screen.getByTestId("email-validity")).toHaveTextContent(
+        /^valueMissing$/,
+      );
+    });
+
+    it("keeps touched and the errors for a reset a later listener cancels", async () => {
+      const { user, container } = await render(() => <ContactForm />);
+      await user.click(screen.getByRole("button", { name: "Send" }));
+      // Added after the Fields' own listeners, which are added once they
+      // have settled.
+      container
+        .querySelector("form")!
+        .addEventListener("reset", (event) => event.preventDefault());
+
+      await pressReset();
+      await afterReset();
+
+      expect(screen.getByTestId("email")).toHaveAttribute("data-touched", "");
+      expect(errorOf("email")).toBeInTheDocument();
+    });
   });
 
   it("wakes no reader of a Field's state when a submission leaves its validity as it was", async () => {

@@ -5,6 +5,7 @@ import { Loading, createMemo, createSignal, flush } from "solid-js";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   describeConformance,
   fireEvent,
@@ -12,7 +13,10 @@ import {
   screen,
 } from "#test-utils";
 
+import { centerOf, press } from "../../../test/floating/input.ts";
+
 import { CheckboxGroup } from "../index.ts";
+import type { CheckboxGroupRootProps } from "./CheckboxGroupRoot.tsx";
 
 const box = (name: string) => screen.getByRole("checkbox", { name });
 
@@ -309,7 +313,7 @@ describe("<CheckboxGroup.Root />", () => {
       onValueChange.mockClear();
 
       form.reset();
-      await afterFlush();
+      await afterReset();
 
       expect(onValueChange).toHaveBeenCalledExactlyOnceWith(["a"]);
       expect(box("a")).toHaveAttribute("aria-checked", "true");
@@ -334,11 +338,73 @@ describe("<CheckboxGroup.Root />", () => {
       const form = screen.getByTestId<HTMLFormElement>("form");
 
       form.reset();
-      await afterFlush();
+      await afterReset();
 
       expect(onValueChange).toHaveBeenCalledExactlyOnceWith(["a"]);
       expect(box("b")).toHaveAttribute("aria-checked", "true");
       expect(submitted(form)).toEqual(["b", "c"]);
+    });
+
+    // A press of the user's, not a script's: the browser runs microtasks
+    // as each listener of `reset` returns, before it resets the controls.
+    describe.skipIf(isJSDOM)("reset by a real press", () => {
+      const resetForm = (props: CheckboxGroupRootProps) => (
+        <form data-testid="form">
+          <CheckboxGroup.Root name="letters" {...props}>
+            <Boxes />
+          </CheckboxGroup.Root>
+          <button type="reset">Reset</button>
+        </form>
+      );
+      const pressReset = () =>
+        press(centerOf(screen.getByRole("button", { name: "Reset" })));
+
+      it("goes back to defaultValue, and the form submits it", async () => {
+        await render(() => resetForm({ defaultValue: ["a"] }));
+        fireEvent.click(box("a"));
+        fireEvent.click(box("b"));
+        await afterFlush();
+
+        await pressReset();
+        await afterReset();
+
+        expect(box("a")).toHaveAttribute("aria-checked", "true");
+        expect(box("b")).toHaveAttribute("aria-checked", "false");
+        expect(hiddenInput("a").checked).toBe(true);
+        expect(submitted(screen.getByTestId("form"))).toEqual(["a"]);
+      });
+
+      it("keeps value when its consumer declines the reset", async () => {
+        const onValueChange = vi.fn();
+        await render(() =>
+          resetForm({ value: ["b"], defaultValue: ["a"], onValueChange }),
+        );
+
+        await pressReset();
+        await afterReset();
+
+        expect(onValueChange).toHaveBeenCalledExactlyOnceWith(["a"]);
+        expect(box("b")).toHaveAttribute("aria-checked", "true");
+        expect(submitted(screen.getByTestId("form"))).toEqual(["b"]);
+      });
+
+      it("asks for nothing for a reset a later listener cancels", async () => {
+        const onValueChange = vi.fn();
+        await render(() =>
+          resetForm({ value: ["b"], defaultValue: ["a"], onValueChange }),
+        );
+        // Added after the group's own listener, which is added once it has
+        // settled.
+        screen
+          .getByTestId("form")
+          .addEventListener("reset", (event) => event.preventDefault());
+
+        await pressReset();
+        await afterReset();
+
+        expect(onValueChange).not.toHaveBeenCalled();
+        expect(submitted(screen.getByTestId("form"))).toEqual(["b"]);
+      });
     });
   });
 
@@ -510,7 +576,7 @@ describe("<CheckboxGroup.Root />", () => {
         expect(validityInput().validity.valid).toBe(true);
 
         screen.getByTestId<HTMLFormElement>("form").reset();
-        await afterFlush();
+        await afterReset();
         expect(validityInput().validity.valueMissing).toBe(blocks);
       },
     );

@@ -6,6 +6,7 @@ import { Loading, createMemo, createSignal, flush } from "solid-js";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   describeConformance,
   fireEvent,
@@ -13,7 +14,10 @@ import {
   screen,
 } from "#test-utils";
 
+import { centerOf, press } from "../../../test/floating/input.ts";
+
 import { Switch } from "../index.ts";
+import type { SwitchRootProps } from "./SwitchRoot.tsx";
 
 describeConformance("<Switch.Root />", (props) => <Switch.Root {...props} />, {
   tagName: "BUTTON",
@@ -657,7 +661,7 @@ describe("<Switch.Root />", () => {
       expect(switchEl).toHaveAttribute("aria-checked", "false");
 
       screen.getByTestId<HTMLFormElement>("form").reset();
-      await afterFlush();
+      await afterReset();
 
       expect(switchEl).toHaveAttribute("aria-checked", "true");
       expect(onCheckedChange).toHaveBeenLastCalledWith(true);
@@ -676,8 +680,7 @@ describe("<Switch.Root />", () => {
       ));
 
       screen.getByTestId<HTMLFormElement>("form").reset();
-      // The switch puts the input back after the browser's own reset.
-      await afterFlush();
+      await afterReset();
 
       expect(onCheckedChange).toHaveBeenCalledWith(false);
       expect(screen.getByRole("switch")).toHaveAttribute(
@@ -688,6 +691,68 @@ describe("<Switch.Root />", () => {
         screen.getByRole<HTMLInputElement>("checkbox", { hidden: true })
           .checked,
       ).toBe(true);
+    });
+
+    // A press of the user's, not a script's: the browser runs microtasks
+    // as each listener of `reset` returns, before it resets the controls.
+    describe.skipIf(isJSDOM)("reset by a real press", () => {
+      const resetForm = (props: SwitchRootProps) => (
+        <form data-testid="form">
+          <Switch.Root name="wifi" {...props} />
+          <button type="reset">Reset</button>
+        </form>
+      );
+      const hiddenInput = () =>
+        screen.getByRole<HTMLInputElement>("checkbox", { hidden: true });
+      const pressReset = () =>
+        press(centerOf(screen.getByRole("button", { name: "Reset" })));
+
+      it("goes back to defaultChecked, and the form submits it", async () => {
+        const { user } = await render(() =>
+          resetForm({ defaultChecked: true }),
+        );
+        await user.click(screen.getByRole("switch"));
+        await afterFlush();
+
+        await pressReset();
+        await afterReset();
+
+        expect(screen.getByRole("switch")).toHaveAttribute(
+          "aria-checked",
+          "true",
+        );
+        expect(hiddenInput().checked).toBe(true);
+        expect(submitted(screen.getByTestId("form"), "wifi")).toEqual(["on"]);
+      });
+
+      it("keeps checked when its consumer declines the reset", async () => {
+        await render(() => resetForm({ checked: true }));
+
+        await pressReset();
+        await afterReset();
+
+        expect(screen.getByRole("switch")).toHaveAttribute(
+          "aria-checked",
+          "true",
+        );
+        expect(hiddenInput().checked).toBe(true);
+      });
+
+      it("asks for nothing for a reset a later listener cancels", async () => {
+        const onCheckedChange = vi.fn();
+        await render(() => resetForm({ checked: true, onCheckedChange }));
+        // Added after the switch's own listener, which is added once it
+        // has settled.
+        screen
+          .getByTestId("form")
+          .addEventListener("reset", (event) => event.preventDefault());
+
+        await pressReset();
+        await afterReset();
+
+        expect(onCheckedChange).not.toHaveBeenCalled();
+        expect(hiddenInput().checked).toBe(true);
+      });
     });
 
     it("blocks submission while required and off", async () => {

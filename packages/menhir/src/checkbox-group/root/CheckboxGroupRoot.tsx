@@ -1,7 +1,8 @@
 import type { JSX } from "@solidjs/web";
-import { createUniqueId, omit, onSettled } from "solid-js";
+import { createUniqueId, omit } from "solid-js";
 
 import { createControllableSignal } from "../../core/createControllableSignal.ts";
+import { onFormReset } from "../../core/formReset.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { ElementProps, RenderProp } from "../../core/renderElement.tsx";
@@ -60,13 +61,10 @@ export function CheckboxGroupRoot(props: CheckboxGroupRootProps) {
   // A form reset puts the list back to its default, once, through the
   // setter, so that a controlled group asks once. Each Item's Checkbox asks
   // for nothing itself (CheckboxGroupItem).
-  onSettled(() => {
-    const form = input?.form;
-    if (!form) return;
-    const onReset = () => setValue(props.defaultValue ?? []);
-    form.addEventListener("reset", onReset);
-    return () => form.removeEventListener("reset", onReset);
-  });
+  onFormReset(
+    () => input?.form,
+    () => setValue(props.defaultValue ?? []),
+  );
 
   const ownProps: ElementProps & { disabled?: boolean } = {
     get disabled() {

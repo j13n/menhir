@@ -150,7 +150,10 @@ import { issuesToErrors } from "menhir/form/standard-schema";
 - **Reset.** The browser resets the controls to their defaults, Input and
   Menhir's controls follow it, Field clears touched, and Form hides its
   errors. An app whose values are in a store resets the store in
-  `onReset`, as it wrote it.
+  `onReset`, as it wrote it. Form hides them in a task after the `reset`
+  event, as the controls answer it (`core/formReset.ts`, #165), so a reset
+  any listener cancels keeps them, and a new `errors` object passed during
+  the event still shows.
 - **Errors rendered by the server.** The app reads them from the
   submission (the router keeps the thrown value of a submission made
   before hydration for the next server render) and passes them as
@@ -179,6 +182,8 @@ conventions.
 - An error from `errors` hides on its control's next edit, and the others stay; a new `errors` object shows them again
 - An edit hides only the errors it was made against: a new `errors` object passed before the edit's flush still shows
 - A reset puts the controls back to their defaults, hides the errors and the touched errors; a reset the app cancels keeps them
+- A new `errors` object passed by the reset's own handler shows
+- By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset hides the errors; a reset a later listener cancels keeps them
 - A Field outside a Form reads no errors (and throws nothing)
 
 `Form.store.test.tsx`: the app's own state
@@ -233,13 +238,13 @@ JAWS (the definition of done in #144).
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 all of it, Rolldown, minified, gzipped, Solid left out.
-Measured on 2026-11-24.
+Measured on 2026-11-25, after #165.
 
 | App                           | Size    | Budget |
 | ----------------------------- | ------- | ------ |
-| `menhir/form`                 | 1,003 B | 1.1 kB |
+| `menhir/form`                 | 1,122 B | 1.2 kB |
 | `menhir/form/standard-schema` | 230 B   | 300 B  |
-| `menhir/field`                | 1,799 B | 1.8 kB |
+| `menhir/field`                | 1,890 B | 1.9 kB |
 
 Most of Form is what every part pays, `core`'s merging and `render`
 (Separator, which is all of that, is 746 B). Its own are the submit check
@@ -249,3 +254,9 @@ context, which a Field outside a Form pays too (Decisions).
 `test/bundle-size/formModules.test.ts` checks that `menhir/form` bundles no
 `issuesToErrors`, and `fieldModules.test.ts` that it bundles no module of
 Field.
+
+1,003 B and 1,799 B before #165, which moved the form reset to
+`core/formReset.ts`; the budgets were 1.1 kB and 1.8 kB. Form alone pays
+for the whole helper, which an app's controls bring anyway: Form, Field and
+Input together went from 2,315 B to 2,371 B, and Form with every form
+control from 20,048 B to 20,026 B, each set imported from its entry points.

@@ -159,7 +159,9 @@ What the browser does, the `floating` layer adds, and the parts decide:
   - **Autofill**: a `change` with the `value` of an item selects it; else
     with an item's label, compared without case; else it is put back.
   - A form reset goes back to `defaultValue`, through the setter, so a
-    controlled Select asks.
+    controlled Select asks, in a task after the `reset` event, unless the
+    app cancels it; the input is held through the browser's reset
+    (`core/formReset.ts`, #165).
   - When the browser blocks a submission and focuses the input, focus
     moves to the Trigger.
 - **`disabled`** on the Root disables the Trigger and the input, so the
@@ -242,6 +244,7 @@ no layout and no real input. In jsdom an opened popover gets
 - `required` blocks submission while no item is selected, and not once one is
 - When the browser blocks the submission, focus moves to the Trigger (C)
 - A form reset goes back to `defaultValue`, and to none without one; when controlled, it asks with `onValueChange`
+- By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken goes back to `defaultValue`, which the form submits; a reset declined keeps `value`; a reset a later listener cancels asks for nothing
 - Autofill: a `change` of the input with an item's value selects it; with an item's label, in another case, selects it; with neither, the input is put back
 
 `value/SelectValue.test.tsx`
@@ -332,16 +335,20 @@ No screen reader has been tried yet, nor a browser's own autofill.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-23.
+2026-11-25, after #165.
 
 | Entry point     | Size     | Budget  |
 | --------------- | -------- | ------- |
-| `menhir/select` | 11,801 B | 12.5 kB |
+| `menhir/select` | 11,898 B | 12.5 kB |
 
 The budget was set before the behaviour, at about Menu's (11.9 kB) without
 its submenus, checkbox and radio items, safe area and return focus, plus
 `size`, the Value and the hidden input. Most of it is `@floating-ui/dom`,
 as for Menu.
+
+11,801 B before #165, which moved the form reset to `core/formReset.ts`. A
+control alone pays for the helper; an app with several pays for it once
+(`src/input/README.md`, "Size").
 
 ## Performance
 

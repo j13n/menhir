@@ -2,7 +2,7 @@
 // list and the cases left out are in README.md.
 import { describe, expect, it, vi } from "vitest";
 
-import { afterFlush, createRenderer, fireEvent, screen } from "#test-utils";
+import { afterReset, createRenderer, fireEvent, screen } from "#test-utils";
 
 import { Field } from "../field/index.ts";
 import { Form } from "../form/index.ts";
@@ -170,8 +170,7 @@ describe("<Radio.Root /> in a Field", () => {
     await user.click(radio("Small"));
 
     fireEvent.click(button("Reset"));
-    await afterFlush();
-    await afterFlush();
+    await afterReset();
 
     expect(radio("Small")).toHaveAttribute("aria-checked", "false");
     expect(error()).toBeNull();
