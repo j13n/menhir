@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.21
+
+### Patch Changes
+
+- 77a9672: Add menhir/multi-combobox: an input that selects several values out of a list, each shown as a removable chip, with Backspace and the arrow keys between the chips and the input, and one form entry per value.
+
 ## 0.1.20
 
 ### Patch Changes
