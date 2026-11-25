@@ -153,6 +153,17 @@ Built in #9, in `test/bundle-size` (its README has the details):
 - `checkboxGroupModules.test.ts` bundles `menhir/checkbox` alone and fails if the bundle has a module of Checkbox Group, which builds on it (rule 4, #146).
 - `popupModules.test.ts` does the same for each popup, against what that popup must not bundle (`popupModules.ts`): `menhir/dialog` and `menhir/alert-dialog` bundle no `@floating-ui/*`, no positioning and no hover. A row is checked once its popup is in `exports`, and a fixture popup proves the check reports a module it should not bundle (#95).
 - `floatingSize.test.ts` holds each module of the `floating` layer to its budget in `floatingBudgets.ts` (below), and fails if a folder in `src/floating` has none.
+- `pairSize.test.ts` measures each pair of `popupBases` and `simpleBases` (rule 4): the component and its base imported together, as the comparison measures its totals, and the base alone. It fails if the two together cost more than the base alone plus the pair's margin, kept beside the bases in `packages/menhir/layers.ts` (`popupBaseMargins`, `simpleBaseMargins`), or if a pair has none, so a component that copied its base's code instead of importing it fails. A margin is the measured difference plus about 20%, rounded up to 50 B, so it also catches growth. One margin for all would not do: the differences run from 36 B to 705 B. Measured on 2026-11-25 (#138), in bytes gzipped:
+
+  | Pair                       | Base alone | Together | Difference | Margin |
+  | -------------------------- | ---------: | -------: | ---------: | -----: |
+  | Alert Dialog on Dialog     |      3,526 |    3,562 |         36 |    100 |
+  | Autocomplete on Combobox   |     11,664 |   11,912 |        248 |    300 |
+  | Context Menu on Menu       |     11,909 |   12,193 |        284 |    350 |
+  | Menubar on Menu            |     11,909 |   12,487 |        578 |    700 |
+  | Checkbox Group on Checkbox |      1,808 |    2,513 |        705 |    850 |
+
+  Alert Dialog's margin is wider than 20%: gzip moves a difference that small by tens of bytes when either popup changes (it was 52 B when #138 was filed).
 
 ### The `floating` layer
 

@@ -22,11 +22,27 @@ export const popupComponents = [
 // import besides `core` and `floating` (PLAN.md section 6, rule 4; #32).
 // oxlint.config.ts allows these imports and no others between popups, so
 // an app that uses both pays for the shared parts once.
-export const popupBases: Record<string, string> = {
+export const popupBases = {
   "alert-dialog": "dialog",
   autocomplete: "combobox",
   "context-menu": "menu",
   menubar: "menu",
+} as const satisfies Record<string, string>;
+
+// What an app that already has a popup's base pays for the popup, in bytes
+// gzipped: the two imported together may cost at most this much more than
+// the base alone. test/bundle-size/pairSize.test.ts checks every pair of
+// `popupBases`, so a popup that copied its base's code instead of importing
+// it fails there. Each margin is the measured difference plus about 20%,
+// rounded up to 50 B; PLAN.md section 6, "Enforcement", records the
+// differences (#138). A pair without a margin fails typecheck.
+export const popupBaseMargins: Record<keyof typeof popupBases, number> = {
+  // 36 B measured, and gzip moves a difference that small by tens of bytes
+  // when either popup changes, so the margin is larger than 20%.
+  "alert-dialog": 100,
+  autocomplete: 300,
+  "context-menu": 350,
+  menubar: 700,
 };
 
 // The simple component each simple component builds on, by folder in src:
@@ -35,8 +51,13 @@ export const popupBases: Record<string, string> = {
 // Indicator (#146). oxlint.config.ts allows these imports and no others
 // between simple components, and the base reads nothing of the component
 // built on it, so an app with the base alone bundles none of it.
-export const simpleBases: Record<string, string> = {
+export const simpleBases = {
   "checkbox-group": "checkbox",
+} as const satisfies Record<string, string>;
+
+// The same margins as `popupBaseMargins`, for the pairs of `simpleBases`.
+export const simpleBaseMargins: Record<keyof typeof simpleBases, number> = {
+  "checkbox-group": 850,
 };
 
 // The modules of the `floating` layer (PLAN.md section 6), one folder each
