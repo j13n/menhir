@@ -69,6 +69,13 @@ export interface Menu {
   triggerId(): string | false | undefined;
   /** The trigger's element, once rendered: the anchor by default. */
   trigger: HTMLElement | undefined;
+  /**
+   * Where focus returns when the browser does not, as after an item in a
+   * submenu, instead of `trigger`. Set by a Context Menu's Trigger to the
+   * element the menu opened from, left out of `trigger` so that a press on
+   * it is a press outside.
+   */
+  returnTo?: HTMLElement;
   /** A submenu's trigger, as an item of its parent menu. */
   triggerItem: MenuItemEntry | undefined;
   /** The Popup's element, once rendered. */

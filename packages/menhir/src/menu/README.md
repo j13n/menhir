@@ -180,7 +180,11 @@ What the browser does, the `floating` layer adds, and the parts decide:
   `along`, which Right Arrow on an item with no submenu and Left Arrow in
   the Root's menu call to move along the bar, where in a Menu they do
   nothing; and `hoverOpened`, with which a press on the Trigger of a menu
-  that hover just opened keeps it open and moves focus into it.
+  that hover just opened keeps it open and moves focus into it. A Context
+  Menu's Trigger sets `returnTo`, the element the menu opened from, where
+  focus returns after an item in a submenu or Shift+Tab from one, instead
+  of the trigger, which a Context Menu leaves unset so that a press on
+  that element is a press outside (#137).
 - **The server renders a `defaultOpen` Menu closed**, and hydration opens
   it, as Popover does.
 
@@ -322,15 +326,16 @@ No screen reader has been tried yet.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-23.
+2026-11-25.
 
 | Entry point   | Size     | Budget  |
 | ------------- | -------- | ------- |
-| `menhir/menu` | 11,901 B | 13.5 kB |
+| `menhir/menu` | 11,907 B | 13.5 kB |
 
 Menubar's fields in a menu's state (Decisions, "Shared with Context Menu
 and Menubar") added 78 B, from 11,823 B: the arrow keys' path to the bar,
 the opening that keeps focus, and the Trigger's press after hover (#101).
+Context Menu's `returnTo` added 6 B, from 11,901 B (#137).
 
 The budget was set before the behaviour, at about Popover's (9.6 kB)
 without its Title, Description, Close and Arrow, plus `roving` (1,005 B),
