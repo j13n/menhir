@@ -157,6 +157,32 @@ describe("built package", () => {
     }
   });
 
+  it("bundles the parts Combobox and Multi Combobox share once", async () => {
+    const code = await bundle("comboboxAndMultiCombobox.js");
+
+    for (const name of [
+      "createComboboxBase",
+      "createComboboxInput",
+      "createComboboxItem",
+      "ComboboxTrigger",
+      "ComboboxClear",
+      "ComboboxPopup",
+      "ComboboxList",
+      "ComboboxItemIndicator",
+      "ComboboxGroup",
+      "ComboboxStatus",
+      "includesText",
+      "createPosition",
+      "createActiveDescendantList",
+      "MultiComboboxRoot",
+      "MultiComboboxInput",
+      "MultiComboboxItem",
+      "MultiComboboxChip",
+    ]) {
+      expect(count(code, name)).toBe(1);
+    }
+  });
+
   it("bundles the parts Menu and Context Menu share once", async () => {
     const code = await bundle("menuAndContextMenu.js");
 

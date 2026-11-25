@@ -70,6 +70,8 @@ export const libraries: Library[] = [
       meter: "@base-ui/react/meter",
       menu: "@base-ui/react/menu",
       menubar: "@base-ui/react/menubar",
+      // The same module as its Combobox.
+      "multi-combobox": "@base-ui/react/combobox",
       "navigation-menu": "@base-ui/react/navigation-menu",
       "number-field": "@base-ui/react/number-field",
       "otp-field": "@base-ui/react/otp-field",
@@ -138,6 +140,8 @@ export const libraries: Library[] = [
       meter: "@kobalte/core/meter",
       menu: "@kobalte/core/dropdown-menu",
       menubar: "@kobalte/core/menubar",
+      // The same module as its Combobox.
+      "multi-combobox": "@kobalte/core/combobox",
       "navigation-menu": "@kobalte/core/navigation-menu",
       "number-field": "@kobalte/core/number-field",
       popover: "@kobalte/core/popover",

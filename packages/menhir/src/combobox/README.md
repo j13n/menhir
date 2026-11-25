@@ -270,16 +270,18 @@ results())`, then reads it from the start, so `<Loading>` shows its
   `--anchor-width` and `--available-height` for its CSS.
 - **The server renders a `defaultOpen` Combobox closed**, and hydration
   opens it, as Select does.
-- **Autocomplete builds on it** (#104; `src/autocomplete/README.md`): its
-  Root shares a combobox through this context, typed as `ComboboxBase`, so
-  the Trigger, Clear, Popup, List, Group, GroupLabel and Status work inside
-  it unchanged. What the two Roots, Inputs and Items share is here, and
+- **Autocomplete builds on it** (#104; `src/autocomplete/README.md`), and
+  so does Multi Combobox (#206; `src/multi-combobox/README.md`): each Root
+  shares a combobox through this context, typed as `ComboboxBase`, so the
+  Trigger, Clear, Popup, List, Group, GroupLabel and Status work inside it
+  unchanged. What the Roots, Inputs and Items share is here, and
   each calls it: `createComboboxBase` (the open state, list navigation, the
   List's `id`, the `data-*` attributes), `input/createComboboxInput.ts` and
   `item/createComboboxItem.ts`. In development, a shared part outside
-  either Root throws an error that names both components, since it cannot
+  every Root throws an error that names each component, since it cannot
   tell which was meant; the Input and the Item take only a Combobox's Root,
-  and throw inside an Autocomplete's, which `Autocomplete.test.tsx` checks.
+  and throw inside the others', which `Autocomplete.test.tsx` and
+  `MultiCombobox.test.tsx` check.
 
 ## Test list
 
@@ -413,23 +415,23 @@ from a stub (`test/popover/stubPopover.ts`).
 
 ## Left out
 
-| Case                                                       | Reason                                                                                                                                                                   |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Several selected items                                     | Another keyboard model, chips in the input and a value of another type, an array (`core/listValue.ts`): a component, or a part, not a flag (PLAN.md section 6, rule 6)   |
-| Inline completion (`aria-autocomplete="both"`)             | It writes the rest of the first match into the input, selected, which needs the caret managed on every key; free text with suggestions is Autocomplete's question (#104) |
-| Automatic selection (the first match active as you type)   | The example selects manually; with automatic selection a screen reader reads an option on every key, and Tab or blur would pick an item the user never chose             |
-| Virtualised lists                                          | Items register from the document, and filtering keeps the list short; a list of thousands is filtered on the server                                                      |
-| Built-in filtering in the component                        | The consumer renders the items that match ("Filtering is the consumer's"); `includesText` is the filter                                                                  |
-| Opening on focus or on a press in the input                | Decisions, "Opening"                                                                                                                                                     |
-| Selecting a typed text that matches an item exactly        | The user selects; on blur the text goes back to the selection                                                                                                            |
-| A light-dismissed list (`popover="auto"`)                  | A press in the input would close it ("Settled after Phase 2")                                                                                                            |
-| PageUp and PageDown                                        | Not in the pattern or the example for an editable combobox, where the list is short once filtered                                                                        |
-| The text following a controlled value changed from outside | The text is the consumer's then: a controlled value changed from outside comes with `inputValue`, or the text follows once focus leaves                                  |
-| `readOnly`                                                 | As Select: not asked for yet                                                                                                                                             |
-| Autofill                                                   | The Input has `autocomplete="off"`, so the browser's own suggestions do not cover the list; the hidden input holds a value, not text the browser could fill              |
-| Label, Description and error parts, `data-invalid`         | Field's (Phase 4, #141); until then a native `<label>` and `aria-describedby`                                                                                            |
-| An Arrow, a modal Combobox, parts outside the Root         | As for Menu and Select (`src/menu/README.md`, "Left out")                                                                                                                |
-| Firefox and WebKit                                         | Tests run in Chromium (PLAN.md section 5)                                                                                                                                |
+| Case                                                       | Reason                                                                                                                                                                                                                                                         |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Several selected items                                     | Multi Combobox's (#206; `src/multi-combobox/README.md`): another keyboard model, chips in the input and a value of another type, an array, so a component that builds on this one, not a flag (PLAN.md section 6, rule 6)                                      |
+| Inline completion (`aria-autocomplete="both"`)             | It writes the rest of the first match into the input, selected, which needs the caret managed on every key; free text with suggestions is Autocomplete's question (#104)                                                                                       |
+| Automatic selection (the first match active as you type)   | The example selects manually; with automatic selection a screen reader reads an option on every key, and Tab or blur would pick an item the user never chose                                                                                                   |
+| Virtualised lists                                          | Items register from the document, and filtering keeps the list short; a list of thousands is filtered on the server                                                                                                                                            |
+| Built-in filtering in the component                        | The consumer renders the items that match ("Filtering is the consumer's"); `includesText` is the filter                                                                                                                                                        |
+| Opening on focus or on a press in the input                | Decisions, "Opening"                                                                                                                                                                                                                                           |
+| Selecting a typed text that matches an item exactly        | The user selects; on blur the text goes back to the selection                                                                                                                                                                                                  |
+| A light-dismissed list (`popover="auto"`)                  | A press in the input would close it ("Settled after Phase 2")                                                                                                                                                                                                  |
+| PageUp and PageDown                                        | Not in the pattern or the example for an editable combobox, where the list is short once filtered                                                                                                                                                              |
+| The text following a controlled value changed from outside | The text is the consumer's then: a controlled value changed from outside comes with `inputValue`, or the text follows once focus leaves                                                                                                                        |
+| `readOnly`                                                 | As Select: not asked for yet                                                                                                                                                                                                                                   |
+| Autofill                                                   | The Input has `autocomplete="off"`, so the browser's own suggestions do not cover the list; the hidden input holds a value, not text the browser could fill                                                                                                    |
+| Label, Description and error parts, `data-invalid`         | Field's (#141). Joining a Field is not built or tested yet: as `Field.Control`'s `render`, the Input would take the Field's `name` and submit its text beside the hidden input; Multi Combobox's Input drops it (`src/multi-combobox/README.md`, "In a Field") |
+| An Arrow, a modal Combobox, parts outside the Root         | As for Menu and Select (`src/menu/README.md`, "Left out")                                                                                                                                                                                                      |
+| Firefox and WebKit                                         | Tests run in Chromium (PLAN.md section 5)                                                                                                                                                                                                                      |
 
 ## Browsers and screen readers
 
@@ -462,3 +464,7 @@ Autocomplete (#104) added 78 B (11,490 B before).
 11,568 B before #165, which moved the form reset to `core/formReset.ts`. A
 control alone pays for the helper; an app with several pays for it once
 (`src/input/README.md`, "Size").
+
+11,652 B after #206, where each Root's `select` closes its own list instead
+of returning whether the shared Input and Item should, for Multi Combobox,
+whose list stays open.

@@ -757,6 +757,46 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Multi Combobox, linked to its page", async () => {
+    stubPopover();
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const input = example.getByRole("combobox", { name: "Stones" });
+    const list = document.getElementById(input.getAttribute("aria-controls")!)!;
+    const chips = () =>
+      Array.from(
+        input.parentElement!.querySelectorAll(":scope > [tabindex]"),
+        (chip) => chip.firstChild!.textContent,
+      );
+    expect(list).toHaveAttribute("aria-multiselectable", "true");
+    expect(chips()).toEqual(["Granite"]);
+    input.focus();
+    fireEvent.input(input, { target: { value: "sto" } });
+    // The list opens after the input's flush.
+    await Promise.resolve();
+    flush();
+    expect(input).toHaveAttribute("aria-expanded", "true");
+    expect(
+      within(list)
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toEqual(["✓Limestone", "✓Sandstone"]);
+    fireEvent.click(within(list).getByRole("option", { name: "Sandstone" }));
+    await Promise.resolve();
+    flush();
+    // The list stays open, and the text empties for the next one.
+    expect(input).toHaveAttribute("aria-expanded", "true");
+    expect(input).toHaveValue("");
+    expect(chips()).toEqual(["Granite", "Sandstone"]);
+    fireEvent.click(example.getByRole("button", { name: "Remove Granite" }));
+    await Promise.resolve();
+    flush();
+    expect(chips()).toEqual(["Sandstone"]);
+    expect(
+      example.getByRole("link", { name: "Multi Combobox" }),
+    ).toHaveAttribute("href", "/docs/components/multi-combobox");
+  });
+
   test("shows a working Autocomplete, linked to its page", async () => {
     stubPopover();
     const { getByRole } = setup();

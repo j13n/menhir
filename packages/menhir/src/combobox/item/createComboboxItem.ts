@@ -69,10 +69,7 @@ export function createComboboxItem(
       },
       onPointerMove: (event: PointerEvent) =>
         combobox.list.onPointerMove(item, event),
-      onClick: (event: MouseEvent) => {
-        if (combobox.select(item, event))
-          combobox.setOpen(false, { reason: "item-press", event });
-      },
+      onClick: (event: MouseEvent) => combobox.select(item, event),
       ref: (el: HTMLElement) => {
         element = el;
       },

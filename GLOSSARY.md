@@ -105,15 +105,15 @@ To use an item of a menu, by a click, Enter or Space: it calls its `onClick` and
 _Avoid_: Select (a selection is a value), choose, trigger (as a verb)
 
 **Select** (the verb):
-To make an item of a select or a combobox its value, by a click, Enter, Space or Tab on a select, a click or Enter on a combobox: the list closes. Moving the active item selects nothing.
+To make an item of a select or a combobox its value, by a click, Enter, Space or Tab on a select, a click or Enter on a combobox: the list closes. On a multi combobox a click or Enter adds the item to the values and the list stays open; selecting a selected item takes it out. Moving the active item selects nothing.
 _Avoid_: Activate (a menu's), pick, choose, check (a checkbox item's)
 
 **Selected item**:
-The item whose `value` is the select's or the combobox's value. It carries `data-selected` and `aria-selected="true"`, and stays selected while the list is closed.
+The item whose `value` is the select's or the combobox's value, or one of a multi combobox's values. It carries `data-selected` and `aria-selected="true"`, and stays selected while the list is closed.
 _Avoid_: Active item (the keys' position), current item, checked item
 
 **Input value**:
-The text in a combobox's input, apart from its value: what the user typed, or the selected item's label. The form receives the value, not the text. An autocomplete has no input value apart from its value: its value is the text.
+The text in a combobox's input, apart from its value: what the user typed, or the selected item's label. A multi combobox's is only what the user typed, emptied once an item is selected. The form receives the value, not the text. An autocomplete has no input value apart from its value: its value is the text.
 _Avoid_: Query (the app's filter, which follows the text only while the user types), search term, input text
 
 **Accept**:
@@ -121,7 +121,7 @@ To put a suggestion's `value` in an autocomplete's input, by a click or Enter: t
 _Avoid_: Select (a combobox's, which sets a value apart from the text), pick, choose
 
 **Base popup**:
-The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), Menu is Context Menu's (#100) and Menubar's (#101), and Combobox is Autocomplete's (#104). The only popup it may import (PLAN.md section 6, rule 4).
+The popup another popup builds on, whose parts it re-exports: Dialog is Alert Dialog's (#32), Menu is Context Menu's (#100) and Menubar's (#101), and Combobox is Autocomplete's (#104) and Multi Combobox's (#206). The only popup it may import (PLAN.md section 6, rule 4).
 _Avoid_: Parent popup, super-component
 
 ### Popup parts
@@ -161,8 +161,16 @@ A combobox's live region, which says the number of items in the app's words whil
 _Avoid_: Empty (it says more than that), live region (as the part's name), announcer
 
 **Value** (the part):
-The part inside a select's Trigger that shows the selected item's label, or a placeholder while none is selected.
+The part inside a select's Trigger that shows the selected item's label, or a placeholder while none is selected; in a multi combobox, the part that renders a Chip for each value.
 _Avoid_: Selected value, label, display value
+
+**Chip** (the part):
+One of a multi combobox's values, shown in its box beside the input, with a button that takes it out (ChipRemove). Backspace in the empty input and the arrow keys reach it; Backspace and Delete take it out.
+_Avoid_: Tag, token, pill, badge
+
+**Chips** (the part):
+A multi combobox's box: the element around its chips and its input, which looks like the input and which its Popup is placed against.
+_Avoid_: Control, field, container, tag list
 
 ### Forms
 

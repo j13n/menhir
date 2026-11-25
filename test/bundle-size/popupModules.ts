@@ -157,6 +157,16 @@ export const forbiddenModules: Record<string, Forbidden[]> = {
     "typeahead",
     "list-navigation/roving",
   ],
+  // A multi combobox is a combobox with an array for its value and chips
+  // that the keys move between: Combobox's parts, so the same modules (#206).
+  "menhir/multi-combobox": [
+    "focus",
+    "scroll-lock",
+    "hover",
+    "dismissal",
+    "typeahead",
+    "list-navigation/roving",
+  ],
   // A navigation menu's Panels are in the page's flow, not the top layer:
   // nothing positions, shows or hides them but `hidden`, and the Root
   // writes its own outside press and closes the others itself (#105).

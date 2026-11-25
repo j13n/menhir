@@ -1,5 +1,6 @@
 import { Autocomplete } from "menhir/autocomplete";
 import { Combobox, includesText } from "menhir/combobox";
+import { MultiCombobox } from "menhir/multi-combobox";
 import { Select } from "menhir/select";
 import { createMemo, createSignal, For } from "solid-js";
 
@@ -7,6 +8,10 @@ import { ExampleCard, ExampleGroup } from "./ExampleGroup";
 
 const cities = ["Lisbon", "London", "Madrid", "Oslo", "Paris", "Rome"];
 const searches = ["menhir", "megalith", "monolith", "standing stone"];
+const stones = ["Basalt", "Granite", "Limestone", "Sandstone"];
+/** A stone's label, from its value. */
+const stoneLabel = (value: string) =>
+  stones.find((stone) => stone.toLowerCase() === value);
 
 export default function PickerExamples() {
   // The Combobox's list, filtered by what the user typed.
@@ -18,6 +23,11 @@ export default function PickerExamples() {
   const [searchQuery, setSearchQuery] = createSignal("");
   const shownSearches = createMemo(() =>
     searches.filter((term) => includesText(term, searchQuery())),
+  );
+  // The Multi Combobox's list, filtered the same way.
+  const [stoneQuery, setStoneQuery] = createSignal("");
+  const shownStones = createMemo(() =>
+    stones.filter((stone) => includesText(stone, stoneQuery())),
   );
   return (
     <ExampleGroup category="Pickers">
@@ -102,6 +112,63 @@ export default function PickerExamples() {
               </Combobox.Status>
             </Combobox.Popup>
           </Combobox.Root>
+        </div>
+      </ExampleCard>
+      <ExampleCard name="Multi Combobox" href="/docs/components/multi-combobox">
+        <div class="flex items-center justify-between gap-4">
+          <label for="home-multi-combobox" id="home-multi-combobox-label">
+            Stones
+          </label>
+          <MultiCombobox.Root
+            name="stones"
+            defaultValue={["granite"]}
+            onInputValueChange={(text, { reason }) =>
+              setStoneQuery(reason === "input-change" ? text : "")
+            }
+          >
+            <MultiCombobox.Chips class="flex w-44 cursor-text flex-wrap items-center gap-1 rounded-md border border-stone-300 p-0.5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-stone-500 dark:border-stone-700">
+              <MultiCombobox.Value>
+                {(value) => (
+                  <MultiCombobox.Chip
+                    value={value}
+                    class="inline-flex items-center rounded bg-stone-200 pl-1.5 text-xs focus:outline-2 focus:outline-stone-500 dark:bg-stone-700"
+                  >
+                    {stoneLabel(value)}
+                    <MultiCombobox.ChipRemove
+                      aria-label={`Remove ${stoneLabel(value)}`}
+                      class="cursor-pointer border-0 bg-transparent px-1 text-inherit"
+                    >
+                      ×
+                    </MultiCombobox.ChipRemove>
+                  </MultiCombobox.Chip>
+                )}
+              </MultiCombobox.Value>
+              <MultiCombobox.Input
+                id="home-multi-combobox"
+                class="w-12 min-w-0 flex-1 border-0 bg-transparent px-1 py-0.5 text-sm outline-none"
+              />
+            </MultiCombobox.Chips>
+            <MultiCombobox.Popup
+              class="m-0 max-h-(--available-height) min-w-(--anchor-width) overflow-y-auto rounded-lg border border-stone-200 bg-white p-1 text-sm text-inherit shadow-lg transition-opacity duration-100 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:opacity-0"
+              sideOffset={4}
+            >
+              <MultiCombobox.List aria-labelledby="home-multi-combobox-label">
+                <For each={shownStones()}>
+                  {(stone) => (
+                    <MultiCombobox.Item
+                      value={stone.toLowerCase()}
+                      class="flex cursor-default items-center gap-2 rounded px-2 py-1.5 select-none data-active:bg-stone-100 dark:data-active:bg-stone-800"
+                    >
+                      <MultiCombobox.ItemIndicator class="w-3 data-unselected:invisible">
+                        ✓
+                      </MultiCombobox.ItemIndicator>
+                      {stone}
+                    </MultiCombobox.Item>
+                  )}
+                </For>
+              </MultiCombobox.List>
+            </MultiCombobox.Popup>
+          </MultiCombobox.Root>
         </div>
       </ExampleCard>
       <ExampleCard name="Autocomplete" href="/docs/components/autocomplete">

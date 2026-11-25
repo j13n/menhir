@@ -285,3 +285,6 @@ uses every part of each.
 10,766 B before #165, which moved the form reset to `core/formReset.ts`.
 The two together were 11,801 B. A control alone pays for the helper; an app
 with several pays for it once (`src/input/README.md`, "Size").
+
+10,835 B after #206, where each Root's `select` closes its own list instead
+of returning whether the shared Input and Item should.
