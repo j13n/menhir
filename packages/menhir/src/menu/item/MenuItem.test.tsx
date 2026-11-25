@@ -38,7 +38,7 @@ describeConformance(
 );
 
 describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => {
-  const { M, Edit, trigger, open, openFromKey } = kind;
+  const { parts, Edit, trigger, openByPress, openByKey } = kind;
   const { render } = createRenderer();
   stubMenu();
   afterEach(() => vi.restoreAllMocks());
@@ -89,9 +89,9 @@ describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => {
   it("moves to the next item that starts with a typed character, matching label over content", async () => {
     const { user } = await render(() => (
       <Edit defaultOpen>
-        <M.Item>Copy</M.Item>
-        <M.Item label="Paste">⌘V Paste</M.Item>
-        <M.Item>Cut</M.Item>
+        <parts.Item>Copy</parts.Item>
+        <parts.Item label="Paste">⌘V Paste</parts.Item>
+        <parts.Item>Cut</parts.Item>
       </Edit>
     ));
     await vi.waitFor(() => expect(active()).toBe(item("Copy")));
@@ -106,10 +106,10 @@ describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => {
     const onOpenChange = vi.fn();
     const { user } = await render(() => (
       <Edit onOpenChange={onOpenChange}>
-        <M.Item onClick={onClick}>Copy</M.Item>
+        <parts.Item onClick={onClick}>Copy</parts.Item>
       </Edit>
     ));
-    await open(user);
+    await openByPress(user);
     await afterFlush();
 
     await user.click(item("Copy"));
@@ -131,12 +131,12 @@ describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => {
     const onClick = vi.fn();
     const { user } = await render(() => (
       <Edit>
-        <M.Item onClick={onClick}>Copy</M.Item>
+        <parts.Item onClick={onClick}>Copy</parts.Item>
       </Edit>
     ));
 
     for (const key of ["{Enter}", " "]) {
-      await openFromKey(user);
+      await openByKey(user);
       await vi.waitFor(() => expect(active()).toBe(item("Copy")));
       await user.keyboard(key);
       await afterFlush();
@@ -149,10 +149,10 @@ describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => {
     const onClick = vi.fn();
     const { user } = await render(() => (
       <Edit defaultOpen>
-        <M.Item>Copy</M.Item>
-        <M.Item disabled onClick={onClick}>
+        <parts.Item>Copy</parts.Item>
+        <parts.Item disabled onClick={onClick}>
           Paste
-        </M.Item>
+        </parts.Item>
       </Edit>
     ));
     await vi.waitFor(() => expect(active()).toBe(item("Copy")));
@@ -176,12 +176,12 @@ describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => {
     try {
       const { user } = await render(() => (
         <Edit defaultOpen>
-          <M.Item
+          <parts.Item
             disabled
             render={(props) => <a {...props} href="#disabled-docs" />}
           >
             Docs
-          </M.Item>
+          </parts.Item>
         </Edit>
       ));
       await vi.waitFor(() => expect(active()).toBe(item("Docs")));
@@ -205,12 +205,12 @@ describe.each(menuKinds)("<Menu.Item /> in a $name", (kind) => {
       const onClick = vi.fn((event: MouseEvent) => event.preventDefault());
       await render(() => (
         <Edit defaultOpen>
-          <M.Item
+          <parts.Item
             render={(props) => <a {...props} href="#docs" />}
             onClick={onClick}
           >
             Docs
-          </M.Item>
+          </parts.Item>
         </Edit>
       ));
       await nextTask();

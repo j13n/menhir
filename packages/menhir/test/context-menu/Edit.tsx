@@ -1,17 +1,9 @@
-// A test context menu: an "Edit" area, a Popup with Copy, Cut and Paste
-// unless children are given, and a button before and after it.
-import type { JSX } from "@solidjs/web";
-
+// test/menu/Edit.tsx as a Context Menu: an "Edit" area, a Popup named
+// "Edit" with Copy, Cut and Paste unless children are given, and a button
+// before and after it.
 import { ContextMenu } from "../../src/context-menu/index.ts";
-import type { ContextMenuRootProps } from "../../src/context-menu/root/ContextMenuRoot.tsx";
 import type { MenuPopupProps } from "../../src/menu/popup/MenuPopup.tsx";
-
-export interface EditProps extends ContextMenuRootProps {
-  /** Props for the Popup. */
-  popup?: Omit<MenuPopupProps, "children">;
-  /** The Trigger, instead of the default one. */
-  trigger?: JSX.Element;
-}
+import { editWith } from "../menu/Edit.tsx";
 
 /** A 200 by 100 area fixed at (20, 40), focusable, holding a "Focus" button. */
 export const area = (props: { disabled?: boolean } = {}) => (
@@ -49,44 +41,22 @@ export const area = (props: { disabled?: boolean } = {}) => (
   </ContextMenu.Trigger>
 );
 
-export function Edit(props: EditProps) {
-  return (
-    <>
-      <button type="button">Before</button>
-      <ContextMenu.Root
-        open={props.open}
-        defaultOpen={props.defaultOpen}
-        onOpenChange={props.onOpenChange}
-      >
-        {props.trigger ?? area()}
-        <ContextMenu.Popup
-          side={props.popup?.side}
-          align={props.popup?.align}
-          sideOffset={props.popup?.sideOffset}
-          alignOffset={props.popup?.alignOffset}
-          collisionPadding={props.popup?.collisionPadding}
-          anchor={props.popup?.anchor}
-          returnFocus={props.popup?.returnFocus}
-          aria-label={props.popup?.["aria-label"] ?? "Edit"}
-          style={
-            props.popup?.style ?? {
-              width: "100px",
-              padding: "0",
-              border: "0",
-              margin: "0",
-            }
-          }
-        >
-          {props.children ?? (
-            <>
-              <ContextMenu.Item>Copy</ContextMenu.Item>
-              <ContextMenu.Item>Cut</ContextMenu.Item>
-              <ContextMenu.Item>Paste</ContextMenu.Item>
-            </>
-          )}
-        </ContextMenu.Popup>
-      </ContextMenu.Root>
-      <button type="button">After</button>
-    </>
-  );
-}
+export const Edit = editWith({
+  Root: ContextMenu.Root,
+  Trigger: () => area(),
+  // Named, as a Context Menu's Trigger labels nothing, and unpadded.
+  Popup: (props: MenuPopupProps) => (
+    <ContextMenu.Popup
+      {...props}
+      aria-label={props["aria-label"] ?? "Edit"}
+      style={
+        props.style ?? {
+          width: "100px",
+          padding: "0",
+          border: "0",
+          margin: "0",
+        }
+      }
+    />
+  ),
+});

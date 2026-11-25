@@ -37,7 +37,7 @@ describeConformance(
 );
 
 describe.each(menuKinds)("<Menu.Group /> in a $name", (kind) => {
-  const { M, Edit } = kind;
+  const { parts, Edit } = kind;
   const { render } = createRenderer();
   stubMenu();
 
@@ -45,12 +45,12 @@ describe.each(menuKinds)("<Menu.Group /> in a $name", (kind) => {
     const [label, setLabel] = createSignal(true);
     await render(() => (
       <Edit defaultOpen>
-        <M.Group>
+        <parts.Group>
           <Show when={label()}>
-            <M.GroupLabel>Clipboard</M.GroupLabel>
+            <parts.GroupLabel>Clipboard</parts.GroupLabel>
           </Show>
-          <M.Item>Copy</M.Item>
-        </M.Group>
+          <parts.Item>Copy</parts.Item>
+        </parts.Group>
       </Edit>
     ));
 
@@ -65,12 +65,12 @@ describe.each(menuKinds)("<Menu.Group /> in a $name", (kind) => {
   it("takes the consumer's aria-labelledby over its GroupLabel's, and a GroupLabel takes the consumer's id", async () => {
     await render(() => (
       <Edit defaultOpen>
-        <M.Group aria-labelledby="own">
-          <M.GroupLabel id="label">Clipboard</M.GroupLabel>
-        </M.Group>
-        <M.Group data-testid="second">
-          <M.GroupLabel id="second-label">View</M.GroupLabel>
-        </M.Group>
+        <parts.Group aria-labelledby="own">
+          <parts.GroupLabel id="label">Clipboard</parts.GroupLabel>
+        </parts.Group>
+        <parts.Group data-testid="second">
+          <parts.GroupLabel id="second-label">View</parts.GroupLabel>
+        </parts.Group>
       </Edit>
     ));
 

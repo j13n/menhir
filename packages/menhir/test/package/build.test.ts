@@ -120,8 +120,6 @@ describe("built package", () => {
 
   it("bundles the parts Dialog and Alert Dialog share once, and Dialog's outside press", async () => {
     const code = await bundle("dialogAndAlertDialog.js");
-    const count = (name: string) =>
-      code.split(new RegExp(`function ${name}\\b`)).length - 1;
 
     for (const name of [
       "DialogRoot",
@@ -131,14 +129,12 @@ describe("built package", () => {
       "AlertDialogPopup",
       "createOutsidePress",
     ]) {
-      expect(count(name)).toBe(1);
+      expect(count(code, name)).toBe(1);
     }
   });
 
   it("bundles the parts Combobox and Autocomplete share once", async () => {
     const code = await bundle("comboboxAndAutocomplete.js");
-    const count = (name: string) =>
-      code.split(new RegExp(`function ${name}\\b`)).length - 1;
 
     for (const name of [
       "createComboboxBase",
@@ -157,14 +153,12 @@ describe("built package", () => {
       "AutocompleteInput",
       "AutocompleteItem",
     ]) {
-      expect(count(name)).toBe(1);
+      expect(count(code, name)).toBe(1);
     }
   });
 
   it("bundles the parts Menu and Context Menu share once", async () => {
     const code = await bundle("menuAndContextMenu.js");
-    const count = (name: string) =>
-      code.split(new RegExp(`function ${name}\\b`)).length - 1;
 
     for (const name of [
       "createMenu",
@@ -179,14 +173,12 @@ describe("built package", () => {
       "ContextMenuTrigger",
       "ContextMenuPopup",
     ]) {
-      expect(count(name)).toBe(1);
+      expect(count(code, name)).toBe(1);
     }
   });
 
   it("bundles the parts Menu and Menubar share once", async () => {
     const code = await bundle("menuAndMenubar.js");
-    const count = (name: string) =>
-      code.split(new RegExp(`function ${name}\\b`)).length - 1;
 
     for (const name of [
       "createMenu",
@@ -201,10 +193,15 @@ describe("built package", () => {
       "MenubarMenu",
       "MenubarTrigger",
     ]) {
-      expect(count(name)).toBe(1);
+      expect(count(code, name)).toBe(1);
     }
   });
 });
+
+/** How many functions named `name` a bundle's code declares. */
+function count(code: string, name: string): number {
+  return code.split(new RegExp(`function ${name}\\b`)).length - 1;
+}
 
 /** Bundles a fixture app as a bundler would, and returns its code. */
 async function bundle(fixture: string): Promise<string> {

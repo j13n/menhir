@@ -17,6 +17,7 @@ import {
   press,
 } from "../../../test/floating/input.ts";
 import { Edit } from "../../../test/menu/Edit.tsx";
+import { outsideRoot } from "../../../test/menu/outsideRoot.ts";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Menu } from "../index.ts";
 
@@ -176,10 +177,6 @@ describe("<Menu.Trigger />", () => {
       </Errored>
     ));
 
-    expect(
-      screen.getByText(
-        "Error: [menhir] Menu parts must be placed within <Menu.Root>, Context Menu parts within <ContextMenu.Root>, and Menubar parts within <Menubar.Menu>.",
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText(outsideRoot)).toBeInTheDocument();
   });
 });

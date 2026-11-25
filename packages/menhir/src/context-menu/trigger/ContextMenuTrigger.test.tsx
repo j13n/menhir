@@ -6,7 +6,6 @@ import {
   afterFlush,
   createRenderer,
   describeConformance,
-  fireEvent,
   isJSDOM,
   screen,
 } from "#test-utils";
@@ -18,6 +17,7 @@ import {
   press,
 } from "../../../test/floating/input.ts";
 
+import { fireContextMenu } from "../../../test/context-menu/contextMenu.ts";
 import { area as areaTrigger, Edit } from "../../../test/context-menu/Edit.tsx";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { ContextMenu } from "../index.ts";
@@ -44,21 +44,6 @@ async function frames(count = 3) {
 
 /** A secondary-button press at a point, as a mouse sends it. */
 const rightPress = (x: number, y: number) => press({ x, y }, { x, y }, "right");
-
-/** Fires a `contextmenu` at `target`, and returns whether it was cancelled. */
-function contextMenu(target: Element, init: PointerEventInit = {}) {
-  const event = new PointerEvent("contextmenu", {
-    bubbles: true,
-    cancelable: true,
-    button: 2,
-    pointerType: "mouse",
-    clientX: 50,
-    clientY: 60,
-    ...init,
-  });
-  fireEvent(target, event);
-  return event.defaultPrevented;
-}
 
 describeConformance(
   "<ContextMenu.Trigger />",
@@ -97,7 +82,7 @@ describe("<ContextMenu.Trigger />", () => {
   it("opens the menu on a contextmenu, which it cancels, with focus on the first item", async () => {
     await render(() => <Edit />);
 
-    expect(contextMenu(area())).toBe(true);
+    expect(fireContextMenu(area())).toBe(true);
     await afterFlush();
 
     expect(shown()).toBe(true);
@@ -167,7 +152,7 @@ describe("<ContextMenu.Trigger />", () => {
 
     // As Chromium on macOS sends it for a long press through the DevTools
     // protocol, with no button like a key's; Chromium on Linux sends none.
-    contextMenu(area(), {
+    fireContextMenu(area(), {
       button: -1,
       pointerType: "touch",
       clientX: 60,
@@ -220,7 +205,7 @@ describe("<ContextMenu.Trigger />", () => {
   it("disabled: does not cancel a contextmenu or open, and has data-disabled", async () => {
     await render(() => <Edit trigger={areaTrigger({ disabled: true })} />);
 
-    expect(contextMenu(area())).toBe(false);
+    expect(fireContextMenu(area())).toBe(false);
     await afterFlush();
 
     expect(shown()).toBe(false);
@@ -235,7 +220,7 @@ describe("<ContextMenu.Trigger />", () => {
       </ContextMenu.Root>
     ));
 
-    contextMenu(area());
+    fireContextMenu(area());
 
     expect(onContextMenu).toHaveBeenCalledTimes(1);
   });

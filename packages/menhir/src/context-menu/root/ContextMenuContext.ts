@@ -1,9 +1,9 @@
 import { isDev } from "@solidjs/web";
-import { useContext } from "solid-js";
+import { createSignal, useContext } from "solid-js";
 
 import type { MenuAnchor } from "../../menu/popup/MenuPopup.tsx";
-import { MenuContext } from "../../menu/root/MenuContext.ts";
-import type { Menu } from "../../menu/root/MenuContext.ts";
+import { createMenu, MenuContext } from "../../menu/root/MenuContext.ts";
+import type { Menu, MenuStateProps } from "../../menu/root/MenuContext.ts";
 
 /**
  * A context menu: Menu's state, plus where the menu was asked for, which
@@ -18,6 +18,20 @@ export interface ContextMenu extends Menu {
   setAnchor(anchor: MenuAnchor): void;
   /** The Trigger's element, once rendered: the anchor before the first. */
   area: HTMLElement | undefined;
+}
+
+/**
+ * Creates a context menu's state: Menu's, with where it was asked for and
+ * the area, which start unset.
+ */
+export function createContextMenu(props: MenuStateProps): ContextMenu {
+  const [anchor, setAnchor] = createSignal<MenuAnchor>();
+  // Added to Menu's state, not copied: its functions write to that object.
+  const menu: Menu & Partial<ContextMenu> = createMenu(props);
+  menu.anchor = anchor;
+  menu.setAnchor = (value) => setAnchor(() => value);
+  menu.area = undefined;
+  return menu as ContextMenu;
 }
 
 /** The Root's context menu, for its Trigger and its Popup. */

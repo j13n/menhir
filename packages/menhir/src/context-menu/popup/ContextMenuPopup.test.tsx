@@ -18,7 +18,12 @@ import {
   nextTask,
   press,
 } from "../../../test/floating/input.ts";
+import {
+  fireContextMenu,
+  fromKey,
+} from "../../../test/context-menu/contextMenu.ts";
 import { Edit } from "../../../test/context-menu/Edit.tsx";
+import { outsideRoot } from "../../../test/menu/outsideRoot.ts";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Menu } from "../../menu/index.ts";
 import { ContextMenu } from "../index.ts";
@@ -84,15 +89,8 @@ describe("<ContextMenu.Popup />", () => {
     await afterFlush();
 
     for (const name of ["Copy", "Email"]) {
-      // A key's, as the Menu key on a focused item sends it.
-      const event = new PointerEvent("contextmenu", {
-        bubbles: true,
-        cancelable: true,
-        button: -1,
-        pointerType: "",
-      });
-      fireEvent(item(name), event);
-      expect(event.defaultPrevented).toBe(true);
+      // As the Menu key on a focused item sends it.
+      expect(fireContextMenu(item(name), fromKey)).toBe(true);
     }
     expect(onContextMenu).toHaveBeenCalledTimes(1);
     expect(shown()).toBe(true);
@@ -228,10 +226,6 @@ describe("<ContextMenu.Popup />", () => {
       </Errored>
     ));
 
-    expect(
-      screen.getByText(
-        "Error: [menhir] Menu parts must be placed within <Menu.Root>, Context Menu parts within <ContextMenu.Root>, and Menubar parts within <Menubar.Menu>.",
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText(outsideRoot)).toBeInTheDocument();
   });
 });

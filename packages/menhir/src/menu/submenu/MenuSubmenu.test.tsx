@@ -48,11 +48,11 @@ describeConformance(
 );
 
 describe.each(menuKinds)("<Menu.Submenu /> in a $name", (kind) => {
-  const { Share, trigger, menu, keyOpen } = kind;
+  const { Share, trigger, menu, openByRealKey } = kind;
 
   /** Opens the Root's menu by keyboard and moves to "Share". */
   async function openToShare() {
-    await keyOpen();
+    await openByRealKey();
     await keyboard("{ArrowDown}");
     expect(active()).toBe(item("Share"));
   }

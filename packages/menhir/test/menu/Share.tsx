@@ -1,9 +1,11 @@
 // A test menu with submenus two levels deep: Copy, "Share ▸" (Email,
 // Messages, "More ▸" (Print, Save)), Paste. Items are 30 px tall and the
-// Popups 120 px wide, so a pointer's path can be computed.
+// Popups 120 px wide, so a pointer's path can be computed. `shareWith`
+// builds it from another menu's Root, Trigger and Popup, as Context Menu's.
 import type { JSX } from "@solidjs/web";
 
 import { Menu } from "../../src/menu/index.ts";
+import type { MenuPopupProps } from "../../src/menu/popup/MenuPopup.tsx";
 import type { MenuRootProps } from "../../src/menu/root/MenuRoot.tsx";
 import type { MenuSubmenuProps } from "../../src/menu/submenu/MenuSubmenu.tsx";
 
@@ -32,15 +34,33 @@ export interface ShareProps extends MenuRootProps {
   dir?: "ltr" | "rtl";
 }
 
-export function Share(props: ShareProps) {
-  return (
+/**
+ * The parts a test menu with submenus takes from its component; the items
+ * and submenus are Menu's.
+ */
+export interface ShareParts {
+  Root(props: MenuRootProps): JSX.Element;
+  /** The Root's Trigger, placed by `style`. */
+  Trigger(props: {
+    style: JSX.CSSProperties;
+    children: JSX.Element;
+  }): JSX.Element;
+  /** The Root's Popup and the submenus'. */
+  Popup(props: MenuPopupProps): JSX.Element;
+  /** The Root's Popup's `aria-label`, for a Trigger that labels nothing. */
+  label?: string;
+}
+
+/** The test menu with submenus, built from `parts`. */
+export function shareWith(parts: ShareParts) {
+  return (props: ShareProps) => (
     <div dir={props.dir}>
-      <Menu.Root
+      <parts.Root
         open={props.open}
         defaultOpen={props.defaultOpen}
         onOpenChange={props.onOpenChange}
       >
-        <Menu.Trigger
+        <parts.Trigger
           style={{
             position: "fixed",
             top: "50px",
@@ -49,8 +69,8 @@ export function Share(props: ShareProps) {
           }}
         >
           Edit
-        </Menu.Trigger>
-        <Menu.Popup style={popupStyle}>
+        </parts.Trigger>
+        <parts.Popup aria-label={parts.label} style={popupStyle}>
           <Menu.Item style={itemStyle}>Copy</Menu.Item>
           <Menu.Submenu
             delay={props.share?.delay}
@@ -63,7 +83,7 @@ export function Share(props: ShareProps) {
             >
               Share
             </Menu.SubmenuTrigger>
-            <Menu.Popup style={popupStyle}>
+            <parts.Popup style={popupStyle}>
               <Menu.Item style={itemStyle}>Email</Menu.Item>
               <Menu.Item style={itemStyle}>Messages</Menu.Item>
               <Menu.Submenu
@@ -73,7 +93,7 @@ export function Share(props: ShareProps) {
                 <Menu.SubmenuTrigger style={itemStyle}>
                   More
                 </Menu.SubmenuTrigger>
-                <Menu.Popup style={popupStyle}>
+                <parts.Popup style={popupStyle}>
                   <Menu.Item
                     style={itemStyle}
                     onClick={() => props.onPrint?.()}
@@ -81,14 +101,20 @@ export function Share(props: ShareProps) {
                     Print
                   </Menu.Item>
                   <Menu.Item style={itemStyle}>Save</Menu.Item>
-                </Menu.Popup>
+                </parts.Popup>
               </Menu.Submenu>
-            </Menu.Popup>
+            </parts.Popup>
           </Menu.Submenu>
           <Menu.Item style={itemStyle}>Paste</Menu.Item>
-        </Menu.Popup>
-      </Menu.Root>
+        </parts.Popup>
+      </parts.Root>
       <button type="button">After</button>
     </div>
   );
 }
+
+export const Share = shareWith({
+  Root: Menu.Root,
+  Trigger: Menu.Trigger,
+  Popup: Menu.Popup,
+});

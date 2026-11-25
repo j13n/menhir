@@ -45,23 +45,23 @@ describeConformance(
 );
 
 describe.each(menuKinds)("<Menu.RadioGroup /> in a $name", (kind) => {
-  const { M, Edit } = kind;
+  const { parts, Edit } = kind;
 
   function Sort(props: Omit<MenuRadioGroupProps, "children">) {
     return (
       <Edit defaultOpen>
-        <M.RadioGroup
+        <parts.RadioGroup
           value={props.value}
           defaultValue={props.defaultValue}
           onValueChange={props.onValueChange}
         >
-          <M.GroupLabel>Sort by</M.GroupLabel>
-          <M.RadioItem value="name">
-            <M.ItemIndicator data-testid="name-indicator" />
+          <parts.GroupLabel>Sort by</parts.GroupLabel>
+          <parts.RadioItem value="name">
+            <parts.ItemIndicator data-testid="name-indicator" />
             Name
-          </M.RadioItem>
-          <M.RadioItem value="date">Date</M.RadioItem>
-        </M.RadioGroup>
+          </parts.RadioItem>
+          <parts.RadioItem value="date">Date</parts.RadioItem>
+        </parts.RadioGroup>
       </Edit>
     );
   }
