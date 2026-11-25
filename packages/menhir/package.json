@@ -139,6 +139,11 @@
       "solid": "./dist/source/popover/index.js",
       "import": "./dist/popover/index.js"
     },
+    "./preview-card": {
+      "types": "./dist/source/preview-card/index.d.ts",
+      "solid": "./dist/source/preview-card/index.js",
+      "import": "./dist/preview-card/index.js"
+    },
     "./progress": {
       "types": "./dist/source/progress/index.d.ts",
       "solid": "./dist/source/progress/index.js",

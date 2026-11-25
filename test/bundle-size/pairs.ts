@@ -1,7 +1,10 @@
-// The components that build on another, with the margin each may cost over
-// its base (packages/menhir/layers.ts), for pairs.size-limit.js and
+// The components that build on another, and the popups that share their
+// code with another through `floating`, with the margin each may cost over
+// the other alone (packages/menhir/layers.ts), for pairs.size-limit.js and
 // pairSize.test.ts.
 import {
+  floatingNeighbourMargins,
+  floatingNeighbours,
   popupBaseMargins,
   popupBases,
   simpleBaseMargins,
@@ -11,7 +14,10 @@ import {
 export type Pair = {
   /** By folder in src, such as `context-menu`. */
   component: string;
-  /** The component it builds on, such as `menu`. */
+  /**
+   * The component it builds on, such as `menu`, or shares its code with
+   * through `floating`, such as `tooltip`.
+   */
   base: string;
   /** In bytes, gzipped. */
   margin: number;
@@ -27,10 +33,11 @@ const pairsOf = <Component extends string>(
     margin: margins[component],
   }));
 
-/** Every pair of `popupBases` and `simpleBases`. */
+/** Every pair of `popupBases`, `simpleBases` and `floatingNeighbours`. */
 export const pairs: Pair[] = [
   ...pairsOf(popupBases, popupBaseMargins),
   ...pairsOf(simpleBases, simpleBaseMargins),
+  ...pairsOf(floatingNeighbours, floatingNeighbourMargins),
 ];
 
 /** The names of the checks in pairs.size-limit.js. */

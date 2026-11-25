@@ -17,7 +17,7 @@ _Avoid_: Palette, skin, color scheme
 ### Popups
 
 **Popup**:
-Content shown above the page while it is open, and gone again when it closes: a dialog, a popover, a tooltip or a menu.
+Content shown above the page while it is open, and gone again when it closes: a dialog, a popover, a tooltip, a preview card or a menu.
 _Avoid_: Overlay, floating element, layer, portal
 
 **Panel**:
@@ -25,7 +25,7 @@ Content in the page's flow that a Trigger shows and hides, `hidden` while closed
 _Avoid_: Content, dropdown, popup (for a Panel)
 
 **Trigger**:
-The element a popup or a Panel opens from: the button that opens a dialog or a menu, the area a context menu opens from, the item of a menubar that opens its menu, the item that opens a submenu, the button beside a combobox's input that opens its list, the element a tooltip describes, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
+The element a popup or a Panel opens from: the button that opens a dialog or a menu, the area a context menu opens from, the item of a menubar that opens its menu, the item that opens a submenu, the button beside a combobox's input that opens its list, the element a tooltip describes, the link a preview card previews, or the button that shows a Collapsible's, an Accordion's or a Navigation Menu's Panel.
 _Avoid_: Invoker, activator, toggle, opener
 
 **Anchor**:

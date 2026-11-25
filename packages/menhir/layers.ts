@@ -45,6 +45,25 @@ export const popupBaseMargins: Record<keyof typeof popupBases, number> = {
   menubar: 700,
 };
 
+// Popups that build on no popup but share most of their code with one
+// through `floating`, by folder in src: Preview Card opens on hover and
+// focus as Tooltip does, and building on Tooltip saved an app with both
+// 31 B while costing an app with Preview Card alone 86 B (#205). They are
+// measured as a pair all the same, so that an app with both pays for the
+// shared code once: test/bundle-size/pairSize.test.ts holds each to its
+// margin over the other alone, kept as `popupBaseMargins` are.
+export const floatingNeighbours = {
+  "preview-card": "tooltip",
+} as const satisfies Record<string, string>;
+
+// 507 B measured on 2026-11-25 (#205).
+export const floatingNeighbourMargins: Record<
+  keyof typeof floatingNeighbours,
+  number
+> = {
+  "preview-card": 650,
+};
+
 // The simple component each simple component builds on, by folder in src:
 // the one simple component it may import besides `core` (PLAN.md section 6,
 // rule 4). Checkbox Group renders Checkbox's Root and re-exports its

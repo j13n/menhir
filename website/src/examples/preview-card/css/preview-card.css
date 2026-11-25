@@ -1,0 +1,99 @@
+/* The least CSS that makes the Preview Card look like one: a card below its
+   link, with an arrow. Menhir places the popup and writes data-side; the
+   arrow sits on the edge that faces the link. The browser's own popover
+   styles scroll its overflow, which would clip the arrow. Its parts are
+   <span>s inside a paragraph, made blocks here. It fades in on data-open
+   and out on data-closed, growing from the link with --transform-origin.
+   Colours are Tailwind's stone palette; light-dark() picks the second one
+   in dark mode (color-scheme: dark). */
+.preview-card-text {
+  margin: 0;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.preview-card-link {
+  color: inherit;
+  font-weight: 500;
+  text-underline-offset: 2px;
+}
+
+.preview-card-popup {
+  --border: light-dark(
+    oklch(92.3% 0.003 48.717) /* stone-200 */,
+    oklch(37.4% 0.01 67.558) /* stone-700 */
+  );
+  --background: light-dark(white, oklch(21.6% 0.006 56.043) /* stone-900 */);
+  width: 16rem;
+  padding: 1rem;
+  overflow: visible;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--background);
+  color: inherit;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 10%);
+  transform-origin: var(--transform-origin);
+}
+
+.preview-card-popup[data-open] {
+  animation: preview-card-in 150ms ease-out;
+}
+
+.preview-card-popup[data-closed] {
+  animation: preview-card-in 150ms ease-in reverse;
+}
+
+@keyframes preview-card-in {
+  from {
+    opacity: 0;
+    scale: 0.95;
+  }
+}
+
+.preview-card-title,
+.preview-card-description {
+  display: block;
+}
+
+.preview-card-description {
+  margin-top: 0.25rem;
+  color: oklch(55.3% 0.013 58.071) /* stone-500 */;
+}
+
+/* A square turned 45 degrees, half of it outside the popup's edge, with
+   the popup's border on the two sides that show. */
+.preview-card-arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  rotate: 45deg;
+  background: var(--background);
+}
+
+.preview-card-arrow[data-side="bottom"] {
+  top: -6px;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+.preview-card-arrow[data-side="top"] {
+  bottom: -6px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.preview-card-arrow[data-side="left"] {
+  right: -6px;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.preview-card-arrow[data-side="right"] {
+  left: -6px;
+  border-bottom: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}

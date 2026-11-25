@@ -74,6 +74,7 @@ export const libraries: Library[] = [
       "number-field": "@base-ui/react/number-field",
       "otp-field": "@base-ui/react/otp-field",
       popover: "@base-ui/react/popover",
+      "preview-card": "@base-ui/react/preview-card",
       progress: "@base-ui/react/progress",
       // Its Radio is one radio, and its RadioGroup the group around them.
       radio: ["@base-ui/react/radio-group", "@base-ui/react/radio"],
@@ -105,6 +106,8 @@ export const libraries: Library[] = [
       "navigation-menu": "@radix-ui/react-navigation-menu",
       "otp-field": "@radix-ui/react-one-time-password-field",
       popover: "@radix-ui/react-popover",
+      // Its hover card is a preview card: a card shown on a link's hover.
+      "preview-card": "@radix-ui/react-hover-card",
       progress: "@radix-ui/react-progress",
       radio: "@radix-ui/react-radio-group",
       select: "@radix-ui/react-select",
@@ -138,6 +141,8 @@ export const libraries: Library[] = [
       "navigation-menu": "@kobalte/core/navigation-menu",
       "number-field": "@kobalte/core/number-field",
       popover: "@kobalte/core/popover",
+      // Its hover card is a preview card: a card shown on a link's hover.
+      "preview-card": "@kobalte/core/hover-card",
       progress: "@kobalte/core/progress",
       radio: "@kobalte/core/radio-group",
       select: "@kobalte/core/select",

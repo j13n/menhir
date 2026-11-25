@@ -1,9 +1,13 @@
 import { AlertDialog } from "menhir/alert-dialog";
 import { Dialog } from "menhir/dialog";
 import { Popover } from "menhir/popover";
+import { PreviewCard } from "menhir/preview-card";
 import { Tooltip } from "menhir/tooltip";
 
 import { ExampleCard, ExampleGroup } from "./ExampleGroup";
+
+// A paragraph holds no <div>: the card's parts are <span>s.
+const span = (props: object) => <span {...props} />;
 
 export default function OverlayExamples() {
   return (
@@ -89,6 +93,34 @@ export default function OverlayExamples() {
             </Popover.Popup>
           </Popover.Root>
         </div>
+      </ExampleCard>
+      <ExampleCard name="Preview Card" href="/docs/components/preview-card">
+        <p class="m-0 text-sm">
+          New here? Start with{" "}
+          <PreviewCard.Root>
+            <PreviewCard.Trigger
+              class="font-medium underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500"
+              href="/docs/getting-started"
+            >
+              Getting started
+            </PreviewCard.Trigger>
+            <PreviewCard.Popup
+              sideOffset={8}
+              render={span}
+              class="w-56 origin-(--transform-origin) overflow-visible rounded-lg border border-stone-200 bg-white p-4 text-sm text-inherit shadow-lg transition-[opacity,scale] duration-150 data-closed:scale-95 data-closed:opacity-0 dark:border-stone-800 dark:bg-stone-900 starting:data-open:scale-95 starting:data-open:opacity-0"
+            >
+              <PreviewCard.Arrow
+                render={span}
+                class="absolute size-2.5 rotate-45 border-stone-200 bg-white data-[side=bottom]:-top-1.5 data-[side=bottom]:border-t data-[side=bottom]:border-l data-[side=left]:-right-1.5 data-[side=left]:border-t data-[side=left]:border-r data-[side=right]:-left-1.5 data-[side=right]:border-b data-[side=right]:border-l data-[side=top]:-bottom-1.5 data-[side=top]:border-r data-[side=top]:border-b dark:border-stone-800 dark:bg-stone-900"
+              />
+              <strong class="block">Getting started</strong>
+              <span class="mt-1 block text-stone-500">
+                Install Menhir, then build and style your first component.
+              </span>
+            </PreviewCard.Popup>
+          </PreviewCard.Root>
+          .
+        </p>
       </ExampleCard>
       <ExampleCard name="Tooltip" href="/docs/components/tooltip">
         <div class="flex items-center justify-between gap-4">

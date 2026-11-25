@@ -135,6 +135,11 @@ together cost more than the base alone plus the pair's margin, in bytes
 gzipped, from `popupBaseMargins` or `simpleBaseMargins` beside the bases, or
 if a pair has no margin. A new pair is measured without editing the config.
 
+A popup that builds on none but shares its code with another through
+`floating`, as Preview Card does with Tooltip, is measured the same way:
+`floatingNeighbours` names the other popup, and `floatingNeighbourMargins`
+its margin.
+
 To add a pair's margin: build menhir, run `pnpm exec size-limit --config
 pairs.size-limit.js` here to see both sizes, then set the margin to the
 difference plus about 20%, rounded up to 50 B.
