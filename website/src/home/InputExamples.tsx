@@ -3,6 +3,7 @@ import { CheckboxGroup } from "menhir/checkbox-group";
 import { Input } from "menhir/input";
 import { NumberField } from "menhir/number-field";
 import { Radio } from "menhir/radio";
+import { Slider } from "menhir/slider";
 import { Switch } from "menhir/switch";
 import { Toggle } from "menhir/toggle";
 import { ToggleGroup } from "menhir/toggle-group";
@@ -126,6 +127,22 @@ export default function InputExamples() {
               +
             </NumberField.Increment>
           </NumberField.Root>
+        </div>
+      </ExampleCard>
+      <ExampleCard name="Slider" href="/docs/components/slider">
+        <div class="flex items-center justify-between gap-4">
+          <label for="home-brightness">Brightness</label>
+          <Slider.Root
+            id="home-brightness"
+            defaultValue={60}
+            class="flex w-36 shrink-0 items-center gap-3 text-sm"
+          >
+            <Slider.Track class="relative h-5 flex-1 cursor-pointer before:absolute before:inset-x-0 before:top-[calc(50%-0.125rem)] before:h-1 before:rounded-full before:bg-stone-200 dark:before:bg-stone-700">
+              <div class="absolute start-0 top-[calc(50%-0.125rem)] h-1 w-(--slider) rounded-full bg-stone-800 dark:bg-stone-300" />
+              <Slider.Thumb class="absolute start-[calc(var(--slider)-0.5rem)] top-[calc(50%-0.5rem)] size-4 rounded-full border-2 border-stone-800 bg-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-stone-500 dark:border-stone-300 dark:bg-stone-800" />
+            </Slider.Track>
+            <Slider.Value class="w-7 text-end tabular-nums" />
+          </Slider.Root>
         </div>
       </ExampleCard>
       <ExampleCard name="Toggle" href="/docs/components/toggle">

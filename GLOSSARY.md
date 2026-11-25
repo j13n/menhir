@@ -198,6 +198,14 @@ _Avoid_: Number input, spinner, stepper (for the component); spin button (for a 
 Reading what the user typed into a Number Field's Input as its value, on blur or Enter; until then the text is kept as typed and the value as it was. Not each key.
 _Avoid_: Parse (for the moment it happens), submit
 
+**Slider**:
+A value picked along a range by moving a thumb, `menhir/slider` (#148): the WAI-ARIA slider, whose `Thumb` holds a visually hidden native range input, placed by the consumer's CSS with `--slider` inside a `Track` that takes the pointer. The form receives the number from that input.
+_Avoid_: Range (for the component; a range is two thumbs, left out), range input (for the component), scrubber
+
+**Commit** (a slider's value):
+The end of a change to a Slider: a drag released or canceled, a key released or focus leaving first, a form reset once taken. Overlapping changes, such as a key during a drag, commit once, when the last ends. `onValueCommit` and the input's `change` event mark it; `onValueChange` and `input` mark each step before it.
+_Avoid_: Change end, release (for the moment it happens)
+
 **Touched**:
 A Field the user has been through: focus has left it, its control has changed, or a submission of its form was attempted. A form reset clears it. Its error shows only once it is touched.
 _Avoid_: Visited, blurred, dirty (a changed value, which Field does not track)

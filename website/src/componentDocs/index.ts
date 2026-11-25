@@ -20,6 +20,7 @@ import { progressDoc } from "./progress";
 import { radioDoc } from "./radio";
 import { selectDoc } from "./select";
 import { separatorDoc } from "./separator";
+import { sliderDoc } from "./slider";
 import { switchDoc } from "./switch";
 import { tabsDoc } from "./tabs";
 import { toggleDoc } from "./toggle";
@@ -51,6 +52,7 @@ export const componentDocs: ComponentDoc[] = [
   radioDoc,
   selectDoc,
   separatorDoc,
+  sliderDoc,
   switchDoc,
   tabsDoc,
   toggleDoc,

@@ -1,0 +1,65 @@
+/* The least CSS that draws the Slider: a track tall enough to press, a
+   rail and a filled part as wide as --slider, which the Root sets, and a
+   thumb centred on it. inset-inline-start mirrors right to left by itself.
+   Colours are Tailwind's stone palette; light-dark() picks the second one
+   in dark mode (color-scheme: dark). */
+.slider {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  width: 16rem;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.slider-track {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 1.25rem;
+  cursor: pointer;
+}
+
+/* The rail, and the filled part over it. */
+.slider-track::before,
+.slider-indicator {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(50% - 0.125rem);
+  height: 0.25rem;
+  border-radius: 9999px;
+}
+.slider-track::before {
+  width: 100%;
+  background: light-dark(
+    oklch(92.3% 0.003 48.717) /* stone-200 */,
+    oklch(37.4% 0.01 67.558) /* stone-700 */
+  );
+}
+.slider-indicator {
+  width: var(--slider);
+  background: light-dark(
+    oklch(26.8% 0.007 34.298) /* stone-800 */,
+    oklch(86.9% 0.005 56.366) /* stone-300 */
+  );
+}
+
+.slider-thumb {
+  position: absolute;
+  top: calc(50% - 0.5rem);
+  inset-inline-start: calc(var(--slider) - 0.5rem);
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: light-dark(white, oklch(26.8% 0.007 34.298) /* stone-800 */);
+  border: 2px solid
+    light-dark(
+      oklch(26.8% 0.007 34.298) /* stone-800 */,
+      oklch(86.9% 0.005 56.366) /* stone-300 */
+    );
+}
+.slider-thumb:has(:focus-visible) {
+  outline: 2px solid oklch(55.3% 0.013 58.071) /* stone-500 */;
+  outline-offset: 2px;
+}

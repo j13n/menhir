@@ -33,6 +33,7 @@ const budgets = {
   "menhir/radio": "2.6 kB",
   "menhir/select": "12.5 kB",
   "menhir/separator": "900 B",
+  "menhir/slider": "2.9 kB",
   "menhir/switch": "1.9 kB",
   "menhir/tabs": "2.4 kB",
   "menhir/theme/cookie": "1.4 kB",
