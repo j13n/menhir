@@ -26,6 +26,11 @@ const styles = css`.switch[data-checked] {
   transform: translateX(1.25rem);
 }`;
 
+const agentInstructions = `To wire up Menhir components, follow node_modules/menhir/skills/menhir/SKILL.md.
+To style Menhir components, follow node_modules/menhir/skills/menhir-styling/SKILL.md.`;
+
+const copySkills = shell`cp -r node_modules/menhir/skills/menhir node_modules/menhir/skills/menhir-styling .claude/skills/`;
+
 export default function GettingStarted() {
   return (
     <main>
@@ -63,15 +68,38 @@ export default function GettingStarted() {
         </p>
         <CodeBlock code={styles} />
       </Section>
-      <Section id="styling-with-an-agent" title="Styling with a coding agent">
+      <Section id="install-the-skills" title="Give your agent the skills">
         <p>
-          Menhir ships a skill for coding agents that styles its components in
-          one consistent look, such as the shadcn look. Point your agent at it
-          with a line in your project's <code>AGENTS.md</code>: "To style Menhir
-          components, follow{" "}
-          <code>node_modules/menhir/skills/menhir-styling/SKILL.md</code>".{" "}
-          <a href="/docs/styling">Styling</a> has the rest: the looks, what to
-          ask for, and a look of your own.
+          Menhir ships two skills for coding agents in the package, so they
+          match the version you have installed:
+        </p>
+        <ul class="my-3 list-disc space-y-2 pl-6">
+          <li>
+            <code>menhir</code> wires components into an app: entry points and
+            parts, controlled and uncontrolled state, forms and Field.
+          </li>
+          <li>
+            <code>menhir-styling</code> styles them in one consistent look, such
+            as the shadcn look.
+          </li>
+        </ul>
+        <p>
+          Agents do not look for skills in <code>node_modules</code>, so point
+          yours at them with lines in the file it reads at the start, such as{" "}
+          <code>AGENTS.md</code> or <code>CLAUDE.md</code>:
+        </p>
+        <pre class="whitespace-pre-wrap">
+          <code>{agentInstructions}</code>
+        </pre>
+        <p>
+          Or copy them into your agent's skills folder, here Claude Code's. A
+          copy does not follow new releases; copy them again when you update{" "}
+          <code>menhir</code>.
+        </p>
+        <CodeBlock code={copySkills} />
+        <p>
+          <a href="/docs/styling">Styling</a> has the rest of the styling skill:
+          the looks, what to ask for, and a look of your own.
         </p>
       </Section>
       <Section id="next" title="Next">

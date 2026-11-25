@@ -5,6 +5,10 @@ import { codeOf } from "./highlight";
 /** Where a component page's Markdown version is served, for agents to read. */
 export const markdownPath = (slug: string) => `/docs/components/${slug}.md`;
 
+/** The package's skills for coding agents, where an installed package puts them. */
+const wiringSkill = "node_modules/menhir/skills/menhir/SKILL.md";
+const stylingSkill = "node_modules/menhir/skills/menhir-styling/SKILL.md";
+
 export type MarkdownExtras = {
   /** Compressed size of the entry point in bytes; undefined until measured. */
   size?: number;
@@ -31,7 +35,7 @@ export function componentMarkdown(
     `# ${doc.name}`,
     doc.description,
     [`- Entry point: \`menhir/${doc.slug}\``, `- Size: ${size}`].join("\n"),
-    `> To add ${doc.name} to a project, install the packages below with the project's package manager, then copy the example that matches how the project is styled, Tailwind CSS or plain CSS, and adapt its markup and class names to the project.`,
+    `> To add ${doc.name} to a project, install the packages below with the project's package manager, then copy the example that matches how the project is styled, Tailwind CSS or plain CSS, and adapt its markup and class names to the project.\n>\n> What every Menhir component shares, such as controlled state and forms, is in the skill that comes with the package: follow \`${wiringSkill}\` once it is installed.`,
     "## Install",
     fence("sh", "pnpm add menhir solid-js @solidjs/web"),
     "## Anatomy",
@@ -89,9 +93,14 @@ export function llmsTxt(docs: ComponentDoc[]): string {
     "## Utilities",
     "- [Color Scheme](/docs/utilities/color-scheme): `menhir/color-scheme/local-storage` and `menhir/color-scheme/cookie` keep the reader's light, dark or system choice, saved and applied to `<html>`, with a head script that applies it before the first paint.",
     "- [Theme](/docs/utilities/theme): `menhir/theme/local-storage` and `menhir/theme/cookie` keep the reader's choice out of the app's themes, saved and applied to `<html>`, with a head script that applies it before the first paint.",
+    "## Skills",
+    [
+      `- \`${wiringSkill}\`: what every component shares when you wire it into an app: entry points and parts, controlled and uncontrolled state, forms and Field. It comes with the package, so it matches the installed version.`,
+      `- \`${stylingSkill}\`: styling components in one consistent look, such as the shadcn look.`,
+    ].join("\n"),
     "## Docs",
     [
-      "- [Getting started](/docs/getting-started): installing Menhir and using a first component.",
+      "- [Getting started](/docs/getting-started): installing Menhir, using a first component, and giving a coding agent the skills.",
       "- [Styling](/docs/styling): styling a component through its data attributes, and the styling skill in `node_modules/menhir/skills/menhir-styling`, which styles components in one look, such as the shadcn look.",
       "- [Solid 2.0](/docs/solid-2): how the components follow Solid 2.0's idioms: props, the `render` prop, controlled state, async data under `<Loading>`, server rendering and popups in the top layer.",
       "- [Forms without a library](/docs/forms): building forms with Field and Form and no form-state library: a store with nested and array values, a schema run on submit with `issuesToErrors`, errors once touched, a pending submit button, reset, and the uncontrolled form with the router's form action.",

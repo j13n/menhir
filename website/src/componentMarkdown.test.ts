@@ -59,7 +59,14 @@ describe("componentMarkdown", () => {
   test("tells an agent how to add the component, before the install command", () => {
     const markdown = componentMarkdown(doc, { size: 1914, example });
     expect(markdown).toContain(
-      "- Size: 1.9 kB, minified and gzipped, Solid left out\n\n> To add Switch to a project, install the packages below with the project's package manager, then copy the example that matches how the project is styled, Tailwind CSS or plain CSS, and adapt its markup and class names to the project.\n\n## Install\n",
+      "- Size: 1.9 kB, minified and gzipped, Solid left out\n\n> To add Switch to a project, install the packages below with the project's package manager, then copy the example that matches how the project is styled, Tailwind CSS or plain CSS, and adapt its markup and class names to the project.\n>\n",
+    );
+  });
+
+  test("points an agent to the skill for what every component shares, before the install command", () => {
+    const markdown = componentMarkdown(doc, { size: 1914, example });
+    expect(markdown).toContain(
+      "adapt its markup and class names to the project.\n>\n> What every Menhir component shares, such as controlled state and forms, is in the skill that comes with the package: follow `node_modules/menhir/skills/menhir/SKILL.md` once it is installed.\n\n## Install\n",
     );
   });
 
@@ -190,6 +197,12 @@ describe("llmsTxt", () => {
   test("links the utilities' pages", () => {
     expect(llmsTxt([doc])).toContain(
       "## Utilities\n\n- [Color Scheme](/docs/utilities/color-scheme): ",
+    );
+  });
+
+  test("names the skills that come with the package, as installed, before the docs pages", () => {
+    expect(llmsTxt([doc])).toMatch(
+      /## Skills\n\n- `node_modules\/menhir\/skills\/menhir\/SKILL\.md`: .+\n- `node_modules\/menhir\/skills\/menhir-styling\/SKILL\.md`: .+\n\n## Docs\n/,
     );
   });
 
