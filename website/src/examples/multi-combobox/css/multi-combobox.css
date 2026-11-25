@@ -1,0 +1,126 @@
+/* The least CSS that makes the Multi Combobox look like one: a box that
+   wraps its chips and the input, and a card below it, as wide as the box at
+   least (--anchor-width, the Popup's anchor is the Chips box) and no taller
+   than the space left (--available-height). A chip shows focus, since
+   Backspace and the arrow keys reach it; the item the keys or the pointer
+   reached has data-active, and the indicator shows by its data-selected.
+   Colours are Tailwind's stone palette; light-dark() picks the second one
+   in dark mode (color-scheme: dark). */
+.multi-combobox-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+}
+
+.multi-combobox-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+  width: 16rem;
+  padding: 0.25rem;
+  box-sizing: border-box;
+  border: 1px solid
+    light-dark(
+      oklch(86.9% 0.005 56.366) /* stone-300 */,
+      oklch(44.4% 0.011 73.639) /* stone-600 */
+    );
+  border-radius: 0.375rem;
+  cursor: text;
+}
+
+.multi-combobox-box:focus-within {
+  outline: 2px solid oklch(55.3% 0.013 58.071) /* stone-500 */;
+  outline-offset: 2px;
+}
+
+.multi-combobox-chip {
+  display: inline-flex;
+  gap: 0.125rem;
+  align-items: center;
+  padding: 0.125rem 0.125rem 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  background: light-dark(
+    oklch(92.3% 0.003 48.717) /* stone-200 */,
+    oklch(37.4% 0.01 67.558) /* stone-700 */
+  );
+  cursor: default;
+}
+
+.multi-combobox-chip:focus {
+  outline: 2px solid oklch(55.3% 0.013 58.071) /* stone-500 */;
+}
+
+.multi-combobox-chip-remove {
+  padding: 0 0.25rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.multi-combobox-input {
+  flex: 1;
+  min-width: 5rem;
+  padding: 0.125rem 0.25rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+
+.multi-combobox-popup {
+  box-sizing: border-box;
+  min-width: var(--anchor-width);
+  max-height: var(--available-height);
+  margin: 0;
+  padding: 0.25rem;
+  overflow-y: auto;
+  border: 1px solid
+    light-dark(
+      oklch(92.3% 0.003 48.717) /* stone-200 */,
+      oklch(37.4% 0.01 67.558) /* stone-700 */
+    );
+  border-radius: 0.5rem;
+  background: light-dark(white, oklch(21.6% 0.006 56.043) /* stone-900 */);
+  color: inherit;
+  font:
+    0.875rem system-ui,
+    sans-serif;
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 10%);
+}
+
+.multi-combobox-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.25rem;
+  cursor: default;
+  user-select: none;
+}
+
+.multi-combobox-item[data-active] {
+  background: light-dark(
+    oklch(97% 0.001 106.424) /* stone-100 */,
+    oklch(26.8% 0.007 34.298) /* stone-800 */
+  );
+}
+
+.multi-combobox-indicator {
+  width: 0.75rem;
+}
+
+.multi-combobox-indicator[data-unselected] {
+  visibility: hidden;
+}
+
+.multi-combobox-status:not(:empty) {
+  padding: 0.375rem 0.5rem;
+  opacity: 0.7;
+}

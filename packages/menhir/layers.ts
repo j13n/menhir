@@ -16,6 +16,7 @@ export const popupComponents = [
   "select",
   "combobox",
   "autocomplete",
+  "multi-combobox",
 ];
 
 // The popup each popup builds on, by folder in src: the one popup it may
@@ -27,6 +28,7 @@ export const popupBases = {
   autocomplete: "combobox",
   "context-menu": "menu",
   menubar: "menu",
+  "multi-combobox": "combobox",
 } as const satisfies Record<string, string>;
 
 // What an app that already has a popup's base pays for the popup, in bytes
@@ -43,6 +45,10 @@ export const popupBaseMargins: Record<keyof typeof popupBases, number> = {
   autocomplete: 300,
   "context-menu": 350,
   menubar: 700,
+  // 1,191 B measured on 2026-11-25: its Root, Chips, Value, Chip,
+  // ChipRemove, Input and Item, and the List and Popup that wrap
+  // Combobox's (#206).
+  "multi-combobox": 1450,
 };
 
 // Popups that build on no popup but share most of their code with one

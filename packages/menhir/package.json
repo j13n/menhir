@@ -119,6 +119,11 @@
       "solid": "./dist/source/meter/index.js",
       "import": "./dist/meter/index.js"
     },
+    "./multi-combobox": {
+      "types": "./dist/source/multi-combobox/index.d.ts",
+      "solid": "./dist/source/multi-combobox/index.js",
+      "import": "./dist/multi-combobox/index.js"
+    },
     "./navigation-menu": {
       "types": "./dist/source/navigation-menu/index.d.ts",
       "solid": "./dist/source/navigation-menu/index.js",

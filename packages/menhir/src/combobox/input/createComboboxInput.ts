@@ -107,7 +107,7 @@ export function createComboboxInput(
           setOpen(false, "enter-key", event);
           return;
         }
-        if (combobox.select(item, event)) setOpen(false, "item-press", event);
+        combobox.select(item, event);
       } else if (key === "Escape" && !altKey) {
         if (isOpen) setOpen(false, "escape-key", event);
         // Nothing to close or clear: a dialog around it may close.

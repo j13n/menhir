@@ -14,6 +14,7 @@ import { inputDoc } from "./input";
 import { menuDoc } from "./menu";
 import { menubarDoc } from "./menubar";
 import { meterDoc } from "./meter";
+import { multiComboboxDoc } from "./multi-combobox";
 import { navigationMenuDoc } from "./navigation-menu";
 import { numberFieldDoc } from "./number-field";
 import { otpFieldDoc } from "./otp-field";
@@ -49,6 +50,7 @@ export const componentDocs: ComponentDoc[] = [
   menuDoc,
   menubarDoc,
   meterDoc,
+  multiComboboxDoc,
   navigationMenuDoc,
   numberFieldDoc,
   otpFieldDoc,

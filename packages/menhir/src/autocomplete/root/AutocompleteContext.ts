@@ -81,15 +81,16 @@ export function createAutocomplete(
     },
     onChange: (text, details) => props.onValueChange?.(text, details),
   });
+  const base = createComboboxBase(props);
   return {
-    ...createComboboxBase(props),
+    ...base,
     component: "Autocomplete",
     inputValue: text,
     setInputValue: setText,
     select: (item, event) => {
-      if (!item || item.disabled) return false;
+      if (!item || item.disabled) return;
       setText(item.value, { reason: "item-press", event });
-      return true;
+      base.setOpen(false, { reason: "item-press", event });
     },
     clear: (event, reason) => {
       if (!requestedText()) return false;

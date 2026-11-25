@@ -110,15 +110,16 @@ export interface ComboboxStateProps {
 /**
  * What a combobox's shared parts read through context: the Trigger, Clear,
  * the Popup, the List, the Status, Group and the Input's shared code.
- * `Combobox.Root` shares a `Combobox`, and `Autocomplete.Root`, which builds
- * on Combobox, shares its own (`src/autocomplete/README.md`).
+ * `Combobox.Root` shares a `Combobox`, and `Autocomplete.Root` and
+ * `MultiCombobox.Root`, which build on Combobox, share their own
+ * (`src/autocomplete/README.md`, `src/multi-combobox/README.md`).
  */
 export interface ComboboxBase {
   /**
    * Which Root made it, so that a part only one of them takes can say it
    * is inside the other.
    */
-  readonly component: "Combobox" | "Autocomplete";
+  readonly component: "Combobox" | "Autocomplete" | "MultiCombobox";
   /** Whether the list is open. */
   open(): boolean;
   /** Asks to open or close the list, saying why. */
@@ -134,10 +135,11 @@ export interface ComboboxBase {
     details: { readonly reason: "input-change"; readonly event: Event },
   ): void;
   /**
-   * Selects `item`, or accepts it, as Enter or a click does. A disabled
-   * item changes nothing. Returns whether it could be selected.
+   * Selects `item`, accepts it or adds it, as Enter or a click does, and
+   * closes the list, but for a Multi Combobox, whose list stays open. A
+   * disabled item changes nothing.
    */
-  select(item: ComboboxItemEntry | undefined, event: Event): boolean;
+  select(item: ComboboxItemEntry | undefined, event: Event): void;
   /** Empties the text, and the value. Returns whether there was any. */
   clear(event: Event, reason: "escape-key" | "clear-press"): boolean;
   /** Whether `item` is the active one of an open list, for its `data-active`. */
@@ -166,9 +168,10 @@ export interface Combobox extends ComboboxBase {
   setInputValue(text: string, details: InputValueChangeDetails): void;
   /**
    * Selects `item`: its value through the hidden input, which fires
-   * `input` and `change` for the form, and its label as the text.
+   * `input` and `change` for the form, and its label as the text; then
+   * closes the list.
    */
-  select(item: ComboboxItemEntry | undefined, event: Event): boolean;
+  select(item: ComboboxItemEntry | undefined, event: Event): void;
   /**
    * Puts the text back to the selected item's label as focus leaves, or
    * clears the value if the user emptied the text: the Input's `onFocusOut`.
@@ -202,10 +205,10 @@ export type ComboboxBaseState = Pick<
 >;
 
 /**
- * The state `Combobox.Root` and `Autocomplete.Root` share: whether the list
- * is open, its list navigation, the List's `id` and the `data-*`
- * attributes. Each Root spreads it into its own combobox, beside its text
- * and what accepting an item does.
+ * The state `Combobox.Root`, `Autocomplete.Root` and `MultiCombobox.Root`
+ * share: whether the list is open, its list navigation, the List's `id` and
+ * the `data-*` attributes. Each Root spreads it into its own combobox,
+ * beside its text and what accepting an item does.
  */
 export function createComboboxBase(
   props: ComboboxBaseProps,
@@ -332,10 +335,10 @@ export function createCombobox(props: ComboboxStateProps): Combobox {
     inputValue,
     setInputValue,
     select: (item, event) => {
-      if (!item || item.disabled) return false;
+      if (!item || item.disabled) return;
       commit(item.value);
       setInputValue(item.text!.trim(), { reason: "item-press", event });
-      return true;
+      base.setOpen(false, { reason: "item-press", event });
     },
     clear: (event, reason) => {
       if (!requestedInputValue() && requestedValue() === null) return false;
@@ -371,8 +374,8 @@ export const ComboboxContext = createContext<ComboboxBase | null>(null);
 
 /**
  * The combobox of the Root around the part. A shared part passes no
- * `component` and takes either Root's; a part only one Root takes passes
- * that Root's `component`, and its type, `Combobox` or an Autocomplete's.
+ * `component` and takes any Root's; a part only one Root takes passes that
+ * Root's `component`, and its type, such as `Combobox`.
  */
 export function useComboboxContext<T extends ComboboxBase = ComboboxBase>(
   component?: T["component"],
@@ -381,11 +384,11 @@ export function useComboboxContext<T extends ComboboxBase = ComboboxBase>(
   // Production builds drop the checks, and their messages, with `isDev`.
   if (isDev) {
     if (!context) {
-      // A shared part cannot tell which Root was meant, so it names both.
+      // A shared part cannot tell which Root was meant, so it names each.
       throw new Error(
         component
           ? `[menhir] ${component} parts must be placed within <${component}.Root>.`
-          : "[menhir] Combobox parts must be placed within <Combobox.Root>, and Autocomplete parts within <Autocomplete.Root>.",
+          : "[menhir] Combobox parts must be placed within <Combobox.Root>, Autocomplete parts within <Autocomplete.Root>, and MultiCombobox parts within <MultiCombobox.Root>.",
       );
     }
     if (component && context.component !== component) {
