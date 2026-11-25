@@ -103,7 +103,7 @@ export default function InputExamples() {
               onValueChange={(value) => {
                 if (/^\d*$/.test(value)) setPin(value);
               }}
-              class="w-36 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700"
+              class="w-36 min-w-0 rounded-md border border-stone-300 bg-transparent px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:border-stone-700"
             />
           </label>
           <p class="text-sm opacity-70">Digits only: try a letter.</p>
@@ -135,7 +135,7 @@ export default function InputExamples() {
           <Slider.Root
             id="home-brightness"
             defaultValue={60}
-            class="flex w-36 shrink-0 items-center gap-3 text-sm"
+            class="flex w-36 min-w-0 items-center gap-3 text-sm"
           >
             <Slider.Track class="relative h-5 flex-1 cursor-pointer before:absolute before:inset-x-0 before:top-[calc(50%-0.125rem)] before:h-1 before:rounded-full before:bg-stone-200 dark:before:bg-stone-700">
               <div class="absolute start-0 top-[calc(50%-0.125rem)] h-1 w-(--slider) rounded-full bg-stone-800 dark:bg-stone-300" />
