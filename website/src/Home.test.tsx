@@ -851,6 +851,21 @@ describe("home page", () => {
     ).toHaveAttribute("href", "/docs/components/navigation-menu");
   });
 
+  test("shows Avatars, a picture and initials named as the picture, linked to their page", () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    // jsdom loads no images, so the picture stays loading, named by its alt.
+    const picture = example.getByRole("img", { name: "Alex Kim" });
+    expect(picture.tagName).toBe("IMG");
+    expect(picture).toHaveAttribute("src", "/avatar.svg");
+    const initials = example.getByRole("img", { name: "Jordan Lee" });
+    expect(initials).toHaveTextContent("JL");
+    expect(example.getByRole("link", { name: "Avatar" })).toHaveAttribute(
+      "href",
+      "/docs/components/avatar",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));

@@ -11,6 +11,7 @@ const budgets = {
   "menhir/accordion": "1.8 kB",
   "menhir/alert-dialog": "4.1 kB",
   "menhir/autocomplete": "11.5 kB",
+  "menhir/avatar": "1.3 kB",
   "menhir/checkbox": "2 kB",
   "menhir/checkbox-group": "2.5 kB",
   "menhir/collapsible": "1.5 kB",

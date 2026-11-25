@@ -57,6 +57,7 @@ export const libraries: Library[] = [
       accordion: "@base-ui/react/accordion",
       "alert-dialog": "@base-ui/react/alert-dialog",
       autocomplete: "@base-ui/react/autocomplete",
+      avatar: "@base-ui/react/avatar",
       checkbox: "@base-ui/react/checkbox",
       "checkbox-group": "@base-ui/react/checkbox-group",
       collapsible: "@base-ui/react/collapsible",
@@ -93,6 +94,7 @@ export const libraries: Library[] = [
     components: {
       accordion: "@radix-ui/react-accordion",
       "alert-dialog": "@radix-ui/react-alert-dialog",
+      avatar: "@radix-ui/react-avatar",
       checkbox: "@radix-ui/react-checkbox",
       collapsible: "@radix-ui/react-collapsible",
       "context-menu": "@radix-ui/react-context-menu",
@@ -123,6 +125,8 @@ export const libraries: Library[] = [
     components: {
       accordion: "@kobalte/core/accordion",
       "alert-dialog": "@kobalte/core/alert-dialog",
+      // Its Image is an avatar: a picture with a fallback.
+      avatar: "@kobalte/core/image",
       checkbox: "@kobalte/core/checkbox",
       collapsible: "@kobalte/core/collapsible",
       combobox: "@kobalte/core/combobox",

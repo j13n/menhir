@@ -39,6 +39,11 @@
       "solid": "./dist/source/autocomplete/index.js",
       "import": "./dist/autocomplete/index.js"
     },
+    "./avatar": {
+      "types": "./dist/source/avatar/index.d.ts",
+      "solid": "./dist/source/avatar/index.js",
+      "import": "./dist/avatar/index.js"
+    },
     "./checkbox": {
       "types": "./dist/source/checkbox/index.d.ts",
       "solid": "./dist/source/checkbox/index.js",

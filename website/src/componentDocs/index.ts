@@ -1,6 +1,7 @@
 import { accordionDoc } from "./accordion";
 import { alertDialogDoc } from "./alert-dialog";
 import { autocompleteDoc } from "./autocomplete";
+import { avatarDoc } from "./avatar";
 import { checkboxDoc } from "./checkbox";
 import { checkboxGroupDoc } from "./checkbox-group";
 import { collapsibleDoc } from "./collapsible";
@@ -34,6 +35,7 @@ export const componentDocs: ComponentDoc[] = [
   accordionDoc,
   alertDialogDoc,
   autocompleteDoc,
+  avatarDoc,
   checkboxDoc,
   checkboxGroupDoc,
   collapsibleDoc,
