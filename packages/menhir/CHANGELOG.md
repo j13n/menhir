@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.14
+
+### Patch Changes
+
+- 88f2fc8: Add Slider (`menhir/slider`): a thumb dragged along a track or moved with the arrow keys, Page Up, Page Down, Home and End, on a visually hidden native `<input type="range">` that the form receives, with `onValueCommit` once a drag or key ends, and placed by your CSS with the `--slider` property.
+
 ## 0.1.13
 
 ### Patch Changes
