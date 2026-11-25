@@ -45,6 +45,7 @@ const budgets = {
   "menhir/theme/local-storage": "1.2 kB",
   "menhir/toggle": "1.2 kB",
   "menhir/toggle-group": "2.3 kB",
+  "menhir/toolbar": "2.3 kB",
   "menhir/tooltip": "11.5 kB",
 };
 

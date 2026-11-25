@@ -73,7 +73,9 @@ export function createRovingFocus<T extends RovingItem>(options: {
       const count = list.length;
       const index = list.findIndex((item) => item.element === from);
       // Right to left, the next item is on the left. `direction` inherits,
-      // so the item's own is the group's.
+      // so the item's own is the group's. Toolbar's Root has a copy, for
+      // the keys it takes before its controls (src/toolbar/README.md,
+      // "Size"); change both together.
       const [previous, next] = options.vertical
         ? ["ArrowUp", "ArrowDown"]
         : getComputedStyle(from).direction === "rtl"

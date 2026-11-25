@@ -471,6 +471,33 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Toolbar, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const toolbar = example.getByRole("toolbar", { name: "Text formatting" });
+    const underline = within(toolbar).getByRole("button", {
+      name: "Underline",
+    });
+    const strike = within(toolbar).getByRole("button", { name: "Strike" });
+    const clear = within(toolbar).getByRole("button", { name: "Clear" });
+    // One tab stop; the disabled item stays focusable.
+    expect(underline).toHaveAttribute("tabindex", "0");
+    expect(strike).toHaveAttribute("tabindex", "-1");
+    expect(clear).toHaveAttribute("aria-disabled", "true");
+    underline.focus();
+    fireEvent.keyDown(underline, { key: "ArrowRight" });
+    expect(strike).toHaveFocus();
+    fireEvent.click(strike);
+    // The toggle changes after the click's flush.
+    await Promise.resolve();
+    flush();
+    expect(strike).toHaveAttribute("aria-pressed", "true");
+    expect(example.getByRole("link", { name: "Toolbar" })).toHaveAttribute(
+      "href",
+      "/docs/components/toolbar",
+    );
+  });
+
   test("shows a working Collapsible, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
