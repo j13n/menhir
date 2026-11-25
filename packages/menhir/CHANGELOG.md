@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.17
+
+### Patch Changes
+
+- a7587c4: Add a second skill for coding agents, `skills/menhir`, for wiring components into an app: entry points and parts, controlled and uncontrolled state, forms and Field. Point your agent at `node_modules/menhir/skills/menhir/SKILL.md`.
+
 ## 0.1.16
 
 ### Patch Changes
