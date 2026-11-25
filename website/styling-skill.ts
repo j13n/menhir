@@ -44,8 +44,6 @@ export function writeStylingSkillLooks() {
   }
 }
 
-if (import.meta.main) writeStylingSkillLooks();
-
 /**
  * The files of the styling skill's `looks/` folder, by path inside it, made
  * from the website: each look's own files in `src/looks/<look>/`, and each
@@ -144,3 +142,6 @@ function folderNames(dir: string) {
     .map((entry) => entry.name)
     .sort();
 }
+
+// Last, so that every declaration above is initialized when it runs.
+if (import.meta.main) writeStylingSkillLooks();

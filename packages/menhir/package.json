@@ -159,6 +159,11 @@
       "solid": "./dist/source/radio/index.js",
       "import": "./dist/radio/index.js"
     },
+    "./scroll-area": {
+      "types": "./dist/source/scroll-area/index.d.ts",
+      "solid": "./dist/source/scroll-area/index.js",
+      "import": "./dist/scroll-area/index.js"
+    },
     "./select": {
       "types": "./dist/source/select/index.d.ts",
       "solid": "./dist/source/select/index.js",

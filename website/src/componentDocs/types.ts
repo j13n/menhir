@@ -60,4 +60,10 @@ export type ComponentDoc = {
   keyboard: KeyboardRow[];
   /** Sections after Keyboard, in order. */
   sections?: DocSection[];
+  /**
+   * A section to try before the component, such as a recipe that needs no
+   * JavaScript: the page links it right after the description, with
+   * `text` saying why.
+   */
+  tryFirst?: { section: string; text: string };
 };

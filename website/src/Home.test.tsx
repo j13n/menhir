@@ -934,6 +934,19 @@ describe("home page", () => {
     );
   });
 
+  test("shows a Scroll Area, a named region of releases, linked to its page", () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    // jsdom lays nothing out, so no Scrollbar is drawn: the region scrolls.
+    const area = example.getByRole("region", { name: "Releases" });
+    expect(area).toHaveTextContent("Release 2.12");
+    expect(area).toHaveTextContent("Release 2.1");
+    expect(example.getByRole("link", { name: "Scroll Area" })).toHaveAttribute(
+      "href",
+      "/docs/components/scroll-area",
+    );
+  });
+
   test("shows vertical Separators, linked to their page", () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));

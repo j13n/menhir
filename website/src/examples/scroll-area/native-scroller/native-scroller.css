@@ -1,0 +1,18 @@
+/* A styled native scroller. A browser without one of these properties
+   shows the system's scrollbar, which is fine. */
+.scroller {
+  height: 12rem;
+  overflow: auto;
+  /* A scroll that reaches the end does not go on to the page. */
+  overscroll-behavior: contain;
+  /* A narrower scrollbar, in the page's colours: thumb, then track. */
+  scrollbar-width: thin;
+  scrollbar-color: light-dark(
+      oklch(70.9% 0.01 56.259) /* stone-400 */,
+      oklch(55.3% 0.013 58.071) /* stone-500 */
+    )
+    transparent;
+  /* Room for a classic scrollbar even while there is nothing to scroll, so
+     the content does not get narrower when one appears. */
+  scrollbar-gutter: stable;
+}

@@ -1,12 +1,20 @@
 import { Avatar } from "menhir/avatar";
 import { Meter } from "menhir/meter";
 import { Progress } from "menhir/progress";
+import { ScrollArea } from "menhir/scroll-area";
 import { Separator } from "menhir/separator";
+
+import { For } from "solid-js";
 
 import { ExampleCard, ExampleGroup } from "./ExampleGroup";
 
 const avatarClass =
   "inline-grid size-10 overflow-hidden rounded-full align-middle ring-2 ring-white dark:ring-stone-900";
+const releases = Array.from(
+  { length: 12 },
+  (_, index) => `Release 2.${12 - index}`,
+);
+
 const avatarFallbackClass =
   "col-start-1 row-start-1 grid place-items-center bg-stone-200 text-sm font-medium dark:bg-stone-700";
 
@@ -65,6 +73,23 @@ export default function DisplayExamples() {
             <div class="h-full w-(--meter) bg-stone-800 dark:bg-stone-300" />
           </div>
         </Meter.Root>
+      </ExampleCard>
+      <ExampleCard name="Scroll Area" href="/docs/components/scroll-area">
+        <ScrollArea.Root class="group relative h-28 rounded-md border border-stone-200 text-sm dark:border-stone-700">
+          <ScrollArea.Viewport
+            class="h-full overflow-auto overscroll-contain rounded-[inherit] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500"
+            aria-label="Releases"
+          >
+            <ScrollArea.Content class="px-3 py-1">
+              <For each={releases}>
+                {(release) => <p class="my-1.5">{release}</p>}
+              </For>
+            </ScrollArea.Content>
+          </ScrollArea.Viewport>
+          <ScrollArea.Scrollbar class="absolute inset-y-1 end-1 w-1.5 opacity-0 transition-opacity delay-600 group-hover:opacity-100 group-hover:delay-0 data-scrolling:opacity-100 data-scrolling:delay-0 motion-reduce:transition-none">
+            <ScrollArea.Thumb class="absolute inset-x-0 top-[calc((100%-max(var(--thumb-size),1rem))*var(--thumb-position))] h-[max(var(--thumb-size),1rem)] rounded-full bg-stone-400 dark:bg-stone-500" />
+          </ScrollArea.Scrollbar>
+        </ScrollArea.Root>
       </ExampleCard>
       <ExampleCard name="Separator" href="/docs/components/separator">
         <div class="flex items-center gap-3">

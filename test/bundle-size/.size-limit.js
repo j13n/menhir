@@ -35,6 +35,7 @@ const budgets = {
   "menhir/preview-card": "11.5 kB",
   "menhir/progress": "1.4 kB",
   "menhir/radio": "2.6 kB",
+  "menhir/scroll-area": "2.5 kB",
   "menhir/select": "12.5 kB",
   "menhir/separator": "900 B",
   "menhir/slider": "3 kB",
