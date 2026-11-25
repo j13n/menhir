@@ -5,10 +5,17 @@ import { Show, createSignal, flush, omit } from "solid-js";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   describeConformance,
+  isJSDOM,
   screen,
 } from "#test-utils";
+
+import {
+  centerOf,
+  press as pressPointer,
+} from "../../../test/floating/input.ts";
 
 import { Slider } from "../index.ts";
 import type { SliderRootProps } from "./SliderRoot.tsx";
@@ -37,16 +44,6 @@ function Volume(props: SliderRootProps) {
 
 const parts = () =>
   ["root", "value", "track", "thumb"].map((id) => screen.getByTestId(id));
-
-/**
- * Resolves once the slider has handled a form reset: in a task after the
- * reset, since the browser resets the controls after the event, and then
- * once its state has flushed.
- */
-async function afterReset() {
-  await new Promise((resolve) => setTimeout(resolve));
-  await afterFlush();
-}
 
 /** A slider named `volume` in a form with a reset button. */
 function VolumeForm(
@@ -407,6 +404,58 @@ describe("<Slider.Root />", () => {
 
         expect(screen.queryByRole("slider")).toBeNull();
         expect(onValueChange).not.toHaveBeenCalled();
+      });
+
+      // A press of the user's, not a script's: the browser runs microtasks
+      // as each listener of `reset` returns, before it resets the controls.
+      describe.skipIf(isJSDOM)("by a real press", () => {
+        const pressReset = () => pressPointer(centerOf(button("Reset")));
+
+        it("goes back to defaultValue, and commits it", async () => {
+          const onValueCommit = vi.fn();
+          const { user } = await render(() => (
+            <VolumeForm defaultValue={30} onValueCommit={onValueCommit} />
+          ));
+          await press(user, "{End}");
+          onValueCommit.mockClear();
+
+          await pressReset();
+          await afterReset();
+
+          expect(onValueCommit).toHaveBeenCalledExactlyOnceWith(30);
+          expect(slider()).toHaveValue("30");
+          expect(submitted()).toEqual([["volume", "30"]]);
+        });
+
+        it("keeps value when its consumer declines the reset", async () => {
+          await render(() => <VolumeForm value={80} defaultValue={20} />);
+
+          await pressReset();
+          await afterReset();
+
+          expect(slider()).toHaveValue("80");
+          expect(submitted()).toEqual([["volume", "80"]]);
+        });
+
+        it("calls nothing for a reset a later listener cancels", async () => {
+          const onValueChange = vi.fn();
+          await render(() => (
+            <VolumeForm
+              value={80}
+              defaultValue={20}
+              onValueChange={onValueChange}
+            />
+          ));
+          // Added after the slider's own listener, which is added once it
+          // has settled.
+          form().addEventListener("reset", (event) => event.preventDefault());
+
+          await pressReset();
+          await afterReset();
+
+          expect(onValueChange).not.toHaveBeenCalled();
+          expect(submitted()).toEqual([["volume", "80"]]);
+        });
       });
     });
   });

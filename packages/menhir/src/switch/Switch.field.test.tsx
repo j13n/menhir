@@ -4,9 +4,18 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createSignal } from "solid-js";
 
-import { afterFlush, createRenderer, isJSDOM, screen } from "#test-utils";
+import {
+  afterFlush,
+  afterReset,
+  createRenderer,
+  isJSDOM,
+  screen,
+} from "#test-utils";
+
+import { centerOf, press } from "../../test/floating/input.ts";
 
 import { Field } from "../field/index.ts";
+import { useFieldRootContext } from "../field/root/FieldRootContext.ts";
 import { Switch } from "./index.ts";
 import type { SwitchRootProps } from "./root/SwitchRoot.tsx";
 
@@ -17,6 +26,16 @@ const form = () => screen.getByTestId<HTMLFormElement>("form");
 const submitted = () => new FormData(form()).getAll("terms");
 const error = () => screen.queryByTestId("error");
 const button = (name: string) => screen.getByRole("button", { name });
+
+/** Whether the Field last read its control as missing. */
+function ValueMissing() {
+  const root = useFieldRootContext();
+  return (
+    <output data-testid="value-missing">
+      {String(!!root.validity()?.valueMissing)}
+    </output>
+  );
+}
 
 /** A required Switch in a Field named `terms`, in a form. */
 function TermsForm(
@@ -59,6 +78,7 @@ function TermsForm(
         </Field.Control>
         <Field.Description>Read them first.</Field.Description>
         <Field.Error data-testid="error">{props.message}</Field.Error>
+        <ValueMissing />
       </Field.Root>
       <button type="submit">Send</button>
       <button type="reset">Reset</button>
@@ -189,7 +209,7 @@ describe("<Switch.Root /> in a Field", () => {
       expect(error()).toBeInTheDocument();
 
       await user.click(button("Reset"));
-      await afterFlush();
+      await afterReset();
 
       expect(switchEl()).toHaveAttribute("aria-checked", "true");
       expect(hiddenInput().checked).toBe(true);
@@ -204,7 +224,7 @@ describe("<Switch.Root /> in a Field", () => {
       await user.click(button("Send"));
 
       await user.click(button("Reset"));
-      await afterFlush();
+      await afterReset();
 
       expect(switchEl()).toHaveAttribute("aria-checked", "false");
       expect(hiddenInput().validity.valueMissing).toBe(true);
@@ -213,6 +233,40 @@ describe("<Switch.Root /> in a Field", () => {
       await user.click(button("Send"));
       expect(error()).toBeInTheDocument();
     });
+
+    // The Field reads its control once the control has put its hidden
+    // input back, though the Field's listener is added first.
+    it("leaves the Field reading the reset switch's validity", async () => {
+      const { user } = await render(() => <TermsForm />);
+      await user.click(switchEl());
+      await afterFlush();
+      expect(screen.getByTestId("value-missing")).toHaveTextContent("false");
+
+      form().reset();
+      await afterReset();
+
+      expect(hiddenInput().validity.valueMissing).toBe(true);
+      expect(screen.getByTestId("value-missing")).toHaveTextContent("true");
+    });
+
+    // A press of the user's: the browser runs microtasks as each listener
+    // of `reset` returns, before it resets the controls.
+    it.skipIf(isJSDOM)(
+      "leaves the Field reading the reset switch's validity after a real press",
+      async () => {
+        const { user } = await render(() => <TermsForm />);
+        await user.click(switchEl());
+        await afterFlush();
+
+        await press(centerOf(button("Reset")));
+        await afterReset();
+
+        expect(switchEl()).toHaveAttribute("aria-checked", "false");
+        expect(hiddenInput().validity.valueMissing).toBe(true);
+        expect(screen.getByTestId("value-missing")).toHaveTextContent("true");
+        expect(switchEl()).not.toHaveAttribute("data-touched");
+      },
+    );
 
     it("asks a controlled switch, and hides the error", async () => {
       const [checked, setChecked] = createSignal(false);
@@ -228,7 +282,7 @@ describe("<Switch.Root /> in a Field", () => {
       expect(error()).toBeInTheDocument();
 
       await user.click(button("Reset"));
-      await afterFlush();
+      await afterReset();
 
       expect(onCheckedChange).toHaveBeenLastCalledWith(true);
       expect(switchEl()).toHaveAttribute("aria-checked", "true");

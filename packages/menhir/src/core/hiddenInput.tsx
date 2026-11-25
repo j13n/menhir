@@ -1,4 +1,6 @@
-import { onFlush, onSettled, untrack } from "solid-js";
+import { onFlush, untrack } from "solid-js";
+
+import { onFormReset } from "./formReset.ts";
 
 /** The props of a control that its hidden input takes, read where used. */
 export interface HiddenInputProps {
@@ -37,8 +39,8 @@ export interface HiddenInputProps {
  * - `button` is where focus goes when the browser focuses the input, as it
  *   does when it blocks a submission.
  * - `reset` asks for the control's default on a form reset, through the
- *   setter, so that a controlled control asks. A Radio's Items each ask
- *   the group, which asks once.
+ *   setter, so that a controlled control asks (`onFormReset`). A Radio's
+ *   Items each ask the group, which asks once.
  *
  * A plain function with positional parameters, not a component with props:
  * a component would wrap each prop in a getter, and an options object
@@ -71,19 +73,17 @@ export function createHiddenInput(
   };
   // A form reset puts a native control back to its default, and so it does
   // this one: through the setter, so that a controlled control asks.
-  onSettled(() => {
-    const form = input?.form;
-    if (!form) return;
-    const onReset = () => {
+  onFormReset(
+    () => input?.form,
+    () => {
       reset();
-      // The browser resets the input after this event, to its `checked`
-      // attribute, which the binding does not set. `onFlush` runs after
-      // that, as the event has finished by then.
       onFlush(sync);
-    };
-    form.addEventListener("reset", onReset);
-    return () => form.removeEventListener("reset", onReset);
-  });
+    },
+    // Held through the browser's reset (`onFormReset`).
+    () => {
+      input!.defaultChecked = input!.checked;
+    },
+  );
   return (
     // The element, for the button to click. On the server it is the HTML,
     // which nothing clicks.

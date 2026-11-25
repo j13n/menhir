@@ -78,7 +78,9 @@ checked={accepted()} onCheckedChange={setAccepted} />}`: `Field.Control`
   8), and the button's accessible description then has the error.
 - **A form reset** puts the Checkbox back to `defaultChecked` and clears
   the Field's touched state, so no error shows until it is touched again,
-  even when its default is unchecked.
+  even when its default is unchecked. It asks in a task after the `reset`
+  event, unless the app cancels it, as Switch does (`core/formReset.ts`,
+  #165).
 
 ## Test list
 
@@ -123,6 +125,7 @@ part conventions. "A" marks a case the WAI-ARIA pattern requires.
 - Form: submits to the form named by `form`
 - Form: a disabled checkbox submits nothing
 - Form: a form reset goes back to `defaultChecked`; when controlled, it asks with `onCheckedChange`
+- Form: By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken goes back to `defaultChecked`, which the form submits; a reset declined keeps `checked`; a reset a later listener cancels asks for nothing
 - Form: the form's `change` listener and `FormData` see the new value
 - Form: `required` blocks submission while unchecked
 - Form: when the browser blocks the submission, focus moves to the checkbox; Chromium only, since jsdom does not focus the invalid control
@@ -177,11 +180,11 @@ part conventions. "A" marks a case the WAI-ARIA pattern requires.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-24, after #147.
+2026-11-25, after #165.
 
 | App               | Size    | Budget |
 | ----------------- | ------- | ------ |
-| `menhir/checkbox` | 1,708 B | 2 kB   |
+| `menhir/checkbox` | 1,799 B | 2 kB   |
 
 1,677 B before #147, which moved the hidden input to `core`
 (`core/hiddenInput.tsx`), shared with Radio: Checkbox alone pays about 30 B
@@ -190,3 +193,7 @@ for the call, and an app with Radio pays for the input once
 
 No growth from #143: Checkbox joins a Field with no change to its code,
 and the size is the one measured before and after Field (#141).
+
+1,708 B before #165, which moved the form reset to `core/formReset.ts`. A
+control alone pays for the helper; an app with several pays for it once
+(`src/input/README.md`, "Size").

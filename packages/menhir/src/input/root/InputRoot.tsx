@@ -1,6 +1,7 @@
 import type { JSX } from "@solidjs/web";
-import { merge, omit, onFlush, onSettled, untrack } from "solid-js";
+import { merge, omit, onFlush, untrack } from "solid-js";
 
+import { onFormReset } from "../../core/formReset.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { ElementProps, RenderProp } from "../../core/renderElement.tsx";
@@ -51,38 +52,27 @@ export function InputRoot(props: InputRootProps) {
     }
   };
   // A form reset puts a control back to its default, and so it does an
-  // Input: through `onValueChange`, so that a controlled one asks.
-  onSettled(() => {
-    const form = element?.form;
-    if (!form) return;
-    // An Input the reset removes, such as a row of a list going back to
-    // its default length, asks for nothing.
-    let disposed = false;
-    const onReset = (event: Event) => {
-      const text = element!.value;
+  // Input: through `onValueChange`, so that a controlled one asks. An
+  // uncontrolled Input lets the browser reset it, to its `defaultValue`; a
+  // controlled one keeps its text through the reset, and its consumer
+  // decides.
+  onFormReset(
+    () => element?.form,
+    (event, text) => {
       const defaultText = untrack(() => props.defaultValue) ?? "";
-      // The browser resets the element to its `value` attribute after this
-      // event. A controlled Input keeps its text through it, by making that
-      // its attribute, so that the element never shows a text its consumer
-      // does not hold; its consumer then decides.
-      if (untrack(() => props.value) !== undefined) {
+      if (text === defaultText) return;
+      props.onValueChange?.(defaultText, { reason: "reset", event });
+      onFlush(restoreValue);
+    },
+    // The text before the reset, held through it while controlled
+    // (`onFormReset`).
+    () => {
+      const text = element!.value;
+      if (untrack(() => props.value) !== undefined)
         element!.defaultValue = text;
-      }
-      // In a task of its own, not `onFlush`: when the user presses a reset
-      // button, the browser runs microtasks as each listener returns,
-      // before later listeners could cancel the reset.
-      setTimeout(() => {
-        if (disposed || event.defaultPrevented || text === defaultText) return;
-        props.onValueChange?.(defaultText, { reason: "reset", event });
-        onFlush(restoreValue);
-      });
-    };
-    form.addEventListener("reset", onReset);
-    return () => {
-      disposed = true;
-      form.removeEventListener("reset", onReset);
-    };
-  });
+      return text;
+    },
+  );
   const ownProps: ElementProps = {
     onInput: (event: Event) => {
       props.onValueChange?.(element!.value, { reason: "input-change", event });

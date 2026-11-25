@@ -1,4 +1,4 @@
-import { createSignal, merge, onFlush, onSettled, untrack } from "solid-js";
+import { createSignal, merge, onFlush, untrack } from "solid-js";
 
 import type { ElementProps } from "../../core/renderElement.tsx";
 import type { OpenChangeReason } from "../../floating/dismissal/reason.ts";
@@ -127,23 +127,4 @@ export function createComboboxInput(
     },
   } satisfies ComboboxInputElementProps);
   return { props, syncText };
-}
-
-/**
- * Calls `reset` when the form of `input()` is reset, from the time the
- * part has settled: a form reset puts a control back to its default, and
- * so it does a combobox, through its setters, so that a controlled one
- * asks. The browser resets the form's inputs after the event, to their
- * `value` attributes; an `onFlush` in `reset` runs after that.
- */
-export function onFormReset(
-  input: () => HTMLInputElement | undefined,
-  reset: (event: Event) => void,
-): void {
-  onSettled(() => {
-    const form = input()?.form;
-    if (!form) return;
-    form.addEventListener("reset", reset);
-    return () => form.removeEventListener("reset", reset);
-  });
 }

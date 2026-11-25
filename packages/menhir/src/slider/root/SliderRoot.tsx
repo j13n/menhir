@@ -1,7 +1,8 @@
 import type { JSX } from "@solidjs/web";
-import { createMemo, merge, omit, onFlush, onSettled, untrack } from "solid-js";
+import { createMemo, merge, omit, onFlush, untrack } from "solid-js";
 
 import { createControllableSignal } from "../../core/createControllableSignal.ts";
+import { onFormReset } from "../../core/formReset.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { ElementProps, RenderProp } from "../../core/renderElement.tsx";
@@ -167,35 +168,23 @@ export function SliderRoot(props: SliderRootProps) {
 
   // A form reset puts a control back to its default, and so it does this
   // one: through the setter, so that a controlled slider asks.
-  onSettled(() => {
-    const form = context.input?.form;
-    if (!form) return;
-    // A slider the reset removes, such as a row of a list going back to its
-    // default length, asks for nothing.
-    let disposed = false;
-    const onReset = (event: Event) => {
-      // In a task of its own, not `onFlush`: when the user presses a reset
-      // button, the browser runs microtasks as each listener returns,
-      // before it resets the controls and before later listeners could
-      // cancel the reset (src/input/README.md).
-      setTimeout(() => {
-        if (disposed || event.defaultPrevented) return;
-        const before = requested();
-        setValue(defaultValue());
-        onFlush(() => {
-          sync();
-          // Once taken: a controlled slider may decline it.
-          const current = untrack(value);
-          if (current !== before) props.onValueCommit?.(current);
-        });
+  onFormReset(
+    () => context.input?.form,
+    () => {
+      const before = requested();
+      setValue(defaultValue());
+      onFlush(() => {
+        sync();
+        // Once taken: a controlled slider may decline it.
+        const current = untrack(value);
+        if (current !== before) props.onValueCommit?.(current);
       });
-    };
-    form.addEventListener("reset", onReset);
-    return () => {
-      disposed = true;
-      form.removeEventListener("reset", onReset);
-    };
-  });
+    },
+    // Held through the browser's reset (`onFormReset`).
+    () => {
+      context.input!.defaultValue = context.input!.value;
+    },
+  );
 
   const ownProps = merge(context.attributes, {
     get style() {

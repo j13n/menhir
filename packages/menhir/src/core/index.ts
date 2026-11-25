@@ -18,6 +18,9 @@
 // - hiddenInput.tsx: the visually hidden checkbox or radio input that is
 //   the form's view of a control whose element is a button, shared by
 //   Switch, Checkbox and Radio.
+// - formReset.ts: a part's answer to a form reset, in a task after the
+//   `reset` event unless the app cancels it, shared by every form control
+//   and Form (#165).
 // - toggleButton.ts: the own props of a part that is a toggle button
 //   (`aria-pressed` and `data-pressed`), shared by Toggle and Toggle Group.
 // - slot.ts: a value one part registers once mounted, for another part to
@@ -25,6 +28,11 @@
 // - preference/: a reader's choice saved in `localStorage` or a cookie and
 //   applied to `<html>`, with its pre-paint head script. What the
 //   color-scheme and theme utilities share.
+//
+// The visually hidden style of a hidden input is a copy in each file that
+// renders one, not a module here: imported, it is no constant to the Solid
+// compiler, which then sets it from an effect instead of the template, 30
+// to 40 B more per part (measured on 2026-11-25, #165).
 //
 // Ids need no helper: parts call Solid's `createUniqueId`, which matches
 // between the server render and hydration (test/core/ids.hydrate.test.tsx).

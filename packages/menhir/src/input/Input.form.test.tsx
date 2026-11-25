@@ -6,6 +6,7 @@ import { Show, createSignal, omit } from "solid-js";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   fireEvent,
   isJSDOM,
@@ -22,16 +23,6 @@ const textbox = () => screen.getByRole<HTMLInputElement>("textbox");
 const form = () => screen.getByTestId<HTMLFormElement>("form");
 const submitted = () => Object.fromEntries(new FormData(form()));
 const button = (name: string) => screen.getByRole("button", { name });
-
-/**
- * Resolves once an Input has handled a form reset: in a task after the
- * reset, since the browser resets the controls after the event, and then
- * once the consumer's state has flushed.
- */
-async function afterReset() {
-  await new Promise((resolve) => setTimeout(resolve));
-  await afterFlush();
-}
 
 /** An Input named `city` in a form with a submit and a reset button. */
 function CityForm(
@@ -358,4 +349,37 @@ describe("<Input.Root /> in a Field", () => {
 
     expect(onValueChange).toHaveBeenLastCalledWith("Hi", expect.anything());
   });
+
+  // A press of the user's: the Field clears touched in a task after the
+  // reset, as the Input asks. The re-render it makes must not write the
+  // bound text over the reset element (`UNCOMMITTED_INPUT_OVERWRITTEN`,
+  // which fails the test).
+  it.skipIf(isJSDOM)(
+    "keeps its text and clears its Field's touched when its consumer declines a reset by a real press",
+    async () => {
+      const { user } = await render(() => (
+        <form data-testid="form">
+          <Field.Root name="email">
+            <Field.Label>Email</Field.Label>
+            <Field.Control
+              type="email"
+              render={(p) => <Input.Root {...p} value="nope" defaultValue="" />}
+            />
+          </Field.Root>
+          <button type="submit">Send</button>
+          <button type="reset">Reset</button>
+        </form>
+      ));
+      const control = screen.getByRole("textbox", { name: "Email" });
+      await user.click(button("Send"));
+      expect(control).toHaveAttribute("data-touched", "");
+
+      await press(centerOf(button("Reset")));
+      await afterReset();
+
+      expect(control).toHaveValue("nope");
+      expect(control).not.toHaveAttribute("data-touched");
+      expect(submitted()).toEqual({ email: "nope" });
+    },
+  );
 });

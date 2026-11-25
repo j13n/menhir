@@ -1,12 +1,13 @@
 import type { JSX } from "@solidjs/web";
 import { omit, onFlush, untrack } from "solid-js";
 
+import { onFormReset } from "../../core/formReset.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { RenderProp } from "../../core/renderElement.tsx";
 import { useComboboxContext } from "../root/ComboboxContext.ts";
 import type { Combobox } from "../root/ComboboxContext.ts";
-import { createComboboxInput, onFormReset } from "./createComboboxInput.ts";
+import { createComboboxInput } from "./createComboboxInput.ts";
 
 export interface ComboboxInputProps extends JSX.HTMLAttributes<HTMLElement> {
   /** What the browser may suggest. Default `"off"`, so its list does not cover the Combobox's. */
@@ -39,8 +40,10 @@ export function ComboboxInput(props: ComboboxInputProps) {
   const syncHidden = () => {
     if (hiddenInput) hiddenInput.value = untrack(combobox.value) ?? "";
   };
+  // A form reset puts a control back to its default, and so it does a
+  // combobox: through its setters, so that a controlled one asks.
   onFormReset(
-    () => hiddenInput,
+    () => hiddenInput?.form,
     (event) => {
       const value = combobox.props.defaultValue ?? null;
       combobox.setValue(value);
@@ -52,6 +55,11 @@ export function ComboboxInput(props: ComboboxInputProps) {
         syncHidden();
         input.syncText();
       });
+    },
+    // Both held through the browser's reset (`onFormReset`).
+    () => {
+      combobox.input!.defaultValue = combobox.input!.value;
+      hiddenInput!.defaultValue = hiddenInput!.value;
     },
   );
 

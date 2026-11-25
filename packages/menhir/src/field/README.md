@@ -141,7 +141,9 @@ Checked on 2026-11-23, in `web-features` 3.47.0 and the HTML standard.
   macOS does not, by MDN's account; not tried here) still touches it; and
   once a submission of its form was attempted, by its `submit` event or an
   `invalid` event in the form. A form reset clears it, unless the app
-  cancels the reset. The app writes no
+  cancels the reset, in a task after the `reset` event, once the browser
+  has reset the controls, whose validity it reads then
+  (`core/formReset.ts`, #165). The app writes no
   touched state, and a submission touches every Field of the form, so an
   error from outside shows after a submit too.
 - **The error shows once the field is touched**, never before: on the first
@@ -266,6 +268,7 @@ In a form, with a native control (`Field.form.test.tsx`):
 
 - An `<input required>`, a `<textarea required>` and a `<select required>`: the submission is blocked while invalid and the errors show; once filled, the form submits the values under the Field's `name`
 - A reset empties the controls and hides the errors
+- By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset clears touched, and the Field reads the validity of the reset controls; a reset a later listener cancels keeps touched and the errors
 - When the browser blocks a submission, it focuses the first invalid control, whose accessible description has the error; Chromium only, since jsdom focuses nothing
 - An error from outside does not block a submission
 - A submission that leaves a Field's validity as it was wakes no reader of its state
@@ -311,15 +314,15 @@ heard in VoiceOver, NVDA and JAWS (the definition of done in #141).
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-24.
+2026-11-25, after #165.
 
 | App               | Size    | Budget |
 | ----------------- | ------- | ------ |
-| `menhir/field`    | 1,799 B | 1.8 kB |
-| `menhir/switch`   | 1,623 B | 1.9 kB |
-| `menhir/checkbox` | 1,677 B | 2 kB   |
+| `menhir/field`    | 1,890 B | 1.9 kB |
+| `menhir/switch`   | 1,744 B | 1.9 kB |
+| `menhir/checkbox` | 1,799 B | 2 kB   |
 
-Switch and Checkbox are the same size as before Field: no control reads
+Switch and Checkbox were the same size as before Field: no control reads
 Field's context, and neither bundles a module of `src/field`
 (`test/bundle-size/fieldModules.test.ts`). Most of Field is the Root: the
 listeners that read the controls' validity and track touched, and the
@@ -327,3 +330,7 @@ registry of the Description and the Errors that the control's
 `aria-describedby` follows. Reading Form's context (#144) took Field from
 1,727 B to 1,760 B, and copying the invalid control's validity, so that an
 event that changes nothing wakes no reader (Decisions), to 1,799 B.
+
+1,799 B before #165, which moved the form reset to `core/formReset.ts`. The
+budget was 1.8 kB. A control alone pays for the helper; an app with several
+pays for it once (`src/input/README.md`, "Size").

@@ -1,13 +1,11 @@
 import type { JSX } from "@solidjs/web";
 import { merge, omit, onFlush } from "solid-js";
 
+import { onFormReset } from "../../core/formReset.ts";
 import { mergeElementProps } from "../../core/mergeElementProps.ts";
 import { renderElement } from "../../core/renderElement.tsx";
 import type { RenderProp } from "../../core/renderElement.tsx";
-import {
-  createComboboxInput,
-  onFormReset,
-} from "../../combobox/input/createComboboxInput.ts";
+import { createComboboxInput } from "../../combobox/input/createComboboxInput.ts";
 import { useComboboxContext } from "../../combobox/root/ComboboxContext.ts";
 import type { Autocomplete } from "../root/AutocompleteContext.ts";
 
@@ -30,14 +28,20 @@ export interface AutocompleteInputProps extends JSX.HTMLAttributes<HTMLElement> 
 export function AutocompleteInput(props: AutocompleteInputProps) {
   const autocomplete = useComboboxContext<Autocomplete>("Autocomplete");
   const input = createComboboxInput(autocomplete);
+  // A form reset puts a control back to its default, and so it does an
+  // autocomplete: through its setter, so that a controlled one asks.
   onFormReset(
-    () => autocomplete.input,
+    () => autocomplete.input?.form,
     (event) => {
       autocomplete.setInputValue(autocomplete.props.defaultValue ?? "", {
         reason: "reset",
         event,
       });
       onFlush(input.syncText);
+    },
+    // Held through the browser's reset (`onFormReset`).
+    () => {
+      autocomplete.input!.defaultValue = autocomplete.input!.value;
     },
   );
   const ownProps = merge(input.props, {

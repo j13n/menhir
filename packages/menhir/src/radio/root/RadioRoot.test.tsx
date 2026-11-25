@@ -5,6 +5,7 @@ import { Loading, createMemo, createSignal, flush } from "solid-js";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   describeConformance,
   fireEvent,
@@ -12,7 +13,10 @@ import {
   screen,
 } from "#test-utils";
 
+import { centerOf, press } from "../../../test/floating/input.ts";
+
 import { Radio } from "../index.ts";
+import type { RadioRootProps } from "./RadioRoot.tsx";
 
 const radio = (name: string) => screen.getByRole("radio", { name });
 
@@ -316,7 +320,7 @@ describe("<Radio.Root />", () => {
       onValueChange.mockClear();
 
       form.reset();
-      await afterFlush();
+      await afterReset();
 
       expect(onValueChange).toHaveBeenCalledExactlyOnceWith("a");
       expect(radio("a")).toHaveAttribute("aria-checked", "true");
@@ -340,7 +344,7 @@ describe("<Radio.Root />", () => {
       onValueChange.mockClear();
 
       form.reset();
-      await afterFlush();
+      await afterReset();
 
       expect(onValueChange).toHaveBeenCalledExactlyOnceWith(null);
       expect(radio("c")).toHaveAttribute("aria-checked", "false");
@@ -364,11 +368,75 @@ describe("<Radio.Root />", () => {
       const form = screen.getByTestId<HTMLFormElement>("form");
 
       form.reset();
-      await afterFlush();
+      await afterReset();
 
       expect(onValueChange).toHaveBeenCalledExactlyOnceWith("a");
       expect(radio("b")).toHaveAttribute("aria-checked", "true");
       expect(submitted(form)).toEqual(["b"]);
+    });
+  });
+
+  // A press of the user's, not a script's: the browser runs microtasks as
+  // each listener of `reset` returns, before it resets the controls.
+  describe.skipIf(isJSDOM)("form reset by a real press", () => {
+    const resetForm = (props: RadioRootProps) => (
+      <form data-testid="form">
+        <Radio.Root name="letter" {...props}>
+          <Radios />
+        </Radio.Root>
+        <button type="reset">Reset</button>
+      </form>
+    );
+    const pressReset = () =>
+      press(centerOf(screen.getByRole("button", { name: "Reset" })));
+
+    it("goes back to defaultValue, and the form submits it", async () => {
+      const onValueChange = vi.fn();
+      await render(() => resetForm({ defaultValue: "a", onValueChange }));
+      fireEvent.click(radio("c"));
+      await afterFlush();
+      onValueChange.mockClear();
+
+      await pressReset();
+      await afterReset();
+
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith("a");
+      expect(radio("a")).toHaveAttribute("aria-checked", "true");
+      expect(hiddenInput("a").checked).toBe(true);
+      expect(hiddenInput("c").checked).toBe(false);
+      expect(submitted(screen.getByTestId("form"))).toEqual(["a"]);
+    });
+
+    it("keeps value when its consumer declines the reset", async () => {
+      const onValueChange = vi.fn();
+      await render(() =>
+        resetForm({ value: "b", defaultValue: "a", onValueChange }),
+      );
+
+      await pressReset();
+      await afterReset();
+
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith("a");
+      expect(radio("b")).toHaveAttribute("aria-checked", "true");
+      expect(submitted(screen.getByTestId("form"))).toEqual(["b"]);
+    });
+
+    it("asks for nothing for a reset a later listener cancels", async () => {
+      const onValueChange = vi.fn();
+      await render(() =>
+        resetForm({ value: "b", defaultValue: "a", onValueChange }),
+      );
+      // Added after the Items' own listeners, which are added once they
+      // have settled.
+      screen
+        .getByTestId("form")
+        .addEventListener("reset", (event) => event.preventDefault());
+
+      await pressReset();
+      await afterReset();
+
+      expect(onValueChange).not.toHaveBeenCalled();
+      expect(submitted(screen.getByTestId("form"))).toEqual(["b"]);
     });
   });
 
@@ -545,7 +613,7 @@ describe("<Radio.Root />", () => {
       expect(hiddenInput("a").validity.valid).toBe(true);
 
       screen.getByTestId<HTMLFormElement>("form").reset();
-      await afterFlush();
+      await afterReset();
       expect(hiddenInput("a").validity.valueMissing).toBe(true);
     });
 

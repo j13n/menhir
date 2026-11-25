@@ -187,10 +187,12 @@ type="button" tabindex="-1">` each.
 - **A form reset asks:** the Root calls `onValueChange` with `defaultValue`
   (`null` without one) when the value is not that already, so a controlled
   field asks, then puts the text and the hidden input back to the value.
-  In a task, as Input does (`src/input/README.md`), since the browser resets
-  the controls after the `reset` event's listeners, and runs microtasks
-  between them when the user presses a reset button; a reset the app
-  cancels calls nothing.
+  In a task, as Input does (`src/input/README.md`, `core/formReset.ts`),
+  since the browser resets the controls after the `reset` event's
+  listeners, and runs microtasks between them when the user presses a
+  reset button; a reset the app cancels calls nothing. The hidden input is
+  held through the browser's reset; the Input needs no hold, since its
+  text is bound as its `defaultValue`.
 - **It joins a Field as `Field.Control`'s `render`, with the Root as the
   Control**, as a Radio's does: the Root takes the Field's `name`,
   `disabled`, `data-*`, and its `id`, `aria-describedby` and `aria-invalid`,
@@ -262,6 +264,7 @@ part conventions. "A" marks a case the WAI-ARIA spinbutton pattern requires.
 - Form: a reset of a controlled field asks for `defaultValue`, `null` without one; declined, the text keeps the value; taken, it shows the default
 - Form: a reset the app cancels calls nothing
 - Form: a field the reset's own handler removes calls nothing
+- Form: By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken shows `defaultValue`, which the form submits; a reset declined keeps `value`; a reset a later listener cancels calls nothing
 
 `input/NumberFieldInput.test.tsx`
 
@@ -368,13 +371,13 @@ NVDA and JAWS.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-24.
+2026-11-25, after #165.
 
 | App                   | Size    | Budget |
 | --------------------- | ------- | ------ |
-| `menhir/number-field` | 3,143 B | 3.3 kB |
-| `menhir/input`        | 934 B   | 950 B  |
-| `menhir/radio`        | 2,507 B | 2.6 kB |
+| `menhir/number-field` | 3,200 B | 3.3 kB |
+| `menhir/input`        | 993 B   | 1 kB   |
+| `menhir/radio`        | 2,597 B | 2.6 kB |
 
 Measured the same way, by part, before the review's changes, which took
 26 B off:
@@ -395,3 +398,7 @@ about 490 B and the two buttons about 240 B together, since they share
 the commit, the hidden input and its events, and the form reset. The
 first parser was 539 B alone; reading the locale's characters into one
 lookup, with one formatter fewer, made it 493 B.
+
+3,143 B before #165, which moved the form reset to `core/formReset.ts`. A
+control alone pays for the helper; an app with several pays for it once
+(`src/input/README.md`, "Size").

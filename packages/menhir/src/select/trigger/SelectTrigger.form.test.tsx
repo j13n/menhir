@@ -4,12 +4,14 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   fireEvent,
   isJSDOM,
   screen,
 } from "#test-utils";
 
+import { centerOf, press } from "../../../test/floating/input.ts";
 import { stubMenu } from "../../../test/menu/stubMenu.ts";
 import { Fruit } from "../../../test/select/Fruit.tsx";
 import type { FruitProps } from "../../../test/select/Fruit.tsx";
@@ -169,7 +171,7 @@ describe("<Select.Trigger /> in a form", () => {
     expect(selected()).toEqual(["Cherry"]);
 
     await user.click(screen.getByRole("button", { name: "Clear" }));
-    await afterFlush();
+    await afterReset();
 
     expect(onValueChange).toHaveBeenLastCalledWith("apple");
     expect(selected()).toEqual(["Apple"]);
@@ -183,7 +185,7 @@ describe("<Select.Trigger /> in a form", () => {
     await afterFlush();
 
     await user.click(screen.getByRole("button", { name: "Clear" }));
-    await afterFlush();
+    await afterReset();
 
     expect(selected()).toEqual([]);
     expect(input().value).toBe("");
@@ -200,11 +202,63 @@ describe("<Select.Trigger /> in a form", () => {
     ));
 
     await user.click(screen.getByRole("button", { name: "Clear" }));
-    await afterFlush();
+    await afterReset();
 
     expect(onValueChange).toHaveBeenCalledWith("apple");
     expect(selected()).toEqual(["Cherry"]);
     expect(input().value).toBe("cherry");
+  });
+
+  // A press of the user's, not a script's: the browser runs microtasks as
+  // each listener of `reset` returns, before it resets the controls.
+  describe.skipIf(isJSDOM)("a form reset by a real press", () => {
+    const pressClear = () =>
+      press(centerOf(screen.getByRole("button", { name: "Clear" })));
+
+    it("goes back to defaultValue, and the form submits it", async () => {
+      const { user } = await render(() => (
+        <FruitForm defaultValue="apple" defaultOpen />
+      ));
+      await afterFlush();
+      await user.click(item("Cherry"));
+      await afterFlush();
+
+      await pressClear();
+      await afterReset();
+
+      expect(selected()).toEqual(["Apple"]);
+      expect(submitted()).toEqual({ fruit: "apple" });
+    });
+
+    it("keeps value when its consumer declines the reset", async () => {
+      await render(() => <FruitForm value="cherry" defaultValue="apple" />);
+
+      await pressClear();
+      await afterReset();
+
+      expect(selected()).toEqual(["Cherry"]);
+      expect(submitted()).toEqual({ fruit: "cherry" });
+    });
+
+    it("asks for nothing for a reset a later listener cancels", async () => {
+      const onValueChange = vi.fn();
+      await render(() => (
+        <FruitForm
+          value="cherry"
+          defaultValue="apple"
+          onValueChange={onValueChange}
+        />
+      ));
+      // Added after the Select's own listener, which is added once it has
+      // settled.
+      form().addEventListener("reset", (event) => event.preventDefault());
+
+      await pressClear();
+      await afterReset();
+
+      expect(onValueChange).not.toHaveBeenCalled();
+      expect(submitted()).toEqual({ fruit: "cherry" });
+    });
   });
 
   it("autofill: a change of the input with an item's value selects it", async () => {

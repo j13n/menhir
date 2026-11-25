@@ -6,6 +6,7 @@ import { For, Loading, createMemo, createSignal, flush } from "solid-js";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   describeConformance,
   fireEvent,
@@ -13,7 +14,10 @@ import {
   screen,
 } from "#test-utils";
 
+import { centerOf, press } from "../../../test/floating/input.ts";
+
 import { Checkbox } from "../index.ts";
+import type { CheckboxRootProps } from "./CheckboxRoot.tsx";
 
 // The hidden input. Not found by role: it is a checkbox too, and the
 // button is the one assistive technology sees.
@@ -723,7 +727,7 @@ describe("<Checkbox.Root />", () => {
       expect(checkbox).toHaveAttribute("aria-checked", "false");
 
       screen.getByTestId<HTMLFormElement>("form").reset();
-      await afterFlush();
+      await afterReset();
 
       expect(checkbox).toHaveAttribute("aria-checked", "true");
       expect(onCheckedChange).toHaveBeenLastCalledWith(true);
@@ -739,8 +743,7 @@ describe("<Checkbox.Root />", () => {
       ));
 
       screen.getByTestId<HTMLFormElement>("form").reset();
-      // The checkbox puts the input back after the browser's own reset.
-      await afterFlush();
+      await afterReset();
 
       expect(onCheckedChange).toHaveBeenCalledWith(false);
       expect(screen.getByRole("checkbox")).toHaveAttribute(
@@ -748,6 +751,66 @@ describe("<Checkbox.Root />", () => {
         "true",
       );
       expect(hiddenInput().checked).toBe(true);
+    });
+
+    // A press of the user's, not a script's: the browser runs microtasks
+    // as each listener of `reset` returns, before it resets the controls.
+    describe.skipIf(isJSDOM)("reset by a real press", () => {
+      const resetForm = (props: CheckboxRootProps) => (
+        <form data-testid="form">
+          <Checkbox.Root name="terms" {...props} />
+          <button type="reset">Reset</button>
+        </form>
+      );
+      const pressReset = () =>
+        press(centerOf(screen.getByRole("button", { name: "Reset" })));
+
+      it("goes back to defaultChecked, and the form submits it", async () => {
+        const { user } = await render(() =>
+          resetForm({ defaultChecked: true }),
+        );
+        await user.click(screen.getByRole("checkbox"));
+        await afterFlush();
+
+        await pressReset();
+        await afterReset();
+
+        expect(screen.getByRole("checkbox")).toHaveAttribute(
+          "aria-checked",
+          "true",
+        );
+        expect(hiddenInput().checked).toBe(true);
+        expect(submitted(screen.getByTestId("form"), "terms")).toEqual(["on"]);
+      });
+
+      it("keeps checked when its consumer declines the reset", async () => {
+        await render(() => resetForm({ checked: true }));
+
+        await pressReset();
+        await afterReset();
+
+        expect(screen.getByRole("checkbox")).toHaveAttribute(
+          "aria-checked",
+          "true",
+        );
+        expect(hiddenInput().checked).toBe(true);
+      });
+
+      it("asks for nothing for a reset a later listener cancels", async () => {
+        const onCheckedChange = vi.fn();
+        await render(() => resetForm({ checked: true, onCheckedChange }));
+        // Added after the checkbox's own listener, which is added once it
+        // has settled.
+        screen
+          .getByTestId("form")
+          .addEventListener("reset", (event) => event.preventDefault());
+
+        await pressReset();
+        await afterReset();
+
+        expect(onCheckedChange).not.toHaveBeenCalled();
+        expect(hiddenInput().checked).toBe(true);
+      });
     });
 
     it("blocks submission while required and unchecked", async () => {

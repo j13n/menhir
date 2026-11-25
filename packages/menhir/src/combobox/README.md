@@ -249,12 +249,14 @@ results())`, then reads it from the start, so `<Loading>` shows its
   active item is announced through `aria-activedescendant`.
 - **The hidden input is the form's view** (PLAN.md section 8): a visually
   hidden `<input>` right after the Input, `aria-hidden` and out of the tab
-  order, that takes `name`, `form`, `required` and `disabled` from the
-  Root and holds the value, `""` for none. A selection goes through it, so
-  the form sees `input` and `change`. A form reset puts the value back to
+  order, that takes `name`, `form`, `required` and `disabled` from the Root
+  and holds the value, `""` for none. A selection goes through it, so the
+  form sees `input` and `change`. A form reset puts the value back to
   `defaultValue` and the text to `defaultInputValue`, else that item's
-  label. When the browser blocks a submission and focuses it, focus moves
-  to the Input. No autofill: the Input has `autocomplete="off"`.
+  label, in a task after the `reset` event, unless the app cancels it; both
+  inputs are held through the browser's reset (`core/formReset.ts`, #165).
+  When the browser blocks a submission and focuses it, focus moves to the
+  Input. No autofill: the Input has `autocomplete="off"`.
 - **`disabled`** on the Root disables the Input, the Trigger, Clear and
   the hidden input. **`required`** gives the Input `aria-required` and the
   hidden input `required`, so the form needs a selected item, not text.
@@ -333,6 +335,7 @@ from a stub (`test/popover/stubPopover.ts`).
 - `required` blocks submission while no item is selected, even with text, and not once one is
 - When the browser blocks the submission, focus moves to the Input (C)
 - A form reset puts back `defaultValue` and `defaultInputValue`, else the default item's label; when controlled, it asks
+- By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken puts back `defaultValue` and its label, which the form submits; a reset declined keeps `value` and `inputValue`; a reset a later listener cancels asks for nothing
 
 `trigger/ComboboxTrigger.test.tsx`
 
@@ -444,14 +447,18 @@ example shows one yet.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part and `includesText`, Rolldown, minified, gzipped, Solid left out.
-Measured on 2026-11-23.
+Measured on 2026-11-25, after #165.
 
 | Entry point       | Size     | Budget  |
 | ----------------- | -------- | ------- |
-| `menhir/combobox` | 11,568 B | 12.5 kB |
+| `menhir/combobox` | 11,655 B | 12.5 kB |
 
 The budget was set before the behaviour, at Select's (12.5 kB): Combobox
 has no typeahead, Value or autofill path, and adds the Input's keys, the
 List, Clear, Status and `includesText`. Most of it is `@floating-ui/dom`,
 as for Select. Sharing its state, Input and item code and the context with
 Autocomplete (#104) added 78 B (11,490 B before).
+
+11,568 B before #165, which moved the form reset to `core/formReset.ts`. A
+control alone pays for the helper; an app with several pays for it once
+(`src/input/README.md`, "Size").

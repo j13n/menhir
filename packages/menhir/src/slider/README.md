@@ -197,8 +197,9 @@ import { Slider } from "menhir/slider";
   form, and the Track ignores the pointer; `data-disabled` on every part.
 - **A form reset** goes back to `defaultValue`, else the midpoint, through
   the setter, so a controlled slider asks, then puts the input back to the
-  value, since the browser reset it to its `value` attribute. In a task, as
-  Number Field and Input do; a reset the app cancels changes nothing.
+  value, which it holds through the browser's reset. In a task, as Number
+  Field and Input do (`core/formReset.ts`); a reset the app cancels changes
+  nothing.
 - **`core/range.ts` is not shared.** `createRange` writes `role` and the
   `aria-value*` attributes, which a range input has natively and ARIA in
   HTML says not to write, and formats a percentage by default. What is left
@@ -234,6 +235,7 @@ nothing out.
 - Form: a reset goes back to `defaultValue`, else the midpoint, and calls `onValueChange` and `onValueCommit`; at its default already, it calls nothing
 - Form: a reset of a controlled slider asks for `defaultValue`; declined, the input keeps the value and nothing is committed; taken, it is committed
 - Form: a reset the app cancels calls nothing
+- Form: By a real press of the reset button (Chromium only, since a script's click runs no microtask between the listeners): a reset taken goes back to `defaultValue` and commits it; a reset declined keeps `value`; a reset a later listener cancels calls nothing
 
 `thumb/SliderThumb.test.tsx`
 
@@ -334,13 +336,13 @@ input are #179.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-25.
+2026-11-25, after #165.
 
 | App                   | Size    | Budget |
 | --------------------- | ------- | ------ |
-| `menhir/slider`       | 2,840 B | 2.9 kB |
+| `menhir/slider`       | 2,908 B | 3 kB   |
 | `menhir/meter`        | 1,060 B | 1.3 kB |
-| `menhir/number-field` | 3,143 B | 3.3 kB |
+| `menhir/number-field` | 3,200 B | 3.3 kB |
 
 Measured the same way, by part, before review; the keys made one lookup took
 14 B off, and review's fixes (a count of the changes under way, the
@@ -358,3 +360,7 @@ Most of the Root is what every Menhir control has: `mergeElementProps` and
 code is the step grid, `--slider`, the commit and the form reset. The Thumb,
 about 790 B, is the input's attributes and the keys; the Track, about 355 B,
 the pointer; the Value, 32 B.
+
+2,840 B before #165, which moved the form reset to `core/formReset.ts`. The
+budget was 2.9 kB. A control alone pays for the helper; an app with several
+pays for it once (`src/input/README.md`, "Size").

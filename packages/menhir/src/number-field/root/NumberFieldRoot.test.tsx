@@ -5,11 +5,14 @@ import { Show, createSignal, flush, omit } from "solid-js";
 
 import {
   afterFlush,
+  afterReset,
   createRenderer,
   describeConformance,
   isJSDOM,
   screen,
 } from "#test-utils";
+
+import { centerOf, press } from "../../../test/floating/input.ts";
 
 import { NumberField } from "../index.ts";
 import type { NumberFieldRootProps } from "./NumberFieldRoot.tsx";
@@ -44,16 +47,6 @@ const parts = () => [
   button("Decrease"),
   button("Increase"),
 ];
-
-/**
- * Resolves once the field has handled a form reset: in a task after the
- * reset, since the browser resets the controls after the event, and then
- * once its state has flushed.
- */
-async function afterReset() {
-  await new Promise((resolve) => setTimeout(resolve));
-  await afterFlush();
-}
 
 /** A field named `quantity` in a form with a submit and a reset button. */
 function QuantityForm(
@@ -488,6 +481,56 @@ describe("<NumberField.Root />", () => {
 
         expect(screen.queryByRole("spinbutton")).toBeNull();
         expect(onValueChange).not.toHaveBeenCalled();
+      });
+
+      // A press of the user's, not a script's: the browser runs microtasks
+      // as each listener of `reset` returns, before it resets the controls.
+      describe.skipIf(isJSDOM)("by a real press", () => {
+        const pressReset = () => press(centerOf(button("Reset")));
+
+        it("goes back to defaultValue, the text and the hidden input with it", async () => {
+          const { user } = await render(() => (
+            <QuantityForm defaultValue={1000} />
+          ));
+          await typeAndLeave(user, "5");
+
+          await pressReset();
+          await afterReset();
+
+          expect(spinbutton()).toHaveValue("1,000");
+          expect(submitted()).toEqual([["quantity", "1000"]]);
+        });
+
+        it("keeps value when its consumer declines the reset", async () => {
+          await render(() => <QuantityForm value={5} defaultValue={2} />);
+
+          await pressReset();
+          await afterReset();
+
+          expect(spinbutton()).toHaveValue("5");
+          expect(submitted()).toEqual([["quantity", "5"]]);
+        });
+
+        it("calls nothing for a reset a later listener cancels", async () => {
+          const onValueChange = vi.fn();
+          await render(() => (
+            <QuantityForm
+              value={5}
+              defaultValue={2}
+              onValueChange={onValueChange}
+            />
+          ));
+          // Added after the field's own listener, which is added once it
+          // has settled.
+          form().addEventListener("reset", (event) => event.preventDefault());
+
+          await pressReset();
+          await afterReset();
+
+          expect(onValueChange).not.toHaveBeenCalled();
+          expect(spinbutton()).toHaveValue("5");
+          expect(submitted()).toEqual([["quantity", "5"]]);
+        });
       });
     });
   });
