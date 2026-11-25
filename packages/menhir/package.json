@@ -209,6 +209,11 @@
       "solid": "./dist/source/toggle-group/index.js",
       "import": "./dist/toggle-group/index.js"
     },
+    "./toolbar": {
+      "types": "./dist/source/toolbar/index.d.ts",
+      "solid": "./dist/source/toolbar/index.js",
+      "import": "./dist/toolbar/index.js"
+    },
     "./tooltip": {
       "types": "./dist/source/tooltip/index.d.ts",
       "solid": "./dist/source/tooltip/index.js",

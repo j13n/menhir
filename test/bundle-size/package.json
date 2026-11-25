@@ -40,6 +40,7 @@
     "@radix-ui/react-tabs": "^1.2.1",
     "@radix-ui/react-toggle": "^1.2.1",
     "@radix-ui/react-toggle-group": "^1.2.1",
+    "@radix-ui/react-toolbar": "^1.2.1",
     "@radix-ui/react-tooltip": "^1.4.1",
     "@size-limit/file": "~14.3.0",
     "@size-limit/rolldown": "~14.3.0",

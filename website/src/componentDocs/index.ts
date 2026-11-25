@@ -30,6 +30,7 @@ import { switchDoc } from "./switch";
 import { tabsDoc } from "./tabs";
 import { toggleDoc } from "./toggle";
 import { toggleGroupDoc } from "./toggle-group";
+import { toolbarDoc } from "./toolbar";
 import { tooltipDoc } from "./tooltip";
 import type { ComponentDoc } from "./types";
 
@@ -67,5 +68,6 @@ export const componentDocs: ComponentDoc[] = [
   tabsDoc,
   toggleDoc,
   toggleGroupDoc,
+  toolbarDoc,
   tooltipDoc,
 ];

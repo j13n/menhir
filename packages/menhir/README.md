@@ -67,7 +67,7 @@ For everything else, go to the docs:
 
 Early 0.x versions: the API may change between minor versions. The form components come next; the plan and roadmap are in the [repository](https://github.com/j13n/menhir). Built so far:
 
-- Components: Accordion, Alert Dialog, Autocomplete, Avatar, Checkbox, Checkbox Group, Collapsible, Combobox, Context Menu, Dialog, Field, Form, Input, Menu, Menubar, Meter, Multi Combobox, Navigation Menu, Number Field, OTP Field, Popover, Preview Card, Progress, Radio, Scroll Area, Select, Separator, Slider, Switch, Tabs, Toggle, Toggle Group and Tooltip.
+- Components: Accordion, Alert Dialog, Autocomplete, Avatar, Checkbox, Checkbox Group, Collapsible, Combobox, Context Menu, Dialog, Field, Form, Input, Menu, Menubar, Meter, Multi Combobox, Navigation Menu, Number Field, OTP Field, Popover, Preview Card, Progress, Radio, Scroll Area, Select, Separator, Slider, Switch, Tabs, Toggle, Toggle Group, Toolbar and Tooltip.
 - Utilities: color scheme and theme, each with local-storage and cookie storage.
 
 ## Licence

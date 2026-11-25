@@ -8,6 +8,7 @@ import { Slider } from "menhir/slider";
 import { Switch } from "menhir/switch";
 import { Toggle } from "menhir/toggle";
 import { ToggleGroup } from "menhir/toggle-group";
+import { Toolbar } from "menhir/toolbar";
 import { createSignal, For, Repeat } from "solid-js";
 
 import { ExampleCard, ExampleGroup } from "./ExampleGroup";
@@ -33,6 +34,11 @@ const stepButton =
 // next digit goes.
 const otpSlot =
   "flex h-8 w-7 items-center justify-center rounded-md border border-stone-300 text-sm data-active:outline-2 data-active:-outline-offset-1 data-active:outline-stone-500 dark:border-stone-700 data-caret:not-data-filled:after:h-4 data-caret:not-data-filled:after:w-px data-caret:not-data-filled:after:bg-current data-caret:not-data-filled:after:content-['']";
+
+// The Toolbar's items, styled as the Toggle Group's; a disabled one stays
+// focusable, so it is dimmed.
+const toolbarItem =
+  "flex-1 cursor-pointer rounded-md border border-stone-300 px-2 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-disabled:cursor-default data-disabled:opacity-50 data-pressed:border-transparent data-pressed:bg-stone-800 data-pressed:text-white dark:border-stone-700 dark:data-pressed:bg-stone-300 dark:data-pressed:text-stone-900";
 
 export default function InputExamples() {
   // The Input's text: digits only, so a letter typed is undone.
@@ -186,6 +192,20 @@ export default function InputExamples() {
             )}
           </For>
         </ToggleGroup.Root>
+      </ExampleCard>
+      <ExampleCard name="Toolbar" href="/docs/components/toolbar">
+        <Toolbar.Root aria-label="Text formatting" class="flex gap-1">
+          <For each={["Underline", "Strike"]}>
+            {(name) => (
+              <Toolbar.Button render={Toggle.Root} class={toolbarItem}>
+                {name}
+              </Toolbar.Button>
+            )}
+          </For>
+          <Toolbar.Button disabled class={toolbarItem}>
+            Clear
+          </Toolbar.Button>
+        </Toolbar.Root>
       </ExampleCard>
     </ExampleGroup>
   );

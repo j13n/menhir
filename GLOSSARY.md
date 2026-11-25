@@ -98,7 +98,11 @@ _Avoid_: Nested menu, child menu, flyout, cascading menu
 
 **Menubar**:
 A row of menus that stays on screen, one tab stop, whose items each open a menu: once one is open, moving to another item opens that one. For an application's commands; links to a site's pages are a Navigation Menu.
-_Avoid_: Menu bar, toolbar (a toolbar holds buttons, not menus), top menu
+_Avoid_: Menu bar, toolbar (a toolbar's items are controls, a menu button among them; a menubar's each open a menu), top menu
+
+**Toolbar**:
+A row of controls, such as the buttons above a text editor, that is one tab stop, with arrow keys between them, `menhir/toolbar` (#209). Its items are buttons, links and text fields; a control of another component, such as a Toggle Group's item or a Menu's Trigger, joins as an item's `render`.
+_Avoid_: Button bar, action bar, menubar (a menubar's items each open a menu)
 
 **Activate**:
 To use an item of a menu, by a click, Enter or Space: it calls its `onClick` and closes every open menu.
