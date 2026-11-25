@@ -149,6 +149,11 @@
       "solid": "./dist/source/separator/index.js",
       "import": "./dist/separator/index.js"
     },
+    "./slider": {
+      "types": "./dist/source/slider/index.d.ts",
+      "solid": "./dist/source/slider/index.js",
+      "import": "./dist/slider/index.js"
+    },
     "./switch": {
       "types": "./dist/source/switch/index.d.ts",
       "solid": "./dist/source/switch/index.js",

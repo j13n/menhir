@@ -387,6 +387,27 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working Slider, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const brightness = example.getByRole<HTMLInputElement>("slider", {
+      name: "Brightness",
+    });
+    expect(brightness.value).toBe("60");
+
+    fireEvent.keyDown(brightness, { key: "ArrowRight" });
+    // The value lands after the key's flush (`onFlush`).
+    await new Promise<void>((resolve) => onFlush(resolve));
+    await new Promise<void>((resolve) => onFlush(resolve));
+
+    expect(brightness.value).toBe("61");
+    expect(brightness).toHaveAttribute("aria-valuetext", "61");
+    expect(example.getByRole("link", { name: "Slider" })).toHaveAttribute(
+      "href",
+      "/docs/components/slider",
+    );
+  });
+
   test("shows a working Toggle, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));
