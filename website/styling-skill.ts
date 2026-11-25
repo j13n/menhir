@@ -118,16 +118,24 @@ function generatedComment(source: string, editTarget: string) {
 }
 
 /**
- * "toggle-group" → "Toggle Group". The names are in src/componentDocs/, which
- * plain Node cannot import; styling-skill.test.ts checks that this gives the
- * same name for every component.
+ * "toggle-group" → "Toggle Group", "otp-field" → "OTP Field". The names are
+ * in src/componentDocs/, which plain Node cannot import;
+ * styling-skill.test.ts checks that this gives the same name for every
+ * component.
  */
 export function componentName(slug: string) {
   return slug
     .split("-")
-    .map((word) => word[0]!.toUpperCase() + word.slice(1))
+    .map((word) =>
+      acronyms.has(word)
+        ? word.toUpperCase()
+        : word[0]!.toUpperCase() + word.slice(1),
+    )
     .join(" ");
 }
+
+/** Words of a slug that a component's name writes in capitals. */
+const acronyms = new Set(["otp"]);
 
 /** The names of the folders in `dir`, sorted. */
 function folderNames(dir: string) {

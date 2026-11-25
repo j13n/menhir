@@ -141,9 +141,8 @@ attribute of an `<input>`, and:
 - **A one-time code is a recipe**, on the docs page: one `Input.Root` with
   `autocomplete="one-time-code"`, `inputmode="numeric"`, `maxlength` and
   `pattern`. One input is what the platform's autofill fills from a message,
-  and a paste lands in it whole. A box per character would have to split a
-  paste and an autofill across boxes and move focus between them, which is
-  a component of its own (Left out).
+  and a paste lands in it whole. A box per character is OTP Field
+  (`menhir/otp-field`, #203), which draws the boxes from one such input.
 - **Text types only.** Input is for the types whose value is a text the
   user edits: `text` (the default, which Input leaves to the browser),
   `email`, `password`, `search`, `tel`, `url`, and the date and time types,
@@ -200,19 +199,19 @@ part conventions. No WAI-ARIA pattern applies, so no case is marked "A".
 
 ## Left out
 
-| Case                                                                             | Reason                                                                                                                                                                                              |
-| -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A one-time code with a box per character                                         | One input takes the platform's autofill and a paste whole; boxes need a paste split, focus moved between them and one value for the form: a component of its own, if an app asks for it (Decisions) |
-| `type="number"`, `range`, `checkbox`, `radio`                                    | Their value is not a text the user edits: Number Field (#149), Slider (#148), Checkbox, Radio (#147)                                                                                                |
-| `type="file"`                                                                    | Its value is a list of files the page cannot set, so it cannot be controlled; a native `<input type="file">` in `Field.Control` joins a Field already                                               |
-| `data-disabled`, `data-readonly`, `data-required`, `data-filled`, `data-focused` | The native input's pseudo-classes match (Decisions); a Field adds its own `data-*`                                                                                                                  |
-| A mask, or formatting that keeps the caret                                       | A changed edit shows the consumer's text with the caret at the end; keeping the caret through a format is a component of its own                                                                    |
-| A clear button                                                                   | `type="search"` has the browser's; otherwise a `<button>` that sets the value to `""`                                                                                                               |
-| A warning when it switches between controlled and uncontrolled                   | Input holds no state of its own, so the switch breaks nothing: the element keeps its text                                                                                                           |
-| A declined edit while `readOnly` or `disabled`                                   | The browser makes no edit                                                                                                                                                                           |
-| The element's text after a value the browser sets without an event, by script    | The browser fires no event, so Input does not know; the app sets its state instead                                                                                                                  |
-| A form the Input joins after it has settled, or a `form` attribute that changes  | The `reset` listener goes on the form the element belongs to once it has settled, as Switch's and Field's do                                                                                        |
-| Composition in the browser's input methods, in the tests                         | No test runner drives an input method; the tests fire `input` with `isComposing` and `compositionend` as an input method does                                                                       |
+| Case                                                                             | Reason                                                                                                                                                |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A one-time code with a box per character                                         | OTP Field (`menhir/otp-field`, #203): one input, with the boxes drawn from its text (Decisions)                                                       |
+| `type="number"`, `range`, `checkbox`, `radio`                                    | Their value is not a text the user edits: Number Field (#149), Slider (#148), Checkbox, Radio (#147)                                                  |
+| `type="file"`                                                                    | Its value is a list of files the page cannot set, so it cannot be controlled; a native `<input type="file">` in `Field.Control` joins a Field already |
+| `data-disabled`, `data-readonly`, `data-required`, `data-filled`, `data-focused` | The native input's pseudo-classes match (Decisions); a Field adds its own `data-*`                                                                    |
+| A mask, or formatting that keeps the caret                                       | A changed edit shows the consumer's text with the caret at the end; keeping the caret through a format is a component of its own                      |
+| A clear button                                                                   | `type="search"` has the browser's; otherwise a `<button>` that sets the value to `""`                                                                 |
+| A warning when it switches between controlled and uncontrolled                   | Input holds no state of its own, so the switch breaks nothing: the element keeps its text                                                             |
+| A declined edit while `readOnly` or `disabled`                                   | The browser makes no edit                                                                                                                             |
+| The element's text after a value the browser sets without an event, by script    | The browser fires no event, so Input does not know; the app sets its state instead                                                                    |
+| A form the Input joins after it has settled, or a `form` attribute that changes  | The `reset` listener goes on the form the element belongs to once it has settled, as Switch's and Field's do                                          |
+| Composition in the browser's input methods, in the tests                         | No test runner drives an input method; the tests fire `input` with `isComposing` and `compositionend` as an input method does                         |
 
 ## Browsers and screen readers
 

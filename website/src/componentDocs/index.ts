@@ -15,6 +15,7 @@ import { menubarDoc } from "./menubar";
 import { meterDoc } from "./meter";
 import { navigationMenuDoc } from "./navigation-menu";
 import { numberFieldDoc } from "./number-field";
+import { otpFieldDoc } from "./otp-field";
 import { popoverDoc } from "./popover";
 import { progressDoc } from "./progress";
 import { radioDoc } from "./radio";
@@ -47,6 +48,7 @@ export const componentDocs: ComponentDoc[] = [
   meterDoc,
   navigationMenuDoc,
   numberFieldDoc,
+  otpFieldDoc,
   popoverDoc,
   progressDoc,
   radioDoc,

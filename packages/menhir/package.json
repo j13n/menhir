@@ -124,6 +124,11 @@
       "solid": "./dist/source/number-field/index.js",
       "import": "./dist/number-field/index.js"
     },
+    "./otp-field": {
+      "types": "./dist/source/otp-field/index.d.ts",
+      "solid": "./dist/source/otp-field/index.js",
+      "import": "./dist/otp-field/index.js"
+    },
     "./popover": {
       "types": "./dist/source/popover/index.d.ts",
       "solid": "./dist/source/popover/index.js",

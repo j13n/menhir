@@ -206,6 +206,14 @@ _Avoid_: Range (for the component; a range is two thumbs, left out), range input
 The end of a change to a Slider: a drag released or canceled, a key released or focus leaving first, a form reset once taken. Overlapping changes, such as a key during a drag, commit once, when the last ends. `onValueCommit` and the input's `change` event mark it; `onValueChange` and `input` mark each step before it.
 _Avoid_: Change end, release (for the moment it happens)
 
+**OTP Field**:
+A one-time code shown as a box per character, `menhir/otp-field` (#203): one real input with `autocomplete="one-time-code"`, invisible over its Slots, which draw its text, caret and selection. The form receives the code as one value.
+_Avoid_: PIN input, OTP input, verification code input (for the component); an input per digit
+
+**Slot** (the part):
+One box of an OTP Field, at its `index` in the code: shows that character, and whether the box is in the Input's selection (`data-active`) or holds its caret (`data-caret`). Hidden from assistive technology.
+_Avoid_: Cell, digit, box (for the part)
+
 **Touched**:
 A Field the user has been through: focus has left it, its control has changed, or a submission of its form was attempted. A form reset clears it. Its error shows only once it is touched.
 _Avoid_: Visited, blurred, dirty (a changed value, which Field does not track)
