@@ -2,12 +2,13 @@ import { Checkbox } from "menhir/checkbox";
 import { CheckboxGroup } from "menhir/checkbox-group";
 import { Input } from "menhir/input";
 import { NumberField } from "menhir/number-field";
+import { OtpField } from "menhir/otp-field";
 import { Radio } from "menhir/radio";
 import { Slider } from "menhir/slider";
 import { Switch } from "menhir/switch";
 import { Toggle } from "menhir/toggle";
 import { ToggleGroup } from "menhir/toggle-group";
-import { createSignal, For } from "solid-js";
+import { createSignal, For, Repeat } from "solid-js";
 
 import { ExampleCard, ExampleGroup } from "./ExampleGroup";
 
@@ -28,6 +29,10 @@ const radioDot =
 // The Number Field's buttons, either side of its input in one box.
 const stepButton =
   "w-7 cursor-pointer disabled:cursor-default disabled:opacity-40";
+// The OTP Field's boxes: the active one outlined, with a caret where the
+// next digit goes.
+const otpSlot =
+  "flex h-8 w-7 items-center justify-center rounded-md border border-stone-300 text-sm data-active:outline-2 data-active:-outline-offset-1 data-active:outline-stone-500 dark:border-stone-700 data-caret:not-data-filled:after:h-4 data-caret:not-data-filled:after:w-px data-caret:not-data-filled:after:bg-current data-caret:not-data-filled:after:content-['']";
 
 export default function InputExamples() {
   // The Input's text: digits only, so a letter typed is undone.
@@ -127,6 +132,17 @@ export default function InputExamples() {
               +
             </NumberField.Increment>
           </NumberField.Root>
+        </div>
+      </ExampleCard>
+      <ExampleCard name="OTP Field" href="/docs/components/otp-field">
+        <div class="flex items-center justify-between gap-4">
+          <label for="home-code">Code</label>
+          <OtpField.Root id="home-code" length={4} class="flex shrink-0 gap-1">
+            <OtpField.Input />
+            <Repeat count={4}>
+              {(index) => <OtpField.Slot index={index} class={otpSlot} />}
+            </Repeat>
+          </OtpField.Root>
         </div>
       </ExampleCard>
       <ExampleCard name="Slider" href="/docs/components/slider">

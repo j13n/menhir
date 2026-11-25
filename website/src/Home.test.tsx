@@ -408,6 +408,32 @@ describe("home page", () => {
     );
   });
 
+  test("shows a working OTP Field, linked to its page", async () => {
+    const { getByRole } = setup();
+    const example = within(getByRole("region", { name: "Examples" }));
+    const code = example.getByRole<HTMLInputElement>("textbox", {
+      name: "Code",
+    });
+    const boxes = () =>
+      Array.from(
+        code.parentElement!.querySelectorAll("[aria-hidden]"),
+        (box) => box.textContent,
+      );
+
+    code.focus();
+    fireEvent.input(code, { target: { value: "12a3" } });
+    // The value lands after the input's flush (`onFlush`).
+    await new Promise<void>((resolve) => onFlush(resolve));
+    await new Promise<void>((resolve) => onFlush(resolve));
+
+    expect(code).toHaveValue("123");
+    expect(boxes()).toEqual(["1", "2", "3", ""]);
+    expect(example.getByRole("link", { name: "OTP Field" })).toHaveAttribute(
+      "href",
+      "/docs/components/otp-field",
+    );
+  });
+
   test("shows a working Toggle, linked to its page", async () => {
     const { getByRole } = setup();
     const example = within(getByRole("region", { name: "Examples" }));

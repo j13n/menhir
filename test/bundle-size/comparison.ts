@@ -71,6 +71,7 @@ export const libraries: Library[] = [
       menubar: "@base-ui/react/menubar",
       "navigation-menu": "@base-ui/react/navigation-menu",
       "number-field": "@base-ui/react/number-field",
+      "otp-field": "@base-ui/react/otp-field",
       popover: "@base-ui/react/popover",
       progress: "@base-ui/react/progress",
       // Its Radio is one radio, and its RadioGroup the group around them.
@@ -100,6 +101,7 @@ export const libraries: Library[] = [
       menu: "@radix-ui/react-dropdown-menu",
       menubar: "@radix-ui/react-menubar",
       "navigation-menu": "@radix-ui/react-navigation-menu",
+      "otp-field": "@radix-ui/react-one-time-password-field",
       popover: "@radix-ui/react-popover",
       progress: "@radix-ui/react-progress",
       radio: "@radix-ui/react-radio-group",
@@ -155,6 +157,7 @@ export const libraries: Library[] = [
       accordion: "corvu/accordion",
       collapsible: "corvu/disclosure",
       dialog: "corvu/dialog",
+      "otp-field": "corvu/otp-field",
       popover: "corvu/popover",
       tooltip: "corvu/tooltip",
     },

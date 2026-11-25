@@ -58,7 +58,7 @@ export const inputDoc: ComponentDoc = {
     {
       id: "one-time-code",
       title: "One-time code",
-      text: 'A code sent by text message or email is one input with autocomplete="one-time-code", which phones offer to fill from the message, inputmode="numeric" for a number pad, and maxlength and pattern for its length. A pasted code lands in it whole. A box per digit is left out: the boxes would have to split a paste and an autofill between them and move focus from box to box.',
+      text: 'A code sent by text message or email is one input with autocomplete="one-time-code", which phones offer to fill from the message, inputmode="numeric" for a number pad, and maxlength and pattern for its length. A pasted code lands in it whole. For a box per digit, use OTP Field, which draws the boxes from one such input.',
     },
   ],
 };

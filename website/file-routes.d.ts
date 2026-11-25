@@ -161,6 +161,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/otp-field";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/otp-field"), Extract<"default", keyof typeof import("./src/routes/docs/components/otp-field")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/popover";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/popover"), Extract<"default", keyof typeof import("./src/routes/docs/components/popover")>>>;
@@ -515,6 +521,14 @@ declare module "virtual:file-routes" {
           id: "/components/accordion";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/accordion"), Extract<"default", keyof typeof import("./src/routes/docs/components/accordion")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/otp-field";
+          id: "/components/otp-field";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/otp-field"), Extract<"default", keyof typeof import("./src/routes/docs/components/otp-field")>>>;
           $$route?: undefined;
           children?: undefined;
         },
