@@ -71,6 +71,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/components/avatar";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/avatar"), Extract<"default", keyof typeof import("./src/routes/docs/components/avatar")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/components/checkbox-group";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/checkbox-group"), Extract<"default", keyof typeof import("./src/routes/docs/components/checkbox-group")>>>;
@@ -425,6 +431,14 @@ declare module "virtual:file-routes" {
           id: "/components/radio";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/radio"), Extract<"default", keyof typeof import("./src/routes/docs/components/radio")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/components/avatar";
+          id: "/components/avatar";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/components/avatar"), Extract<"default", keyof typeof import("./src/routes/docs/components/avatar")>>>;
           $$route?: undefined;
           children?: undefined;
         },

@@ -1,0 +1,7 @@
+/* What Tailwind has no utility for: the keyframes of the initials' wait
+   behind a picture that is loading. */
+@keyframes avatar-wait {
+  from {
+    visibility: hidden;
+  }
+}

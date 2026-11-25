@@ -222,6 +222,20 @@ _Avoid_: Visited, blurred, dirty (a changed value, which Field does not track)
 An error message or invalid state the app hands a Field, such as a server's answer or a schema's issue, beside the browser's constraint validation.
 _Avoid_: Server error (for every such error), external validation
 
+### Avatars
+
+**Avatar**:
+A person's picture, with a Fallback while it loads and when it fails, `menhir/avatar` (#204). The picture is a native `<img>`, named by its `alt`.
+_Avoid_: User image, image (for the component)
+
+**Loading status**:
+Where an Avatar's picture has got: `idle` (no `src`), `loading`, `loaded` or `error`, on every part as `data-*` and reported by `onLoadingStatusChange`. A new `src` starts over at `loading`.
+_Avoid_: State, load state
+
+**Fallback** (the part):
+What an Avatar shows in place of its picture, such as initials, until the picture has loaded. Named as the picture is, with `role="img"` and `aria-label`.
+_Avoid_: Placeholder, initials (for the part)
+
 ### Styling
 
 **Look**:
