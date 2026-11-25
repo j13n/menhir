@@ -123,16 +123,19 @@ re-exported under the same names.
   the element the press focused, such as the area if it is focusable. Tab
   and Shift+Tab close every menu, as in Menu, and focus goes where the key
   sent it.
-- **Menu's state takes the element the menu opens from as its trigger**:
-  the Trigger hands it the focused element when it opens the menu, or
-  nothing if focus was on the `<body>`. The browser does not
-  return focus from a submenu, since only the first popover of a stack
+- **Menu's state keeps the element the menu opens from as `returnTo`**,
+  not as its trigger: the Trigger hands it the focused element when it
+  opens the menu, or nothing if focus was on the `<body>`. The browser does
+  not return focus from a submenu, since only the first popover of a stack
   keeps the element focused before it, so after an item in a submenu, or
   Shift+Tab from one, Menu returns focus there itself. Without it focus was
   left on the `<body>`: Menu's submenu tests, run in a Context Menu, found
-  it. A press on that element while the menu is open closes it as a press
-  outside, but is reported as `trigger-press`, the press on the element it
-  opened from.
+  it. Menu's `trigger` stays unset, so light dismiss has no trigger to
+  tell apart: a press anywhere outside the Popup, in the area or on the
+  element focus returns to, is reported as `outside-press`. Before #137
+  that element was Menu's `trigger`, so a press on it, or on anything
+  inside it when a press had focused an ancestor such as the area, was
+  reported as `trigger-press`. The field costs every Menu 6 B.
 - **Everything else is Menu's**: the items and their activation, checkbox
   and radio items, typeahead, submenus, wrapping, Escape, a press outside,
   `focus-out`, `side`, `align`, the offsets, `collisionPadding` and
@@ -179,6 +182,8 @@ In jsdom an opened popover gets `:popover-open` from a stub
 - Placed against `anchor` instead of the point (C)
 - Escape closes it, reporting `escape-key`, and returns focus to the element the keyboard opened it from (A, C)
 - A press outside closes it, reporting `outside-press` (C)
+- A press in the focusable area, which the opening press focused, closes it, reporting `outside-press` (C)
+- A press on the element the keyboard opened it from closes it, reporting `outside-press` (C)
 - Tab closes it, reporting `focus-out` (A, C)
 - A submenu's Popup is placed against its SubmenuTrigger, not the point (C)
 - Throws a descriptive error inside a `Menu.Root`, and outside any Root
@@ -230,14 +235,18 @@ has been tried yet (#135).
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-23.
+2026-11-25.
 
 | Entry point                                      | Size     | Budget |
 | ------------------------------------------------ | -------- | ------ |
-| `menhir/context-menu`                            | 11,986 B | 13 kB  |
-| `menhir/menu` and `menhir/context-menu` together | 12,154 B |        |
+| `menhir/context-menu`                            | 12,002 B | 13 kB  |
+| `menhir/menu` and `menhir/context-menu` together | 12,200 B |        |
 
-An app that already uses Menu pays 253 B for Context Menu: its Root,
+The field that holds where focus returns, `returnTo` (Decisions), added
+6 B, from 11,996 B and 12,193 B together, measured on main just before
+(#137); the sizes in this table had grown since 2026-11-23.
+
+An app that already uses Menu pays 293 B for Context Menu: its Root,
 Trigger and Popup wrapper (`test/package` checks that the shared parts are
 bundled once). Context Menu did not change Menu's size (11,823 B then):
 the longer error that names both Roots is development-only. Menubar's

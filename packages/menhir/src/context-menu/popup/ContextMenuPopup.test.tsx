@@ -158,6 +158,48 @@ describe("<ContextMenu.Popup />", () => {
     },
   );
 
+  it.skipIf(isJSDOM)(
+    "closes on a press in the focusable area, reporting outside-press",
+    async () => {
+      const onOpenChange = vi.fn();
+      await render(() => <Edit onOpenChange={onOpenChange} />);
+      // The press focuses the area, which the menu opens from.
+      await rightPress(60, 70);
+      await nextTask();
+      expect(shown()).toBe(true);
+
+      await press({ x: 40, y: 60 });
+      await nextTask();
+
+      expect(shown()).toBe(false);
+      expect(onOpenChange).toHaveBeenLastCalledWith(false, {
+        reason: "outside-press",
+        event: expect.any(PointerEvent),
+      });
+    },
+  );
+
+  it.skipIf(isJSDOM)(
+    "closes on a press on the element the keyboard opened it from, reporting outside-press",
+    async () => {
+      const onOpenChange = vi.fn();
+      await render(() => <Edit onOpenChange={onOpenChange} />);
+      button("Focus").focus();
+      await menuKey();
+      await nextTask();
+      expect(shown()).toBe(true);
+
+      await press(centerOf(button("Focus")));
+      await nextTask();
+
+      expect(shown()).toBe(false);
+      expect(onOpenChange).toHaveBeenLastCalledWith(false, {
+        reason: "outside-press",
+        event: expect.any(PointerEvent),
+      });
+    },
+  );
+
   it.skipIf(isJSDOM)("closes on Tab, reporting focus-out", async () => {
     const onOpenChange = vi.fn();
     await render(() => <Edit onOpenChange={onOpenChange} />);

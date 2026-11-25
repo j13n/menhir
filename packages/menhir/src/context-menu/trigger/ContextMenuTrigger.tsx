@@ -40,9 +40,10 @@ export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
       );
       // The element the menu opens from, where Menu returns focus when the
       // browser does not, as after an item in a submenu: the element a key
-      // was pressed on, or the one a press focused (README, "Decisions").
+      // was pressed on, or the one a press focused. Not Menu's trigger, so
+      // a press on it is a press outside (README, "Decisions").
       const focused = document.activeElement as HTMLElement | null;
-      menu.trigger = focused === document.body ? undefined : focused!;
+      menu.returnTo = focused === document.body ? undefined : focused!;
       const details = { reason: "trigger-press", event } as const;
       // A second one while open moves the menu and starts it over.
       menu.closeSubmenus(details);

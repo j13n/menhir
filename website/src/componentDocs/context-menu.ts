@@ -67,7 +67,7 @@ export const contextMenuDoc: ComponentDoc = {
           name: "onOpenChange",
           type: "(open: boolean, details: { reason, event }) => void",
           description:
-            'Called with the new value when the user opens or closes the menu, and why: "trigger-press" (the contextmenu event, or a press on the element it opened from), "item-press" (an item was activated), "escape-key", "outside-press", "focus-out" (Tab moved focus out) or "close-request" (such as another popover opening). A controlled menu changes only if open does.',
+            'Called with the new value when the user opens or closes the menu, and why: "trigger-press" (the contextmenu event), "item-press" (an item was activated), "escape-key", "outside-press", "focus-out" (Tab moved focus out) or "close-request" (such as another popover opening). A controlled menu changes only if open does.',
         },
       ],
     },

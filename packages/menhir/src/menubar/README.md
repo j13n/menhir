@@ -270,17 +270,19 @@ No screen reader has been tried yet.
 
 Measured as `test/bundle-size` measures an entry point: an app that uses
 every part, Rolldown, minified, gzipped, Solid left out. Measured on
-2026-11-23.
+2026-11-25.
 
 | Entry point                                 | Size     | Budget  |
 | ------------------------------------------- | -------- | ------- |
-| `menhir/menubar`                            | 12,418 B | 13.5 kB |
-| `menhir/menu` and `menhir/menubar` together | 12,463 B |         |
+| `menhir/menubar`                            | 12,426 B | 13.5 kB |
+| `menhir/menu` and `menhir/menubar` together | 12,495 B |         |
 
-An app that already uses Menu pays 562 B for Menubar: its Root, Menu and
+An app that already uses Menu pays 588 B for Menubar: its Root, Menu and
 Trigger wrapper (`test/package` checks that the shared parts are bundled
 once). Menu's state gained the fields a menubar sets, which added 78 B to
-Menu (11,823 B to 11,901 B) and 61 B to Context Menu.
+Menu (11,823 B to 11,901 B) and 61 B to Context Menu. Context Menu's
+`returnTo` in Menu's state added 9 B, from 12,417 B and 12,487 B
+together, measured on main just before (#137).
 
 The budget was set before the behaviour, at Menu's measured size
 (11,823 B) plus the bar, its menu part and the Trigger's keys, with Menu's

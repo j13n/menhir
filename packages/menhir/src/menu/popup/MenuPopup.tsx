@@ -91,7 +91,7 @@ export function MenuPopup(props: MenuPopupProps) {
         props.returnFocus ??
         ((focused) =>
           (focused as HTMLElement | null) ??
-          (focusInside ? menu.trigger : undefined))
+          (focusInside ? (menu.returnTo ?? menu.trigger) : undefined))
       );
     },
   };
@@ -191,7 +191,7 @@ export function MenuPopup(props: MenuPopupProps) {
       // Shift+Tab from a submenu lands on its trigger, inside the menu that
       // closes: focus goes on to the Trigger, where it leaves the menu.
       if (popup!.contains(event.relatedTarget as Node | null))
-        menu.trigger?.focus();
+        (menu.returnTo ?? menu.trigger)?.focus();
     },
     ref: (element: HTMLElement) => {
       popup = element;
