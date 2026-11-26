@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.24
+
+### Patch Changes
+
+- 100685a: The package description on npm now says "UI components and primitives", so a search for SolidJS UI components finds it
+
 ## 0.1.23
 
 ### Patch Changes
