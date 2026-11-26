@@ -116,12 +116,12 @@ The package manifest, in the shape built in the build spike (#6). It lists one s
   "exports": {
     "./dialog": {
       "types": "./dist/source/dialog/index.d.ts",
-      "solid": "./dist/source/dialog/index.js",
+      "solid": "./dist/source/dialog/index.jsx",
       "import": "./dist/dialog/index.js"
     },
     "./switch": {
       "types": "./dist/source/switch/index.d.ts",
-      "solid": "./dist/source/switch/index.js",
+      "solid": "./dist/source/switch/index.jsx",
       "import": "./dist/switch/index.js"
     }
   },
@@ -135,7 +135,7 @@ The `solid` condition points at uncompiled JSX and must come before `import`: co
 - **The Solid 2.0 library guide says so.** It is the "Building a library" section of the `@solidjs/vite-plugin` 3.0.1 README. It prescribes JSX source under `solid`, listed before `import`, with `solid-js` and `@solidjs/web` as peers. The plugin adds `solid` to Vite's `resolve.conditions`, and bundles every dependency that has a `solid` export into the SSR build instead of leaving it external.
 - **Removing it breaks SSR.** With the `solid` key deleted from `menhir`, the fixture app in `test/ssr-app` fails to render with "Client-only API called on the server side", because the server then gets the DOM build.
 
-The entry of a component is a `.ts` file with no JSX, so its `solid` target ends in `.js`. The `.jsx` files are the modules it imports.
+The entry of a component is a `.ts` file with no JSX, which `tsc` emits as `.js`. The build renames it, so its `solid` target ends in `.jsx` like the modules it imports ("Build" below, "A `solid` entry ends in `.jsx`").
 
 No separate server build under `node`/`worker`/`deno`, which some Solid libraries ship. It would serve only an app that renders on the server without compiling its dependencies, which is not a setup the guide describes: an app on the Solid plugin always compiles the `solid` source. Add one if a user turns up with such a setup.
 
@@ -241,16 +241,18 @@ Principle: use the tooling of the official Solid 2.0 template (`pnpm create soli
 
 ### Build
 
-Decided in the build spike (#6), on a throwaway two-part Switch. `pnpm build` in `packages/menhir` runs both steps:
+Decided in the build spike (#6), on a throwaway two-part Switch. `pnpm build` in `packages/menhir` runs three steps:
 
 - `vite build` (`vite.config.ts`) writes the compiled `import` entries to `dist`, one file per source module (`preserveModules`), with `solid-js` and `@solidjs/web` external.
 - `tsc -p tsconfig.build.json` writes the JSX source and the types to `dist/source`. It covers only `src`.
+- `node solidEntries.ts` renames each `solid` entry in `dist/source` from `index.js` to `index.jsx`.
 
 A component is added by adding its subpath to `exports` in `package.json`, the only list of components: `vite.config.ts` reads its entries from there. Its size budget is a line in `test/bundle-size/.size-limit.js`; `pnpm test` there fails until it is added. `pnpm test:package` builds, then checks `dist` (`test/package`): one compiled file, one source file and one `.d.ts` per module, an `exports` entry for every folder in `src` with an `index.ts`, and that a bundler drops an unused part. It is kept out of the default `vitest` run so that watch mode does not rebuild.
 
 What the spike found:
 
 - **Rolldown breaks rule 3 unless told otherwise.** Rolldown 1.2 compiles `export * as Switch from "./index.parts.ts"` into an object of getters, and no bundler can drop an unused part from an object: an app using only `Switch.Root` also got `Switch.Thumb`. A small plugin in `vite.config.ts` builds each `index.parts.ts` as an entry of its own and leaves the import of it external, so `index.js` keeps the namespace re-export. tsdown was not tried; it bundles with Rolldown too, so it probably needs the same fix.
+- **A `solid` entry ends in `.jsx`.** A bundler that pre-bundles dependencies compiles JSX for React. Vite's takes a dependency whose entry ends in `.js` or `.ts`, with every module it imports, and leaves one ending in `.jsx` to the Solid plugin. The Solid plugin keeps packages with a `solid` condition out of the client's pre-bundling, but not out of a server environment's, which is off unless the host turns it on, as `@cloudflare/vite-plugin` does. With `.js` entries (up to 0.1.25) every component then failed on the server with "React is not defined". `test/ssr-app/prebundle.test.ts` runs such a server; `test/package` checks the extension.
 - **Relative imports name the source file**, such as `./root/SwitchRoot.tsx`. `rewriteRelativeImportExtensions` turns that into `.jsx` or `.js` in the emitted source. Extensionless imports fail `attw` under `node16` resolution.
 - **`attw` runs with `--profile esm-only`.** `node10` cannot resolve subpath exports and the package has no CommonJS build (section 6, "Costs accepted").
 - **Hydrate tests need two compiles of the same JSX**, one for the server and one hydratable one for the DOM, each against its own build of Solid. A test file gets only one. So `*.hydrate.test.tsx` files run in a `hydrate` Vitest project whose plugin compiles hydratable DOM code, and its global setup (`test/ssr/renderServer.ts`) starts a Vite SSR server that renders fixtures over HTTP. A test calls `renderOnServer("/path/to/Fixture.tsx")`, which returns an element holding the server HTML, then `render(() => <Fixture />, { hydrate: element })`. It works in jsdom and in Chromium.
