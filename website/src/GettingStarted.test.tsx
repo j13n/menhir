@@ -36,6 +36,17 @@ describe("getting started page", () => {
     );
   });
 
+  test("says how to keep Menhir out of the Cloudflare plugin's pre-bundling", () => {
+    const { getByRole } = render(() => <GettingStarted />);
+    const cloudflare = getByRole("region", {
+      name: "Server rendering on Cloudflare",
+    });
+    expect(cloudflare).toHaveTextContent("React is not defined");
+    expect(cloudflare.querySelector("pre code")).toHaveTextContent(
+      'ssr: { optimizeDeps: { exclude: ["menhir"] } }',
+    );
+  });
+
   test("says how to give an agent both skills", () => {
     const { getByRole } = render(() => <GettingStarted />);
     const install = getByRole("region", { name: "Give your agent the skills" });
