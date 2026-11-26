@@ -19,7 +19,9 @@ describe("components page", () => {
     const { getAllByRole, getByRole, queryByRole } = render(() => (
       <Components />
     ));
-    expect(getByRole("heading", { level: 1 })).toHaveTextContent("Components");
+    expect(getByRole("heading", { level: 1 })).toHaveTextContent(
+      "UI components for SolidJS",
+    );
     expect(
       getAllByRole("heading", { level: 2 }).map((h) => h.textContent),
     ).toEqual([...componentCategories]);

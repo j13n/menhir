@@ -10,10 +10,17 @@ export default function Components() {
   return (
     <main>
       <PageHead
-        title="Components · Menhir for SolidJS"
-        description="Every Menhir component for SolidJS, such as Dialog, Menu, Select, Combobox, Tabs and Tooltip: unstyled, accessible, each its own entry point, with its size."
+        title="SolidJS UI components · Menhir"
+        description="Menhir's UI components for SolidJS, such as Dialog, Menu, Select, Combobox, Tabs and Tooltip: unstyled, accessible, each its own entry point, with its size."
       />
-      <h1>Components</h1>
+      <h1>UI components for SolidJS</h1>
+      <p>
+        Menhir's UI components for SolidJS 2.0 are unstyled and accessible: each
+        brings the behaviour, the keyboard support and the roles and states of
+        its WAI-ARIA pattern, and leaves the look to your own CSS. They are
+        grouped below by what they are for, and each links to its page, with its
+        parts, props and a live example.
+      </p>
       <p>
         Each component is its own entry point. Its size is what it adds to an
         app that uses every part of it, minified and gzipped, with Solid left
