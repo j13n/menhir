@@ -1,5 +1,5 @@
 import type { JSX } from "@solidjs/web";
-import { merge } from "solid-js";
+import { merge, untrack } from "solid-js";
 
 import type { ElementProps } from "./renderElement.tsx";
 
@@ -58,7 +58,8 @@ function applyRef(ref: JSX.Ref<HTMLElement>, element: HTMLElement) {
  * - `class` keeps both, in any of Solid's class forms.
  * - `style` keeps both; the consumer's wins a conflict.
  * - `ref` runs both, the consumer's first. The result's `ref` is one
- *   callback, so it spreads onto any element (see `ElementProps`).
+ *   callback, so it spreads onto any element (see `ElementProps`). The
+ *   consumer's is read once, when the element is created.
  *
  * Only keys the part sets are merged this way; any other prop of the
  * consumer passes through unchanged. The part's handlers and ref are read
@@ -88,7 +89,13 @@ export function mergeElementProps(
   // be an array: `ElementProps` promises a callback.
   const ownRef = own.ref;
   overrides.ref = (element: HTMLElement) => {
-    applyRef(props.ref, element);
+    // Read once, untracked, as the element is created: a ref is not applied
+    // again. Props spread from an expression, `{...rest()}`, are read
+    // through a memo, which Solid would report here.
+    applyRef(
+      untrack(() => props.ref),
+      element,
+    );
     ownRef?.(element);
   };
   for (const key of Object.keys(own)) {

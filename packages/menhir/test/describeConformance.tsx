@@ -153,6 +153,17 @@ export function describeConformance(
       expect(part()).toHaveAttribute("title", "After");
     });
 
+    it("takes props spread from an expression, as a wrapper passes them on", async () => {
+      const ref = vi.fn();
+      const [props] = createSignal<ConformanceProps>({ title: "Spread", ref });
+      // A function source, as the compiler passes `{...expression}`: every
+      // read of these props, the ref's too, goes through a memo.
+      await renderWith(merge(() => props()));
+
+      expect(part()).toHaveAttribute("title", "Spread");
+      expect(ref).toHaveBeenCalledWith(part());
+    });
+
     it("renders through a render function, which gets the element's props", async () => {
       await renderWith({
         class: "consumer",
