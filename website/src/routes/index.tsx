@@ -41,7 +41,14 @@ export default function Home() {
           </div>
         </div>
 
-        <div class="mt-14 flex justify-center">
+        <p class="mx-auto mt-14 mb-0 max-w-2xl text-center text-stone-600 dark:text-stone-400">
+          Menhir is a library of UI components for SolidJS: unstyled, accessible
+          primitives such as Dialog, Menu, Select, Combobox and Tabs, each its
+          own entry point, for you to style with your own CSS.{" "}
+          <a href="/docs/components">See every component</a>.
+        </p>
+
+        <div class="mt-8 flex justify-center">
           <InstallCommand command="pnpm add menhir" />
         </div>
 

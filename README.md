@@ -1,6 +1,6 @@
 # Menhir
 
-Unstyled, accessible UI primitives for SolidJS 2.0, with small and measurable bundles.
+Unstyled, accessible UI components and primitives for SolidJS 2.0, with small and measurable bundles.
 
 **Website: [menhir-ui.com](https://menhir-ui.com)**, with every component's parts, props, keyboard behaviour, a live example and its measured size.
 
