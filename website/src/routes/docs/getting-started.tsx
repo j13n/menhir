@@ -1,7 +1,7 @@
 import CodeBlock from "../../components/CodeBlock";
 import PageHead from "../../components/PageHead";
 import Section from "../../components/Section";
-import { css, shell, ts, tsx } from "../../highlight";
+import { css, shell, tsx } from "../../highlight";
 
 const install = shell`pnpm add menhir`;
 const installSolid = shell`pnpm add solid-js @solidjs/web`;
@@ -25,13 +25,6 @@ const styles = css`.switch[data-checked] {
 .thumb[data-checked] {
   transform: translateX(1.25rem);
 }`;
-
-const cloudflare = ts`export default defineConfig({
-  plugins: [solid({ ssr: true }), cloudflare({ viteEnvironment: { name: "ssr" } })],
-  environments: {
-    ssr: { optimizeDeps: { exclude: ["menhir"] } },
-  },
-});`;
 
 const agentInstructions = `To wire up Menhir components, follow node_modules/menhir/skills/menhir/SKILL.md.
 To style Menhir components, follow node_modules/menhir/skills/menhir-styling/SKILL.md.`;
@@ -74,18 +67,6 @@ export default function GettingStarted() {
           such as <code>data-checked</code>, for your CSS to select:
         </p>
         <CodeBlock code={styles} />
-      </Section>
-      <Section id="cloudflare" title="Server rendering on Cloudflare">
-        <p>
-          Menhir ships its JSX source for the Solid plugin to compile for your
-          app. <code>@cloudflare/vite-plugin</code> pre-bundles the server's
-          dependencies first, and compiles that JSX for React: every Menhir
-          component then fails on the server with{" "}
-          <code>React is not defined</code>. Leave Menhir out of the
-          pre-bundling in <code>vite.config.ts</code>, for the environment the
-          Cloudflare plugin runs:
-        </p>
-        <CodeBlock code={cloudflare} />
       </Section>
       <Section id="install-the-skills" title="Give your agent the skills">
         <p>

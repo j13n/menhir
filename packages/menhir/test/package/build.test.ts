@@ -21,6 +21,8 @@ const sources = files("**/*.{ts,tsx}", "src/", ["**/*.test.*"]);
 // build, which starts from the component entries, does not reach it.
 const isUnreached = (file: string) => file === "core/index.ts";
 
+const { "./package.json": _, ...components } = manifest.exports;
+
 describe("built package", () => {
   it("has one compiled file per source module", () => {
     const expected = sources
@@ -32,10 +34,18 @@ describe("built package", () => {
   });
 
   it("has the source and the types of every source module", () => {
-    // tsc covers all of src, core included.
+    // tsc covers all of src, core included. The build's last step,
+    // solidEntries.ts, renames each entry to `.jsx`.
+    const entries = new Set(
+      Object.values<Record<string, string>>(components).map(({ solid }) =>
+        solid.replace("./dist/source/", "").replace(/\.jsx$/, ".ts"),
+      ),
+    );
     const expected = sources
       .flatMap((file) => [
-        file.replace(/\.tsx$/, ".jsx").replace(/\.ts$/, ".js"),
+        entries.has(file)
+          ? file.replace(/\.ts$/, ".jsx")
+          : file.replace(/\.tsx$/, ".jsx").replace(/\.ts$/, ".js"),
         file.replace(/\.tsx?$/, ".d.ts"),
       ])
       .sort();
@@ -44,7 +54,6 @@ describe("built package", () => {
   });
 
   it("exports each component, listing types, then solid, then import", () => {
-    const { "./package.json": _, ...components } = manifest.exports;
     // A component is a folder in src with an index.ts. The layers, core and
     // floating, are internal. A utility can have several, one folder down,
     // such as color-scheme/cookie/index.ts.
@@ -65,6 +74,15 @@ describe("built package", () => {
       for (const file of Object.values(conditions)) {
         expect(files(file, "./")).toHaveLength(1);
       }
+    }
+  });
+
+  it("names a `.jsx` file as every solid entry, which no pre-bundler takes", () => {
+    // A pre-bundler compiles JSX for React. Vite's takes an entry ending in
+    // `.js` or `.ts` and every module it imports, and leaves one ending in
+    // `.jsx` to the Solid plugin (test/ssr-app/prebundle.test.ts).
+    for (const { solid } of Object.values<Record<string, string>>(components)) {
+      expect(solid).toMatch(/\/index\.jsx$/);
     }
   });
 

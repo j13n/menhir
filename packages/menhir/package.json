@@ -26,202 +26,202 @@
   "exports": {
     "./accordion": {
       "types": "./dist/source/accordion/index.d.ts",
-      "solid": "./dist/source/accordion/index.js",
+      "solid": "./dist/source/accordion/index.jsx",
       "import": "./dist/accordion/index.js"
     },
     "./alert-dialog": {
       "types": "./dist/source/alert-dialog/index.d.ts",
-      "solid": "./dist/source/alert-dialog/index.js",
+      "solid": "./dist/source/alert-dialog/index.jsx",
       "import": "./dist/alert-dialog/index.js"
     },
     "./autocomplete": {
       "types": "./dist/source/autocomplete/index.d.ts",
-      "solid": "./dist/source/autocomplete/index.js",
+      "solid": "./dist/source/autocomplete/index.jsx",
       "import": "./dist/autocomplete/index.js"
     },
     "./avatar": {
       "types": "./dist/source/avatar/index.d.ts",
-      "solid": "./dist/source/avatar/index.js",
+      "solid": "./dist/source/avatar/index.jsx",
       "import": "./dist/avatar/index.js"
     },
     "./checkbox": {
       "types": "./dist/source/checkbox/index.d.ts",
-      "solid": "./dist/source/checkbox/index.js",
+      "solid": "./dist/source/checkbox/index.jsx",
       "import": "./dist/checkbox/index.js"
     },
     "./checkbox-group": {
       "types": "./dist/source/checkbox-group/index.d.ts",
-      "solid": "./dist/source/checkbox-group/index.js",
+      "solid": "./dist/source/checkbox-group/index.jsx",
       "import": "./dist/checkbox-group/index.js"
     },
     "./collapsible": {
       "types": "./dist/source/collapsible/index.d.ts",
-      "solid": "./dist/source/collapsible/index.js",
+      "solid": "./dist/source/collapsible/index.jsx",
       "import": "./dist/collapsible/index.js"
     },
     "./color-scheme/cookie": {
       "types": "./dist/source/color-scheme/cookie/index.d.ts",
-      "solid": "./dist/source/color-scheme/cookie/index.js",
+      "solid": "./dist/source/color-scheme/cookie/index.jsx",
       "import": "./dist/color-scheme/cookie/index.js"
     },
     "./color-scheme/local-storage": {
       "types": "./dist/source/color-scheme/local-storage/index.d.ts",
-      "solid": "./dist/source/color-scheme/local-storage/index.js",
+      "solid": "./dist/source/color-scheme/local-storage/index.jsx",
       "import": "./dist/color-scheme/local-storage/index.js"
     },
     "./combobox": {
       "types": "./dist/source/combobox/index.d.ts",
-      "solid": "./dist/source/combobox/index.js",
+      "solid": "./dist/source/combobox/index.jsx",
       "import": "./dist/combobox/index.js"
     },
     "./context-menu": {
       "types": "./dist/source/context-menu/index.d.ts",
-      "solid": "./dist/source/context-menu/index.js",
+      "solid": "./dist/source/context-menu/index.jsx",
       "import": "./dist/context-menu/index.js"
     },
     "./dialog": {
       "types": "./dist/source/dialog/index.d.ts",
-      "solid": "./dist/source/dialog/index.js",
+      "solid": "./dist/source/dialog/index.jsx",
       "import": "./dist/dialog/index.js"
     },
     "./field": {
       "types": "./dist/source/field/index.d.ts",
-      "solid": "./dist/source/field/index.js",
+      "solid": "./dist/source/field/index.jsx",
       "import": "./dist/field/index.js"
     },
     "./form": {
       "types": "./dist/source/form/index.d.ts",
-      "solid": "./dist/source/form/index.js",
+      "solid": "./dist/source/form/index.jsx",
       "import": "./dist/form/index.js"
     },
     "./form/standard-schema": {
       "types": "./dist/source/form/standard-schema/index.d.ts",
-      "solid": "./dist/source/form/standard-schema/index.js",
+      "solid": "./dist/source/form/standard-schema/index.jsx",
       "import": "./dist/form/standard-schema/index.js"
     },
     "./input": {
       "types": "./dist/source/input/index.d.ts",
-      "solid": "./dist/source/input/index.js",
+      "solid": "./dist/source/input/index.jsx",
       "import": "./dist/input/index.js"
     },
     "./menu": {
       "types": "./dist/source/menu/index.d.ts",
-      "solid": "./dist/source/menu/index.js",
+      "solid": "./dist/source/menu/index.jsx",
       "import": "./dist/menu/index.js"
     },
     "./menubar": {
       "types": "./dist/source/menubar/index.d.ts",
-      "solid": "./dist/source/menubar/index.js",
+      "solid": "./dist/source/menubar/index.jsx",
       "import": "./dist/menubar/index.js"
     },
     "./meter": {
       "types": "./dist/source/meter/index.d.ts",
-      "solid": "./dist/source/meter/index.js",
+      "solid": "./dist/source/meter/index.jsx",
       "import": "./dist/meter/index.js"
     },
     "./multi-combobox": {
       "types": "./dist/source/multi-combobox/index.d.ts",
-      "solid": "./dist/source/multi-combobox/index.js",
+      "solid": "./dist/source/multi-combobox/index.jsx",
       "import": "./dist/multi-combobox/index.js"
     },
     "./navigation-menu": {
       "types": "./dist/source/navigation-menu/index.d.ts",
-      "solid": "./dist/source/navigation-menu/index.js",
+      "solid": "./dist/source/navigation-menu/index.jsx",
       "import": "./dist/navigation-menu/index.js"
     },
     "./number-field": {
       "types": "./dist/source/number-field/index.d.ts",
-      "solid": "./dist/source/number-field/index.js",
+      "solid": "./dist/source/number-field/index.jsx",
       "import": "./dist/number-field/index.js"
     },
     "./otp-field": {
       "types": "./dist/source/otp-field/index.d.ts",
-      "solid": "./dist/source/otp-field/index.js",
+      "solid": "./dist/source/otp-field/index.jsx",
       "import": "./dist/otp-field/index.js"
     },
     "./popover": {
       "types": "./dist/source/popover/index.d.ts",
-      "solid": "./dist/source/popover/index.js",
+      "solid": "./dist/source/popover/index.jsx",
       "import": "./dist/popover/index.js"
     },
     "./preview-card": {
       "types": "./dist/source/preview-card/index.d.ts",
-      "solid": "./dist/source/preview-card/index.js",
+      "solid": "./dist/source/preview-card/index.jsx",
       "import": "./dist/preview-card/index.js"
     },
     "./progress": {
       "types": "./dist/source/progress/index.d.ts",
-      "solid": "./dist/source/progress/index.js",
+      "solid": "./dist/source/progress/index.jsx",
       "import": "./dist/progress/index.js"
     },
     "./radio": {
       "types": "./dist/source/radio/index.d.ts",
-      "solid": "./dist/source/radio/index.js",
+      "solid": "./dist/source/radio/index.jsx",
       "import": "./dist/radio/index.js"
     },
     "./scroll-area": {
       "types": "./dist/source/scroll-area/index.d.ts",
-      "solid": "./dist/source/scroll-area/index.js",
+      "solid": "./dist/source/scroll-area/index.jsx",
       "import": "./dist/scroll-area/index.js"
     },
     "./select": {
       "types": "./dist/source/select/index.d.ts",
-      "solid": "./dist/source/select/index.js",
+      "solid": "./dist/source/select/index.jsx",
       "import": "./dist/select/index.js"
     },
     "./separator": {
       "types": "./dist/source/separator/index.d.ts",
-      "solid": "./dist/source/separator/index.js",
+      "solid": "./dist/source/separator/index.jsx",
       "import": "./dist/separator/index.js"
     },
     "./slider": {
       "types": "./dist/source/slider/index.d.ts",
-      "solid": "./dist/source/slider/index.js",
+      "solid": "./dist/source/slider/index.jsx",
       "import": "./dist/slider/index.js"
     },
     "./switch": {
       "types": "./dist/source/switch/index.d.ts",
-      "solid": "./dist/source/switch/index.js",
+      "solid": "./dist/source/switch/index.jsx",
       "import": "./dist/switch/index.js"
     },
     "./theme/cookie": {
       "types": "./dist/source/theme/cookie/index.d.ts",
-      "solid": "./dist/source/theme/cookie/index.js",
+      "solid": "./dist/source/theme/cookie/index.jsx",
       "import": "./dist/theme/cookie/index.js"
     },
     "./theme/local-storage": {
       "types": "./dist/source/theme/local-storage/index.d.ts",
-      "solid": "./dist/source/theme/local-storage/index.js",
+      "solid": "./dist/source/theme/local-storage/index.jsx",
       "import": "./dist/theme/local-storage/index.js"
     },
     "./tabs": {
       "types": "./dist/source/tabs/index.d.ts",
-      "solid": "./dist/source/tabs/index.js",
+      "solid": "./dist/source/tabs/index.jsx",
       "import": "./dist/tabs/index.js"
     },
     "./toast": {
       "types": "./dist/source/toast/index.d.ts",
-      "solid": "./dist/source/toast/index.js",
+      "solid": "./dist/source/toast/index.jsx",
       "import": "./dist/toast/index.js"
     },
     "./toggle": {
       "types": "./dist/source/toggle/index.d.ts",
-      "solid": "./dist/source/toggle/index.js",
+      "solid": "./dist/source/toggle/index.jsx",
       "import": "./dist/toggle/index.js"
     },
     "./toggle-group": {
       "types": "./dist/source/toggle-group/index.d.ts",
-      "solid": "./dist/source/toggle-group/index.js",
+      "solid": "./dist/source/toggle-group/index.jsx",
       "import": "./dist/toggle-group/index.js"
     },
     "./toolbar": {
       "types": "./dist/source/toolbar/index.d.ts",
-      "solid": "./dist/source/toolbar/index.js",
+      "solid": "./dist/source/toolbar/index.jsx",
       "import": "./dist/toolbar/index.js"
     },
     "./tooltip": {
       "types": "./dist/source/tooltip/index.d.ts",
-      "solid": "./dist/source/tooltip/index.js",
+      "solid": "./dist/source/tooltip/index.jsx",
       "import": "./dist/tooltip/index.js"
     },
     "./package.json": "./package.json"
@@ -234,7 +234,7 @@
     "#test-utils": "./test/index.ts"
   },
   "scripts": {
-    "build": "vite build && tsc -p tsconfig.build.json",
+    "build": "vite build && tsc -p tsconfig.build.json && node solidEntries.ts",
     "check:package": "pnpm build && publint --strict && attw --pack . --profile esm-only",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
     "lint": "oxlint",
