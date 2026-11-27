@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.29
+
+### Patch Changes
+
+- 0d42751: The styling skill's shadcn and Bootstrap looks have a recipe for list popups (Menu, Context Menu, Menubar, Navigation Menu, Select, Combobox, Autocomplete and Multi Combobox) and worked examples of Menu and Select.
+
 ## 0.1.28
 
 ### Patch Changes
