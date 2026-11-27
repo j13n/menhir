@@ -9,10 +9,10 @@ Menhir's components are unstyled: each part exposes its state as data attributes
 
 ## Looks
 
-| Look                                 | Styling         | Worked examples               |
-| ------------------------------------ | --------------- | ----------------------------- |
-| [shadcn](looks/shadcn/LOOK.md)       | Tailwind CSS v4 | Switch, Dialog, Tabs, Popover |
-| [Bootstrap](looks/bootstrap/LOOK.md) | CSS modules     | Switch, Dialog, Tabs, Popover |
+| Look                                 | Styling         | Worked examples                             |
+| ------------------------------------ | --------------- | ------------------------------------------- |
+| [shadcn](looks/shadcn/LOOK.md)       | Tailwind CSS v4 | Switch, Dialog, Tabs, Popover, Menu, Select |
+| [Bootstrap](looks/bootstrap/LOOK.md) | CSS modules     | Switch, Dialog, Tabs, Popover, Menu, Select |
 
 Each look's `LOOK.md` has its setup, what each token is for, its recipes, and the list of worked examples. When the app is styled with the other technology, translate the look into it, token for token: a class into the declarations it stands for, or a declaration into its class. The Bootstrap look's setup gives its tokens their Tailwind names.
 
@@ -20,7 +20,7 @@ Each look's `LOOK.md` has its setup, what each token is for, its recipes, and th
 
 1. **Choose the look.** The one the user names, or the one the app already has: look for `data-look` and a look's `tokens.css` in the app. For a look the user describes or shows (a screenshot, a site, an existing design system), write its tokens first: copy the closest look's `tokens.css`, keep the token names, change the values. That look's recipes and worked examples then carry over. Done when the app has one tokens file for the look.
 2. **Set up the look**, once per app, as its `LOOK.md` says. A look's tokens apply only inside its `data-look` attribute, and switch between light and dark with the CSS `color-scheme`, which the app sets from Menhir's color-scheme utility (`menhir/color-scheme/local-storage` or `/cookie`) or from the system. Done when the tokens apply where the components render, in light and dark.
-3. **Style each component.** Read its parts and data attributes first, from its Markdown page, `https://menhir-ui.com/docs/components/<name>.md` (all of them are listed in `https://menhir-ui.com/llms.txt`); the types in `node_modules/menhir/dist/source/<name>/` are the installed version's. When the look has a worked example of it, start from that and change only the content. Otherwise build it from the look's recipes, taking their classes or declarations as written, and its nearest worked example: a control from Switch, a popup from Popover or Dialog, a composite from Tabs. What Menhir has no component for because it is only a styled element, such as a badge (a `<span>`), is in the look's recipes: do not look for a component. Where no recipe covers a part, say so in your reply, with the classes or declarations you chose. Done when every part the app renders has its styles, every colour and radius comes from a token, and sizes, spacing and shadows come from the look's recipes.
+3. **Style each component.** Read its parts and data attributes first, from its Markdown page, `https://menhir-ui.com/docs/components/<name>.md` (all of them are listed in `https://menhir-ui.com/llms.txt`); the types in `node_modules/menhir/dist/source/<name>/` are the installed version's. When the look has a worked example of it, start from that and change only the content. Otherwise build it from the look's recipes, taking their classes or declarations as written, and its nearest worked example: a control from Switch, a popup from Popover or Dialog, a composite from Tabs, a list popup (Context Menu, Menubar, Navigation Menu, Combobox, Autocomplete, Multi Combobox) from Menu or Select. What Menhir has no component for because it is only a styled element, such as a badge (a `<span>`), is in the look's recipes: do not look for a component. Where no recipe covers a part, say so in your reply, with the classes or declarations you chose. Done when every part the app renders has its styles, every colour and radius comes from a token, and sizes, spacing and shadows come from the look's recipes.
 4. **Check it in the browser.** For each component: its states (on and off, selected, disabled), open and close animations, keyboard focus on every interactive part, text contrast against its background, and the same again in the dark color scheme. Done when each one looks like the look's worked examples in both color schemes.
 
 ## Menhir's contract

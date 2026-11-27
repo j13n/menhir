@@ -25,11 +25,56 @@ const renders: Record<string, (rendered: Rendered) => void | Promise<void>> = {
     // Closed, so it is out of the accessibility tree.
     expect(container.querySelector("dialog")).toHaveAttribute("data-closed");
   },
+  menu: ({ getByRole }) => {
+    const trigger = getByRole("button", { name: "Edit" });
+    expect(trigger).toHaveAttribute("aria-haspopup", "menu");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    // Closed, so the menu and its items are out of the accessibility tree.
+    const menu = document.getElementById(
+      trigger.getAttribute("aria-controls")!,
+    )!;
+    expect(menu).toHaveAttribute("role", "menu");
+    expect(
+      [...menu.querySelectorAll(":scope > [role^=menuitem]")].map(
+        (item) => item.textContent,
+      ),
+    ).toEqual(["Cut", "Copy", "Paste", "Word wrap", "Share"]);
+    expect(
+      getByRole("menuitem", { name: "Paste", hidden: true }),
+    ).toHaveAttribute("data-disabled");
+    expect(
+      getByRole("menuitemcheckbox", { name: "Word wrap", hidden: true }),
+    ).toHaveAttribute("data-checked");
+    expect(
+      getByRole("menuitemradio", { name: "Comfortable", hidden: true }),
+    ).toHaveAttribute("data-checked");
+  },
   popover: ({ getByRole }) => {
     expect(getByRole("button", { name: "Notifications" })).toHaveAttribute(
       "aria-expanded",
       "false",
     );
+  },
+  select: ({ getByRole }) => {
+    const trigger = getByRole("combobox", { name: "Fruit" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveTextContent("Apple");
+    // Closed, so the list and its options are out of the accessibility tree.
+    const list = document.getElementById(
+      trigger.getAttribute("aria-controls")!,
+    )!;
+    expect(list).toHaveAttribute("role", "listbox");
+    expect(
+      [...list.querySelectorAll("[role=option]")].map(
+        (option) => option.textContent,
+      ),
+    ).toEqual(["Apple", "Banana", "Cherry", "Lemon", "Orange"]);
+    expect(
+      getByRole("option", { name: "Apple", hidden: true }),
+    ).toHaveAttribute("data-selected");
+    expect(
+      getByRole("option", { name: "Cherry", hidden: true }),
+    ).toHaveAttribute("data-disabled");
   },
   switch: async ({ getByRole }) => {
     const control = getByRole("switch", { name: "Wi-Fi" });

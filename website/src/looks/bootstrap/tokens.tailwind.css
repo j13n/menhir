@@ -25,6 +25,8 @@
   --color-emphasis-color: var(--bs-emphasis-color);
   --color-secondary-color: var(--bs-secondary-color);
   --color-secondary-bg: var(--bs-secondary-bg);
+  --color-tertiary-color: var(--bs-tertiary-color);
+  --color-tertiary-bg: var(--bs-tertiary-bg);
   --color-primary-text-emphasis: var(--bs-primary-text-emphasis);
   --color-primary-bg-subtle: var(--bs-primary-bg-subtle);
   --color-link-color: var(--bs-link-color);
