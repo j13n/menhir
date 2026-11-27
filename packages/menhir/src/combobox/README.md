@@ -443,7 +443,7 @@ announcement of the active item and of the Status is unverified. A Status
 inside the Popup gets its text in the update that shows the Popup, which
 some screen readers do not announce: for the count, the README's advice
 is a visually hidden Status beside the input, always in the document; no
-example shows one yet.
+example shows one yet. #245 asks a person to try it.
 
 ## Size
 

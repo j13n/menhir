@@ -308,7 +308,7 @@ Tried in Chromium (Playwright's headless build, through the test suite),
 where Testing Library's accessible description of each control has the
 Description and, while it shows, the Error. No screen reader has been tried
 yet: the label, the description and the error of a control are still to be
-heard in VoiceOver, NVDA and JAWS (the definition of done in #141).
+heard in VoiceOver, NVDA and JAWS (the definition of done in #141; #247).
 
 ## Size
 

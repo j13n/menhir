@@ -263,7 +263,7 @@ submission is blocked; the messages are quoted in Decisions. The rest of
 the group has not been tried in Firefox or WebKit. No screen reader has
 been tried yet: the group's name from its legend, the Parent's "mixed"
 state and its cycle, and the error in the group's description are still to
-be heard in VoiceOver, NVDA and JAWS.
+be heard in VoiceOver, NVDA and JAWS (#250).
 
 ## Size
 

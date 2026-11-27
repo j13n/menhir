@@ -262,7 +262,8 @@ timers; real pointer movement from the Chrome DevTools Protocol
 
 Tried on 2026-11-22 in Chromium (Playwright's headless build, through the
 test suite). The `manual` popover's behaviour was run in Chromium, Firefox
-and WebKit in #94. No screen reader has been tried yet.
+and WebKit in #94. No screen reader has been tried yet, nor a touch screen
+(#241).
 
 ## Size
 

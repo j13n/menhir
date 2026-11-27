@@ -256,7 +256,7 @@ Autocomplete.
 
 Tried in Chromium (Playwright's headless build, through the test suite). No
 screen reader has been tried yet, so the announcement of the active item and
-of the Status is unverified, as for Combobox.
+of the Status is unverified, as for Combobox (#246).
 
 ## Size
 

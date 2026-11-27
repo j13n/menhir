@@ -264,7 +264,7 @@ Menu's own left-out cases apply too (`src/menu/README.md`, "Left out").
 ## Browsers and screen readers
 
 Tried in Chromium (Playwright's headless build, through the test suite).
-No screen reader has been tried yet.
+No screen reader has been tried yet (#243).
 
 ## Size
 

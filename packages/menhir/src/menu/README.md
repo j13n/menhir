@@ -320,7 +320,7 @@ input. In jsdom an opened popover gets `:popover-open` from a stub
 ## Browsers and screen readers
 
 Tried in Chromium (Playwright's headless build, through the test suite).
-No screen reader has been tried yet.
+No screen reader has been tried yet (#242).
 
 ## Size
 

@@ -329,7 +329,7 @@ no layout and no real input. In jsdom an opened popover gets
 ## Browsers and screen readers
 
 Tried in Chromium (Playwright's headless build, through the test suite).
-No screen reader has been tried yet, nor a browser's own autofill.
+No screen reader has been tried yet, nor a browser's own autofill (#244).
 
 ## Size
 

@@ -256,7 +256,8 @@ stub (`test/dialog/stubDialog.ts`).
 
 Tried on 2026-11-22 in Chromium (Playwright's headless build, through the
 test suite). The behaviour the browser gives (#94) was run in Chromium,
-Firefox and WebKit in that spike. No screen reader has been tried yet.
+Firefox and WebKit in that spike. No screen reader has been tried yet
+(#119).
 
 ## Size
 
