@@ -1,0 +1,223 @@
+/* What only Kobalte's pages need, on top of ../../../shared/page.css. */
+
+/* The checkbox, radio and switch inputs are hidden by the library and sit
+   before their control: show their focus on the control. */
+input:focus-visible + .box,
+input:focus-visible + .switch,
+input:focus-visible + label {
+  outline: 3px solid #05f;
+  outline-offset: 2px;
+}
+
+/* The lists inside a popup are <ul>s. */
+.popup ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* A listbox as wide as the control it belongs to. */
+.same-width {
+  min-width: var(--kb-popper-anchor-width);
+}
+
+/* Progress and meter: the library gives the fill's width as a variable. */
+.fill {
+  width: var(--kb-progress-fill-width, var(--kb-meter-fill-width));
+}
+.fill[data-indeterminate] {
+  width: 40%;
+}
+
+/* Slider: the thumbs sit inside the track, which the library positions
+   along one axis only. */
+.slider .thumb {
+  top: -0.35rem;
+}
+.slider.vertical {
+  flex-direction: column;
+  width: 1.5rem;
+  height: 12rem;
+}
+.slider.vertical .track {
+  width: 0.5rem;
+  height: auto;
+}
+.slider.vertical .fill {
+  width: 100%;
+  height: auto;
+}
+.slider.vertical .thumb {
+  top: auto;
+  left: -0.35rem;
+}
+
+/* Tabs */
+.tabs-list {
+  display: flex;
+  gap: 0.25rem;
+}
+.tabs[data-orientation="vertical"] {
+  display: flex;
+  gap: 0.5rem;
+}
+.tabs[data-orientation="vertical"] .tabs-list {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Combobox chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid #888;
+  border-radius: 4px;
+}
+
+/* Navigation menu: every menu's content is moved into one viewport, which
+   takes the size of the open one. */
+.nav,
+.crumbs,
+.files,
+.pagination ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* The viewport is centred under the whole list: keep the list as wide as
+   its triggers. */
+.nav {
+  display: inline-flex;
+}
+.nav-viewport {
+  box-sizing: content-box;
+  width: var(--kb-navigation-menu-viewport-width);
+  height: var(--kb-navigation-menu-viewport-height);
+}
+.nav-content {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  min-width: 10rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nav-content .item {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* A listbox on its own does not float. */
+.listbox {
+  width: 16rem;
+  margin: 0;
+  list-style: none;
+  box-shadow: none;
+}
+
+.badge {
+  padding: 0 0.4rem;
+  border-radius: 1rem;
+  background: #222;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.pagination ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+}
+.toggle[aria-current="page"] {
+  background: #222;
+  color: #fff;
+}
+
+.rating-item {
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: default;
+}
+
+.segments {
+  position: relative;
+  display: inline-flex;
+  border: 1px solid #888;
+  border-radius: 6px;
+}
+.segment label {
+  display: block;
+  padding: 0.3rem 0.7rem;
+}
+.segment-indicator {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #05f;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.skeleton[data-visible] {
+  background: #ccc;
+  color: transparent;
+  width: 16rem;
+}
+.skeleton[data-visible] * {
+  visibility: hidden;
+}
+
+.time-input {
+  display: inline-flex;
+  gap: 0.1rem;
+  padding: 0.3rem;
+  border: 1px solid #888;
+}
+.time-segment {
+  padding: 0 0.15rem;
+}
+.time-segment:focus {
+  background: #05f;
+  color: #fff;
+  outline: none;
+}
+
+/* Colour components have no size of their own. */
+.color-area {
+  position: relative;
+  width: 12rem;
+  height: 12rem;
+}
+.color-track {
+  position: relative;
+  width: 16rem;
+  height: 1.5rem;
+  border-radius: 0.3rem;
+}
+.color-track .color-thumb {
+  top: 0.15rem;
+}
+.color-wheel {
+  position: relative;
+  width: 12rem;
+  height: 12rem;
+}
+.color-thumb {
+  display: block;
+  width: 1.2rem;
+  height: 1.2rem;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #000;
+  background: var(--kb-color-current);
+}
+.color-swatch {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #888;
+  border-radius: 4px;
+}

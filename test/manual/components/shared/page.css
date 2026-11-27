@@ -1,0 +1,353 @@
+/* Enough style to see and use unstyled components: which part is which,
+   what has focus, what is highlighted, pressed, checked or disabled. The
+   class names are the same in every library's page. */
+body {
+  font:
+    16px/1.5 system-ui,
+    sans-serif;
+  margin: 0;
+  padding: 1rem;
+  color: #111;
+  background: #fff;
+}
+#shell {
+  font-size: 13px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+#shell ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.9rem;
+  list-style: none;
+  margin: 0.3rem 0;
+  padding: 0;
+}
+#shell nav:first-child {
+  font-size: 15px;
+  font-weight: 600;
+}
+#shell [aria-current] {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 2px solid #111;
+}
+h1 {
+  font-size: 1.4rem;
+}
+h2 {
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+#root {
+  max-width: 40rem;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+button {
+  padding: 0.3rem 0.7rem;
+}
+input,
+textarea {
+  padding: 0.3rem;
+  box-sizing: border-box;
+}
+:focus-visible {
+  outline: 3px solid #05f;
+  outline-offset: 2px;
+}
+[data-disabled],
+[aria-disabled="true"],
+:disabled {
+  opacity: 0.5;
+}
+
+/* Layout */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.error {
+  color: #b00020;
+}
+.hint {
+  color: #555;
+  font-size: 0.9em;
+}
+
+/* Modal: a backdrop and a centred box */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.35);
+  z-index: 50;
+}
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 26rem);
+  max-height: 85vh;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #888;
+  border-radius: 6px;
+  z-index: 51;
+}
+
+/* Anything that floats next to an anchor: a menu, a listbox, a popover, a
+   tooltip, a preview card. The library positions it. */
+.popup {
+  box-sizing: border-box;
+  min-width: 8rem;
+  max-height: 20rem;
+  overflow: auto;
+  padding: 0.3rem;
+  background: #fff;
+  border: 1px solid #888;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.2);
+  z-index: 60;
+}
+.popup.padded {
+  padding: 0.8rem;
+  max-width: 20rem;
+}
+.tooltip {
+  padding: 0.2rem 0.5rem;
+  background: #222;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  z-index: 70;
+}
+
+/* A row in a menu, a listbox or a tab list */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  cursor: default;
+  user-select: none;
+}
+.item[data-highlighted],
+.item[data-active],
+.item:focus {
+  background: #05f;
+  color: #fff;
+  outline: none;
+}
+.item[data-selected]:not([data-highlighted]),
+.item[aria-selected="true"]:not([data-highlighted]) {
+  font-weight: 600;
+}
+.group-label {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+.separator {
+  background: #999;
+  border: 0;
+  flex: none;
+}
+.separator:not([data-orientation="vertical"]):not(
+    [aria-orientation="vertical"]
+  ) {
+  height: 1px;
+  margin: 0.3rem 0;
+  align-self: stretch;
+}
+.separator[data-orientation="vertical"],
+.separator[aria-orientation="vertical"] {
+  width: 1px;
+  align-self: stretch;
+  margin: 0 0.3rem;
+}
+
+/* A button that stays down, a tab, a toggle */
+.toggle[data-pressed],
+.toggle[data-state="on"],
+.toggle[aria-pressed="true"],
+.toggle[aria-checked="true"],
+.tab[data-selected],
+.tab[data-active],
+.tab[data-state="active"],
+.tab[aria-selected="true"] {
+  background: #222;
+  color: #fff;
+}
+.panel {
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+}
+
+/* The square of a checkbox, the circle of a radio, with its indicator
+   inside */
+.box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 0;
+  border: 2px solid #333;
+  border-radius: 3px;
+  background: #fff;
+  flex: none;
+  box-sizing: border-box;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+.box.round {
+  border-radius: 50%;
+}
+.dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #111;
+}
+
+/* Switch */
+.switch {
+  display: inline-flex;
+  width: 2.6rem;
+  height: 1.5rem;
+  padding: 2px;
+  border: 0;
+  border-radius: 1rem;
+  background: #999;
+  box-sizing: border-box;
+  flex: none;
+}
+.switch[data-checked],
+.switch[data-state="checked"] {
+  background: #05f;
+}
+.switch-thumb {
+  width: calc(1.5rem - 4px);
+  height: calc(1.5rem - 4px);
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.1s;
+}
+.switch-thumb[data-checked],
+.switch-thumb[data-state="checked"] {
+  transform: translateX(1.1rem);
+}
+
+/* Slider, progress, meter: a track, the filled part, a thumb */
+.slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 16rem;
+  height: 1.5rem;
+  touch-action: none;
+  user-select: none;
+}
+.track {
+  position: relative;
+  width: 16rem;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background: #ccc;
+  overflow: hidden;
+}
+.slider .track {
+  flex: 1;
+  overflow: visible;
+}
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #05f;
+}
+.slider .fill {
+  position: absolute;
+}
+.thumb {
+  display: block;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #05f;
+  box-sizing: border-box;
+}
+
+/* Scroll area, avatar */
+.scroll {
+  width: 16rem;
+  height: 10rem;
+  border: 1px solid #888;
+}
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ddd;
+  font-weight: 600;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Context menu target, toast region */
+.target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16rem;
+  height: 6rem;
+  border: 2px dashed #888;
+}
+.toasts {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 20rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 80;
+}
+.toast {
+  padding: 0.7rem;
+  background: #fff;
+  border: 1px solid #888;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.2);
+}

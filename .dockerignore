@@ -1,0 +1,5 @@
+# For test/manual/components/Dockerfile, the only image built from here: it
+# installs its own dependencies.
+**/node_modules
+**/dist
+.git

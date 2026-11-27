@@ -1,0 +1,19 @@
+{
+  "name": "@menhir/manual-components-corvu",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "corvu": "~0.7.2",
+    "solid-js": "^1.9.20"
+  },
+  "devDependencies": {
+    "vite-plugin-solid": "^2.11.17",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}
