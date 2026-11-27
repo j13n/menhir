@@ -46,6 +46,12 @@ The package ships a skill for coding agents, `packages/menhir/skills/menhir-styl
 - `website/src/looks/<look>/`: `tokens.css`, `LOOK.md` (setup, tokens, recipes) and `LICENSE`. The look is listed in `website/src/looks/index.ts` and in the table in the skill's `SKILL.md`, and its tokens are imported in `website/src/App.css`.
 - `website/src/examples/<component>/<look>/`: a worked example, added to the component's example in `index.ts` so that its page offers the look. It uses only the look's tokens and the recipes in `LOOK.md`; a class the recipes do not have goes into `LOOK.md` first, and so does a colour that is not a token, with its reason.
 
+A look is written in one technology. One in plain CSS, such as the Bootstrap look, differs in three ways:
+
+- Each worked example is a `.tsx` and a `<component>.module.css` beside it. `tokens.css` is the look's only global stylesheet: nothing else has a class that is not a module's.
+- What several examples share, such as buttons, is a `*.module.css` in the look's folder, which the examples import and the skill gets a copy of.
+- `tokens.tailwind.css`, in the look's folder, gives each token a Tailwind name, as a `var()` of the token, for an agent that translates the look in an app styled with Tailwind. A token Tailwind has no theme key for is listed in `withoutTailwindName` in `website/styling-skill.test.ts`, and `LOOK.md` gives its class.
+
 The skill's `looks/` folder is generated from these. After changing any of them, run `pnpm --filter website skill`; `website/styling-skill.test.ts` fails while the committed copies differ.
 
 ## Definition of done

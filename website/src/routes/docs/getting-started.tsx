@@ -80,7 +80,7 @@ export default function GettingStarted() {
           </li>
           <li>
             <code>menhir-styling</code> styles them in one consistent look, such
-            as the shadcn look.
+            as the shadcn look or the Bootstrap look.
           </li>
         </ul>
         <p>

@@ -102,12 +102,12 @@ export function llmsTxt(docs: ComponentDoc[]): string {
     "## Skills",
     [
       `- \`${wiringSkill}\`: what every component shares when you wire it into an app: entry points and parts, controlled and uncontrolled state, forms and Field. It comes with the package, so it matches the installed version.`,
-      `- \`${stylingSkill}\`: styling components in one consistent look, such as the shadcn look.`,
+      `- \`${stylingSkill}\`: styling components in one consistent look, such as the shadcn look or the Bootstrap look.`,
     ].join("\n"),
     "## Docs",
     [
       "- [Getting started](/docs/getting-started): installing Menhir, using a first component, and giving a coding agent the skills.",
-      "- [Styling](/docs/styling): styling a component through its data attributes, and the styling skill in `node_modules/menhir/skills/menhir-styling`, which styles components in one look, such as the shadcn look.",
+      "- [Styling](/docs/styling): styling a component through its data attributes, and the styling skill in `node_modules/menhir/skills/menhir-styling`, which styles components in one look, such as the shadcn look or the Bootstrap look.",
       "- [Solid 2.0](/docs/solid-2): how the components follow Solid 2.0's idioms: props, the `render` prop, controlled state, async data under `<Loading>`, server rendering and popups in the top layer.",
       "- [Forms without a library](/docs/forms): building forms with Field and Form and no form-state library: a store with nested and array values, a schema run on submit with `issuesToErrors`, errors once touched, a pending submit button, reset, and the uncontrolled form with the router's form action.",
       '- [Badge](/docs/badge): a recipe, not a component: a badge is a styled `<span>`, and when it needs more: `role="status"` for a count that changes and should be announced, a count on an icon button as part of the button\'s name, and text for a meaning that colour carries.',

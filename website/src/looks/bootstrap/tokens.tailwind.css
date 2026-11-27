@@ -1,0 +1,54 @@
+/* The Bootstrap look's tokens under Tailwind CSS v4 names, for an app that is
+   styled with Tailwind: import this file after tokens.css. Each name is the
+   token's own without its --bs- prefix, so that an agent translating the
+   look's CSS into classes has one class for each token:
+   var(--bs-secondary-bg) is bg-secondary-bg, var(--bs-border-radius-lg) is
+   rounded-lg, var(--spacer-3) is p-spacer-3. No value is set here: each is
+   a var() of a token in tokens.css.
+
+   Three tokens have no name here, since Tailwind has no theme key for a
+   border's or a ring's width, and its font weights share the font-*
+   classes with its font families: --bs-border-width is
+   border-(length:--bs-border-width), --bs-focus-ring-width is
+   ring-(length:--bs-focus-ring-width), and --bs-body-font-weight is
+   font-normal. */
+
+@theme inline {
+  --color-black: var(--bs-black);
+  --color-white: var(--bs-white);
+  --color-primary: var(--bs-primary);
+  --color-secondary: var(--bs-secondary);
+  --color-success: var(--bs-success);
+  --color-danger: var(--bs-danger);
+  --color-body-color: var(--bs-body-color);
+  --color-body-bg: var(--bs-body-bg);
+  --color-emphasis-color: var(--bs-emphasis-color);
+  --color-secondary-color: var(--bs-secondary-color);
+  --color-secondary-bg: var(--bs-secondary-bg);
+  --color-primary-text-emphasis: var(--bs-primary-text-emphasis);
+  --color-primary-bg-subtle: var(--bs-primary-bg-subtle);
+  --color-link-color: var(--bs-link-color);
+  --color-link-hover-color: var(--bs-link-hover-color);
+  --color-border-color: var(--bs-border-color);
+  --color-border-color-translucent: var(--bs-border-color-translucent);
+  --color-form-invalid-color: var(--bs-form-invalid-color);
+  --color-form-invalid-border-color: var(--bs-form-invalid-border-color);
+  --color-focus-ring-color: var(--bs-focus-ring-color);
+
+  --font-body: var(--bs-body-font-family);
+  --text-body: var(--bs-body-font-size);
+  --leading-body: var(--bs-body-line-height);
+
+  --radius-md: var(--bs-border-radius);
+  --radius-sm: var(--bs-border-radius-sm);
+  --radius-lg: var(--bs-border-radius-lg);
+  --radius-pill: var(--bs-border-radius-pill);
+
+  --shadow-md: var(--bs-box-shadow);
+
+  --spacing-spacer-1: var(--spacer-1);
+  --spacing-spacer-2: var(--spacer-2);
+  --spacing-spacer-3: var(--spacer-3);
+  --spacing-spacer-4: var(--spacer-4);
+  --spacing-spacer-5: var(--spacer-5);
+}

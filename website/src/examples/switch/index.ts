@@ -1,5 +1,8 @@
 import type { ComponentExampleProps } from "../../components/ComponentExample";
 
+import BootstrapExample from "./bootstrap/SwitchExample";
+import bootstrapExampleCode from "./bootstrap/SwitchExample.tsx?highlight";
+import bootstrapCssCode from "./bootstrap/switch.module.css?highlight";
 import CssExample from "./css/SwitchExample";
 import cssExampleCode from "./css/SwitchExample.tsx?highlight";
 import cssCode from "./css/switch.css?highlight";
@@ -9,7 +12,7 @@ import shadcnExampleCode from "./shadcn/SwitchExample.tsx?highlight";
 import TailwindExample from "./tailwind/SwitchExample";
 import tailwindExampleCode from "./tailwind/SwitchExample.tsx?highlight";
 
-/** The Switch page's example, with plain CSS and with Tailwind CSS, and in the shadcn look. */
+/** The Switch page's example, with plain CSS and with Tailwind CSS, and in the shadcn and Bootstrap looks. */
 export const switchExample: ComponentExampleProps = {
   css: {
     render: CssExample,
@@ -23,6 +26,13 @@ export const switchExample: ComponentExampleProps = {
     files: [{ name: "SwitchExample.tsx", code: tailwindExampleCode }],
   },
   looks: {
+    bootstrap: {
+      render: BootstrapExample,
+      files: [
+        { name: "SwitchExample.tsx", code: bootstrapExampleCode },
+        { name: "switch.module.css", code: bootstrapCssCode },
+      ],
+    },
     shadcn: {
       render: ShadcnExample,
       files: [{ name: "SwitchExample.tsx", code: shadcnExampleCode }],

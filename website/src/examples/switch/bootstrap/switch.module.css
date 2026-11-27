@@ -1,0 +1,74 @@
+/* Bootstrap's .form-switch: a track two ems wide with a round thumb, sized
+   by the label's text. Bootstrap draws the thumb as a background image; here
+   it is the Thumb, in the same colours. */
+.field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  cursor: pointer;
+}
+
+.track {
+  --inner: calc(1em - 2 * var(--bs-border-width));
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  box-sizing: border-box;
+  width: 2em;
+  height: 1em;
+  padding: 0 calc(var(--inner) * 0.125);
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: 2em;
+  background-color: var(--bs-body-bg);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+.track[data-checked] {
+  border-color: var(--bs-primary);
+  background-color: var(--bs-primary);
+}
+
+.track:focus-visible {
+  border-color: color-mix(in srgb, var(--bs-white) 50%, var(--bs-primary));
+  outline: 0;
+  box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
+}
+
+.track[data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.thumb {
+  display: block;
+  width: calc(var(--inner) * 0.75);
+  height: calc(var(--inner) * 0.75);
+  border-radius: 50%;
+  background-color: color-mix(
+    in srgb,
+    var(--bs-emphasis-color) 25%,
+    transparent
+  );
+  transition: translate 0.15s ease-in-out;
+}
+
+.thumb[data-checked] {
+  background-color: var(--bs-white);
+  translate: 1em;
+}
+
+.track:focus-visible .thumb[data-unchecked] {
+  background-color: color-mix(in srgb, var(--bs-white) 50%, var(--bs-primary));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .thumb {
+    transition: none;
+  }
+}

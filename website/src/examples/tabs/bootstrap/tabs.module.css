@@ -1,0 +1,69 @@
+/* Bootstrap's .nav-tabs: tabs on a line, the selected one joined to its
+   panel by a border on three sides. A Panel that is not selected is hidden
+   by its hidden attribute. */
+.tabs {
+  width: 20rem;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+}
+
+.tab {
+  margin-bottom: calc(-1 * var(--bs-border-width));
+  padding: var(--spacer-2) var(--spacer-3);
+  border: var(--bs-border-width) solid transparent;
+  border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
+  background: none;
+  color: var(--bs-link-color);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+}
+
+.tab:hover,
+.tab:focus-visible {
+  /* Above its neighbours, so that the whole border shows. */
+  isolation: isolate;
+  border-color: var(--bs-secondary-bg) var(--bs-secondary-bg)
+    var(--bs-border-color);
+  color: var(--bs-link-hover-color);
+}
+
+.tab:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
+}
+
+.tab[data-selected] {
+  border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-body-bg);
+  background-color: var(--bs-body-bg);
+  color: var(--bs-emphasis-color);
+}
+
+.tab[data-disabled] {
+  color: var(--bs-secondary-color);
+  cursor: default;
+  pointer-events: none;
+}
+
+.panel {
+  padding: var(--spacer-3);
+  border-radius: var(--bs-border-radius);
+}
+
+.panel:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}

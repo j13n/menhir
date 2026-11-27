@@ -25,3 +25,7 @@ SOFTWARE.
 The shadcn look of the styling skill, skills/menhir-styling/looks/shadcn/,
 reproduces class strings and token values from shadcn/ui, under the licence in
 that folder's LICENSE file.
+
+The Bootstrap look of the styling skill, skills/menhir-styling/looks/bootstrap/,
+reproduces declarations and token values from Bootstrap, under the licence in
+that folder's LICENSE file.
