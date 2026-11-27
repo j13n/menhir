@@ -1,5 +1,11 @@
 # menhir
 
+## 0.1.27
+
+### Patch Changes
+
+- 2b2d03a: The styling skill's shadcn look has a badge recipe, with its variants as classes: a badge is a styled `<span>`, not a component.
+
 ## 0.1.26
 
 ### Patch Changes
