@@ -28,7 +28,7 @@ import type { EditProps } from "./Edit.tsx";
 import { Share } from "./Share.tsx";
 import type { ShareProps } from "./Share.tsx";
 
-/** The parts both menus take from Menu. */
+/** The parts every kind of menu takes from Menu. */
 export type MenuParts = Pick<
   typeof Menu,
   | "Popup"
@@ -48,9 +48,9 @@ export interface MenuKind {
   name: string;
   /** The parts, from this menu's namespace. */
   parts: MenuParts;
-  /** `test/menu/Edit.tsx`, or its Context Menu version. */
+  /** `test/menu/Edit.tsx`, or this menu's version of it. */
   Edit(props: EditProps): JSX.Element;
-  /** `test/menu/Share.tsx`, or its Context Menu version. */
+  /** `test/menu/Share.tsx`, or this menu's version of it. */
   Share(props: ShareProps): JSX.Element;
   /** What opens the Root's menu, where focus returns once it closes. */
   trigger(): HTMLElement;

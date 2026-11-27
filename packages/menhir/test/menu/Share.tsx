@@ -1,7 +1,8 @@
 // A test menu with submenus two levels deep: Copy, "Share ▸" (Email,
 // Messages, "More ▸" (Print, Save)), Paste. Items are 30 px tall and the
 // Popups 120 px wide, so a pointer's path can be computed. `shareWith`
-// builds it from another menu's Root, Trigger and Popup, as Context Menu's.
+// builds it from another menu's Root, Trigger and Popup, as Context Menu's
+// and Menubar's.
 import type { JSX } from "@solidjs/web";
 
 import { Menu } from "../../src/menu/index.ts";
