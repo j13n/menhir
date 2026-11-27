@@ -1,0 +1,111 @@
+/* What only corvu's pages need. */
+
+/* Disclosure, accordion: which trigger is open */
+[data-corvu-disclosure-trigger][data-expanded],
+[data-corvu-accordion-trigger][data-expanded] {
+  background: #222;
+  color: #fff;
+}
+
+/* OTP field: the slots the page draws under the transparent input */
+.otp-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.6rem;
+  border: 1px solid #888;
+  border-radius: 4px;
+  font-size: 1.2rem;
+}
+.otp-slot[data-active] {
+  outline: 3px solid #05f;
+  outline-offset: 2px;
+}
+.otp-caret {
+  position: absolute;
+  width: 1px;
+  height: 1.4rem;
+  background: #111;
+}
+
+/* Drawer: a sheet at the bottom edge. The library sets the transform; the
+   transition is what it waits for before it removes the sheet. */
+.drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(60vh, 24rem);
+  box-sizing: border-box;
+  padding: 1rem;
+  background: #fff;
+  border-top: 1px solid #888;
+  border-radius: 6px 6px 0 0;
+  z-index: 51;
+}
+.drawer[data-transitioning] {
+  transition: transform 0.3s ease;
+}
+
+/* Resizable: the root is a flex box of panels and handles */
+.resizable {
+  width: 100%;
+  height: 12rem;
+  border: 1px solid #888;
+}
+.resizable-panel {
+  box-sizing: border-box;
+  padding: 0.5rem;
+  overflow: auto;
+}
+.resizable-handle {
+  padding: 0;
+  border: 0;
+  background: #999;
+}
+.resizable-handle[data-orientation="horizontal"] {
+  width: 0.5rem;
+}
+.resizable-handle[data-orientation="vertical"] {
+  height: 0.5rem;
+}
+.resizable-handle[data-active],
+.resizable-handle[data-dragging] {
+  background: #05f;
+}
+
+/* Calendar: a grid of days */
+.calendar h2 {
+  margin: 0;
+  min-width: 10rem;
+  text-align: center;
+}
+.calendar table {
+  margin-top: 0.5rem;
+  border-collapse: collapse;
+}
+.calendar th {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #555;
+}
+.calendar td {
+  padding: 1px;
+}
+.calendar td button {
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+}
+.calendar td button[data-today] {
+  border-color: #888;
+}
+.calendar td button[data-selected] {
+  background: #05f;
+  color: #fff;
+}

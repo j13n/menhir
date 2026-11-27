@@ -1,0 +1,144 @@
+/* What only Radix needs: its `data-state` values, and the parts that are
+   unusable without layout (scrollbars, viewports, orientation). */
+
+/* Checkbox: the indicator has no content of its own. Shapes, not
+   characters, so nothing is added to what a screen reader reads. */
+.check[data-state="checked"] {
+  width: 0.6rem;
+  height: 0.6rem;
+  background: #111;
+}
+.check[data-state="indeterminate"] {
+  width: 0.6rem;
+  height: 2px;
+  background: #111;
+}
+/* The indicator of a checked menu item or select option. */
+.mark {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+/* An open submenu's trigger. */
+.item[data-state="open"]:not([data-highlighted]) {
+  background: #ddd;
+}
+
+/* Select: at least as wide as its trigger when positioned by popper. */
+.popup[role="listbox"] {
+  min-width: var(--radix-select-trigger-width, 8rem);
+}
+
+/* Tabs */
+.tab-list {
+  display: flex;
+  gap: 0.2rem;
+}
+.tabs[data-orientation="vertical"] {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.tab-list[data-orientation="vertical"] {
+  flex-direction: column;
+}
+
+/* Slider, vertical */
+.slider[data-orientation="vertical"] {
+  flex-direction: column;
+  width: 1.5rem;
+  height: 10rem;
+}
+.slider[data-orientation="vertical"] .track {
+  width: 0.5rem;
+  height: auto;
+}
+.slider[data-orientation="vertical"] .fill {
+  width: 100%;
+  height: auto;
+}
+
+/* Progress without a value */
+.fill[data-state="indeterminate"] {
+  width: 100%;
+  background: repeating-linear-gradient(45deg, #05f 0 0.5rem, #9bf 0.5rem 1rem);
+}
+
+/* Scroll area */
+.scroll {
+  overflow: hidden;
+}
+.scroll-viewport {
+  width: 100%;
+  height: 100%;
+}
+.scrollbar {
+  display: flex;
+  padding: 2px;
+  background: #eee;
+  touch-action: none;
+  user-select: none;
+}
+.scrollbar[data-orientation="vertical"] {
+  width: 0.7rem;
+}
+.scrollbar[data-orientation="horizontal"] {
+  flex-direction: column;
+  height: 0.7rem;
+}
+.scroll-thumb {
+  flex: 1;
+  border-radius: 0.35rem;
+  background: #777;
+}
+
+/* Navigation menu: the open content is drawn in the viewport, under the
+   list. */
+.nav {
+  position: relative;
+}
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-viewport {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.3rem;
+  width: var(--radix-navigation-menu-viewport-width);
+  height: var(--radix-navigation-menu-viewport-height);
+}
+.nav a[data-active] {
+  font-weight: 600;
+}
+
+/* Toast: the viewport is the shared `.toasts`; a swiped toast follows the
+   pointer. */
+.toast[data-swipe="move"] {
+  transform: translateX(var(--radix-toast-swipe-move-x));
+}
+
+/* One-time password field */
+.otp {
+  width: 2.2rem;
+  text-align: center;
+}
+
+/* Aspect ratio */
+.aspect {
+  width: 16rem;
+  border: 1px solid #888;
+}
+.aspect img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

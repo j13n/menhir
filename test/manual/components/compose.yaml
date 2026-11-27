@@ -1,0 +1,45 @@
+# The four apps, each on the port it has outside a container (README.md).
+#   docker compose -f test/manual/components/compose.yaml up --build
+x-app: &app
+  build:
+    context: ../../..
+    dockerfile: test/manual/components/Dockerfile
+  image: menhir-manual-components
+  command: pnpm dev
+  environment:
+    # A mounted folder sends no file events into the container.
+    POLL: "1"
+
+services:
+  kobalte:
+    <<: *app
+    working_dir: /repo/test/manual/components/libraries/kobalte
+    ports: ["5191:5191"]
+    volumes:
+      - ./shared:/repo/test/manual/components/shared
+      - ./libraries/kobalte/src:/repo/test/manual/components/libraries/kobalte/src
+      - ./libraries/kobalte/index.html:/repo/test/manual/components/libraries/kobalte/index.html
+  corvu:
+    <<: *app
+    working_dir: /repo/test/manual/components/libraries/corvu
+    ports: ["5192:5192"]
+    volumes:
+      - ./shared:/repo/test/manual/components/shared
+      - ./libraries/corvu/src:/repo/test/manual/components/libraries/corvu/src
+      - ./libraries/corvu/index.html:/repo/test/manual/components/libraries/corvu/index.html
+  base-ui:
+    <<: *app
+    working_dir: /repo/test/manual/components/libraries/base-ui
+    ports: ["5193:5193"]
+    volumes:
+      - ./shared:/repo/test/manual/components/shared
+      - ./libraries/base-ui/src:/repo/test/manual/components/libraries/base-ui/src
+      - ./libraries/base-ui/index.html:/repo/test/manual/components/libraries/base-ui/index.html
+  radix:
+    <<: *app
+    working_dir: /repo/test/manual/components/libraries/radix
+    ports: ["5194:5194"]
+    volumes:
+      - ./shared:/repo/test/manual/components/shared
+      - ./libraries/radix/src:/repo/test/manual/components/libraries/radix/src
+      - ./libraries/radix/index.html:/repo/test/manual/components/libraries/radix/index.html

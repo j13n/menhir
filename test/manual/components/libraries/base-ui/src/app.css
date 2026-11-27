@@ -1,0 +1,286 @@
+/* What only Base UI needs on top of ../../shared/page.css. */
+
+/* Popups are portalled to <body>; the docs ask for a stacking context on the
+   app root so they always land above it. */
+#root {
+  isolation: isolate;
+}
+
+/* The Positioner is the positioned element, so the z-index goes there. */
+.positioner {
+  z-index: 60;
+  outline: 0;
+}
+.positioner.hide-empty[data-empty] {
+  display: none;
+}
+.popup {
+  outline: 0;
+}
+.popup.anchor-width {
+  width: var(--anchor-width);
+}
+
+/* State that Base UI exposes as data attributes */
+button[data-popup-open],
+button[data-panel-open],
+button[data-pressed]:not(.toggle) {
+  box-shadow: inset 0 0 0 2px #222;
+}
+[data-invalid]:is(input, textarea) {
+  border-color: #b00020;
+}
+
+/* A check mark drawn with borders, so that it adds no text to the name of
+   the item it sits in. For a checkbox, a menu's checkbox and radio items, a
+   listbox's selected item. */
+.check {
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: 0.35rem;
+  height: 0.7rem;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+.check[data-indeterminate] {
+  width: 0.6rem;
+  height: 0;
+  border-width: 0 0 2px;
+  transform: none;
+}
+
+/* A submenu trigger's arrow, drawn the same way */
+.submenu-trigger::after {
+  content: "";
+  margin-left: auto;
+  width: 0.35rem;
+  height: 0.35rem;
+  border: solid currentColor;
+  border-width: 2px 2px 0 0;
+  transform: rotate(45deg);
+}
+.item.submenu-trigger[data-popup-open]:not([data-highlighted]) {
+  background: #ddd;
+}
+
+/* Accordion, collapsible */
+.accordion-item {
+  border-bottom: 1px solid #ccc;
+  padding: 0.3rem 0;
+}
+
+/* Combobox chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  width: 20rem;
+  padding: 0.2rem;
+  border: 1px solid #888;
+  box-sizing: border-box;
+}
+.chips input {
+  flex: 1;
+  min-width: 4rem;
+  border: 0;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0 0.2rem 0 0.4rem;
+  border-radius: 4px;
+  background: #ddd;
+}
+.chip[data-highlighted],
+.chip:focus,
+.chip:focus-within {
+  background: #05f;
+  color: #fff;
+  outline: none;
+}
+.chip button {
+  padding: 0 0.2rem;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+/* Navigation menu: the popup takes the size of the content shown in the
+   viewport */
+.nav-list {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-positioner {
+  z-index: 60;
+  width: var(--positioner-width);
+  height: var(--positioner-height);
+  max-width: var(--available-width);
+}
+.nav-popup {
+  position: relative;
+  width: var(--popup-width);
+  height: var(--popup-height);
+  background: #fff;
+  border: 1px solid #888;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.2);
+}
+.nav-viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.nav-content {
+  box-sizing: border-box;
+  width: max-content;
+  padding: 0.6rem 1rem;
+}
+.nav-content ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Number field, OTP field */
+.number-group {
+  display: flex;
+}
+.number-group input {
+  width: 5rem;
+  text-align: center;
+}
+.otp {
+  display: flex;
+  gap: 0.3rem;
+}
+.otp input {
+  width: 2.2rem;
+  text-align: center;
+}
+
+/* Progress: something to look at while there is no value */
+.fill[data-indeterminate] {
+  width: 30%;
+  animation: indeterminate 1.5s linear infinite alternate;
+}
+@keyframes indeterminate {
+  to {
+    transform: translateX(233%);
+  }
+}
+
+/* Scroll area: Base UI draws its own scrollbar */
+.scroll {
+  box-sizing: border-box;
+}
+.scroll-viewport {
+  height: 100%;
+}
+.scroll-content {
+  padding: 0.5rem;
+}
+.scrollbar {
+  display: flex;
+  justify-content: center;
+  width: 0.7rem;
+  background: #eee;
+}
+.scrollbar[data-orientation="horizontal"] {
+  width: auto;
+  height: 0.7rem;
+}
+.scroll-thumb {
+  width: 100%;
+  border-radius: 0.35rem;
+  background: #888;
+}
+
+/* Slider: the thumb's input is hidden inside it; a vertical one */
+.thumb:has(:focus-visible) {
+  outline: 3px solid #05f;
+  outline-offset: 2px;
+}
+.slider[data-orientation="vertical"] {
+  flex-direction: column;
+  width: 1.5rem;
+  height: 10rem;
+}
+.slider .track[data-orientation="vertical"] {
+  width: 0.5rem;
+}
+
+/* Tabs */
+.tab-list {
+  display: flex;
+  gap: 0.25rem;
+}
+.tabs-vertical {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+.tabs-vertical .tab-list {
+  flex-direction: column;
+}
+
+/* Toast: a plain column, newest last; follow a swipe */
+.toast {
+  transform: translate(
+    var(--toast-swipe-movement-x, 0),
+    var(--toast-swipe-movement-y, 0)
+  );
+}
+.toast[data-type="error"] {
+  border-color: #b00020;
+  border-width: 2px;
+}
+
+/* Drawer: a panel on the right edge that follows a swipe */
+.drawer-viewport {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 51;
+}
+.drawer {
+  box-sizing: border-box;
+  width: 20rem;
+  max-width: calc(100vw - 3rem);
+  height: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+  background: #fff;
+  border-left: 1px solid #888;
+  transform: translateX(var(--drawer-swipe-movement-x, 0));
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+}
+
+/* Base UI's titles are <h2>; no room above one inside a box */
+:is(.dialog, .popup, .toast, .drawer) h2 {
+  margin-top: 0;
+}
+
+/* Base UI marks a disabled part and the parts inside it; dim only once */
+[data-disabled] :is([data-disabled], :disabled) {
+  opacity: 1;
+}

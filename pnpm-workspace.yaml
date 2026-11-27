@@ -5,6 +5,7 @@ packages:
   - test/ssr-app
   - test/manual/scroll-lock/libraries
   - test/manual/scroll-lock/menhir
+  - test/manual/components/libraries/*
 
 # Packages whose install scripts pnpm may run. Wrangler (the docs deploy)
 # brings esbuild and workerd; both ship their binaries as platform-specific
