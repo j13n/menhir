@@ -1,8 +1,27 @@
 import { render } from "@solidjs/testing-library";
 import { describe, expect, test } from "vitest";
 
+import type { ComponentExampleProps } from "./components/ComponentExample";
+import { looks } from "./looks";
 // Kept outside src/routes so the file-system router never sees it as a page.
 import Styling from "./routes/docs/styling";
+
+/**
+ * The pages of the components that have a worked example in every look,
+ * read from the examples themselves, so that the page cannot miss one.
+ */
+const workedExamplePages = Object.entries(
+  import.meta.glob<Record<string, ComponentExampleProps>>(
+    "./examples/*/index.ts",
+    { eager: true },
+  ),
+)
+  .filter(([, module]) => {
+    const example = Object.values(module)[0]!;
+    return looks.every((look) => example.looks?.[look.name]);
+  })
+  .map(([path]) => `/docs/components/${path.split("/")[2]}`)
+  .sort();
 
 describe("styling page", () => {
   test("shows how to style a part through its data attributes", () => {
@@ -24,13 +43,9 @@ describe("styling page", () => {
     const links = [...looks.querySelectorAll("a")].map((link) =>
       link.getAttribute("href"),
     );
-    expect(links).toEqual([
-      "/docs/components/switch",
-      "/docs/components/dialog",
-      "/docs/components/tabs",
-      "/docs/components/popover",
-      "/docs/badge",
-    ]);
+    expect(links.at(-1)).toBe("/docs/badge");
+    expect(workedExamplePages).not.toEqual([]);
+    expect(links.slice(0, -1).sort()).toEqual(workedExamplePages);
   });
 
   test("says how to give an agent the skill", () => {

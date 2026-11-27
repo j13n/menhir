@@ -102,8 +102,10 @@ export default function Styling() {
           component. Both have worked examples of{" "}
           <a href="/docs/components/switch">Switch</a>,{" "}
           <a href="/docs/components/dialog">Dialog</a>,{" "}
-          <a href="/docs/components/tabs">Tabs</a> and{" "}
-          <a href="/docs/components/popover">Popover</a>. Each of those pages
+          <a href="/docs/components/tabs">Tabs</a>,{" "}
+          <a href="/docs/components/popover">Popover</a>,{" "}
+          <a href="/docs/components/menu">Menu</a> and{" "}
+          <a href="/docs/components/select">Select</a>. Each of those pages
           shows its example in both looks, beside Tailwind CSS and CSS.
         </p>
         <p>
