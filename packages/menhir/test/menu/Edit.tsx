@@ -1,6 +1,7 @@
 // A test menu: an "Edit" Trigger, a Popup with Copy, Cut and Paste unless
 // children are given, and a button before and after it. `editWith` builds
-// it from another menu's Root, Trigger and Popup, as Context Menu's.
+// it from another menu's Root, Trigger and Popup, as Context Menu's and
+// Menubar's.
 import type { JSX } from "@solidjs/web";
 
 import { Menu } from "../../src/menu/index.ts";
