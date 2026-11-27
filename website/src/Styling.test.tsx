@@ -16,7 +16,7 @@ describe("styling page", () => {
     );
   });
 
-  test("names the shipped look and links to its worked examples", () => {
+  test("names the shipped look and links to its worked examples and the badge recipe", () => {
     const { getByRole } = render(() => <Styling />);
     const looks = getByRole("region", { name: "Looks" });
     expect(looks).toHaveTextContent("shadcn look");
@@ -28,6 +28,7 @@ describe("styling page", () => {
       "/docs/components/dialog",
       "/docs/components/tabs",
       "/docs/components/popover",
+      "/docs/badge",
     ]);
   });
 

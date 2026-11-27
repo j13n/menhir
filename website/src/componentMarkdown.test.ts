@@ -233,7 +233,7 @@ describe("llmsTxt", () => {
 
   test("links the docs pages and ends with one newline", () => {
     expect(llmsTxt([doc])).toMatch(
-      /## Docs\n\n- \[Getting started\]\(\/docs\/getting-started\): .+\n- \[Styling\]\(\/docs\/styling\): .+\n- \[Solid 2\.0\]\(\/docs\/solid-2\): .+\n- \[Forms without a library\]\(\/docs\/forms\): .+\n- \[Bundle size\]\(\/docs\/bundle-size\): .+\n$/,
+      /## Docs\n\n- \[Getting started\]\(\/docs\/getting-started\): .+\n- \[Styling\]\(\/docs\/styling\): .+\n- \[Solid 2\.0\]\(\/docs\/solid-2\): .+\n- \[Forms without a library\]\(\/docs\/forms\): .+\n- \[Badge\]\(\/docs\/badge\): .+\n- \[Bundle size\]\(\/docs\/bundle-size\): .+\n$/,
     );
   });
 });

@@ -103,6 +103,11 @@ export default function Styling() {
           <a href="/docs/components/popover">Popover</a>. Each of those pages
           shows its example in the look, beside Tailwind CSS and CSS.
         </p>
+        <p>
+          A look's recipes also cover what Menhir has no component for, because
+          it is only a styled element: a <a href="/docs/badge">Badge</a> is a{" "}
+          <code>&lt;span&gt;</code>.
+        </p>
       </Section>
       <Section id="install-the-skill" title="Give your agent the skill">
         <p>
