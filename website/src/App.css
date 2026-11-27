@@ -2,6 +2,7 @@
 /* The looks of the styling skill, for the component pages' look examples.
    Each applies only inside its data-look attribute. */
 @import "./looks/shadcn/tokens.css";
+@import "./looks/bootstrap/tokens.css";
 
 /* The reader picks light, dark or system with the toggle in the header
    (menhir/color-scheme/local-storage), which sets data-color-scheme on the root element. */
@@ -67,6 +68,12 @@
      and `r`, which would erase icons. */
   .unstyled-example *:not(svg, svg *) {
     all: revert;
+  }
+  /* A look in plain CSS sets its own background on the element that has
+     data-look, as on a page's <body>: some room around the example. */
+  .unstyled-example[data-look] {
+    padding: 2rem;
+    border-radius: 0.5rem;
   }
   /* In dark mode the browser's own dark defaults keep examples readable. */
   :root[data-color-scheme="dark"] .unstyled-example {

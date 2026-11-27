@@ -1,13 +1,25 @@
+// @vitest-environment node
+import { globSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, test } from "vitest";
 
 import { codeOf, css, highlight, type Language } from "./highlight";
 
-/** Every example's files, as the pages import them with `?highlight`. */
-const examples = import.meta.glob<string>("./examples/**/*.{css,ts,tsx}", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
+const examplesDir = fileURLToPath(new URL("./examples", import.meta.url));
+
+/**
+ * Every example's files, as the pages import them with `?highlight`. Read
+ * from disk: under Vitest a `*.module.css?raw` import is the module's class
+ * names, not its text.
+ */
+const examples = Object.fromEntries(
+  globSync("**/*.{css,ts,tsx}", { cwd: examplesDir }).map((path) => [
+    path,
+    readFileSync(join(examplesDir, path), "utf8"),
+  ]),
+);
 
 const languages: Record<string, Language> = {
   css: "css",

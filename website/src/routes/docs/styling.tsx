@@ -38,7 +38,7 @@ const instructions = `To style Menhir components, follow node_modules/menhir/ski
 
 const prompts = `Style the Dialog and the Switch on the settings page in the shadcn look.
 
-Give every Menhir component in this app the shadcn look.
+Give every Menhir component in this app the Bootstrap look.
 
 Style the Accordion in the look the app already has.`;
 
@@ -83,12 +83,13 @@ export default function Styling() {
         </p>
         <ul class="my-3 list-disc space-y-2 pl-6">
           <li>
-            <strong>Tokens</strong>: the look's named colours and radii, for
-            light and dark, in one <code>tokens.css</code>.
+            <strong>Tokens</strong>: the look's named colours and radii, and in
+            a look in plain CSS its spacing and shadows, for light and dark, in
+            one <code>tokens.css</code>.
           </li>
           <li>
-            <strong>Recipes</strong>: the classes for each kind of part, such as
-            buttons, the focus ring and popup surfaces.
+            <strong>Recipes</strong>: the classes or declarations for each kind
+            of part, such as buttons, the focus ring and popup surfaces.
           </li>
           <li>
             <strong>Worked examples</strong>: components styled from both, for
@@ -96,12 +97,14 @@ export default function Styling() {
           </li>
         </ul>
         <p>
-          The first look is the shadcn look, in Tailwind CSS v4, with worked
-          examples of <a href="/docs/components/switch">Switch</a>,{" "}
+          Two looks come with the skill: the shadcn look, in Tailwind CSS v4,
+          and the Bootstrap look, in plain CSS with a CSS module for each
+          component. Both have worked examples of{" "}
+          <a href="/docs/components/switch">Switch</a>,{" "}
           <a href="/docs/components/dialog">Dialog</a>,{" "}
           <a href="/docs/components/tabs">Tabs</a> and{" "}
           <a href="/docs/components/popover">Popover</a>. Each of those pages
-          shows its example in the look, beside Tailwind CSS and CSS.
+          shows its example in both looks, beside Tailwind CSS and CSS.
         </p>
         <p>
           A look's recipes also cover what Menhir has no component for, because
@@ -178,11 +181,13 @@ export default function Styling() {
           <code>{ownLook}</code>
         </pre>
       </Section>
-      <Section id="other-technology" title="Plain CSS instead of Tailwind CSS">
+      <Section id="other-technology" title="A look in the other technology">
         <p>
-          A look is written in one technology; the shadcn look is in Tailwind
-          CSS. When your app uses plain CSS, say so, and the agent translates
-          the look's classes into it, token for token.
+          A look is written in one technology: the shadcn look in Tailwind CSS,
+          the Bootstrap look in plain CSS. When your app uses the other one, say
+          so, and the agent translates the look into it, token for token. The
+          Bootstrap look comes with Tailwind names for its tokens, so that every
+          translation uses the same classes.
         </p>
       </Section>
     </main>

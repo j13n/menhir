@@ -46,8 +46,9 @@ export function writeStylingSkillLooks() {
 
 /**
  * The files of the styling skill's `looks/` folder, by path inside it, made
- * from the website: each look's own files in `src/looks/<look>/`, and each
- * component's example in that look, `src/examples/<slug>/<look>/`.
+ * from the website: each look's own files in `src/looks/<look>/` (its
+ * LOOK.md, LICENSE and stylesheets), and each component's example in that
+ * look, `src/examples/<slug>/<look>/`.
  */
 export function stylingSkillLooks(
   sources: StylingSkillSources,
@@ -73,10 +74,17 @@ export function stylingSkillLooks(
       `${look}/LOOK.md`,
       `${generatedComment(source("LOOK.md"), "that file")}\n\n${read("LOOK.md").trimEnd()}\n\n## Worked examples\n\n${examples}\n`,
     );
-    files.set(
-      `${look}/tokens.css`,
-      `/* ${generatedNote(source("tokens.css"), "that file")} */\n\n${read("tokens.css")}`,
-    );
+    // tokens.css, and what a look in plain CSS has beside it: its
+    // tokens.tailwind.css, and the CSS modules its examples share.
+    const stylesheets = readdirSync(lookDir)
+      .filter((file) => file.endsWith(".css"))
+      .sort();
+    for (const file of stylesheets) {
+      files.set(
+        `${look}/${file}`,
+        `/* ${generatedNote(source(file), "that file")} */\n\n${read(file)}`,
+      );
+    }
     files.set(`${look}/LICENSE`, read("LICENSE"));
   }
   return files;

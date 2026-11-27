@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3100",
+    "dev": "vite",
     "build": "pnpm --filter @menhir/bundle-size size:json && vite build",
     "serve": "vite preview",
     "skill": "node styling-skill.ts",

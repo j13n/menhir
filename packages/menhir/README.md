@@ -50,7 +50,7 @@ Nothing is styled. Every part exposes its state as data attributes, such as `dat
 The package ships two skills for coding agents:
 
 - [`skills/menhir`](skills/menhir/SKILL.md) wires Menhir components into an app: entry points and parts, controlled and uncontrolled state, forms and Field.
-- [`skills/menhir-styling`](skills/menhir-styling/SKILL.md) styles them in one consistent look, such as the shadcn look in Tailwind CSS. What to ask for, and how a look of your own works: [Styling](https://menhir-ui.com/docs/styling).
+- [`skills/menhir-styling`](skills/menhir-styling/SKILL.md) styles them in one consistent look: the shadcn look, in Tailwind CSS, or the Bootstrap look, in plain CSS. What to ask for, and how a look of your own works: [Styling](https://menhir-ui.com/docs/styling).
 
 Point your agent at them with lines in your project's `AGENTS.md`, "To wire up Menhir components, follow `node_modules/menhir/skills/menhir/SKILL.md`" and "To style Menhir components, follow `node_modules/menhir/skills/menhir-styling/SKILL.md`", or copy the folders into your agent's skills folder.
 

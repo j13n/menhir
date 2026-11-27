@@ -16,10 +16,11 @@ describe("styling page", () => {
     );
   });
 
-  test("names the shipped look and links to its worked examples and the badge recipe", () => {
+  test("names the shipped looks and links to their worked examples and the badge recipe", () => {
     const { getByRole } = render(() => <Styling />);
     const looks = getByRole("region", { name: "Looks" });
     expect(looks).toHaveTextContent("shadcn look");
+    expect(looks).toHaveTextContent("Bootstrap look");
     const links = [...looks.querySelectorAll("a")].map((link) =>
       link.getAttribute("href"),
     );
@@ -52,16 +53,19 @@ describe("styling page", () => {
     expect(use.querySelector("pre code")).toHaveTextContent(
       "in the shadcn look",
     );
+    expect(use.querySelector("pre code")).toHaveTextContent(
+      "the Bootstrap look",
+    );
     expect(use.querySelectorAll("ol > li")).toHaveLength(4);
   });
 
-  test("covers a look of the app's own, and an app without Tailwind CSS", () => {
+  test("covers a look of the app's own, and an app in the other technology", () => {
     const { getByRole } = render(() => <Styling />);
     expect(
       getByRole("region", { name: "A look of your own" }),
     ).toHaveTextContent("writes that look's tokens first");
     expect(
-      getByRole("region", { name: "Plain CSS instead of Tailwind CSS" }),
+      getByRole("region", { name: "A look in the other technology" }),
     ).toHaveTextContent("token for token");
   });
 });

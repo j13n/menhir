@@ -26,3 +26,8 @@ The shadcn look of the styling skill (website/src/looks/shadcn/, its examples in
 website/src/examples/*/shadcn/, and their copies in
 packages/menhir/skills/menhir-styling/looks/shadcn/) reproduces class strings
 and token values from shadcn/ui, under the licence in that look's LICENSE file.
+
+The Bootstrap look of the styling skill (website/src/looks/bootstrap/, its
+examples in website/src/examples/*/bootstrap/, and their copies in
+packages/menhir/skills/menhir-styling/looks/bootstrap/) reproduces declarations
+and token values from Bootstrap, under the licence in that look's LICENSE file.

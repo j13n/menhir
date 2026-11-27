@@ -1,6 +1,8 @@
 // The looks of Menhir's styling skill. Each folder here holds a look's
-// tokens.css, LOOK.md and LICENSE, and src/examples/<slug>/<look>/ its worked
-// examples; website/styling-skill.ts copies them into the skill.
+// tokens.css, LOOK.md and LICENSE, and a look in plain CSS also the CSS
+// modules its examples share and its tokens.tailwind.css;
+// src/examples/<slug>/<look>/ holds its worked examples.
+// website/styling-skill.ts copies them into the skill.
 
 /** How an example is styled, which decides what the site shows it with. */
 export type Styling = "tailwind" | "css";
@@ -19,6 +21,7 @@ export type Look = {
 
 export const looks = [
   { name: "shadcn", label: "shadcn", styling: "tailwind" },
+  { name: "bootstrap", label: "Bootstrap", styling: "css" },
 ] as const satisfies readonly Look[];
 
 export type LookName = (typeof looks)[number]["name"];
