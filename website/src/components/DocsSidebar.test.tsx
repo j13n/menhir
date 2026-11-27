@@ -28,6 +28,7 @@ describe("<DocsSidebar />", () => {
       ["Styling", "/docs/styling"],
       ["Solid 2.0", "/docs/solid-2"],
       ["Forms without a library", "/docs/forms"],
+      ["Badge", "/docs/badge"],
       ["Bundle size", "/docs/bundle-size"],
       ["llms.txt", "/docs/llms-txt"],
     ]);

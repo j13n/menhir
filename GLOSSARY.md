@@ -291,3 +291,7 @@ _Avoid_: Variant, pattern
 **Worked example**:
 A component styled in a look, generated into the styling skill from the website's example, for an agent to start from.
 _Avoid_: Template, snippet, recipe (recipes are the look's rules)
+
+**Badge**:
+A small label on or beside something else, such as a status or a count: a styled `<span>` from a look's recipes, not a component.
+_Avoid_: Chip (a multi combobox's part), tag, pill

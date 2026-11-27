@@ -47,6 +47,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/docs/badge";
+      page: true;
+      $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/badge"), Extract<"default", keyof typeof import("./src/routes/docs/badge")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/docs/bundle-size";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/bundle-size"), Extract<"default", keyof typeof import("./src/routes/docs/bundle-size")>>>;
@@ -344,6 +350,14 @@ declare module "virtual:file-routes" {
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs"), Extract<"default", keyof typeof import("./src/routes/docs")>>>;
       $$route?: undefined;
       children: readonly [
+        {
+          path: "/badge";
+          id: "/badge";
+          page: true;
+          $component: FileRouteLazyRef<Pick<typeof import("./src/routes/docs/badge"), Extract<"default", keyof typeof import("./src/routes/docs/badge")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
         {
           path: "/forms";
           id: "/forms";

@@ -23,6 +23,7 @@ export const docsSections: DocsSection[] = [
       { href: "/docs/styling", title: "Styling" },
       { href: "/docs/solid-2", title: "Solid 2.0" },
       { href: "/docs/forms", title: "Forms without a library" },
+      { href: "/docs/badge", title: "Badge" },
       { href: "/docs/bundle-size", title: "Bundle size" },
       { href: "/docs/llms-txt", title: "llms.txt" },
     ],
