@@ -217,7 +217,7 @@ part conventions. No WAI-ARIA pattern applies, so no case is marked "A".
 
 Tried in Chromium (Playwright's headless build, through the test suite). A
 native `<input>` is announced by every screen reader with its label and
-description; no screen reader has been tried with Input yet.
+description; no screen reader has been tried with Input yet (#248).
 
 ## Size
 

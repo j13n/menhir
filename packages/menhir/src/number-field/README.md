@@ -365,7 +365,7 @@ Tried in Chromium (Playwright's headless build, through the test suite).
 Not yet tried in Firefox or WebKit, and no screen reader has been tried yet:
 the spinbutton's name, its `aria-valuetext` as the keys step it, and a step
 from a button pressed by touch or voice are still to be heard in VoiceOver,
-NVDA and JAWS.
+NVDA and JAWS (#186).
 
 ## Size
 

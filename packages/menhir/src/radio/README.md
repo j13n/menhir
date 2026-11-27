@@ -285,7 +285,7 @@ Tried in Chromium (Playwright's headless build, through the test suite).
 Not yet tried in Firefox or WebKit, and no screen reader has been tried
 yet: the group's name from its legend on a `radiogroup`, "1 of 3", the
 checked state as the arrow keys move it, and the error in the group's
-description are still to be heard in VoiceOver, NVDA and JAWS.
+description are still to be heard in VoiceOver, NVDA and JAWS (#251).
 
 ## Size
 

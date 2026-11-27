@@ -232,7 +232,7 @@ conventions.
 Tried in Chromium (Playwright's headless build, through the test suite). No
 screen reader has been tried yet: the announcement of the focused control's
 error after a blocked submission is still to be heard in VoiceOver, NVDA and
-JAWS (the definition of done in #144).
+JAWS (the definition of done in #144; #249).
 
 ## Size
 

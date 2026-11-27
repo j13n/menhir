@@ -185,7 +185,8 @@ accessible description has the Description and, while it shows, the Error.
 No screen reader has been tried yet: the group's name, description and
 error, read as focus enters the group, are still to be heard in VoiceOver,
 NVDA and JAWS, and whether a Description inside the fieldset, which is also
-its description, is read twice. Firefox and WebKit have not been tried.
+its description, is read twice (#247). Firefox and WebKit have not been
+tried.
 
 ## Size
 
