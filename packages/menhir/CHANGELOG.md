@@ -1,5 +1,12 @@
 # menhir
 
+## 0.1.30
+
+### Patch Changes
+
+- b056201: The styling skill now shows how to style a Collapsible or Accordion Panel that collapses only on narrow screens: `hidden={false}`, with the app's CSS hiding it on `data-closed` below the breakpoint.
+- f67421f: The styling skill, and the AGENTS.md line the docs suggest for it, now send an agent there only for an app with no styles yet or for a look you ask for. In an app that already has styles, the agent styles a component from its page, to match them.
+
 ## 0.1.29
 
 ### Patch Changes
