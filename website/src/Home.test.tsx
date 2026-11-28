@@ -237,10 +237,20 @@ describe("home page", () => {
       within(list)
         .getAllByRole("heading", { level: 2 })
         .map((heading) => heading.textContent),
-    ).toEqual(["Solid 2.0 idioms", "WAI-ARIA", "Size"]);
+    ).toEqual(["Solid 2.0 idioms", "WAI-ARIA", "Size", "Styling skill"]);
     expect(
       within(list).getByRole("link", { name: /WAI-ARIA/ }),
     ).toHaveAttribute("href", "https://www.w3.org/WAI/ARIA/apg/patterns/");
+    expect(
+      within(list).getByRole("link", { name: "styling skill" }),
+    ).toHaveAttribute("href", "/docs/styling");
+    // Each shipped look is named in a badge in that look.
+    for (const [look, name] of [
+      ["shadcn", "shadcn"],
+      ["bootstrap", "Bootstrap"],
+    ]) {
+      expect(list.querySelector(`[data-look=${look}]`)?.textContent).toBe(name);
+    }
   });
 
   test("groups the examples by category, each card under its component's category", () => {
