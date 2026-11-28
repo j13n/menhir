@@ -49,7 +49,7 @@ export default function Home() {
         </p>
 
         <div class="mt-8 flex justify-center">
-          <InstallCommand command="pnpm add menhir" />
+          <InstallCommand package="menhir" />
         </div>
 
         <ol
