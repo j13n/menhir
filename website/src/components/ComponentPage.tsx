@@ -14,7 +14,7 @@ import {
 import type { Highlighted } from "../highlight";
 import CodeBlock from "./CodeBlock";
 import CopyButton from "./CopyButton";
-import Hint from "./Hint";
+import SiteTooltip from "./SiteTooltip";
 import PageHead from "./PageHead";
 import ComponentExample, {
   type ComponentExampleProps,
@@ -40,7 +40,7 @@ export type ComponentPageProps = ComponentDoc & {
 
 /** The look of the page's links for agents, beside the heading. */
 const agentLinkClass =
-  "text-stone-500 hover:text-stone-950 dark:text-stone-400 dark:hover:text-white";
+  "rounded-sm text-stone-500 hover:text-stone-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 dark:text-stone-400 dark:hover:text-white";
 
 export default function ComponentPage(props: ComponentPageProps) {
   return (
@@ -67,9 +67,9 @@ export default function ComponentPage(props: ComponentPageProps) {
               class={agentLinkClass}
               render={(p) => <Tooltip.Trigger {...p} />}
             />
-            <Hint>
+            <SiteTooltip>
               A prompt that asks your coding agent to add this component
-            </Hint>
+            </SiteTooltip>
           </Tooltip.Root>
           <Tooltip.Root>
             {/* target opts the link out of the router: it is a file, not a
@@ -88,7 +88,7 @@ export default function ComponentPage(props: ComponentPageProps) {
             >
               View as Markdown
             </Tooltip.Trigger>
-            <Hint>This page as Markdown, for agents</Hint>
+            <SiteTooltip>This page as Markdown, for agents</SiteTooltip>
           </Tooltip.Root>
         </div>
       </div>
