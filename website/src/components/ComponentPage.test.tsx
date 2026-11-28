@@ -89,6 +89,10 @@ const codeFiles = (figures: HTMLElement[]) =>
     figure.querySelector("pre code")?.textContent,
   ]);
 
+/** The element that describes `element`, named by its `aria-describedby`. */
+const describedBy = (element: HTMLElement) =>
+  document.getElementById(element.getAttribute("aria-describedby") ?? "");
+
 describe("<ComponentPage />", () => {
   test("names the component in the page heading", () => {
     const { getByRole, getByText } = render(() => (
@@ -321,6 +325,26 @@ describe("<ComponentPage />", () => {
     expect(link).toHaveAttribute("href", "/docs/components/switch.md");
     // The router leaves an anchor with a target alone, so the file loads.
     expect(link).toHaveAttribute("target", "_self");
+  });
+
+  test("describes Copy prompt in a tooltip rather than a title", () => {
+    const { getByRole } = render(() => <ComponentPage {...switchPage} />);
+    const button = getByRole("button", { name: "Copy prompt" });
+    expect(button).not.toHaveAttribute("title");
+    expect(button).toHaveAccessibleDescription(
+      "A prompt that asks your coding agent to add this component",
+    );
+    expect(describedBy(button)).toHaveAttribute("role", "tooltip");
+  });
+
+  test("describes View as Markdown in a tooltip rather than a title", () => {
+    const { getByRole } = render(() => <ComponentPage {...switchPage} />);
+    const link = getByRole("link", { name: "View as Markdown" });
+    expect(link).not.toHaveAttribute("title");
+    expect(link).toHaveAccessibleDescription(
+      "This page as Markdown, for agents",
+    );
+    expect(describedBy(link)).toHaveAttribute("role", "tooltip");
   });
 
   test("copies a prompt that asks an agent to add the component from its Markdown", async () => {

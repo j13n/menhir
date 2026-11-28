@@ -1,4 +1,5 @@
 import { Link } from "@solidjs/meta";
+import { Tooltip } from "menhir/tooltip";
 import { For, Show } from "solid-js";
 
 import { tryFirstSection } from "../componentDocs/tryFirst";
@@ -13,6 +14,7 @@ import {
 import type { Highlighted } from "../highlight";
 import CodeBlock from "./CodeBlock";
 import CopyButton from "./CopyButton";
+import Hint from "./Hint";
 import PageHead from "./PageHead";
 import ComponentExample, {
   type ComponentExampleProps,
@@ -56,23 +58,38 @@ export default function ComponentPage(props: ComponentPageProps) {
       <div class="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h1 class="m-0">{props.name}</h1>
         <div class="flex items-baseline gap-4 text-sm">
-          <CopyButton
-            getText={() =>
-              `Add the Menhir ${props.name} from ${location.origin}${markdownPath(props.slug)}`
-            }
-            label="Copy prompt"
-            title="A prompt that asks your coding agent to add this component"
-            class={agentLinkClass}
-          />
-          {/* target opts the link out of the router: it is a file, not a page. */}
-          <a
-            href={markdownPath(props.slug)}
-            target="_self"
-            title="This page as Markdown, for agents"
-            class={`no-underline ${agentLinkClass}`}
-          >
-            View as Markdown
-          </a>
+          <Tooltip.Root>
+            <CopyButton
+              getText={() =>
+                `Add the Menhir ${props.name} from ${location.origin}${markdownPath(props.slug)}`
+              }
+              label="Copy prompt"
+              class={agentLinkClass}
+              render={(p) => <Tooltip.Trigger {...p} />}
+            />
+            <Hint>
+              A prompt that asks your coding agent to add this component
+            </Hint>
+          </Tooltip.Root>
+          <Tooltip.Root>
+            {/* target opts the link out of the router: it is a file, not a
+                page. type, which the Trigger sets to "button", is the
+                file's media type on a link. */}
+            <Tooltip.Trigger
+              render={(p) => (
+                <a
+                  {...p}
+                  type="text/markdown"
+                  href={markdownPath(props.slug)}
+                  target="_self"
+                />
+              )}
+              class={`no-underline ${agentLinkClass}`}
+            >
+              View as Markdown
+            </Tooltip.Trigger>
+            <Hint>This page as Markdown, for agents</Hint>
+          </Tooltip.Root>
         </div>
       </div>
       <p>{props.description}</p>
