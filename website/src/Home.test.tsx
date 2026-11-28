@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { componentCategories } from "./componentDocs/categories";
 import { componentDocs } from "./componentDocs/index";
+import { packageManagerKey } from "./components/InstallCommand";
 import { FRAME_MS } from "./components/MenhirScene";
 // Kept outside src/routes so the file-system router never sees it as a page.
 import Home from "./routes/index";
@@ -94,6 +95,7 @@ describe("home page", () => {
     Reflect.deleteProperty(Element.prototype, "getAnimations");
     Reflect.deleteProperty(Element.prototype, "scrollIntoView");
     Reflect.deleteProperty(navigator, "clipboard");
+    localStorage.clear();
   });
 
   test("puts the stone between the name and the tagline", () => {
@@ -147,6 +149,67 @@ describe("home page", () => {
 
     tick(Math.ceil(2000 / FRAME_MS));
     expect(getByRole("status")).toHaveTextContent("");
+  });
+
+  test.each([
+    ["npm", "npm install menhir"],
+    ["yarn", "yarn add menhir"],
+    ["bun", "bun add menhir"],
+    ["deno", "deno add npm:menhir"],
+  ])(
+    "switches the install command to %s, and copies that",
+    async (manager, command) => {
+      const writeText = vi.fn(() => Promise.resolve());
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: { writeText },
+      });
+      const { getByRole, getByText } = setup();
+      const trigger = getByRole("combobox", { name: "Package manager" });
+      const list = document.getElementById(
+        trigger.getAttribute("aria-controls")!,
+      )!;
+      expect(trigger).toHaveTextContent("pnpm");
+
+      fireEvent.click(trigger);
+      await Promise.resolve();
+      flush();
+      fireEvent.click(within(list).getByRole("option", { name: manager }));
+      await Promise.resolve();
+      flush();
+      expect(trigger).toHaveTextContent(manager);
+      expect(getByText(command).tagName).toBe("CODE");
+      expect(localStorage.getItem(packageManagerKey)).toBe(manager);
+
+      fireEvent.click(getByRole("button", { name: "Copy install command" }));
+      await Promise.resolve();
+      expect(writeText).toHaveBeenCalledWith(command);
+    },
+  );
+
+  test("restores the package manager chosen on an earlier visit", () => {
+    localStorage.setItem(packageManagerKey, "bun");
+    const { getByRole, getByText } = setup();
+    expect(
+      getByRole("combobox", { name: "Package manager" }),
+    ).toHaveTextContent("bun");
+    expect(getByText("bun add menhir").tagName).toBe("CODE");
+  });
+
+  test("ignores a saved package manager it does not know", () => {
+    localStorage.setItem(packageManagerKey, "cargo");
+    const { getByText } = setup();
+    expect(getByText("pnpm add menhir").tagName).toBe("CODE");
+  });
+
+  test("divides the package manager from the command with a Separator", () => {
+    const { getByRole, getByText } = setup();
+    const trigger = getByRole("combobox", { name: "Package manager" });
+    const separator = within(trigger.parentElement!).getByRole("separator");
+    expect(separator).toHaveAttribute("aria-orientation", "vertical");
+    expect(
+      separator.compareDocumentPosition(getByText("pnpm add menhir")),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
   test("links to getting started from under the tagline, before the install command", () => {
