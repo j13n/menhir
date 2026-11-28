@@ -71,6 +71,12 @@ export const collapsibleDoc: ComponentDoc = {
         "<div>, hidden while closed. Its id is generated, so that the Trigger can name it in the server's HTML too, and it takes no id of its own: for a link target, give the id to an element inside it.",
       props: [
         {
+          name: "hidden",
+          type: "false",
+          description:
+            'Keeps a closed panel without the hidden attribute, for your CSS to hide on data-closed. Tailwind hides [hidden] with !important, which no class overrides, so a menu always shown on wide screens takes hidden={false} and class="max-md:data-closed:hidden".',
+        },
+        {
           name: "render",
           type: "(props) => JSX.Element",
           description: "Renders the panel with your own component. Read once.",
