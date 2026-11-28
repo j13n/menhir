@@ -43,7 +43,7 @@ describe("getting started page", () => {
       (code) => code.textContent,
     );
     expect(instructions).toBe(
-      "To wire up Menhir components, follow node_modules/menhir/skills/menhir/SKILL.md.\nTo style Menhir components, follow node_modules/menhir/skills/menhir-styling/SKILL.md.",
+      "To wire up Menhir components, follow node_modules/menhir/skills/menhir/SKILL.md.\nTo style Menhir components in an app with no styles yet, or in a look such as the shadcn look or the Bootstrap look, follow node_modules/menhir/skills/menhir-styling/SKILL.md.",
     );
     expect(copy).toBe(
       "cp -r node_modules/menhir/skills/menhir node_modules/menhir/skills/menhir-styling .claude/skills/",

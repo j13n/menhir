@@ -5,7 +5,7 @@ description: Wire Menhir components (the `menhir` package for SolidJS 2.0) into 
 
 # Wiring Menhir components
 
-Menhir is a set of unstyled, accessible UI primitives for SolidJS 2.0. This skill has what holds for every component. A component's own parts, props and keyboard behaviour are on its page only: read them there. To style a component, follow the styling skill, `node_modules/menhir/skills/menhir-styling/SKILL.md`.
+Menhir is a set of unstyled, accessible UI primitives for SolidJS 2.0. This skill has what holds for every component. A component's own parts, props and keyboard behaviour are on its page only: read them there. To style a component, adapt its page's example to the styles the app already has. When the app has no styles for its components yet, or the user asks for a look such as the shadcn look or the Bootstrap look, follow the styling skill, `node_modules/menhir/skills/menhir-styling/SKILL.md`.
 
 ## Steps
 

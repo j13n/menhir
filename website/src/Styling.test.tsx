@@ -55,7 +55,7 @@ describe("styling page", () => {
       (code) => code.textContent,
     );
     expect(instructions).toBe(
-      "To style Menhir components, follow node_modules/menhir/skills/menhir-styling/SKILL.md.",
+      "To style Menhir components in an app with no styles yet, or in a look such as the shadcn look or the Bootstrap look, follow node_modules/menhir/skills/menhir-styling/SKILL.md.",
     );
     expect(copy).toBe(
       "cp -r node_modules/menhir/skills/menhir-styling .claude/skills/",

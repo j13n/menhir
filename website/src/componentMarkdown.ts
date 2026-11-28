@@ -102,7 +102,7 @@ export function llmsTxt(docs: ComponentDoc[]): string {
     "## Skills",
     [
       `- \`${wiringSkill}\`: what every component shares when you wire it into an app: entry points and parts, controlled and uncontrolled state, forms and Field. It comes with the package, so it matches the installed version.`,
-      `- \`${stylingSkill}\`: styling components in one consistent look, such as the shadcn look or the Bootstrap look.`,
+      `- \`${stylingSkill}\`: giving an app that has no styles yet one consistent look, such as the shadcn look or the Bootstrap look. In an app that already has styles, each component's page is enough to style it to match.`,
     ].join("\n"),
     "## Docs",
     [

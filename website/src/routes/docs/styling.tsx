@@ -34,13 +34,11 @@ const animation = css`.popup {
 
 const copySkill = shell`cp -r node_modules/menhir/skills/menhir-styling .claude/skills/`;
 
-const instructions = `To style Menhir components, follow node_modules/menhir/skills/menhir-styling/SKILL.md.`;
+const instructions = `To style Menhir components in an app with no styles yet, or in a look such as the shadcn look or the Bootstrap look, follow node_modules/menhir/skills/menhir-styling/SKILL.md.`;
 
 const prompts = `Style the Dialog and the Switch on the settings page in the shadcn look.
 
-Give every Menhir component in this app the Bootstrap look.
-
-Style the Accordion in the look the app already has.`;
+Give every Menhir component in this app the Bootstrap look.`;
 
 const ownLook = `Style our Menhir components to match this screenshot. Write the look's tokens first.`;
 
@@ -145,10 +143,7 @@ export default function Styling() {
         </pre>
         <p>The agent then works in this order:</p>
         <ol class="my-3 list-decimal space-y-2 pl-6">
-          <li>
-            It chooses the look: the one you name, or the one the app already
-            has.
-          </li>
+          <li>It chooses the look: the one you name, or it asks you which.</li>
           <li>
             It sets the look up, once per app: it adds the look's{" "}
             <code>tokens.css</code>, puts <code>data-look</code> on{" "}
@@ -168,8 +163,9 @@ export default function Styling() {
           </li>
         </ol>
         <p>
-          Because every component uses the same tokens and recipes, components
-          styled weeks apart still match.
+          Once the app has styled components, the agent needs the skill no
+          longer: it styles the next component from that component's page, to
+          match the ones the app has.
         </p>
       </Section>
       <Section id="your-own-look" title="A look of your own">
