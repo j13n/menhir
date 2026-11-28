@@ -1,5 +1,6 @@
 import type { JSX } from "@solidjs/web";
 import { Tooltip } from "menhir/tooltip";
+import type { ComponentProps } from "solid-js";
 
 const popup =
   "m-0 origin-(--transform-origin) overflow-visible rounded border-0 bg-stone-800 px-2 py-1 text-xs text-white transition-[opacity,scale] duration-100 data-closed:scale-95 data-closed:opacity-0 dark:bg-stone-200 dark:text-stone-950 starting:data-open:scale-95 starting:data-open:opacity-0";
@@ -11,9 +12,9 @@ const arrow =
  * Tooltip page's Tailwind example. Place it in a `Tooltip.Root`, after the
  * `Tooltip.Trigger`.
  */
-export default function Hint(props: {
+export default function SiteTooltip(props: {
   /** Where it opens; the Popup's default is above the Trigger. */
-  side?: "top" | "bottom" | "left" | "right";
+  side?: ComponentProps<typeof Tooltip.Popup>["side"];
   children: JSX.Element;
 }) {
   return (
