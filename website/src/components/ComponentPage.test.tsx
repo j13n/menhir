@@ -104,20 +104,25 @@ describe("<ComponentPage />", () => {
     const { getByRole } = render(() => <ComponentPage {...switchPage} />);
     const example = getByRole("region", { name: "Example" });
     const heading = within(example).getByRole("heading", { name: "Example" });
-    const styling = within(example).getByRole("group", { name: "Styling" });
+    const styling = within(example).getByRole("tablist", { name: "Styling" });
     expect(heading.parentElement).toBe(styling.parentElement);
     expect(
       within(styling)
-        .getAllByRole("radio")
-        .map((radio) => radio.parentElement?.textContent),
+        .getAllByRole("tab")
+        .map((tab) => tab.textContent),
     ).toEqual(["Tailwind CSS", "CSS"]);
   });
 
   test("renders the Tailwind CSS example by default, with its code", () => {
     const { getByRole } = render(() => <ComponentPage {...switchPage} />);
     const example = within(getByRole("region", { name: "Example" }));
-    expect(example.getByRole("radio", { name: "Tailwind CSS" })).toBeChecked();
-    expect(example.queryByRole("button", { name: "CSS switch" })).toBeNull();
+    expect(example.getByRole("tab", { name: "Tailwind CSS" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(
+      example.queryByRole("button", { name: "CSS switch", hidden: true }),
+    ).toBeNull();
     // Tailwind classes need the site's preflight, so this one is not reset.
     const live = example.getByRole("button", { name: "Tailwind switch" });
     expect(live.closest(".unstyled-example")).toBeNull();
@@ -129,11 +134,14 @@ describe("<ComponentPage />", () => {
   test("switches to the CSS example, unstyled, and its code", () => {
     const { getByRole } = render(() => <ComponentPage {...switchPage} />);
     const example = within(getByRole("region", { name: "Example" }));
-    fireEvent.click(example.getByRole("radio", { name: "CSS" }));
+    fireEvent.click(example.getByRole("tab", { name: "CSS" }));
     flush();
-    expect(example.getByRole("radio", { name: "CSS" })).toBeChecked();
+    expect(example.getByRole("tab", { name: "CSS" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
     expect(
-      example.queryByRole("button", { name: "Tailwind switch" }),
+      example.queryByRole("button", { name: "Tailwind switch", hidden: true }),
     ).toBeNull();
     const live = example.getByRole("button", { name: "CSS switch" });
     expect(live.closest(".unstyled-example")).not.toBeNull();
@@ -143,18 +151,37 @@ describe("<ComponentPage />", () => {
     ]);
   });
 
+  test("moves between the stylings with the arrow keys, showing each example", () => {
+    const { getByRole } = render(() => <ComponentPage {...switchPage} />);
+    const example = within(getByRole("region", { name: "Example" }));
+    const tailwind = example.getByRole("tab", { name: "Tailwind CSS" });
+    const plain = example.getByRole("tab", { name: "CSS" });
+    tailwind.focus();
+    fireEvent.keyDown(tailwind, { key: "ArrowRight" });
+    flush();
+    expect(plain).toHaveFocus();
+    expect(plain).toHaveAttribute("aria-selected", "true");
+    expect(example.getByRole("button", { name: "CSS switch" })).toBeVisible();
+    fireEvent.keyDown(plain, { key: "ArrowRight" });
+    flush();
+    expect(tailwind).toHaveFocus();
+    expect(
+      example.getByRole("button", { name: "Tailwind switch" }),
+    ).toBeVisible();
+  });
+
   test("offers each look the component has an example in, after Tailwind CSS and CSS", () => {
     const { getByRole } = render(() => (
       <ComponentPage {...switchPage} example={withShadcnLook} />
     ));
     const styling = within(getByRole("region", { name: "Example" })).getByRole(
-      "group",
+      "tablist",
       { name: "Styling" },
     );
     expect(
       within(styling)
-        .getAllByRole("radio")
-        .map((radio) => radio.parentElement?.textContent),
+        .getAllByRole("tab")
+        .map((tab) => tab.textContent),
     ).toEqual(["Tailwind CSS", "CSS", "shadcn"]);
   });
 
@@ -163,11 +190,14 @@ describe("<ComponentPage />", () => {
       <ComponentPage {...switchPage} example={withShadcnLook} />
     ));
     const example = within(getByRole("region", { name: "Example" }));
-    fireEvent.click(example.getByRole("radio", { name: "shadcn" }));
+    fireEvent.click(example.getByRole("tab", { name: "shadcn" }));
     flush();
-    expect(example.getByRole("radio", { name: "shadcn" })).toBeChecked();
+    expect(example.getByRole("tab", { name: "shadcn" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
     expect(
-      example.queryByRole("button", { name: "Tailwind switch" }),
+      example.queryByRole("button", { name: "Tailwind switch", hidden: true }),
     ).toBeNull();
     const live = example.getByRole("button", { name: "shadcn switch" });
     expect(live.closest('[data-look="shadcn"]')).not.toBeNull();

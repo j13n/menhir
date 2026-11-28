@@ -1,4 +1,5 @@
 import type { JSX } from "@solidjs/web";
+import { Tabs } from "menhir/tabs";
 import { createMemo, createSignal, For, Show } from "solid-js";
 
 import type { Highlighted } from "../highlight";
@@ -26,10 +27,10 @@ export type ComponentExampleProps = {
   looks?: Partial<Record<LookName, ExampleVariant>>;
 };
 
-/** What the Styling radio group chooses between. */
+/** The value of a tab of the Styling tabs. */
 type StylingChoice = Styling | LookName;
 
-/** One choice of the Styling radio group. */
+/** One tab of the Styling tabs, and what its panel shows. */
 type StylingOption = {
   label: string;
   variant: ExampleVariant;
@@ -45,9 +46,11 @@ const choiceOf = (option: StylingOption): StylingChoice =>
 /**
  * The Example section: the live example with a choice of styling, Tailwind
  * CSS, plain CSS or one of the looks the component has an example in, beside
- * its heading, and the source of the chosen one. The choice is a native radio
- * group, so it has the radio group's keyboard behaviour without any script of
- * its own.
+ * its heading, and the source of the chosen one. The choice is Menhir's own
+ * Tabs: a tab for each styling, and a panel with its example and files.
+ * Tabs hides a panel that is not selected and keeps its content, so each
+ * panel renders its content only while chosen: the examples would otherwise
+ * all be mounted at once, with the same ids and names.
  */
 export default function ComponentExample(props: ComponentExampleProps) {
   const options = createMemo<StylingOption[]>(() => [
@@ -71,57 +74,58 @@ export default function ComponentExample(props: ComponentExampleProps) {
         : [];
     }),
   ]);
-  const [chosen, setChosen] = createSignal<StylingChoice>("tailwind");
-  const option = () =>
-    options().find((option) => choiceOf(option) === chosen()) ?? options()[0]!;
+  const [chosen, setChosen] = createSignal<string>("tailwind");
 
   return (
-    <Section
-      id="example"
-      title="Example"
-      aside={
-        <fieldset class="m-0 flex gap-3 border-0 p-0 text-sm">
-          <legend class="sr-only">Styling</legend>
-          <For each={options()}>
-            {(item) => (
-              <label class="cursor-pointer rounded-sm text-stone-500 hover:text-stone-950 has-checked:font-medium has-checked:text-stone-950 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-stone-500 dark:text-stone-400 dark:hover:text-white dark:has-checked:text-white">
-                <input
-                  type="radio"
-                  name="example-styling"
+    <Tabs.Root value={chosen()} onValueChange={setChosen}>
+      <Section
+        id="example"
+        title="Example"
+        aside={
+          <Tabs.List aria-label="Styling" class="flex gap-3 text-sm">
+            <For each={options()}>
+              {(item) => (
+                <Tabs.Tab
                   value={choiceOf(item)}
-                  class="sr-only"
-                  checked={chosen() === choiceOf(item)}
-                  onChange={() => setChosen(choiceOf(item))}
-                />
-                {item.label}
-              </label>
-            )}
-          </For>
-        </fieldset>
-      }
-    >
-      <div class="flex justify-center rounded-lg border border-stone-200 p-10 dark:border-stone-800">
-        <Show when={option()} keyed>
-          {(shown) => (
-            <div
-              class={{ "unstyled-example": shown.styling === "css" }}
-              data-look={shown.look}
+                  class="cursor-pointer rounded-sm text-stone-500 hover:text-stone-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500 data-selected:font-medium data-selected:text-stone-950 dark:text-stone-400 dark:hover:text-white dark:data-selected:text-white"
+                >
+                  {item.label}
+                </Tabs.Tab>
+              )}
+            </For>
+          </Tabs.List>
+        }
+      >
+        <For each={options()}>
+          {(item) => (
+            <Tabs.Panel
+              value={choiceOf(item)}
+              class="rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500"
             >
-              {shown.variant.render()}
-            </div>
+              <Show when={chosen() === choiceOf(item)}>
+                <div class="flex justify-center rounded-lg border border-stone-200 p-10 dark:border-stone-800">
+                  <div
+                    class={{ "unstyled-example": item.styling === "css" }}
+                    data-look={item.look}
+                  >
+                    {item.variant.render()}
+                  </div>
+                </div>
+                <For each={item.variant.files}>
+                  {(file) => (
+                    <figure class="m-0 mt-4">
+                      <figcaption class="mb-1 font-mono text-xs text-stone-500 dark:text-stone-400">
+                        {file.name}
+                      </figcaption>
+                      <CodeBlock code={file.code} class="m-0" />
+                    </figure>
+                  )}
+                </For>
+              </Show>
+            </Tabs.Panel>
           )}
-        </Show>
-      </div>
-      <For each={option().variant.files}>
-        {(file) => (
-          <figure class="m-0 mt-4">
-            <figcaption class="mb-1 font-mono text-xs text-stone-500 dark:text-stone-400">
-              {file.name}
-            </figcaption>
-            <CodeBlock code={file.code} class="m-0" />
-          </figure>
-        )}
-      </For>
-    </Section>
+        </For>
+      </Section>
+    </Tabs.Root>
   );
 }
