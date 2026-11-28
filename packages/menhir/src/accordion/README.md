@@ -38,6 +38,11 @@ components do not import each other (PLAN.md section 6, rule 4).
 - **A closed Panel is `hidden`**, not removed, as on Collapsible: its
   content stays in the document, so `aria-controls` always names an element,
   and keeps its state while closed.
+- **`hidden={false}` hands the hiding to the consumer's CSS**, as on
+  Collapsible, whose README has the reasons: the Panel keeps no `hidden`
+  attribute while closed, and the consumer hides it on `data-closed` where
+  it should be collapsible, such as `class="max-md:data-closed:hidden"` for
+  sections always shown on wide screens.
 - **The Panel is a region** named by its Trigger (`aria-labelledby`), the
   pattern's optional structure for screen-reader users. The pattern warns
   against it where many panels can be open at once, around six or more,
@@ -108,6 +113,7 @@ part conventions. "A" marks a case the WAI-ARIA accordion pattern requires.
 
 - Is a region named by its Trigger (A: optional `region` and `aria-labelledby`)
 - Has the `hidden` attribute when closed and none when open, and its content stays in the document (A: panel shown or hidden)
+- With `hidden={false}`, has no `hidden` attribute while closed, and keeps `data-closed` and the Trigger's `aria-expanded` and `aria-controls`
 - Every item's Panel and Trigger get ids of their own
 - `render` keeps the generated `id`, `hidden` and the region
 - A render function can remove the region, for an accordion with many panels open at once (A: region proliferation)

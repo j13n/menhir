@@ -82,6 +82,32 @@ describe("<Accordion.Panel />", () => {
     expect(input.value).toBe("Kept");
   });
 
+  it("leaves hiding to the consumer's CSS with hidden={false}", async () => {
+    await render(() => (
+      <Accordion.Root>
+        <Accordion.Item value="shipping">
+          <Accordion.Header>
+            <Accordion.Trigger>Shipping</Accordion.Trigger>
+          </Accordion.Header>
+          <Accordion.Panel hidden={false}>Content</Accordion.Panel>
+        </Accordion.Item>
+      </Accordion.Root>
+    ));
+
+    const panel = screen.getByText("Content");
+    const trigger = screen.getByRole("button");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveAttribute("aria-controls", panel.id);
+    expect(panel).not.toHaveAttribute("hidden");
+    expect(panel).toHaveAttribute("data-closed");
+
+    fireEvent.click(trigger);
+    await afterFlush();
+    expect(panel).not.toHaveAttribute("hidden");
+    expect(panel).toHaveAttribute("data-open");
+    expect(panel).not.toHaveAttribute("data-closed");
+  });
+
   it("gets an id of its own in each item, as its Trigger does", async () => {
     await render(() => (
       <Accordion.Root>

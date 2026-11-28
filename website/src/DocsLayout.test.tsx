@@ -29,17 +29,20 @@ describe("docs layout", () => {
     )!;
     expect(panel).toContainElement(getByRole("navigation", { name: "Docs" }));
     expect(button).toHaveAttribute("aria-expanded", "false");
-    expect(panel).toHaveClass("hidden", "md:block");
+    // CSS hides it while closed, and only below md, so no hidden attribute.
+    expect(panel).toHaveAttribute("data-closed");
+    expect(panel).not.toHaveAttribute("hidden");
+    expect(panel).toHaveClass("max-md:data-closed:hidden");
 
     fireEvent.click(button);
     flush();
     expect(button).toHaveAttribute("aria-expanded", "true");
-    expect(panel).not.toHaveClass("hidden");
+    expect(panel).toHaveAttribute("data-open");
 
     fireEvent.click(button);
     flush();
     expect(button).toHaveAttribute("aria-expanded", "false");
-    expect(panel).toHaveClass("hidden");
+    expect(panel).toHaveAttribute("data-closed");
   });
 
   test("picking a page in the open navigation closes it", () => {

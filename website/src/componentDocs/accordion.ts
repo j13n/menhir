@@ -117,6 +117,12 @@ export const accordionDoc: ComponentDoc = {
         '<div role="region"> named by its Trigger, hidden while closed. Its id is generated, so that the Trigger can name it in the server\'s HTML too, and it takes no id of its own. Where many sections can be open at once, about six or more, leave the regions out: render={(props) => <div {...props} role={undefined} aria-labelledby={undefined} />}.',
       props: [
         {
+          name: "hidden",
+          type: "false",
+          description:
+            'Keeps a closed panel without the hidden attribute, for your CSS to hide on data-closed. Tailwind hides [hidden] with !important, which no class overrides, so sections always shown on wide screens take hidden={false} and class="max-md:data-closed:hidden".',
+        },
+        {
           name: "render",
           type: "(props) => JSX.Element",
           description: "Renders the panel with your own component. Read once.",
