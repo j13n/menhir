@@ -22,3 +22,66 @@
     oklch(21.6% 0.006 56.043) /* stone-900 */
   );
 }
+
+/* The Tooltip: a small dark label below the toggle, with an arrow. Menhir
+   places the popup and writes data-side; the arrow sits on the edge that
+   faces the toggle. The browser's own popover styles scroll its overflow,
+   which would clip the arrow. It fades in on data-open and out on
+   data-closed. */
+.color-scheme-tooltip {
+  --background: light-dark(
+    oklch(26.8% 0.007 34.298) /* stone-800 */,
+    oklch(92.3% 0.003 48.717) /* stone-200 */
+  );
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  overflow: visible;
+  border: 0;
+  border-radius: 0.25rem;
+  background: var(--background);
+  color: light-dark(white, oklch(14.7% 0.004 49.25) /* stone-950 */);
+  font:
+    0.75rem system-ui,
+    sans-serif;
+  transform-origin: var(--transform-origin);
+}
+
+.color-scheme-tooltip[data-open] {
+  animation: color-scheme-tooltip-in 100ms ease-out;
+}
+
+.color-scheme-tooltip[data-closed] {
+  animation: color-scheme-tooltip-in 100ms ease-in reverse;
+}
+
+@keyframes color-scheme-tooltip-in {
+  from {
+    opacity: 0;
+    scale: 0.95;
+  }
+}
+
+/* A square turned 45 degrees, half of it outside the popup's edge. */
+.color-scheme-tooltip-arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  rotate: 45deg;
+  background: var(--background);
+}
+
+.color-scheme-tooltip-arrow[data-side="top"] {
+  bottom: -4px;
+}
+
+.color-scheme-tooltip-arrow[data-side="bottom"] {
+  top: -4px;
+}
+
+.color-scheme-tooltip-arrow[data-side="left"] {
+  right: -4px;
+}
+
+.color-scheme-tooltip-arrow[data-side="right"] {
+  left: -4px;
+}

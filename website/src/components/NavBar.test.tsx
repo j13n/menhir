@@ -4,6 +4,13 @@ import { afterEach, describe, expect, test } from "vitest";
 
 import NavBar from "./NavBar";
 
+/** The text of each tooltip, open or not: jsdom has no popover to open. */
+function tooltipTexts(container: ReturnType<typeof within>) {
+  return container
+    .getAllByRole("tooltip", { hidden: true })
+    .map((tooltip: HTMLElement) => tooltip.textContent);
+}
+
 describe("<NavBar />", () => {
   afterEach(() => {
     localStorage.clear();
@@ -34,6 +41,15 @@ describe("<NavBar />", () => {
     expect(github).toHaveAttribute("href", "https://github.com/j13n/menhir");
     expect(github).toHaveAttribute("target", "_blank");
     expect(github).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  test("names the GitHub link in a tooltip rather than a title, and reads the name once", () => {
+    const { getByRole } = render(() => <NavBar />);
+    const header = within(getByRole("banner"));
+    const github = header.getByRole("link", { name: "GitHub" });
+    expect(github).not.toHaveAttribute("title");
+    expect(github).toHaveAccessibleDescription("");
+    expect(tooltipTexts(header)).toContain("GitHub");
   });
 
   test("has the color scheme toggle, which cycles the scheme and saves it", () => {
@@ -69,5 +85,25 @@ describe("<NavBar />", () => {
       "Color scheme: system. Switch to dark.",
     );
     expect(localStorage.getItem("color-scheme")).toBeNull();
+  });
+
+  test("shows the toggle's name in a tooltip rather than a title, which follows the scheme", () => {
+    const { getByRole } = render(() => <NavBar />);
+    flush();
+    const header = within(getByRole("banner"));
+    const toggle = header.getByRole("button", {
+      name: "Color scheme: system. Switch to dark.",
+    });
+    expect(toggle).not.toHaveAttribute("title");
+    expect(toggle).toHaveAccessibleDescription("");
+    expect(tooltipTexts(header)).toContain(
+      "Color scheme: system. Switch to dark.",
+    );
+
+    fireEvent.click(toggle);
+    flush();
+    expect(tooltipTexts(header)).toContain(
+      "Color scheme: dark. Switch to light.",
+    );
   });
 });
