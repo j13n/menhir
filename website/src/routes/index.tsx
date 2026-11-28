@@ -8,6 +8,7 @@ import PickerExamples from "../home/PickerExamples";
 import InstallCommand from "../components/InstallCommand";
 import MenhirScene from "../components/MenhirScene";
 import PageHead from "../components/PageHead";
+import bootstrapBadge from "../looks/bootstrap/badge.module.css";
 import { homeStructuredData } from "../pageHead";
 import { siteDescription, tagline } from "../site";
 
@@ -54,7 +55,7 @@ export default function Home() {
 
         <ol
           aria-label="Approach"
-          class="mt-24 grid list-none gap-6 p-0 md:grid-cols-3"
+          class="mt-24 grid list-none gap-6 p-0 md:grid-cols-2 xl:grid-cols-4"
         >
           <li class={approachItem}>
             <span class={approachNumber}>1</span>
@@ -81,6 +82,30 @@ export default function Home() {
             <p class="m-0">
               A component costs only what it uses. Every component's{" "}
               <a href="/docs/bundle-size">size</a> is published.
+            </p>
+          </li>
+          <li class={approachItem}>
+            <span class={approachNumber}>4</span>
+            <h2 class="mt-1 mb-2 text-lg">Styling skill</h2>
+            <p class="m-0">
+              Menhir ships no styles. Its{" "}
+              <a href="/docs/styling">styling skill</a> has your coding agent
+              style every component in one look:{" "}
+              <span
+                data-look="shadcn"
+                class="inline-flex w-fit items-center rounded-full border border-transparent bg-primary px-2 py-0.5 text-xs font-medium whitespace-nowrap text-primary-foreground"
+              >
+                shadcn
+              </span>
+              ,{" "}
+              {/* The Bootstrap look's tokens also give their element the
+                  look's page background, which a line of text keeps out. */}
+              <span data-look="bootstrap" style={{ background: "none" }}>
+                <span class={[bootstrapBadge.badge, bootstrapBadge.primary]}>
+                  Bootstrap
+                </span>
+              </span>{" "}
+              or your own.
             </p>
           </li>
         </ol>
