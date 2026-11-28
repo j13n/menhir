@@ -27,7 +27,7 @@ const styles = css`.switch[data-checked] {
 }`;
 
 const agentInstructions = `To wire up Menhir components, follow node_modules/menhir/skills/menhir/SKILL.md.
-To style Menhir components, follow node_modules/menhir/skills/menhir-styling/SKILL.md.`;
+To style Menhir components in an app with no styles yet, or in a look such as the shadcn look or the Bootstrap look, follow node_modules/menhir/skills/menhir-styling/SKILL.md.`;
 
 const copySkills = shell`cp -r node_modules/menhir/skills/menhir node_modules/menhir/skills/menhir-styling .claude/skills/`;
 
@@ -79,8 +79,10 @@ export default function GettingStarted() {
             parts, controlled and uncontrolled state, forms and Field.
           </li>
           <li>
-            <code>menhir-styling</code> styles them in one consistent look, such
-            as the shadcn look or the Bootstrap look.
+            <code>menhir-styling</code> gives an app that has no styles yet one
+            consistent look, such as the shadcn look or the Bootstrap look. Once
+            the app has styles, each component's page is enough to style the
+            next one to match.
           </li>
         </ul>
         <p>
